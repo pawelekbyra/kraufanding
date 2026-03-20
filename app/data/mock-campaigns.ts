@@ -42,6 +42,28 @@ export const mockCampaigns: Campaign[] = [
         deliveryDate: "Styczeń 2025",
         backers: 12
       }
+    ],
+    updates: [
+      {
+        date: "2024-05-15",
+        title: "Kolejny krok milowy: Prace nad AI zakończone!",
+        content: "Z radością ogłaszamy, że główne algorytmy przetwarzania sygnałów neuronowych zostały ukończone. Testy wykazują 99% dokładności."
+      },
+      {
+        date: "2024-04-20",
+        title: "Partnerstwo z producentem komponentów",
+        content: "Nawiązaliśmy współpracę z firmą TechCore, co pozwoli nam na obniżenie kosztów produkcji bez utraty jakości."
+      }
+    ],
+    faqs: [
+      {
+        question: "Czy urządzenie jest bezpieczne dla zdrowia?",
+        answer: "Tak, Secret Project wykorzystuje w pełni pasywne czujniki i spełnia wszystkie rygorystyczne normy bezpieczeństwa medycznego."
+      },
+      {
+        question: "Jaki jest czas pracy na baterii?",
+        answer: "Prototyp pozwala na 48 godzin ciągłej pracy. Wersja produkcyjna ma osiągnąć 72 godziny."
+      }
     ]
   },
   {

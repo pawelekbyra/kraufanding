@@ -28,15 +28,18 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
               {campaign.description}
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-4 p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md">
               <div className="flex justify-between items-end">
                 <div>
-                  <span className="text-4xl font-black text-white">{campaign.raised.toLocaleString()} PLN</span>
-                  <span className="text-gray-500 ml-2">z {campaign.goal.toLocaleString()} PLN</span>
+                  <span className="text-5xl font-black text-white">{campaign.raised.toLocaleString()} PLN</span>
+                  <p className="text-gray-500 mt-2">zebrane z <span className="text-white font-bold">{campaign.goal.toLocaleString()} PLN</span> celu</p>
                 </div>
-                <span className="text-blue-400 font-bold">{percentage}%</span>
+                <div className="text-right">
+                  <span className="text-3xl font-black text-blue-400">{percentage}%</span>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-2">Ukończono</p>
+                </div>
               </div>
-              <div className="h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
+              <div className="h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 p-1">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.5)] animate-glow transition-all duration-1000 ease-out"
                   style={{ width: `${percentage}%` }}
