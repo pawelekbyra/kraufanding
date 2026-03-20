@@ -3,7 +3,7 @@ import { Campaign } from "../types/campaign";
 export const mockCampaigns: Campaign[] = [
   {
     id: "secret-project",
-    title: "Secret Project",
+    title: "I rise money for my Secret Project",
     description: "Rewolucyjny projekt, który zmieni sposób, w jaki myślimy o przyszłości. Dołącz do nas i stań się częścią czegoś wielkiego.",
     category: "Technologia",
     author: "Innowatorzy Przyszłości",
@@ -16,6 +16,32 @@ export const mockCampaigns: Campaign[] = [
       "Wykorzystując zaawansowane algorytmy AI oraz nowatorskie podejście do interfejsu mózg-komputer, udało nam się stworzyć prototyp, który przekracza wszelkie dotychczasowe granice. Projekt ten nie tylko ułatwi codzienne życie, ale otworzy nowe możliwości dla osób z niepełnosprawnościami.",
       "Potrzebujemy Twojego wsparcia, aby przenieść ten projekt z fazy prototypu do masowej produkcji. Każda wpłata przybliża nas do świata, w którym technologia jest naturalnym przedłużeniem naszych myśli.",
       "Dołącz do nas już dziś i stań się pionierem nowej ery. Twoje wsparcie to nie tylko inwestycja w produkt, to inwestycja w lepszą, bardziej dostępną przyszłość dla nas wszystkich."
+    ],
+    updates: [
+      {
+        id: "update-1",
+        date: "2024-05-20",
+        title: "Pierwszy Prototyp Działa!",
+        content: "Z radością ogłaszamy, że nasz pierwszy działający prototyp pomyślnie przeszedł wszystkie testy laboratoryjne. To ogromny krok naprzód!"
+      },
+      {
+        id: "update-2",
+        date: "2024-06-05",
+        title: "Nowy Partner Technologiczny",
+        content: "Nawiązaliśmy współpracę z wiodącym producentem mikroprocesorów, co pozwoli nam jeszcze bardziej zwiększyć wydajność naszego urządzenia."
+      }
+    ],
+    faqs: [
+      {
+        id: "faq-1",
+        question: "Kiedy otrzymam swoje urządzenie?",
+        answer: "Planowana wysyłka pierwszych egzemplarzy rozpocznie się na początku 2025 roku, zgodnie z terminami podanymi w nagrodach."
+      },
+      {
+        id: "faq-2",
+        question: "Czy urządzenie jest bezpieczne?",
+        answer: "Tak, bezpieczeństwo jest naszym priorytetem. Urządzenie spełnia wszystkie międzynarodowe normy bezpieczeństwa i zdrowia."
+      }
     ],
     rewards: [
       {
