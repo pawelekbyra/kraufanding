@@ -3,44 +3,70 @@ import { Campaign } from "../types/campaign";
 export const mockCampaigns: Campaign[] = [
   {
     id: "secret-project",
-    title: "Secret Project",
-    description: "Rewolucyjny projekt, który zmieni sposób, w jaki myślimy o przyszłości. Dołącz do nas i stań się częścią czegoś wielkiego.",
-    category: "Technologia",
-    author: "Innowatorzy Przyszłości",
+    title: "I rise money for my Secret Project",
+    description: "A groundbreaking initiative that will redefine our future. Join us in making this secret a reality for everyone.",
+    category: "Technology",
+    author: "The Innovator",
     goal: 500000,
     raised: 350000,
-    thumbnail: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=800",
+    thumbnail: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=1200",
     endDate: "2024-12-31",
     story: [
-      "Secret Project to nasza wizja przyszłości, nad którą pracowaliśmy w tajemnicy przez ostatnie trzy lata. Naszym celem jest stworzenie urządzenia, które zrewolucjonizuje sposób, w jaki wchodzimy w interakcję z technologią cyfrową.",
-      "Wykorzystując zaawansowane algorytmy AI oraz nowatorskie podejście do interfejsu mózg-komputer, udało nam się stworzyć prototyp, który przekracza wszelkie dotychczasowe granice. Projekt ten nie tylko ułatwi codzienne życie, ale otworzy nowe możliwości dla osób z niepełnosprawnościami.",
-      "Potrzebujemy Twojego wsparcia, aby przenieść ten projekt z fazy prototypu do masowej produkcji. Każda wpłata przybliża nas do świata, w którym technologia jest naturalnym przedłużeniem naszych myśli.",
-      "Dołącz do nas już dziś i stań się pionierem nowej ery. Twoje wsparcie to nie tylko inwestycja w produkt, to inwestycja w lepszą, bardziej dostępną przyszłość dla nas wszystkich."
+      "The Secret Project is a culmination of years of research and development in stealth mode. We've been working tirelessly to create something that doesn't just improve lives, but fundamentally changes how we interact with the world around us.",
+      "Our approach combines cutting-edge engineering with intuitive design. While we can't reveal every detail just yet (it is a secret project, after all!), we can tell you that it involves pushing the boundaries of what's possible in the digital-physical interface.",
+      "The funds raised here will go directly towards final prototype testing and moving into our first production run. By backing us now, you're not just buying a product; you're becoming a part of the secret that will soon take the world by storm.",
+      "Thank you for your trust and for being part of this journey. Together, we will rise to the occasion and bring the Secret Project to life."
     ],
     rewards: [
       {
         id: "reward-1",
-        title: "Wczesny Ptak (Early Bird)",
-        amount: 250,
-        description: "Otrzymaj Secret Project w najniższej cenie przed wszystkimi innymi. Limitowana edycja z grawerem.",
-        deliveryDate: "Marzec 2025",
-        backers: 120
+        title: "The Secret Backer",
+        amount: 50,
+        description: "Get your name in the secret credits of our project and receive exclusive weekly updates on our progress.",
+        deliveryDate: "January 2025",
+        backers: 450
       },
       {
         id: "reward-2",
-        title: "Pakiet Deweloperski",
-        amount: 750,
-        description: "Urządzenie plus dostęp do pełnego SDK i zamkniętej społeczności twórców. Twórz własne aplikacje!",
-        deliveryDate: "Luty 2025",
-        backers: 45
+        title: "Early Bird Access",
+        amount: 250,
+        description: "Be among the first to receive the Secret Project at a significantly reduced price. Limited quantity available.",
+        deliveryDate: "March 2025",
+        backers: 120
       },
       {
         id: "reward-3",
-        title: "Wizjoner",
-        amount: 2500,
-        description: "Dwa urządzenia, spotkanie z zespołem projektowym oraz dożywotnia subskrypcja na wszystkie przyszłe aktualizacje.",
-        deliveryDate: "Styczeń 2025",
-        backers: 12
+        title: "The Visionary Kit",
+        amount: 1000,
+        description: "Receive the limited edition version of the Secret Project, an invitation to our launch party, and a 1-on-1 call with the founder.",
+        deliveryDate: "February 2025",
+        backers: 15
+      }
+    ],
+    updates: [
+      {
+        id: "upd-1",
+        date: "2024-08-15",
+        title: "Prototype v3.4 is stable!",
+        content: "We've successfully completed a 48-hour continuous stress test on our latest prototype. The results exceeded our expectations by 15%."
+      },
+      {
+        id: "upd-2",
+        date: "2024-08-01",
+        title: "Materials secured",
+        content: "Great news! We've secured the supply chain for the critical components needed for our first batch of production."
+      }
+    ],
+    faqs: [
+      {
+        id: "faq-1",
+        question: "When will the secret be revealed?",
+        answer: "We plan to do a full reveal once we hit 80% of our funding goal. Backers will get a sneak peek even earlier!"
+      },
+      {
+        id: "faq-2",
+        question: "Is international shipping available?",
+        answer: "Yes, we ship worldwide. Shipping costs will be calculated and charged separately after the campaign ends."
       }
     ]
   },
@@ -54,27 +80,5 @@ export const mockCampaigns: Campaign[] = [
     raised: 45000,
     thumbnail: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=800",
     endDate: "2024-10-15",
-  },
-  {
-    id: "gra-rpg",
-    title: "Mityczne Krainy",
-    description: "Nowa gra RPG z otwartym światem, inspirowana słowiańską mitologią.",
-    category: "Gry",
-    author: "Studio Pixel",
-    goal: 250000,
-    raised: 180000,
-    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
-    endDate: "2024-11-20",
-  },
-  {
-    id: "drukarka-3d",
-    title: "Pocket 3D",
-    description: "Kieszonkowa drukarka 3D o wysokiej precyzji dla każdego hobbysty.",
-    category: "Hardware",
-    author: "TechSolutions",
-    goal: 50000,
-    raised: 65000,
-    thumbnail: "https://images.unsplash.com/photo-1631011048644-839358249673?auto=format&fit=crop&q=80&w=800",
-    endDate: "2024-09-30",
   },
 ];
