@@ -21,19 +21,18 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
 
   return (
     <div className="w-full">
-      <div className="flex border-b border-white/10 mb-8 overflow-x-auto no-scrollbar">
+      <div role="tablist" className="tabs tabs-bordered mb-10 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
-          <button
+          <a
             key={tab.id}
+            role="tab"
             onClick={() => setActiveTab(tab.id)}
-            className={`px-8 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap ${
-              activeTab === tab.id
-                ? 'border-blue-500 text-white'
-                : 'border-transparent text-gray-500 hover:text-gray-300'
+            className={`tab h-14 text-sm font-black transition-all ${
+              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
             }`}
           >
             {tab.label}
-          </button>
+          </a>
         ))}
       </div>
 
@@ -47,42 +46,46 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
         )}
 
         {activeTab === 'updates' && (
-          <div className="space-y-8">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {campaign.updates?.length ? (
               campaign.updates.map((update) => (
-                <div key={update.id} className="glass-card p-8 rounded-2xl space-y-4">
+                <div key={update.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-white">{update.title}</h3>
-                    <span className="text-sm text-gray-500 font-medium">{update.date}</span>
+                    <h3 className="text-xl font-black text-base-content">{update.title}</h3>
+                    <div className="badge badge-outline text-xs font-bold">{update.date}</div>
                   </div>
-                  <p className="text-gray-400 leading-relaxed">{update.content}</p>
+                  <p className="text-base-content/70 leading-relaxed">{update.content}</p>
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 py-12">No updates yet.</p>
+              <p className="text-center text-base-content/50 py-12">No updates yet.</p>
             )}
           </div>
         )}
 
         {activeTab === 'comments' && (
-          <div className="space-y-8">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {campaign.comments?.length ? (
               campaign.comments.map((comment) => (
-                <div key={comment.id} className="glass-card p-8 rounded-2xl space-y-4">
+                <div key={comment.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
                   <div className="flex items-center gap-4">
                     {comment.avatar && (
-                      <img src={comment.avatar} alt={comment.author} className="w-12 h-12 rounded-full border border-white/10" />
+                      <div className="avatar">
+                        <div className="w-12 h-12 rounded-full border border-base-200">
+                          <img src={comment.avatar} alt={comment.author} />
+                        </div>
+                      </div>
                     )}
                     <div>
-                      <h4 className="font-bold text-white">{comment.author}</h4>
-                      <p className="text-xs text-gray-500">{comment.date}</p>
+                      <h4 className="font-black text-base-content">{comment.author}</h4>
+                      <p className="text-xs text-base-content/50 font-bold">{comment.date}</p>
                     </div>
                   </div>
-                  <p className="text-gray-400 leading-relaxed">{comment.content}</p>
+                  <p className="text-base-content/70 leading-relaxed">{comment.content}</p>
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 py-12">No comments yet.</p>
+              <p className="text-center text-base-content/50 py-12">No comments yet.</p>
             )}
           </div>
         )}

@@ -8,38 +8,40 @@ interface RewardsProps {
 const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-black text-white mb-6">Wybierz Nagrodę</h2>
+      <h2 className="text-2xl font-black text-base-content mb-6">Wybierz Nagrodę</h2>
       {rewards.map((reward) => (
         <div
           key={reward.id}
-          className="glass-card p-6 rounded-2xl border-white/5 hover:border-blue-500/30 transition-all hover:bg-white/10 group cursor-pointer hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] hover:scale-[1.02] duration-300"
+          className="card bg-base-100 border border-base-200 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all group cursor-pointer duration-300"
         >
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
-                {reward.title}
-              </h3>
-              <p className="text-2xl font-black text-blue-500 mt-1">
-                {reward.amount.toLocaleString()} PLN
-              </p>
+          <div className="card-body p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="card-title text-lg font-bold group-hover:text-primary transition-colors">
+                  {reward.title}
+                </h3>
+                <p className="text-2xl font-black text-primary mt-1">
+                  {reward.amount.toLocaleString()} PLN
+                </p>
+              </div>
+              <div className="badge badge-secondary badge-outline font-black text-[10px] py-3">
+                {reward.backers} wspierających
+              </div>
             </div>
-            <span className="bg-white/10 text-xs font-bold px-2 py-1 rounded border border-white/10 text-gray-400">
-              {reward.backers} wspierających
-            </span>
+
+            <p className="text-base-content/70 text-sm leading-relaxed mb-6">
+              {reward.description}
+            </p>
+
+            <div className="flex flex-col gap-1 border-t border-base-200 pt-4">
+              <span className="text-[10px] uppercase tracking-widest text-base-content/50 font-black">Przewidywana Dostawa</span>
+              <span className="text-sm text-base-content/80 font-bold">{reward.deliveryDate}</span>
+            </div>
+
+            <button className="btn btn-primary btn-block mt-6 font-black rounded-xl">
+              Wybierz Tę Nagrodę
+            </button>
           </div>
-
-          <p className="text-gray-400 text-sm leading-relaxed mb-6">
-            {reward.description}
-          </p>
-
-          <div className="flex flex-col gap-1 border-t border-white/5 pt-4">
-            <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Przewidywana Dostawa</span>
-            <span className="text-sm text-gray-300 font-medium">{reward.deliveryDate}</span>
-          </div>
-
-          <button className="w-full mt-6 py-3 bg-white/5 hover:bg-blue-600 text-white font-black text-sm rounded-xl border border-white/10 hover:border-transparent transition-all group-hover:shadow-lg group-hover:shadow-blue-500/20">
-            Wybierz Tę Nagrodę
-          </button>
         </div>
       ))}
     </div>
