@@ -29,11 +29,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require("daisyui"),
   ],
-  daisyui: {
-    themes: ["cupcake", "light"],
-  },
 } satisfies Config
 
 export default config

@@ -1,88 +1,128 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Stats from './components/Stats';
-import ProjectTabs from './components/ProjectTabs';
-import Rewards from './components/Rewards';
-import Footer from './components/Footer';
-import { mockCampaigns } from './data/mock-campaigns';
+"use client"
+
+import React from 'react'
+import {
+  Box,
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  Text,
+  Stack,
+  Button,
+  VStack,
+} from "@chakra-ui/react"
+import { Avatar } from "@/components/ui/avatar"
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "@/components/ui/accordion"
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import Stats from './components/Stats'
+import ProjectTabs from './components/ProjectTabs'
+import Rewards from './components/Rewards'
+import Footer from './components/Footer'
+import { mockCampaigns } from './data/mock-campaigns'
 
 export default function Home() {
-  const campaign = mockCampaigns.find(c => c.id === 'secret-project') || mockCampaigns[0];
+  const campaign = mockCampaigns.find(c => c.id === 'secret-project') || mockCampaigns[0]
 
   return (
-    <div className="min-h-screen">
+    <Box minH="screen" bg="bg.muted">
       <Navbar />
 
-      <main>
+      <Box as="main">
         <Hero campaign={campaign} />
         <Stats />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-
+        <Container maxW="container.xl" py={20}>
+          <Grid templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }} gap={16} alignItems="flex-start">
             {/* Main Content Area */}
-            <div className="lg:col-span-2 space-y-12">
-              <section id="story">
+            <GridItem colSpan={{ base: 1, lg: 2 }}>
+              <Stack gap={12} id="story">
                 <ProjectTabs campaign={campaign} />
-              </section>
-            </div>
+              </Stack>
+            </GridItem>
 
             {/* Sidebar */}
-            <aside className="space-y-8 lg:sticky lg:top-28">
-              <section id="rewards">
-                <Rewards rewards={campaign.rewards || []} />
-              </section>
+            <GridItem position={{ lg: "sticky" }} top={{ lg: 28 }}>
+              <Stack gap={8}>
+                <Box id="rewards">
+                  <Rewards rewards={campaign.rewards || []} />
+                </Box>
 
-              <div className="card bg-base-100 border border-base-200 shadow-xl p-8 space-y-6">
-                <h3 className="card-title text-xl font-black text-base-content">O Autorze</h3>
-                <div className="flex items-center gap-4">
-                  <div className="avatar placeholder">
-                    <div className="bg-primary text-primary-content rounded-full w-14 h-14">
-                      <span className="text-xl font-black">IP</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-black text-base-content text-lg">{campaign.author}</h4>
-                    <p className="text-xs text-base-content/50 font-bold uppercase tracking-widest">12 zrealizowanych projektów</p>
-                  </div>
-                </div>
-                <p className="text-base-content/70 text-sm font-medium leading-relaxed">
-                  Jesteśmy grupą inżynierów i projektantów, których misją jest tworzenie technologii jutra dostępnej już dziś.
-                </p>
-                <button className="btn btn-outline btn-block rounded-xl font-black">
-                  Kontakt z Autorem
-                </button>
-              </div>
-            </aside>
-
-          </div>
-        </div>
+                <Box
+                  p={8}
+                  bg="bg.panel"
+                  borderWidth="1px"
+                  borderColor="border"
+                  borderRadius="2xl"
+                  shadow="xl"
+                >
+                  <Heading as="h3" fontSize="xl" fontWeight="black" mb={6}>
+                    O Autorze
+                  </Heading>
+                  <Stack gap={4} align="center" direction="row" mb={4}>
+                    <Avatar
+                      name={campaign.author}
+                      fallback="IP"
+                      bg="blue.600"
+                      color="white"
+                      size="lg"
+                    />
+                    <Box>
+                      <Heading as="h4" fontSize="lg" fontWeight="black">
+                        {campaign.author}
+                      </Heading>
+                      <Text fontSize="2xs" fontWeight="black" color="fg.subtle" textTransform="uppercase" letterSpacing="widest">
+                        12 Zrealizowanych Projektów
+                      </Text>
+                    </Box>
+                  </Stack>
+                  <Text fontSize="sm" color="fg.muted" fontWeight="medium" lineHeight="relaxed" mb={6}>
+                    Jesteśmy grupą inżynierów i projektantów, których misją jest tworzenie technologii jutra dostępnej już dziś.
+                  </Text>
+                  <Button variant="outline" width="full" rounded="xl" fontWeight="black">
+                    Kontakt z Autorem
+                  </Button>
+                </Box>
+              </Stack>
+            </GridItem>
+          </Grid>
+        </Container>
 
         {/* FAQ Section */}
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-base-200">
-          <h2 className="text-3xl font-black text-base-content text-center mb-16">Często Zadawane Pytania</h2>
-          <div className="space-y-4">
-            {[
-              { q: "Kiedy otrzymam swój produkt?", a: "Pierwsze wysyłki planowane są na początek 2025 roku." },
-              { q: "Czy wysyłka jest darmowa?", a: "Tak, dla wszystkich wspierających na poziomie 'Wczesny Ptak' i wyższym." },
-              { q: "Czy mogę zrezygnować ze wsparcia?", a: "Możesz zrezygnować w dowolnym momencie przed zakończeniem kampanii." }
-            ].map((faq, i) => (
-              <div key={i} className="collapse collapse-plus bg-base-100 border border-base-200">
-                <input type="radio" name="my-accordion-3" defaultChecked={i === 0} />
-                <div className="collapse-title text-xl font-black">
-                  {faq.q}
-                </div>
-                <div className="collapse-content">
-                  <p className="text-base-content/70 font-medium">{faq.a}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
+        <Box py={24} borderTopWidth="1px" borderColor="border" bg="bg.panel">
+          <Container maxW="container.md">
+            <Heading as="h2" fontSize="3xl" fontWeight="black" textAlign="center" mb={16}>
+              Często Zadawane Pytania
+            </Heading>
+            <AccordionRoot defaultValue={["item-0"]} collapsible>
+              {[
+                { q: "Kiedy otrzymam swój produkt?", a: "Pierwsze wysyłki planowane są na początek 2025 roku." },
+                { q: "Czy wysyłka jest darmowa?", a: "Tak, dla wszystkich wspierających na poziomie 'Wczesny Ptak' i wyższym." },
+                { q: "Czy mogę zrezygnować ze wsparcia?", a: "Możesz zrezygnować w dowolnym momencie przed zakończeniem kampanii." }
+              ].map((faq, i) => (
+                <AccordionItem key={i} value={`item-${i}`} mb={4} borderBottomWidth="1px" borderColor="border">
+                  <AccordionItemTrigger py={4} fontSize="xl" fontWeight="black" _hover={{ bg: "transparent" }}>
+                    {faq.q}
+                  </AccordionItemTrigger>
+                  <AccordionItemContent pb={6}>
+                    <Text color="fg.muted" fontWeight="medium">
+                      {faq.a}
+                    </Text>
+                  </AccordionItemContent>
+                </AccordionItem>
+              ))}
+            </AccordionRoot>
+          </Container>
+        </Box>
+      </Box>
 
       <Footer />
-    </div>
-  );
+    </Box>
+  )
 }

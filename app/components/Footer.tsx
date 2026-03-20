@@ -1,42 +1,80 @@
-import React from 'react';
+"use client"
+
+import React from 'react'
+import {
+  Box,
+  Container,
+  SimpleGrid,
+  Stack,
+  Text,
+  Input,
+  Button,
+  Link,
+  Flex,
+} from "@chakra-ui/react"
 
 const Footer = () => {
   return (
-    <footer className="footer p-10 bg-base-100 text-base-content border-t border-base-200">
-      <nav>
-        <h6 className="footer-title opacity-100 font-black">Serwisy</h6>
-        <a className="link link-hover font-medium">Branding</a>
-        <a className="link link-hover font-medium">Design</a>
-        <a className="link link-hover font-medium">Marketing</a>
-        <a className="link link-hover font-medium">Reklama</a>
-      </nav>
-      <nav>
-        <h6 className="footer-title opacity-100 font-black">Firma</h6>
-        <a className="link link-hover font-medium">O nas</a>
-        <a className="link link-hover font-medium">Kontakt</a>
-        <a className="link link-hover font-medium">Praca</a>
-        <a className="link link-hover font-medium">Prasowe</a>
-      </nav>
-      <nav>
-        <h6 className="footer-title opacity-100 font-black">Prawne</h6>
-        <a className="link link-hover font-medium">Regulamin</a>
-        <a className="link link-hover font-medium">Polityka prywatności</a>
-        <a className="link link-hover font-medium">Cookie policy</a>
-      </nav>
-      <form>
-        <h6 className="footer-title opacity-100 font-black">Newsletter</h6>
-        <fieldset className="form-control w-80">
-          <label className="label">
-            <span className="label-text font-bold text-base-content/50 uppercase tracking-widest text-xs">Wpisz swój email</span>
-          </label>
-          <div className="join shadow-lg">
-            <input type="text" placeholder="username@site.com" className="input input-bordered join-item w-full" />
-            <button className="btn btn-primary join-item font-black">Subskrybuj</button>
-          </div>
-        </fieldset>
-      </form>
-    </footer>
-  );
-};
+    <Box as="footer" bg="bg.panel" borderTopWidth="1px" borderColor="border" py={16}>
+      <Container maxW="container.xl">
+        <SimpleGrid columns={{ base: 2, md: 4 }} gap={8}>
+          <Stack gap={4}>
+            <Text fontWeight="black" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
+              Serwisy
+            </Text>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Branding</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Design</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Marketing</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Reklama</Link>
+          </Stack>
 
-export default Footer;
+          <Stack gap={4}>
+            <Text fontWeight="black" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
+              Firma
+            </Text>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>O nas</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Kontakt</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Praca</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Prasowe</Link>
+          </Stack>
+
+          <Stack gap={4}>
+            <Text fontWeight="black" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
+              Prawne
+            </Text>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Regulamin</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Polityka prywatności</Link>
+            <Link fontSize="sm" fontWeight="medium" color="fg.muted" _hover={{ color: "blue.600" }}>Cookie policy</Link>
+          </Stack>
+
+          <Stack gap={4}>
+            <Text fontWeight="black" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
+              Newsletter
+            </Text>
+            <Text fontSize="xs" fontWeight="bold" color="fg.subtle" textTransform="uppercase">
+              Wpisz swój email
+            </Text>
+            <Flex gap={0}>
+              <Input
+                placeholder="Twoje email"
+                borderRightRadius="none"
+                bg="bg.muted"
+                borderWidth="1px"
+                borderColor="border"
+              />
+              <Button
+                colorPalette="blue"
+                borderLeftRadius="none"
+                fontWeight="black"
+              >
+                Subskrybuj
+              </Button>
+            </Flex>
+          </Stack>
+        </SimpleGrid>
+      </Container>
+    </Box>
+  )
+}
+
+export default Footer

@@ -1,51 +1,110 @@
-import React from 'react';
-import { Reward } from '../types/campaign';
+"use client"
+
+import React from 'react'
+import {
+  Box,
+  Heading,
+  Text,
+  Stack,
+  Button,
+  Badge,
+  Flex,
+  VStack,
+  HStack,
+} from "@chakra-ui/react"
+import { Reward } from '../types/campaign'
 
 interface RewardsProps {
-  rewards: Reward[];
+  rewards: Reward[]
 }
 
 const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-black text-base-content mb-6">Wybierz Nagrodę</h2>
+    <Stack gap={6}>
+      <Heading as="h2" fontSize="2xl" fontWeight="black" mb={2}>
+        Wybierz Nagrodę
+      </Heading>
       {rewards.map((reward) => (
-        <div
+        <Box
           key={reward.id}
-          className="card bg-base-100 border border-base-200 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all group cursor-pointer duration-300"
+          p={6}
+          bg="bg.panel"
+          borderWidth="1px"
+          borderColor="border"
+          borderRadius="2xl"
+          shadow="sm"
+          transition="all 0.3s"
+          cursor="pointer"
+          _hover={{
+            shadow: "xl",
+            transform: "scale(1.02)",
+            borderColor: "blue.500",
+          }}
+          role="group"
         >
-          <div className="card-body p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="card-title text-lg font-bold group-hover:text-primary transition-colors">
+          <VStack align="flex-start" gap={4}>
+            <Flex justify="space-between" width="full" align="flex-start">
+              <Box>
+                <Heading
+                  as="h3"
+                  fontSize="lg"
+                  fontWeight="bold"
+                  _groupHover={{ color: "blue.600" }}
+                  transition="colors 0.3s"
+                >
                   {reward.title}
-                </h3>
-                <p className="text-2xl font-black text-primary mt-1">
+                </Heading>
+                <Text fontSize="2xl" fontWeight="black" color="blue.600" mt={1}>
                   {reward.amount.toLocaleString()} PLN
-                </p>
-              </div>
-              <div className="badge badge-secondary badge-outline font-black text-[10px] py-3">
+                </Text>
+              </Box>
+              <Badge
+                variant="outline"
+                colorPalette="purple"
+                px={2}
+                py={1}
+                rounded="md"
+                fontSize="2xs"
+                fontWeight="black"
+              >
                 {reward.backers} wspierających
-              </div>
-            </div>
+              </Badge>
+            </Flex>
 
-            <p className="text-base-content/70 text-sm leading-relaxed mb-6">
+            <Text fontSize="sm" color="fg.muted" lineHeight="tall">
               {reward.description}
-            </p>
+            </Text>
 
-            <div className="flex flex-col gap-1 border-t border-base-200 pt-4">
-              <span className="text-[10px] uppercase tracking-widest text-base-content/50 font-black">Przewidywana Dostawa</span>
-              <span className="text-sm text-base-content/80 font-bold">{reward.deliveryDate}</span>
-            </div>
+            <Box width="full" pt={4} borderTopWidth="1px" borderColor="border">
+              <Text
+                fontSize="2xs"
+                fontWeight="black"
+                color="fg.subtle"
+                textTransform="uppercase"
+                letterSpacing="widest"
+                mb={1}
+              >
+                Przewidywana Dostawa
+              </Text>
+              <Text fontSize="sm" fontWeight="bold">
+                {reward.deliveryDate}
+              </Text>
+            </Box>
 
-            <button className="btn btn-primary btn-block mt-6 font-black rounded-xl">
+            <Button
+              colorPalette="blue"
+              width="full"
+              mt={2}
+              rounded="xl"
+              fontWeight="black"
+            >
               Wybierz Tę Nagrodę
-            </button>
-          </div>
-        </div>
+            </Button>
+          </VStack>
+        </Box>
       ))}
-    </div>
-  );
-};
+    </Stack>
+  )
+}
 
-export default Rewards;
+export default Rewards

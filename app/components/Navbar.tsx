@@ -1,40 +1,116 @@
-import React from 'react';
+"use client"
 
-const Navbar = () => {
+import React from 'react'
+import {
+  Box,
+  Flex,
+  HStack,
+  IconButton,
+  Button,
+  Link,
+  useDisclosure,
+  Stack,
+  Container,
+} from "@chakra-ui/react"
+import { LuMenu, LuX } from "react-icons/lu"
+import { ColorModeButton } from "@/components/ui/color-mode"
+
+const Links = [
+  { name: 'Story', href: '#story' },
+  { name: 'Rewards', href: '#rewards' },
+  { name: 'Updates', href: '#updates' },
+]
+
+const NavLink = ({ children, href }: { children: React.ReactNode; href: string }) => (
+  <Link
+    px={2}
+    py={1}
+    rounded={'md'}
+    _hover={{
+      textDecoration: 'none',
+      bg: 'gray.100',
+      _dark: { bg: 'gray.700' },
+    }}
+    href={href}
+    fontWeight="medium"
+  >
+    {children}
+  </Link>
+)
+
+export default function Navbar() {
+  const { open, onToggle } = useDisclosure()
+
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-base-200 px-4 lg:px-12">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
-            </svg>
-          </div>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a href="#story">Story</a></li>
-            <li><a href="#rewards">Rewards</a></li>
-            <li><a href="#updates">Updates</a></li>
-          </ul>
-        </div>
-        <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter text-primary">
-          CROWDFUND
-        </a>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 font-bold">
-          <li><a href="#story">Story</a></li>
-          <li><a href="#rewards">Rewards</a></li>
-          <li><a href="#updates">Updates</a></li>
-        </ul>
-      </div>
-      <div className="navbar-end gap-2">
-        <button className="btn btn-ghost btn-sm font-bold">Log in</button>
-        <button className="btn btn-primary btn-sm md:btn-md rounded-xl font-black">
-          Back Project
-        </button>
-      </div>
-    </div>
-  );
-};
+    <Box
+      bg="bg.panel"
+      px={4}
+      position="sticky"
+      top={0}
+      zIndex={50}
+      borderBottomWidth="1px"
+      backdropFilter="blur(10px)"
+    >
+      <Container maxW="container.xl">
+        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+          <IconButton
+            size={'md'}
+            aria-label={'Open Menu'}
+            display={{ md: 'none' }}
+            onClick={onToggle}
+            variant="ghost"
+          >
+            {open ? <LuX /> : <LuMenu />}
+          </IconButton>
+          <HStack gap={8} alignItems={'center'}>
+            <Link
+              color="blue.600"
+              fontWeight="black"
+              fontSize="xl"
+              letterSpacing="tighter"
+              href="/"
+              _hover={{ textDecoration: 'none' }}
+            >
+              CROWDFUND
+            </Link>
+            <HStack as={'nav'} gap={4} display={{ base: 'none', md: 'flex' }}>
+              {Links.map((link) => (
+                <NavLink key={link.name} href={link.href}>{link.name}</NavLink>
+              ))}
+            </HStack>
+          </HStack>
+          <Flex alignItems={'center'} gap={4}>
+            <ColorModeButton />
+            <Button
+              variant="ghost"
+              size="sm"
+              fontWeight="bold"
+              display={{ base: 'none', md: 'inline-flex' }}
+            >
+              Log in
+            </Button>
+            <Button
+              colorPalette="blue"
+              size={{ base: 'sm', md: 'md' }}
+              fontWeight="black"
+              rounded="xl"
+            >
+              Back Project
+            </Button>
+          </Flex>
+        </Flex>
 
-export default Navbar;
+        {open ? (
+          <Box pb={4} display={{ md: 'none' }}>
+            <Stack as={'nav'} gap={4}>
+              {Links.map((link) => (
+                <NavLink key={link.name} href={link.href}>{link.name}</NavLink>
+              ))}
+              <Button variant="ghost" size="sm" justifyContent="flex-start">Log in</Button>
+            </Stack>
+          </Box>
+        ) : null}
+      </Container>
+    </Box>
+  )
+}
