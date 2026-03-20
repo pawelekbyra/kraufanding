@@ -5,13 +5,13 @@ import type { Metadata, Viewport } from "next";
 const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Odzyskaj Spadek - Zbiórka na Walkę o Sprawiedliwość",
-  description: "Wspomóż walkę o odzyskanie rodzinnej nieruchomości. Twoja pomoc może zmienić wszystko.",
-  keywords: ["zbiórka", "crowdfunding", "pomoc prawna", "nieruchomość", "spadek"],
+  title: "FundujMY - Platforma Crowdfundingowa",
+  description: "Wspieraj projekty, ktore zmieniaja swiat. FundujMY to platforma crowdfundingowa laczaca tworcow z osobami, ktore chca wspierac innowacyjne projekty.",
+  keywords: ["crowdfunding", "zbiorka", "finansowanie", "projekty", "wsparcie", "kampania"],
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1a1a1a",
+  themeColor: "#16a34a",
   width: "device-width",
   initialScale: 1,
 };
