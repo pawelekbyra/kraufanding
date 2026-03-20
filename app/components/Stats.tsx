@@ -2,9 +2,12 @@ import React from 'react';
 
 const Stats = () => {
   return (
-    <section className="bg-base-200 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="stats stats-vertical lg:stats-horizontal shadow-xl w-full bg-base-100 border border-base-200">
+    <section className="bg-base-200/50 py-24 relative overflow-hidden">
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 blur-[120px] rounded-full animate-pulse-slow"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/20 blur-[120px] rounded-full animate-pulse-slow" style={{animationDelay: '2s'}}></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="stats stats-vertical lg:stats-horizontal shadow-2xl w-full bg-base-100/60 backdrop-blur-2xl border border-white/5 divide-white/5">
           <div className="stat">
             <div className="stat-figure text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">

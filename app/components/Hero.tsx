@@ -9,7 +9,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
   const percentage = Math.min(Math.round((campaign.raised / campaign.goal) * 100), 100);
 
   return (
-    <section className="hero min-h-[60vh] bg-base-100 relative overflow-hidden">
+    <section className="hero min-h-[60vh] bg-base-100 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-primary/10 via-base-100 to-base-100 relative overflow-hidden">
       {/* Decorative patterns */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none -z-10">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -23,9 +23,9 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
       </div>
 
       <div className="hero-content max-w-7xl flex-col lg:flex-row-reverse gap-12 py-12">
-        <div className="relative group w-full lg:w-1/2">
-          <div className="absolute -inset-2 bg-primary/20 rounded-3xl blur-2xl group-hover:bg-primary/30 transition duration-1000"></div>
-          <div className="card bg-base-100 shadow-xl overflow-hidden border border-base-200">
+        <div className="relative group w-full lg:w-1/2 animate-float">
+          <div className="absolute -inset-4 bg-primary/20 rounded-3xl blur-3xl group-hover:bg-primary/40 transition duration-1000"></div>
+          <div className="card bg-base-100/50 backdrop-blur-xl shadow-2xl overflow-hidden border border-primary/20 hover:border-primary/50 hover:shadow-[0_0_50px_-12px_rgba(var(--p),0.5)] transition-all duration-500">
             <figure className="aspect-[16/10]">
               <img
                 src={campaign.thumbnail}
@@ -59,14 +59,14 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
           <div className="badge badge-outline badge-primary font-black tracking-widest uppercase py-4 px-6 gap-2">
             ✨ Wyróżniony Projekt
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-base-content leading-tight">
+          <h1 className="text-4xl sm:text-7xl font-black tracking-tighter text-base-content leading-none bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-gradient-x drop-shadow-[0_0_15px_rgba(var(--p),0.3)]">
             {campaign.title}
           </h1>
           <p className="text-xl text-base-content/70 leading-relaxed max-w-xl">
             {campaign.description}
           </p>
 
-          <div className="card bg-base-100 border border-base-200 shadow-lg p-6 space-y-4">
+          <div className="card bg-base-100/40 backdrop-blur-md border border-white/5 shadow-2xl p-8 space-y-6 hover:border-primary/30 transition-colors duration-500">
             <div className="flex justify-between items-end">
               <div>
                 <span className="text-4xl font-black text-primary">{campaign.raised.toLocaleString()} PLN</span>
@@ -87,11 +87,11 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-4">
-            <button className="btn btn-primary btn-lg rounded-2xl px-12 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all font-black">
+          <div className="flex flex-wrap gap-6 pt-4">
+            <button className="btn btn-primary btn-lg rounded-2xl px-12 shadow-[0_0_20px_rgba(var(--p),0.3)] hover:shadow-[0_0_30px_rgba(var(--p),0.5)] hover:scale-105 active:scale-95 transition-all font-black uppercase tracking-widest">
               Wesprzyj Projekt
             </button>
-            <button className="btn btn-outline btn-lg rounded-2xl px-12 hover:scale-105 active:scale-95 transition-all font-black">
+            <button className="btn btn-outline btn-lg rounded-2xl px-12 hover:bg-white/5 hover:scale-105 active:scale-95 transition-all font-black uppercase tracking-widest border-2">
               Udostępnij
             </button>
           </div>

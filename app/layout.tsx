@@ -6,7 +6,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pl" data-theme="cupcake">
+    <html lang="pl" data-theme="synthwave">
       <body className="bg-base-200 min-h-screen text-base-content">{children}</body>
     </html>
   );
