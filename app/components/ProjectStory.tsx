@@ -1,4 +1,18 @@
+'use client';
+
 import React from 'react';
+import {
+  Paper,
+  Title,
+  Text,
+  Stack,
+  List,
+  ThemeIcon,
+  rem,
+  SimpleGrid,
+  Box
+} from '@mantine/core';
+import { IconCircleCheck, IconCircleDashed, IconPackage } from '@tabler/icons-react';
 import { Campaign } from '../types/campaign';
 
 interface ProjectStoryProps {
@@ -7,50 +21,71 @@ interface ProjectStoryProps {
 
 const ProjectStory: React.FC<ProjectStoryProps> = ({ campaign }) => {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="card bg-base-100 border border-base-200 shadow-xl overflow-hidden group">
-        <div className="card-body p-8 sm:p-12">
-          <h2 className="card-title text-3xl font-black text-base-content mb-8 border-b border-base-200 pb-6">
-            O Projekcie
-          </h2>
+    <Stack gap="xl">
+      <Paper withBorder p="xl" radius="md" shadow="sm">
+        <Title order={2} size={rem(32)} fw={900} mb="xl" style={{ borderBottom: `${rem(1)} solid var(--mantine-color-gray-2)`, paddingBottom: rem(24) }}>
+          O Projekcie
+        </Title>
 
-          <div className="space-y-6">
-            {campaign.story?.map((paragraph, index) => (
-              <p key={index} className="text-base-content/70 text-lg leading-relaxed">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </div>
-      </div>
+        <Stack gap="lg">
+          {campaign.story?.map((paragraph, index) => (
+            <Text key={index} size="lg" fw={500} c="dimmed" style={{ lineHeight: 1.6 }}>
+              {paragraph}
+            </Text>
+          ))}
+        </Stack>
+      </Paper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card bg-base-100 border border-base-200 shadow-lg p-8">
-          <h3 className="text-xl font-black text-base-content mb-4">Dlaczego my?</h3>
-          <p className="text-base-content/70 leading-relaxed font-medium">
+      <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+        <Paper withBorder p="xl" radius="md" shadow="sm">
+          <Title order={3} size="xl" fw={900} mb="md">
+            Dlaczego my?
+          </Title>
+          <Text size="md" fw={500} c="dimmed" style={{ lineHeight: 1.5 }}>
             Nasz zespół składa się z pasjonatów i ekspertów w dziedzinie technologii,
             którzy dążą do wprowadzenia realnych zmian w sposobie korzystania z urządzeń cyfrowych.
-          </p>
-        </div>
-        <div className="card bg-base-100 border border-base-200 shadow-lg p-8">
-          <h3 className="text-xl font-black text-base-content mb-4">Plan Działania</h3>
-          <ul className="space-y-3 text-base-content/70 font-bold">
-            <li className="flex items-center gap-3">
-              <span className="badge badge-primary badge-xs"></span>
-              Zakończenie fazy prototypowania
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="badge badge-secondary badge-xs"></span>
+          </Text>
+        </Paper>
+
+        <Paper withBorder p="xl" radius="md" shadow="sm">
+          <Title order={3} size="xl" fw={900} mb="md">
+            Plan Działania
+          </Title>
+          <List
+            spacing="md"
+            size="md"
+            center
+            fw={700}
+            c="dimmed"
+            icon={
+              <ThemeIcon color="blue" size={rem(16)} radius="xl">
+                <IconCircleCheck size={rem(10)} />
+              </ThemeIcon>
+            }
+          >
+            <List.Item>Zakończenie fazy prototypowania</List.Item>
+            <List.Item
+              icon={
+                <ThemeIcon color="pink" size={rem(16)} radius="xl">
+                  <IconCircleDashed size={rem(10)} />
+                </ThemeIcon>
+              }
+            >
               Rozpoczęcie masowej produkcji
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="badge badge-accent badge-xs"></span>
+            </List.Item>
+            <List.Item
+              icon={
+                <ThemeIcon color="teal" size={rem(16)} radius="xl">
+                  <IconPackage size={rem(10)} />
+                </ThemeIcon>
+              }
+            >
               Wysyłka pierwszych zamówień
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+            </List.Item>
+          </List>
+        </Paper>
+      </SimpleGrid>
+    </Stack>
   );
 };
 

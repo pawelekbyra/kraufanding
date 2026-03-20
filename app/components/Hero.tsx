@@ -1,4 +1,22 @@
+'use client';
+
 import React from 'react';
+import {
+  Container,
+  Title,
+  Text,
+  Button,
+  Progress,
+  Paper,
+  Group,
+  Stack,
+  Box,
+  Avatar,
+  rem,
+  Badge,
+  Grid,
+  Image
+} from '@mantine/core';
 import { Campaign } from '../types/campaign';
 
 interface HeroProps {
@@ -9,9 +27,9 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
   const percentage = Math.min(Math.round((campaign.raised / campaign.goal) * 100), 100);
 
   return (
-    <section className="hero min-h-[60vh] bg-base-100 relative overflow-hidden">
+    <Box component="section" py={rem(64)} style={{ position: 'relative', overflow: 'hidden', backgroundColor: 'var(--mantine-color-body)' }}>
       {/* Decorative patterns */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none -z-10">
+      <Box style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.05, pointerEvents: 'none', zIndex: 0 }}>
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -20,84 +38,106 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
-      </div>
+      </Box>
 
-      <div className="hero-content max-w-7xl flex-col lg:flex-row-reverse gap-12 py-12">
-        <div className="relative group w-full lg:w-1/2">
-          <div className="absolute -inset-2 bg-primary/20 rounded-3xl blur-2xl group-hover:bg-primary/30 transition duration-1000"></div>
-          <div className="card bg-base-100 shadow-xl overflow-hidden border border-base-200">
-            <figure className="aspect-[16/10]">
-              <img
+      <Container size="lg" style={{ position: 'relative', zIndex: 1 }}>
+        <Grid gutter={rem(48)} align="center">
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Stack gap="xl">
+              <Badge variant="outline" size="lg" radius="sm" fw={900} py={rem(18)} px={rem(20)}>
+                ✨ WYRÓŻNIONY PROJEKT
+              </Badge>
+
+              <Title order={1} size={rem(56)} fw={900} lts={rem(-1.5)} style={{ lineHeight: 1.1 }}>
+                {campaign.title}
+              </Title>
+
+              <Text size="xl" c="dimmed" fw={500} style={{ lineHeight: 1.6 }}>
+                {campaign.description}
+              </Text>
+
+              <Paper withBorder p="xl" radius="md" shadow="sm">
+                <Stack gap="md">
+                  <Group justify="space-between" align="flex-end">
+                    <Box>
+                      <Text span fw={900} size={rem(32)} c="blue">
+                        {campaign.raised.toLocaleString()} PLN
+                      </Text>
+                      <Text span c="dimmed" ml="xs" fw={700}>
+                        z {campaign.goal.toLocaleString()} PLN
+                      </Text>
+                    </Box>
+                    <Text fw={900} size="xl" c="blue">
+                      {percentage}%
+                    </Text>
+                  </Group>
+
+                  <Progress
+                    value={percentage}
+                    size="xl"
+                    radius="xl"
+                    animated
+                    color="blue"
+                    style={{ transition: 'width 1s ease-in-out' }}
+                  />
+
+                  <Group justify="space-between">
+                    <Text size="xs" fw={900} c="dimmed" tt="uppercase" lts={rem(1)}>
+                      {campaign.raised.toLocaleString()} Zebrano
+                    </Text>
+                    <Text size="xs" fw={900} c="dimmed" tt="uppercase" lts={rem(1)}>
+                      Cel: {campaign.goal.toLocaleString()}
+                    </Text>
+                  </Group>
+                </Stack>
+              </Paper>
+
+              <Group gap="md">
+                <Button size="xl" radius="md" px={rem(48)} fw={900}>
+                  Wesprzyj Projekt
+                </Button>
+                <Button variant="outline" size="xl" radius="md" px={rem(48)} fw={900}>
+                  Udostępnij
+                </Button>
+              </Group>
+            </Stack>
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <Paper shadow="xl" radius="lg" style={{ overflow: 'hidden', position: 'relative' }}>
+              <Image
                 src={campaign.thumbnail}
                 alt={campaign.title}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition duration-700"
+                height={400}
+                fallbackSrc="https://placehold.co/600x400?text=No+image"
               />
-            </figure>
-            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center pointer-events-none">
-              <div className="avatar-group -space-x-6 rtl:space-x-reverse bg-base-100/80 backdrop-blur-md p-1 rounded-full border border-base-300">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="avatar border-2 border-base-100">
-                    <div className="w-10">
-                      <img src={`https://i.pravatar.cc/100?u=${i}`} alt="Backer" />
-                    </div>
-                  </div>
-                ))}
-                <div className="avatar placeholder border-2 border-base-100">
-                  <div className="bg-neutral text-neutral-content w-10">
-                    <span className="text-xs">+1.2k</span>
-                  </div>
-                </div>
-              </div>
-              <div className="badge badge-primary font-black uppercase tracking-wider p-3">
-                {campaign.category}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-1/2 space-y-8 animate-in fade-in slide-in-from-left duration-700">
-          <div className="badge badge-outline badge-primary font-black tracking-widest uppercase py-4 px-6 gap-2">
-            ✨ Wyróżniony Projekt
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-base-content leading-tight">
-            {campaign.title}
-          </h1>
-          <p className="text-xl text-base-content/70 leading-relaxed max-w-xl">
-            {campaign.description}
-          </p>
-
-          <div className="card bg-base-100 border border-base-200 shadow-lg p-6 space-y-4">
-            <div className="flex justify-between items-end">
-              <div>
-                <span className="text-4xl font-black text-primary">{campaign.raised.toLocaleString()} PLN</span>
-                <span className="text-base-content/50 ml-2 font-medium">z {campaign.goal.toLocaleString()} PLN</span>
-              </div>
-              <span className="text-primary font-black text-xl">{percentage}%</span>
-            </div>
-
-            <progress
-              className="progress progress-primary h-4 shadow-inner"
-              value={percentage}
-              max="100"
-            ></progress>
-
-            <div className="flex justify-between text-xs font-bold text-base-content/50 uppercase tracking-widest">
-              <span>{campaign.raised.toLocaleString()} Zebrano</span>
-              <span>Cel: {campaign.goal.toLocaleString()}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-4 pt-4">
-            <button className="btn btn-primary btn-lg rounded-2xl px-12 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all font-black">
-              Wesprzyj Projekt
-            </button>
-            <button className="btn btn-outline btn-lg rounded-2xl px-12 hover:scale-105 active:scale-95 transition-all font-black">
-              Udostępnij
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+              <Box
+                p="md"
+                style={{
+                  position: 'absolute',
+                  bottom: rem(16),
+                  left: rem(16),
+                  right: rem(16),
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <Avatar.Group spacing="sm">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Avatar key={i} src={`https://i.pravatar.cc/100?u=${i}`} radius="xl" />
+                  ))}
+                  <Avatar radius="xl">+1.2k</Avatar>
+                </Avatar.Group>
+                <Badge variant="filled" color="blue" size="lg" radius="sm" fw={900}>
+                  {campaign.category}
+                </Badge>
+              </Box>
+            </Paper>
+          </Grid.Col>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

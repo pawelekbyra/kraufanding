@@ -1,39 +1,103 @@
+'use client';
+
 import React from 'react';
+import {
+  Group,
+  Button,
+  Container,
+  Anchor,
+  Box,
+  Burger,
+  Drawer,
+  Stack,
+  rem,
+  Text
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 const Navbar = () => {
+  const [opened, { toggle, close }] = useDisclosure(false);
+
+  const links = [
+    { link: '#story', label: 'Story' },
+    { link: '#rewards', label: 'Rewards' },
+    { link: '#updates', label: 'Updates' },
+  ];
+
+  const items = links.map((link) => (
+    <Anchor
+      key={link.label}
+      href={link.link}
+      c="dimmed"
+      fw={700}
+      fz="sm"
+      style={{ textDecoration: 'none' }}
+      onClick={() => close()}
+    >
+      {link.label}
+    </Anchor>
+  ));
+
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-base-200 px-4 lg:px-12">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
-            </svg>
-          </div>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a href="#story">Story</a></li>
-            <li><a href="#rewards">Rewards</a></li>
-            <li><a href="#updates">Updates</a></li>
-          </ul>
-        </div>
-        <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter text-primary">
-          CROWDFUND
-        </a>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 font-bold">
-          <li><a href="#story">Story</a></li>
-          <li><a href="#rewards">Rewards</a></li>
-          <li><a href="#updates">Updates</a></li>
-        </ul>
-      </div>
-      <div className="navbar-end gap-2">
-        <button className="btn btn-ghost btn-sm font-bold">Log in</button>
-        <button className="btn btn-primary btn-sm md:btn-md rounded-xl font-black">
-          Back Project
-        </button>
-      </div>
-    </div>
+    <Box
+      component="nav"
+      pos="sticky"
+      top={0}
+      style={{
+        zIndex: 100,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: `${rem(1)} solid var(--mantine-color-gray-2)`
+      }}
+    >
+      <Container size="lg" h={rem(64)}>
+        <Group justify="space-between" h="100%">
+          <Group>
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <Anchor
+              href="/"
+              underline="never"
+              c="blue"
+              fw={900}
+              fz="xl"
+              style={{ letterSpacing: rem(-1) }}
+            >
+              CROWDFUND
+            </Anchor>
+          </Group>
+
+          <Group gap={rem(32)} visibleFrom="sm">
+            {items}
+          </Group>
+
+          <Group gap="sm">
+            <Button variant="subtle" fw={700} size="sm" visibleFrom="xs">
+              Log in
+            </Button>
+            <Button radius="md" fw={900} size="sm">
+              Back Project
+            </Button>
+          </Group>
+        </Group>
+      </Container>
+
+      <Drawer
+        opened={opened}
+        onClose={close}
+        size="100%"
+        padding="md"
+        title="Navigation"
+        hiddenFrom="sm"
+        zIndex={1000}
+      >
+        <Stack gap="md">
+          {items}
+          <Button variant="subtle" fw={700} fullWidth>
+            Log in
+          </Button>
+        </Stack>
+      </Drawer>
+    </Box>
   );
 };
 
