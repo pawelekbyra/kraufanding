@@ -36,7 +36,7 @@ export const ProjectTabs = ({ campaign }: { campaign: Campaign }) => {
                 {campaign.description}
               </p>
               <div className="rounded-3xl overflow-hidden border border-white/10 aspect-video group">
-                 <img src="/Nydek2.jpg" className="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Secret Project" />
+                 <img src={campaign.image} className="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Secret Project" />
               </div>
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-white">Why Secret Project?</h3>
