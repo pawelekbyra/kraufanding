@@ -1,6 +1,20 @@
-"use client";
+'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Tabs,
+  Container,
+  Paper,
+  Stack,
+  Text,
+  Title,
+  Badge,
+  Group,
+  Avatar,
+  rem,
+  SimpleGrid,
+  Box
+} from '@mantine/core';
 import { Campaign } from '../types/campaign';
 import ProjectStory from './ProjectStory';
 import Rewards from './Rewards';
@@ -10,87 +24,90 @@ interface ProjectTabsProps {
 }
 
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
-  const [activeTab, setActiveTab] = useState('story');
-
-  const tabs = [
-    { id: 'story', label: 'Story' },
-    { id: 'rewards', label: 'Rewards' },
-    { id: 'updates', label: 'Updates' },
-    { id: 'comments', label: 'Comments' },
-  ];
-
   return (
-    <div className="w-full">
-      <div role="tablist" className="tabs tabs-bordered mb-10 overflow-x-auto no-scrollbar">
-        {tabs.map((tab) => (
-          <a
-            key={tab.id}
-            role="tab"
-            onClick={() => setActiveTab(tab.id)}
-            className={`tab h-14 text-sm font-black transition-all ${
-              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
-            }`}
-          >
-            {tab.label}
-          </a>
-        ))}
-      </div>
+    <Tabs defaultValue="story" variant="outline" color="blue" radius="md">
+      <Tabs.List mb="xl" style={{ borderBottom: `${rem(1)} solid var(--mantine-color-gray-2)` }}>
+        <Tabs.Tab value="story" fw={900} py="md" px="xl" fz="sm">
+          Story
+        </Tabs.Tab>
+        <Tabs.Tab value="rewards" fw={900} py="md" px="xl" fz="sm">
+          Rewards
+        </Tabs.Tab>
+        <Tabs.Tab value="updates" fw={900} py="md" px="xl" fz="sm">
+          Updates
+        </Tabs.Tab>
+        <Tabs.Tab value="comments" fw={900} py="md" px="xl" fz="sm">
+          Comments
+        </Tabs.Tab>
+      </Tabs.List>
 
-      <div className="min-h-[400px]">
-        {activeTab === 'story' && <ProjectStory campaign={campaign} />}
+      <Tabs.Panel value="story">
+        <ProjectStory campaign={campaign} />
+      </Tabs.Panel>
 
-        {activeTab === 'rewards' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Rewards rewards={campaign.rewards || []} />
-          </div>
-        )}
+      <Tabs.Panel value="rewards">
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+          <Rewards rewards={campaign.rewards || []} />
+        </SimpleGrid>
+      </Tabs.Panel>
 
-        {activeTab === 'updates' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.updates?.length ? (
-              campaign.updates.map((update) => (
-                <div key={update.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-black text-base-content">{update.title}</h3>
-                    <div className="badge badge-outline text-xs font-bold">{update.date}</div>
-                  </div>
-                  <p className="text-base-content/70 leading-relaxed">{update.content}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-base-content/50 py-12">No updates yet.</p>
-            )}
-          </div>
-        )}
+      <Tabs.Panel value="updates">
+        <Stack gap="xl">
+          {campaign.updates?.length ? (
+            campaign.updates.map((update) => (
+              <Paper key={update.id} withBorder p="xl" radius="md" shadow="sm">
+                <Group justify="space-between" align="center" mb="md">
+                  <Title order={3} size="xl" fw={900}>
+                    {update.title}
+                  </Title>
+                  <Badge variant="outline" color="blue" size="md" fw={900}>
+                    {update.date}
+                  </Badge>
+                </Group>
+                <Text size="md" fw={500} c="dimmed" style={{ lineHeight: 1.6 }}>
+                  {update.content}
+                </Text>
+              </Paper>
+            ))
+          ) : (
+            <Paper withBorder p="xl" radius="md" style={{ textAlign: 'center' }}>
+              <Text size="lg" fw={500} c="dimmed">No updates yet.</Text>
+            </Paper>
+          )}
+        </Stack>
+      </Tabs.Panel>
 
-        {activeTab === 'comments' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.comments?.length ? (
-              campaign.comments.map((comment) => (
-                <div key={comment.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
-                  <div className="flex items-center gap-4">
-                    {comment.avatar && (
-                      <div className="avatar">
-                        <div className="w-12 h-12 rounded-full border border-base-200">
-                          <img src={comment.avatar} alt={comment.author} />
-                        </div>
-                      </div>
-                    )}
-                    <div>
-                      <h4 className="font-black text-base-content">{comment.author}</h4>
-                      <p className="text-xs text-base-content/50 font-bold">{comment.date}</p>
-                    </div>
-                  </div>
-                  <p className="text-base-content/70 leading-relaxed">{comment.content}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-base-content/50 py-12">No comments yet.</p>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+      <Tabs.Panel value="comments">
+        <Stack gap="xl">
+          {campaign.comments?.length ? (
+            campaign.comments.map((comment) => (
+              <Paper key={comment.id} withBorder p="xl" radius="md" shadow="sm">
+                <Group mb="md">
+                  {comment.avatar && (
+                    <Avatar src={comment.avatar} radius="xl" size="lg" />
+                  )}
+                  <Box>
+                    <Text fw={900} size="md">
+                      {comment.author}
+                    </Text>
+                    <Text size="xs" fw={700} c="dimmed">
+                      {comment.date}
+                    </Text>
+                  </Box>
+                </Group>
+                <Text size="md" fw={500} c="dimmed" style={{ lineHeight: 1.6 }}>
+                  {comment.content}
+                </Text>
+              </Paper>
+            ))
+          ) : (
+            <Paper withBorder p="xl" radius="md" style={{ textAlign: 'center' }}>
+              <Text size="lg" fw={500} c="dimmed">No comments yet.</Text>
+            </Paper>
+          )}
+        </Stack>
+      </Tabs.Panel>
+    </Tabs>
   );
 };
 

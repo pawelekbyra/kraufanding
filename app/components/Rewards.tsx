@@ -1,4 +1,17 @@
+'use client';
+
 import React from 'react';
+import {
+  Paper,
+  Title,
+  Text,
+  Button,
+  Stack,
+  Group,
+  Badge,
+  rem,
+  Box
+} from '@mantine/core';
 import { Reward } from '../types/campaign';
 
 interface RewardsProps {
@@ -7,44 +20,59 @@ interface RewardsProps {
 
 const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-black text-base-content mb-6">Wybierz Nagrodę</h2>
+    <Stack gap="xl">
+      <Title order={2} size={rem(32)} fw={900}>
+        Wybierz Nagrodę
+      </Title>
+
       {rewards.map((reward) => (
-        <div
+        <Paper
           key={reward.id}
-          className="card bg-base-100 border border-base-200 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all group cursor-pointer duration-300"
+          withBorder
+          p="xl"
+          radius="md"
+          shadow="sm"
+          style={{
+            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+            cursor: 'pointer'
+          }}
+          className="reward-card"
         >
-          <div className="card-body p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="card-title text-lg font-bold group-hover:text-primary transition-colors">
+          <Stack gap="lg">
+            <Group justify="space-between" align="flex-start">
+              <Box>
+                <Title order={3} size="xl" fw={900}>
                   {reward.title}
-                </h3>
-                <p className="text-2xl font-black text-primary mt-1">
+                </Title>
+                <Text size={rem(28)} fw={900} c="blue">
                   {reward.amount.toLocaleString()} PLN
-                </p>
-              </div>
-              <div className="badge badge-secondary badge-outline font-black text-[10px] py-3">
+                </Text>
+              </Box>
+              <Badge variant="light" color="blue" size="lg" radius="sm" fw={900}>
                 {reward.backers} wspierających
-              </div>
-            </div>
+              </Badge>
+            </Group>
 
-            <p className="text-base-content/70 text-sm leading-relaxed mb-6">
+            <Text size="md" fw={500} c="dimmed" style={{ lineHeight: 1.6 }}>
               {reward.description}
-            </p>
+            </Text>
 
-            <div className="flex flex-col gap-1 border-t border-base-200 pt-4">
-              <span className="text-[10px] uppercase tracking-widest text-base-content/50 font-black">Przewidywana Dostawa</span>
-              <span className="text-sm text-base-content/80 font-bold">{reward.deliveryDate}</span>
-            </div>
+            <Box pt="md" style={{ borderTop: `${rem(1)} solid var(--mantine-color-gray-2)` }}>
+              <Text size="xs" tt="uppercase" fw={900} c="dimmed" lts={rem(1)}>
+                Przewidywana Dostawa
+              </Text>
+              <Text size="sm" fw={700}>
+                {reward.deliveryDate}
+              </Text>
+            </Box>
 
-            <button className="btn btn-primary btn-block mt-6 font-black rounded-xl">
+            <Button size="lg" radius="md" fullWidth fw={900}>
               Wybierz Tę Nagrodę
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Stack>
+        </Paper>
       ))}
-    </div>
+    </Stack>
   );
 };
 
