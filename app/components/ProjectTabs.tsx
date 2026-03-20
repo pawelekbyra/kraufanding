@@ -28,7 +28,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
             role="tab"
             onClick={() => setActiveTab(tab.id)}
             className={`tab h-14 text-sm font-black transition-all ${
-              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
+              activeTab === tab.id ? 'tab-active text-primary border-b-4 border-primary bg-primary/5 rounded-t-lg' : 'text-base-content/50 hover:text-base-content'
             }`}
           >
             {tab.label}

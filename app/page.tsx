@@ -34,7 +34,7 @@ export default function Home() {
                 <Rewards rewards={campaign.rewards || []} />
               </section>
 
-              <div className="card bg-base-100 border border-base-200 shadow-xl p-8 space-y-6">
+              <div className="card bg-base-100/40 backdrop-blur-md border border-white/10 shadow-2xl p-8 space-y-6">
                 <h3 className="card-title text-xl font-black text-base-content">O Autorze</h3>
                 <div className="flex items-center gap-4">
                   <div className="avatar placeholder">
@@ -68,7 +68,7 @@ export default function Home() {
               { q: "Czy wysyłka jest darmowa?", a: "Tak, dla wszystkich wspierających na poziomie 'Wczesny Ptak' i wyższym." },
               { q: "Czy mogę zrezygnować ze wsparcia?", a: "Możesz zrezygnować w dowolnym momencie przed zakończeniem kampanii." }
             ].map((faq, i) => (
-              <div key={i} className="collapse collapse-plus bg-base-100 border border-base-200">
+              <div key={i} className="collapse collapse-plus bg-base-100/20 backdrop-blur-sm border border-white/5">
                 <input type="radio" name="my-accordion-3" defaultChecked={i === 0} />
                 <div className="collapse-title text-xl font-black">
                   {faq.q}
