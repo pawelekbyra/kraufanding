@@ -1,5 +1,5 @@
-import https from 'https';
-import { Buffer } from 'buffer';
+const https = require('https');
+const zlib = require('zlib');
 
 const ZIP_URL = 'https://v0.blob.core.windows.net/v0-user-uploads/af95e2b6-6ece-4f10-9cf4-6caf1f57d4d6/wp-crowdfunding.2.1.17.zip';
 
@@ -123,7 +123,6 @@ function extractFileContent(buffer, file) {
     return buffer.toString('utf8', dataOffset, dataOffset + file.uncompressedSize);
   } else if (file.compressionMethod === 8) {
     // Deflate - need zlib
-    const zlib = require('zlib');
     const compressed = buffer.slice(dataOffset, dataOffset + file.compressedSize);
     try {
       const decompressed = zlib.inflateRawSync(compressed);
