@@ -1,7 +1,9 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Stats from './components/Stats';
 import CampaignCard from './components/CampaignCard';
+import StartCampaignCTA from './components/StartCampaignCTA';
 import Footer from './components/Footer';
 import { mockCampaigns } from './data/mock-campaigns';
 
@@ -15,6 +17,7 @@ export default function Home() {
 
       <main>
         <Hero campaign={featuredCampaign} />
+        <Stats />
 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
@@ -48,6 +51,8 @@ export default function Home() {
             </button>
           </div>
         </section>
+
+        <StartCampaignCTA />
       </main>
 
       <Footer />
