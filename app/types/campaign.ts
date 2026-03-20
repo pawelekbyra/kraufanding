@@ -10,6 +10,8 @@ export interface Campaign {
   endDate: string;
   story?: string[];
   rewards?: Reward[];
+  updates?: Update[];
+  comments?: Comment[];
 }
 
 export interface Reward {
@@ -19,4 +21,19 @@ export interface Reward {
   description: string;
   deliveryDate: string;
   backers: number;
+}
+
+export interface Update {
+  id: string;
+  date: string;
+  title: string;
+  content: string;
+}
+
+export interface Comment {
+  id: string;
+  author: string;
+  avatar?: string;
+  date: string;
+  content: string;
 }

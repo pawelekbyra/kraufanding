@@ -3,7 +3,7 @@ import { Campaign } from "../types/campaign";
 export const mockCampaigns: Campaign[] = [
   {
     id: "secret-project",
-    title: "Secret Project",
+    title: "I rise money for my Secret Project",
     description: "Rewolucyjny projekt, który zmieni sposób, w jaki myślimy o przyszłości. Dołącz do nas i stań się częścią czegoś wielkiego.",
     category: "Technologia",
     author: "Innowatorzy Przyszłości",
@@ -41,6 +41,36 @@ export const mockCampaigns: Campaign[] = [
         description: "Dwa urządzenia, spotkanie z zespołem projektowym oraz dożywotnia subskrypcja na wszystkie przyszłe aktualizacje.",
         deliveryDate: "Styczeń 2025",
         backers: 12
+      }
+    ],
+    updates: [
+      {
+        id: "upd-1",
+        date: "2024-05-15",
+        title: "Pierwszy Prototyp Gotowy!",
+        content: "Z radością ogłaszamy, że nasz pierwszy działający prototyp przeszedł pomyślnie wszystkie testy laboratoryjne. To ogromny krok naprzód!"
+      },
+      {
+        id: "upd-2",
+        date: "2024-06-01",
+        title: "Nowy partner technologiczny",
+        content: "Nawiązaliśmy współpracę z wiodącym producentem mikroprocesorów, co pozwoli nam jeszcze bardziej zoptymalizować wydajność Secret Project."
+      }
+    ],
+    comments: [
+      {
+        id: "com-1",
+        author: "Michał K.",
+        avatar: "https://i.pravatar.cc/150?u=michal",
+        date: "2024-06-10",
+        content: "To wygląda niesamowicie! Nie mogę się doczekać, aż dostanę to w swoje ręce."
+      },
+      {
+        id: "com-2",
+        author: "Anna W.",
+        avatar: "https://i.pravatar.cc/150?u=anna",
+        date: "2024-06-12",
+        content: "Wspieram całym sercem. Potrzebujemy więcej takich innowacji."
       }
     ]
   },
