@@ -1,57 +1,100 @@
-import React from 'react';
-import { Campaign } from '../types/campaign';
+"use client"
+
+import React from 'react'
+import {
+  Box,
+  Heading,
+  Text,
+  Stack,
+  SimpleGrid,
+  Flex,
+} from "@chakra-ui/react"
+import { LuCheck } from "react-icons/lu"
+import { Campaign } from '../types/campaign'
 
 interface ProjectStoryProps {
-  campaign: Campaign;
+  campaign: Campaign
 }
 
 const ProjectStory: React.FC<ProjectStoryProps> = ({ campaign }) => {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="card bg-base-100 border border-base-200 shadow-xl overflow-hidden group">
-        <div className="card-body p-8 sm:p-12">
-          <h2 className="card-title text-3xl font-black text-base-content mb-8 border-b border-base-200 pb-6">
-            O Projekcie
-          </h2>
+    <Stack gap={12}>
+      <Box
+        p={{ base: 8, md: 12 }}
+        bg="bg.panel"
+        borderWidth="1px"
+        borderColor="border"
+        borderRadius="3xl"
+        shadow="xl"
+      >
+        <Heading
+          as="h2"
+          fontSize="3xl"
+          fontWeight="black"
+          mb={8}
+          pb={6}
+          borderBottomWidth="1px"
+          borderColor="border"
+        >
+          O Projekcie
+        </Heading>
 
-          <div className="space-y-6">
-            {campaign.story?.map((paragraph, index) => (
-              <p key={index} className="text-base-content/70 text-lg leading-relaxed">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </div>
-      </div>
+        <Stack gap={6}>
+          {campaign.story?.map((paragraph, index) => (
+            <Text key={index} fontSize="lg" color="fg.muted" lineHeight="tall">
+              {paragraph}
+            </Text>
+          ))}
+        </Stack>
+      </Box>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card bg-base-100 border border-base-200 shadow-lg p-8">
-          <h3 className="text-xl font-black text-base-content mb-4">Dlaczego my?</h3>
-          <p className="text-base-content/70 leading-relaxed font-medium">
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
+        <Box
+          p={8}
+          bg="bg.panel"
+          borderWidth="1px"
+          borderColor="border"
+          borderRadius="2xl"
+          shadow="lg"
+        >
+          <Heading as="h3" fontSize="xl" fontWeight="black" mb={4}>
+            Dlaczego my?
+          </Heading>
+          <Text color="fg.muted" lineHeight="relaxed" fontWeight="medium">
             Nasz zespół składa się z pasjonatów i ekspertów w dziedzinie technologii,
             którzy dążą do wprowadzenia realnych zmian w sposobie korzystania z urządzeń cyfrowych.
-          </p>
-        </div>
-        <div className="card bg-base-100 border border-base-200 shadow-lg p-8">
-          <h3 className="text-xl font-black text-base-content mb-4">Plan Działania</h3>
-          <ul className="space-y-3 text-base-content/70 font-bold">
-            <li className="flex items-center gap-3">
-              <span className="badge badge-primary badge-xs"></span>
-              Zakończenie fazy prototypowania
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="badge badge-secondary badge-xs"></span>
-              Rozpoczęcie masowej produkcji
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="badge badge-accent badge-xs"></span>
-              Wysyłka pierwszych zamówień
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
+          </Text>
+        </Box>
 
-export default ProjectStory;
+        <Box
+          p={8}
+          bg="bg.panel"
+          borderWidth="1px"
+          borderColor="border"
+          borderRadius="2xl"
+          shadow="lg"
+        >
+          <Heading as="h3" fontSize="xl" fontWeight="black" mb={4}>
+            Plan Działania
+          </Heading>
+          <Stack gap={3}>
+            <Flex align="center" gap={3}>
+              <Box w={2} h={2} rounded="full" bg="blue.500" />
+              <Text fontWeight="bold" color="fg.muted">Zakończenie fazy prototypowania</Text>
+            </Flex>
+            <Flex align="center" gap={3}>
+              <Box w={2} h={2} rounded="full" bg="purple.500" />
+              <Text fontWeight="bold" color="fg.muted">Rozpoczęcie masowej produkcji</Text>
+            </Flex>
+            <Flex align="center" gap={3}>
+              <Box w={2} h={2} rounded="full" bg="teal.500" />
+              <Text fontWeight="bold" color="fg.muted">Wysyłka pierwszych zamówień</Text>
+            </Flex>
+          </Stack>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+  )
+}
+
+export default ProjectStory

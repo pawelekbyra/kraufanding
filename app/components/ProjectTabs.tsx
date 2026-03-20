@@ -1,97 +1,128 @@
-"use client";
+"use client"
 
-import React, { useState } from 'react';
-import { Campaign } from '../types/campaign';
-import ProjectStory from './ProjectStory';
-import Rewards from './Rewards';
+import React from 'react'
+import {
+  Box,
+  Tabs,
+  Stack,
+  Heading,
+  Text,
+  Badge,
+  Flex,
+  SimpleGrid,
+} from "@chakra-ui/react"
+import { Avatar } from "@/components/ui/avatar"
+import { Campaign } from '../types/campaign'
+import ProjectStory from './ProjectStory'
+import Rewards from './Rewards'
 
 interface ProjectTabsProps {
-  campaign: Campaign;
+  campaign: Campaign
 }
 
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
-  const [activeTab, setActiveTab] = useState('story');
-
-  const tabs = [
-    { id: 'story', label: 'Story' },
-    { id: 'rewards', label: 'Rewards' },
-    { id: 'updates', label: 'Updates' },
-    { id: 'comments', label: 'Comments' },
-  ];
-
   return (
-    <div className="w-full">
-      <div role="tablist" className="tabs tabs-bordered mb-10 overflow-x-auto no-scrollbar">
-        {tabs.map((tab) => (
-          <a
-            key={tab.id}
-            role="tab"
-            onClick={() => setActiveTab(tab.id)}
-            className={`tab h-14 text-sm font-black transition-all ${
-              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
-            }`}
-          >
-            {tab.label}
-          </a>
-        ))}
-      </div>
+    <Box width="full">
+      <Tabs.Root defaultValue="story" variant="line" colorPalette="blue">
+        <Tabs.List mb={10} borderBottomWidth="1px" borderColor="border">
+          <Tabs.Trigger value="story" py={4} fontWeight="black" fontSize="sm" textTransform="uppercase" letterSpacing="widest">
+            Story
+          </Tabs.Trigger>
+          <Tabs.Trigger value="rewards" py={4} fontWeight="black" fontSize="sm" textTransform="uppercase" letterSpacing="widest">
+            Rewards
+          </Tabs.Trigger>
+          <Tabs.Trigger value="updates" py={4} fontWeight="black" fontSize="sm" textTransform="uppercase" letterSpacing="widest">
+            Updates
+          </Tabs.Trigger>
+          <Tabs.Trigger value="comments" py={4} fontWeight="black" fontSize="sm" textTransform="uppercase" letterSpacing="widest">
+            Comments
+          </Tabs.Trigger>
+          <Tabs.Indicator height="2px" bg="blue.600" />
+        </Tabs.List>
 
-      <div className="min-h-[400px]">
-        {activeTab === 'story' && <ProjectStory campaign={campaign} />}
+        <Box minH="400px">
+          <Tabs.Content value="story">
+            <ProjectStory campaign={campaign} />
+          </Tabs.Content>
 
-        {activeTab === 'rewards' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Rewards rewards={campaign.rewards || []} />
-          </div>
-        )}
+          <Tabs.Content value="rewards">
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
+              <Rewards rewards={campaign.rewards || []} />
+            </SimpleGrid>
+          </Tabs.Content>
 
-        {activeTab === 'updates' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.updates?.length ? (
-              campaign.updates.map((update) => (
-                <div key={update.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-black text-base-content">{update.title}</h3>
-                    <div className="badge badge-outline text-xs font-bold">{update.date}</div>
-                  </div>
-                  <p className="text-base-content/70 leading-relaxed">{update.content}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-base-content/50 py-12">No updates yet.</p>
-            )}
-          </div>
-        )}
+          <Tabs.Content value="updates">
+            <Stack gap={8}>
+              {campaign.updates?.length ? (
+                campaign.updates.map((update) => (
+                  <Box
+                    key={update.id}
+                    p={8}
+                    bg="bg.panel"
+                    borderWidth="1px"
+                    borderColor="border"
+                    borderRadius="2xl"
+                    shadow="sm"
+                  >
+                    <Flex justify="space-between" align="center" mb={4}>
+                      <Heading size="md" fontWeight="black">
+                        {update.title}
+                      </Heading>
+                      <Badge variant="outline" size="sm" fontWeight="bold">
+                        {update.date}
+                      </Badge>
+                    </Flex>
+                    <Text color="fg.muted" lineHeight="tall">
+                      {update.content}
+                    </Text>
+                  </Box>
+                ))
+              ) : (
+                <Text textAlign="center" color="fg.subtle" py={12}>
+                  No updates yet.
+                </Text>
+              )}
+            </Stack>
+          </Tabs.Content>
 
-        {activeTab === 'comments' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.comments?.length ? (
-              campaign.comments.map((comment) => (
-                <div key={comment.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
-                  <div className="flex items-center gap-4">
-                    {comment.avatar && (
-                      <div className="avatar">
-                        <div className="w-12 h-12 rounded-full border border-base-200">
-                          <img src={comment.avatar} alt={comment.author} />
-                        </div>
-                      </div>
-                    )}
-                    <div>
-                      <h4 className="font-black text-base-content">{comment.author}</h4>
-                      <p className="text-xs text-base-content/50 font-bold">{comment.date}</p>
-                    </div>
-                  </div>
-                  <p className="text-base-content/70 leading-relaxed">{comment.content}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-base-content/50 py-12">No comments yet.</p>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+          <Tabs.Content value="comments">
+            <Stack gap={8}>
+              {campaign.comments?.length ? (
+                campaign.comments.map((comment) => (
+                  <Box
+                    key={comment.id}
+                    p={8}
+                    bg="bg.panel"
+                    borderWidth="1px"
+                    borderColor="border"
+                    borderRadius="2xl"
+                    shadow="sm"
+                  >
+                    <Flex gap={4} align="center" mb={4}>
+                      <Avatar src={comment.avatar} name={comment.author} size="md" />
+                      <Box>
+                        <Text fontWeight="black">{comment.author}</Text>
+                        <Text fontSize="xs" fontWeight="bold" color="fg.subtle">
+                          {comment.date}
+                        </Text>
+                      </Box>
+                    </Flex>
+                    <Text color="fg.muted" lineHeight="tall">
+                      {comment.content}
+                    </Text>
+                  </Box>
+                ))
+              ) : (
+                <Text textAlign="center" color="fg.subtle" py={12}>
+                  No comments yet.
+                </Text>
+              )}
+            </Stack>
+          </Tabs.Content>
+        </Box>
+      </Tabs.Root>
+    </Box>
+  )
+}
 
-export default ProjectTabs;
+export default ProjectTabs
