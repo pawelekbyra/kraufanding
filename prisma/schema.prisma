@@ -22,6 +22,13 @@ enum SystemRole {
   USER
 }
 
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  FUNDED
+  CLOSED
+}
+
 model User {
   id               String       @id @default(uuid())
   clerkUserId      String       @unique
@@ -35,6 +42,74 @@ model User {
   subscriptions    Subscription[]
   donations        Donation[]
   projectAccess    UserProjectAccess[]
+  creator          Creator?
+}
+
+model Creator {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id])
+  slug             String    @unique
+  name             String
+  bio              String?
+  isApproved       Boolean   @default(false)
+  stripeConnectId  String?   @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  projects         Project[]
+}
+
+model Project {
+  id               String        @id @default(uuid())
+  creatorId        String
+  creator          Creator       @relation(fields: [creatorId], references: [id])
+  title            String
+  slug             String        @unique
+  goalAmount       Int           // in cents/grosz
+  collectedAmount  Int           @default(0)
+  status           ProjectStatus @default(DRAFT)
+  publishedAt      DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  tiers            Tier[]
+  posts            Post[]
+  accesses         UserProjectAccess[]
+}
+
+model Tier {
+  id               String    @id @default(uuid())
+  projectId        String
+  project          Project   @relation(fields: [projectId], references: [id])
+  level            Int       // 2, 3, 4, 5
+  name             String
+  description      String?
+  priceOneTime     Int       // in cents/grosz
+  stripePriceId    String?   @unique
+  maxSlots         Int?      // NULL = unlimited
+  slotsTaken       Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Post {
+  id               String    @id @default(uuid())
+  projectId        String
+  project          Project   @relation(fields: [projectId], references: [id])
+  title            String
+  slug             String
+  contentPublic    String?   @db.Text
+  contentTeaser    String?   @db.Text
+  contentLevel1    String?   @db.Text
+  contentPremium   String?   @db.Text
+  minTierLevel     Int       @default(2)
+  isEarlyAccess    Boolean   @default(false)
+  publishedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@unique([projectId, slug])
 }
 
 model Subscription {
@@ -62,6 +137,7 @@ model UserProjectAccess {
   userId       String
   user         User      @relation(fields: [userId], references: [id])
   projectId    String
+  project      Project   @relation(fields: [projectId], references: [id])
   tierLevel    Int       // 1, 2, 3, 4, 5
   accessType   String    // one_time_payment, subscription, free_sample, admin_grant
   grantedAt    DateTime  @default(now())

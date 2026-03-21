@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { UserTier } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,84 +36,98 @@ export async function POST(req: Request) {
 
   console.log(`Processing event: ${event.type}`);
 
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const clerkUserId = session.metadata?.clerkUserId;
-      const projectId = session.metadata?.projectId;
-      const tierLevel = parseInt(session.metadata?.tierLevel || "0");
-      const mode = session.mode;
+  if (process.env.DATABASE_URL) {
+      const { prisma } = await import('@/lib/prisma');
 
-      if (clerkUserId && projectId) {
-        console.log(`Updating access for user ${clerkUserId} in project ${projectId} to tier ${tierLevel}`);
+      // Handle the event
+      switch (event.type) {
+        case 'checkout.session.completed': {
+          const session = event.data.object as Stripe.Checkout.Session;
+          const clerkUserId = session.metadata?.clerkUserId;
+          const projectId = session.metadata?.projectId;
+          const tierLevel = parseInt(session.metadata?.tierLevel || "0");
+          const mode = session.mode;
 
-        // Map tierLevel to UserTier enum
-        let userTier: UserTier = UserTier.FREE;
-        if (tierLevel === 2) userTier = UserTier.OBSERVER;
-        else if (tierLevel === 3) userTier = UserTier.WITNESS;
-        else if (tierLevel === 4) userTier = UserTier.INSIDER;
-        else if (tierLevel === 5) userTier = UserTier.ARCHITECT;
+          if (clerkUserId && projectId) {
+            console.log(`Updating access for user ${clerkUserId} in project ${projectId} to tier ${tierLevel}`);
 
-        const user = await prisma.user.upsert({
-          where: { clerkUserId },
-          update: {
-            stripeCustomerId: session.customer as string,
-            tier: userTier
-          },
-          create: {
-            clerkUserId,
-            email: session.customer_details?.email || "",
-            stripeCustomerId: session.customer as string,
-            tier: userTier
-          }
-        });
+            // Map tierLevel to UserTier enum for global status (optional, but good for consistency)
+            let userTier: UserTier = UserTier.FREE;
+            if (tierLevel === 2) userTier = UserTier.OBSERVER;
+            else if (tierLevel === 3) userTier = UserTier.WITNESS;
+            else if (tierLevel === 4) userTier = UserTier.INSIDER;
+            else if (tierLevel === 5) userTier = UserTier.ARCHITECT;
 
-        await prisma.userProjectAccess.upsert({
-          where: { userId_projectId: { userId: user.id, projectId } },
-          update: {
-            tierLevel: tierLevel,
-            accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
-            grantedAt: new Date(),
-            expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
-          },
-          create: {
-            userId: user.id,
-            projectId,
-            tierLevel: tierLevel,
-            accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
-            expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
-          }
-        });
+            const user = await prisma.user.upsert({
+              where: { clerkUserId },
+              update: {
+                stripeCustomerId: session.customer as string,
+              },
+              create: {
+                clerkUserId,
+                email: session.customer_details?.email || "",
+                stripeCustomerId: session.customer as string,
+                tier: userTier
+              }
+            });
 
-        if (mode === 'payment') {
-          await prisma.donation.create({
-            data: {
-              userId: user.id,
-              amount: session.amount_total || 0,
-              currency: session.currency?.toUpperCase() || "EUR",
-              stripePaymentId: session.payment_intent as string || session.id
+            // Update Project Access
+            await prisma.userProjectAccess.upsert({
+              where: { userId_projectId: { userId: user.id, projectId } },
+              update: {
+                tierLevel: tierLevel,
+                accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
+                grantedAt: new Date(),
+                expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
+              },
+              create: {
+                userId: user.id,
+                projectId,
+                tierLevel: tierLevel,
+                accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
+                expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
+              }
+            });
+
+            // Record donation/payment
+            if (mode === 'payment') {
+              await prisma.donation.create({
+                data: {
+                  userId: user.id,
+                  amount: session.amount_total || 0,
+                  currency: session.currency?.toUpperCase() || "EUR",
+                  stripePaymentId: session.payment_intent as string || session.id
+                }
+              });
+
+              // Update project collected amount
+              await prisma.project.update({
+                where: { id: projectId },
+                data: {
+                  collectedAmount: {
+                    increment: session.amount_total || 0
+                  }
+                }
+              }).catch(() => null);
             }
-          });
+          }
+          break;
         }
+
+        case 'customer.subscription.deleted': {
+          const stripeSubscription = event.data.object as Stripe.Subscription;
+          await prisma.subscription.update({
+            where: { stripeSubscriptionId: stripeSubscription.id },
+            data: { status: 'canceled' }
+          }).catch(() => null);
+          break;
+        }
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
       }
-      break;
-    }
-
-    case 'customer.subscription.deleted': {
-      const subscription = event.data.object as Stripe.Subscription;
-      // We don't have a direct mapping from stripeSubscriptionId to UserProjectAccess in this webhook
-      // but we might want to update a separate Subscription table if we had one.
-      // Based on schema, we do have a Subscription model.
-      await prisma.subscription.update({
-        where: { stripeSubscriptionId: subscription.id },
-        data: { status: 'canceled' }
-      }).catch(() => null);
-      break;
-    }
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+  } else {
+    console.log("DATABASE_URL not set, skipping DB updates");
   }
 
   return NextResponse.json({ received: true });

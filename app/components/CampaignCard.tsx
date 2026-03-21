@@ -1,5 +1,6 @@
 import React from 'react';
 import { Campaign } from '../types/campaign';
+import Image from 'next/image';
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -11,10 +12,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign }) => {
   return (
     <div className="group bg-zinc-900/50 rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 transition-all hover:bg-zinc-900 shadow-xl">
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img
+        <Image
           src={campaign.thumbnail}
           alt={campaign.title}
-          className="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"
+          fill
+          className="object-cover transform group-hover:scale-110 transition duration-700"
         />
         <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest text-white/80 border border-white/10">
           {campaign.category}

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Campaign } from '../types/campaign';
 import ProjectStory from './ProjectStory';
 import Rewards from './Rewards';
+import Image from 'next/image';
 
 interface ProjectTabsProps {
   campaign: Campaign;
@@ -71,8 +72,8 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
                   <div className="flex items-center gap-4">
                     {comment.avatar && (
                       <div className="avatar">
-                        <div className="w-12 h-12 rounded-full border border-base-200">
-                          <img src={comment.avatar} alt={comment.author} />
+                        <div className="w-12 h-12 rounded-full border border-base-200 relative overflow-hidden">
+                          <Image src={comment.avatar} alt={comment.author} fill className="object-cover" />
                         </div>
                       </div>
                     )}

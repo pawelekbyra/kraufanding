@@ -6,7 +6,7 @@ import { prisma } from './prisma';
  *
  * @param clerkUserId The Clerk user ID
  * @param projectId The project ID to check access for
- * @returns The user's highest tier level for the project (0 if no access/guest)
+ * @returns The user's highest tier level for the project (0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT)
  */
 export async function getProjectAccess(clerkUserId: string | null, projectId: string) {
   if (!clerkUserId) {
@@ -14,10 +14,35 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
   }
 
   try {
-    const access = await prisma.userProjectAccess.findUnique({
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true, tier: true, role: true }
+    });
+
+    if (!user) {
+      return 1; // Authenticated but not in our DB yet
+    }
+
+    // Admins have full access (tier 5)
+    if (user.role === 'ADMIN') {
+      return 5;
+    }
+
+    // Global tier check (if they have a global status)
+    const tierMap: Record<string, number> = {
+      'FREE': 1,
+      'OBSERVER': 2,
+      'WITNESS': 3,
+      'INSIDER': 4,
+      'ARCHITECT': 5
+    };
+    const globalTierLevel = tierMap[user.tier] || 1;
+
+    // Project-specific access check
+    const projectAccess = await prisma.userProjectAccess.findUnique({
       where: {
         userId_projectId: {
-          userId: (await prisma.user.findUnique({ where: { clerkUserId }, select: { id: true } }))?.id || '',
+          userId: user.id,
           projectId: projectId,
         },
       },
@@ -27,18 +52,19 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
       },
     });
 
-    if (!access) {
-      return 1; // Registered but no paid tier (FREE)
+    if (!projectAccess) {
+      return globalTierLevel;
     }
 
     // Check if access has expired (only for subscriptions)
-    if (access.expiresAt && access.expiresAt < new Date()) {
-      return 1; // Expired sub, back to FREE level
+    if (projectAccess.expiresAt && projectAccess.expiresAt < new Date()) {
+      return globalTierLevel; // Expired sub, fallback to global tier
     }
 
-    return access.tierLevel;
+    // Return the highest of global tier or project-specific tier
+    return Math.max(globalTierLevel, projectAccess.tierLevel);
   } catch (error) {
     console.error('Error checking project access:', error);
-    return 0;
+    return 1; // Fallback to FREE if logged in but error
   }
 }

@@ -7,12 +7,14 @@ interface PremiumContentProps {
   children: React.ReactNode;
   minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
   projectId: string;
+  teaser?: React.ReactNode;
 }
 
 export default async function PremiumContent({
   children,
   minTier,
-  projectId
+  projectId,
+  teaser
 }: PremiumContentProps) {
   const { userId: clerkUserId } = auth();
   const userTierLevel = await getProjectAccess(clerkUserId, projectId);
@@ -32,6 +34,22 @@ export default async function PremiumContent({
         </div>
         {children}
       </div>
+    );
+  }
+
+  // If there's a teaser provided, show it even if no access
+  if (teaser) {
+    return (
+        <div className="space-y-8">
+            <div className="relative">
+                <div className="blur-sm select-none pointer-events-none opacity-40">
+                    {children}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                   {teaser}
+                </div>
+            </div>
+        </div>
     );
   }
 
