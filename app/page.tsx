@@ -1,159 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Stats from './components/Stats';
+import ProjectTabs from './components/ProjectTabs';
+import StartCampaignCTA from './components/StartCampaignCTA';
+import Footer from './components/Footer';
+import { mockCampaigns } from './data/mock-campaigns';
 
 export default function Home() {
-  const [raised, setRaised] = useState(6500);
-  const goal = 10000;
-  const [activeTab, setActiveTab] = useState(0);
-  const [comments, setComments] = useState<string[]>([]);
-  const [commentText, setCommentText] = useState('');
-
-  const updateRaised = (amount: number) => {
-    setRaised(prev => prev + amount);
-  };
-
-  const donate = () => {
-    const val = prompt("Amount:");
-    if (!val || isNaN(Number(val))) return;
-    updateRaised(parseInt(val));
-  };
-
-  const donateFixed = (v: number) => {
-    updateRaised(v);
-  };
-
-  const addComment = () => {
-    if (!commentText) return;
-    setComments(prev => [...prev, commentText]);
-    setCommentText('');
-  };
-
-  const progressPercent = Math.min((raised / goal) * 100, 100);
+  const campaign = mockCampaigns[0];
 
   return (
-    <div className="min-h-screen bg-[#f4f6f9] font-sans text-[#222]">
-      <header className="bg-[#111] text-white py-6 px-4 text-center">
-        <h1 className="text-3xl font-bold">I raise money for my secret projekt</h1>
-      </header>
+    <div className="min-h-screen bg-base-100">
+      <Navbar />
 
-      <main className="max-w-[1200px] mx-auto p-5">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <main>
+        <Hero campaign={campaign} />
+        <Stats />
 
-          {/* Left Column */}
-          <div className="md:col-span-2 space-y-8">
-            <div className="bg-white rounded-xl p-5 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-              <img
-                src="https://picsum.photos/1000/400"
-                alt="Project"
-                className="w-full rounded-xl mb-4"
-              />
-              <h2 className="text-2xl font-bold mb-4">About Project</h2>
-              <p className="leading-relaxed">
-                This is a secret project. Full details will be revealed later.
-                Support now to be part of something big.
-              </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="story">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2">
+              <ProjectTabs campaign={campaign} />
             </div>
-
-            <div className="bg-white rounded-xl p-5 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-              <div className="flex gap-2.5 mt-5">
-                {['Story', 'Updates', 'Comments'].map((tab, idx) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(idx)}
-                    className={`px-4 py-2.5 rounded-md cursor-pointer transition-colors ${
-                      activeTab === idx ? 'bg-[#28a745] text-white' : 'bg-[#ddd]'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4">
-                {activeTab === 0 && (
-                  <div className="block">
-                    <p>Long story about the project. Vision, mission, roadmap, etc.</p>
-                  </div>
-                )}
-                {activeTab === 1 && (
-                  <div className="block">
-                    <p>No updates yet.</p>
-                  </div>
-                )}
-                {activeTab === 2 && (
-                  <div className="block">
-                    <div id="comments">
-                      {comments.map((c, i) => (
-                        <div key={i} className="border-b border-[#eee] py-2.5">
-                          {c}
-                        </div>
-                      ))}
-                    </div>
-                    <textarea
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="Write comment"
-                      className="w-full p-2.5 mt-2.5 rounded-md border border-[#ccc] outline-none"
-                    />
-                    <button
-                      onClick={addComment}
-                      className="mt-2 bg-[#28a745] text-white px-4 py-2 rounded-md hover:bg-[#218838] transition-colors"
-                    >
-                      Add comment
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-8">
-            <div className="bg-white rounded-xl p-5 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-              <h3 className="text-xl font-bold mb-2">Funding</h3>
-              <div className="h-3 bg-[#eee] rounded-full overflow-hidden my-2.5">
-                <div
-                  className="h-full bg-[#28a745] transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
-                ></div>
-              </div>
-              <p className="mb-1">
-                <b className="text-lg">€{raised}</b> raised of €10000
-              </p>
-              <p className="text-sm text-gray-600">32 backers • 12 days left</p>
-              <button
-                onClick={donate}
-                className="block w-full text-center py-3.5 bg-[#28a745] text-white rounded-lg mt-4 font-bold hover:bg-[#218838] transition-colors"
-              >
-                Back this project
-              </button>
-            </div>
-
-            <div className="bg-white rounded-xl p-5 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-              <h3 className="text-xl font-bold mb-4">Rewards</h3>
-
-              {[
-                { amount: 10, title: 'Thank you email' },
-                { amount: 50, title: 'Early access' },
-                { amount: 100, title: 'VIP supporter' },
-              ].map((reward) => (
-                <div key={reward.amount} className="border border-[#eee] p-4 rounded-xl mb-2.5">
-                  <h4 className="font-bold text-lg">€{reward.amount}</h4>
-                  <p className="text-gray-600 mb-2">{reward.title}</p>
-                  <button
-                    onClick={() => donateFixed(reward.amount)}
-                    className="bg-[#28a745] text-white px-4 py-1.5 rounded-md hover:bg-[#218838] transition-colors text-sm"
-                  >
-                    Select
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-8">
+                <div className="card bg-primary text-primary-content p-8 shadow-2xl">
+                  <h3 className="text-2xl font-black mb-4">Wesprzyj teraz</h3>
+                  <p className="mb-6 opacity-90 font-medium">Bądź częścią czegoś wielkiego i pomóż nam zmienić świat.</p>
+                  <button className="btn btn-secondary btn-block font-black text-lg h-16 rounded-2xl">
+                    Wybierz Nagrodę
                   </button>
                 </div>
-              ))}
+
+                <div className="card bg-base-200 p-8">
+                  <h3 className="text-xl font-black mb-4">Udostępnij projekt</h3>
+                  <div className="flex gap-2">
+                    <button className="btn btn-circle btn-outline flex-1">FB</button>
+                    <button className="btn btn-circle btn-outline flex-1">X</button>
+                    <button className="btn btn-circle btn-outline flex-1">LI</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
         </div>
+
+        <StartCampaignCTA />
       </main>
+
+      <Footer />
     </div>
   );
 }
