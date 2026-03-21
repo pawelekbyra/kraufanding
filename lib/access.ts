@@ -14,10 +14,19 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
   }
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true }
+    });
+
+    if (!user) {
+      return 0;
+    }
+
     const access = await prisma.userProjectAccess.findUnique({
       where: {
         userId_projectId: {
-          userId: (await prisma.user.findUnique({ where: { clerkUserId }, select: { id: true } }))?.id || '',
+          userId: user.id,
           projectId: projectId,
         },
       },

@@ -42,3 +42,32 @@ export async function getGatedBlobResponse(
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
+
+/**
+ * Generates a temporary, signed URL for a Vercel Blob file.
+ * This is a placeholder since Vercel Blob doesn't have a direct 'sign' method yet.
+ * For true security, use `getGatedBlobResponse` via an API route.
+ */
+export async function getPremiumBlobUrl(
+  clerkUserId: string | null,
+  projectId: string,
+  blobUrl: string,
+  minTier: number
+) {
+  const userTierLevel = await getProjectAccess(clerkUserId, projectId);
+
+  if (userTierLevel >= minTier) {
+    try {
+      const blobResult = await get(blobUrl, {
+        access: 'private'
+      });
+
+      return blobResult?.blob?.url || null;
+    } catch (error) {
+      console.error('Error accessing Blob:', error);
+      return null;
+    }
+  }
+
+  return null;
+}

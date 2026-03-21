@@ -35,6 +35,76 @@ model User {
   subscriptions    Subscription[]
   donations        Donation[]
   projectAccess    UserProjectAccess[]
+  creators         Creator[]
+  payments         Payment[]
+}
+
+model Creator {
+  id               String       @id @default(uuid())
+  userId           String
+  user             User         @relation(fields: [userId], references: [id])
+  slug             String       @unique
+  name             String
+  bio              String?
+  isApproved       Boolean      @default(false)
+  stripeConnectId  String?      @unique
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  projects         Project[]
+}
+
+model Project {
+  id               String       @id @default(uuid())
+  creatorId        String
+  creator          Creator      @relation(fields: [creatorId], references: [id])
+  title            String
+  slug             String       @unique
+  goalAmount       Int          // in cents/grosz
+  collectedAmount  Int          @default(0)
+  status           String       @default("draft") // draft, active, funded, closed
+  publishedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  tiers            Tier[]
+  posts            Post[]
+  projectAccess    UserProjectAccess[]
+  payments         Payment[]
+}
+
+model Tier {
+  id               String       @id @default(uuid())
+  projectId        String
+  project          Project      @relation(fields: [projectId], references: [id])
+  level            Int          // 2, 3, 4, 5
+  name             String       // Obserwator, Swiadek, Insider, Architekt
+  description      String?
+  priceOneTime     Int          // in cents/grosz
+  stripePriceId    String?      @unique
+  maxSlots         Int?         // NULL = unlimited
+  slotsTaken       Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  payments         Payment[]
+}
+
+model Post {
+  id               String       @id @default(uuid())
+  projectId        String
+  project          Project      @relation(fields: [projectId], references: [id])
+  title            String
+  slug             String       @unique
+  contentPublic    String?      // Level 0
+  contentTeaser    String?      // Blurred teaser for level 0
+  contentLevel1    String?      // Free sample for level 1
+  contentPremium   String?      // Full content for level 2+
+  minTierLevel     Int          @default(2)
+  isEarlyAccess    Boolean      @default(false)
+  publishedAt      DateTime     @default(now())
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 }
 
 model Subscription {
@@ -62,10 +132,27 @@ model UserProjectAccess {
   userId       String
   user         User      @relation(fields: [userId], references: [id])
   projectId    String
+  project      Project   @relation(fields: [projectId], references: [id])
   tierLevel    Int       // 1, 2, 3, 4, 5
   accessType   String    // one_time_payment, subscription, free_sample, admin_grant
   grantedAt    DateTime  @default(now())
   expiresAt    DateTime? // NULL = permanent
 
   @@unique([userId, projectId])
+}
+
+model Payment {
+  id               String       @id @default(uuid())
+  userId           String
+  user             User         @relation(fields: [userId], references: [id])
+  projectId        String
+  project          Project      @relation(fields: [projectId], references: [id])
+  tierId           String?
+  tier             Tier?        @relation(fields: [tierId], references: [id])
+  amount           Int          // in cents/grosz
+  currency         String       @default("EUR")
+  type             String       // one_time, subscription
+  stripePaymentId  String       @unique
+  status           String       // succeeded, pending, failed
+  createdAt        DateTime     @default(now())
 }
