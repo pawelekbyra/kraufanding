@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!stripeKey || !webhookSecret) {
+    console.error('Stripe keys not configured');
     return NextResponse.json({ error: 'Stripe keys not configured' }, { status: 500 });
   }
 
@@ -19,19 +20,26 @@ export async function POST(req: Request) {
   });
 
   const body = await req.text();
-  const sig = headers().get('stripe-signature')!;
+  const sig = headers().get('stripe-signature');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'No signature' }, { status: 400 });
+  }
 
   let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err: any) {
+    console.error(`Webhook Error: ${err.message}`);
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
+  console.log(`Processing event: ${event.type}`);
+
   // Handle the event
   switch (event.type) {
-    case 'checkout.session.completed':
+    case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
       const clerkUserId = session.metadata?.clerkUserId;
       const projectId = session.metadata?.projectId;
@@ -39,17 +47,26 @@ export async function POST(req: Request) {
       const mode = session.mode;
 
       if (clerkUserId && projectId) {
+        console.log(`Updating access for user ${clerkUserId} in project ${projectId} to tier ${tierLevel}`);
+
+        // Map tierLevel to UserTier enum
+        let userTier: UserTier = UserTier.FREE;
+        if (tierLevel === 2) userTier = UserTier.OBSERVER;
+        else if (tierLevel === 3) userTier = UserTier.WITNESS;
+        else if (tierLevel === 4) userTier = UserTier.INSIDER;
+        else if (tierLevel === 5) userTier = UserTier.ARCHITECT;
+
         const user = await prisma.user.upsert({
           where: { clerkUserId },
           update: {
             stripeCustomerId: session.customer as string,
-            tier: tierLevel >= 2 ? (tierLevel === 5 ? UserTier.ARCHITECT : (tierLevel === 4 ? UserTier.INSIDER : (tierLevel === 3 ? UserTier.WITNESS : UserTier.OBSERVER))) : UserTier.FREE
+            tier: userTier
           },
           create: {
             clerkUserId,
             email: session.customer_details?.email || "",
             stripeCustomerId: session.customer as string,
-            tier: tierLevel >= 2 ? (tierLevel === 5 ? UserTier.ARCHITECT : (tierLevel === 4 ? UserTier.INSIDER : (tierLevel === 3 ? UserTier.WITNESS : UserTier.OBSERVER))) : UserTier.FREE
+            tier: userTier
           }
         });
 
@@ -82,14 +99,19 @@ export async function POST(req: Request) {
         }
       }
       break;
+    }
 
-    case 'customer.subscription.deleted':
+    case 'customer.subscription.deleted': {
       const subscription = event.data.object as Stripe.Subscription;
+      // We don't have a direct mapping from stripeSubscriptionId to UserProjectAccess in this webhook
+      // but we might want to update a separate Subscription table if we had one.
+      // Based on schema, we do have a Subscription model.
       await prisma.subscription.update({
         where: { stripeSubscriptionId: subscription.id },
         data: { status: 'canceled' }
       }).catch(() => null);
       break;
+    }
 
     default:
       console.log(`Unhandled event type ${event.type}`);
