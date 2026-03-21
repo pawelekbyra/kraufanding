@@ -1,5 +1,6 @@
 import React from 'react';
 import { Campaign } from '../types/campaign';
+import Image from 'next/image';
 
 interface HeroProps {
   campaign: Campaign;
@@ -26,19 +27,25 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
         <div className="relative group w-full lg:w-1/2">
           <div className="absolute -inset-2 bg-primary/20 rounded-3xl blur-2xl group-hover:bg-primary/30 transition duration-1000"></div>
           <div className="card bg-base-100 shadow-xl overflow-hidden border border-base-200">
-            <figure className="aspect-[16/10]">
-              <img
+            <figure className="aspect-[16/10] relative">
+              <Image
                 src={campaign.thumbnail}
                 alt={campaign.title}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition duration-700"
+                fill
+                className="object-cover transform group-hover:scale-105 transition duration-700"
               />
             </figure>
             <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center pointer-events-none">
               <div className="avatar-group -space-x-6 rtl:space-x-reverse bg-base-100/80 backdrop-blur-md p-1 rounded-full border border-base-300">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="avatar border-2 border-base-100">
-                    <div className="w-10">
-                      <img src={`https://i.pravatar.cc/100?u=${i}`} alt="Backer" />
+                  <div key={i} className="avatar border-2 border-base-100 relative">
+                    <div className="w-10 relative">
+                      <Image
+                        src={`https://i.pravatar.cc/100?u=${i}`}
+                        alt="Backer"
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                   </div>
                 ))}

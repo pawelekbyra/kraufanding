@@ -1,10 +1,75 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { mockCampaigns } from './data/mock-campaigns';
+import Image from 'next/image';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+interface DisplayProject {
+    id: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    author: string;
+    raised: number;
+    goal: number;
+    category: string;
+}
+
+export default async function Home() {
+  let displayProjects: DisplayProject[] = [];
+
+  if (process.env.DATABASE_URL) {
+    try {
+        const { prisma } = await import('@/lib/prisma');
+        const projects = await prisma.project.findMany({
+          where: { status: 'ACTIVE' },
+          include: { creator: true },
+          orderBy: { createdAt: 'desc' }
+        });
+
+        if (projects.length > 0) {
+          displayProjects = projects.map(p => ({
+            id: p.id,
+            title: p.title,
+            description: "Exclusive project on POLUTEK.PL",
+            thumbnail: "https://picsum.photos/seed/" + p.id + "/800/450",
+            author: p.creator.name,
+            raised: p.collectedAmount / 100,
+            goal: p.goalAmount / 100,
+            category: "Investigation"
+          }));
+        }
+      } catch (e) {
+        console.error("Failed to fetch projects:", e);
+      }
+  }
+
+  // Fallback to mock data if DB is empty or fails or no DATABASE_URL
+  if (displayProjects.length === 0) {
+    displayProjects = [
+        {
+          id: "1",
+          title: "The Secret Archive",
+          description: "A deep dive into the hidden world of technology and power.",
+          thumbnail: "https://picsum.photos/seed/archive/800/450",
+          author: "Detective X",
+          raised: 5200,
+          goal: 10000,
+          category: "Journalism"
+        },
+        {
+          id: "2",
+          title: "Project Phoenix",
+          description: "Rebuilding the foundations of the open web.",
+          thumbnail: "https://picsum.photos/seed/phoenix/800/450",
+          author: "Architect Alpha",
+          raised: 15000,
+          goal: 20000,
+          category: "Tech"
+        }
+      ];
+  }
+
   return (
     <div className="min-h-screen bg-cream text-charcoal py-20 font-serif">
       <main className="max-w-6xl mx-auto px-4">
@@ -18,19 +83,20 @@ export default function Home() {
         </header>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {mockCampaigns.map((campaign) => (
+          {displayProjects.map((campaign) => (
             <Link
               key={campaign.id}
               href={`/campaigns/${campaign.id}`}
               className="group bg-white rounded-3xl shadow-xl overflow-hidden border border-neutral/5 hover:shadow-2xl transition-all duration-500"
             >
               <figure className="aspect-[16/9] relative overflow-hidden">
-                <img
+                <Image
                   src={campaign.thumbnail}
                   alt={campaign.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute top-4 left-4 bg-primary text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                <div className="absolute top-4 left-4 bg-primary text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg z-10">
                   {campaign.category}
                 </div>
               </figure>
