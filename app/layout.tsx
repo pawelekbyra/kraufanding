@@ -1,7 +1,8 @@
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 
 export const metadata = {
-  title: "I raise money for my secret projekt",
+  title: "POLUTEK.PL",
   description: "A secret project that aims to change something big.",
 };
 
@@ -11,8 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" data-theme="polutek">
+        <body className="font-serif bg-base-100 text-neutral min-h-screen">
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

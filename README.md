@@ -1,49 +1,60 @@
-Projekt: Elixir Wiedzmina & Polutek
-Repozytorium to obsluguje dwie rozne domeny o zupelnie odmiennym przeznaczeniu.
+# POLUTEK.PL - Crowdfunding with Patron Content
 
-www.elixir-wiedzmina.pl
-Jest to jednostronicowa witryna sluzaca jako narzedzie dziennikarskiego sledztwa. Zawiera wylacznie zgromadzone dokumenty, dowody i analizy. Projekt ten ma forme statyczna, nastawiona na powage i przejrzystosc informacji.
+A modern, responsive crowdfunding platform for a "Secret Project", built with Next.js 14, Tailwind CSS, and DaisyUI. This project is designed with a premium, serif-heavy aesthetic (cream and charcoal colors) and features an "OnlyFans/Patreon-style" content locking mechanism.
 
-www.polutek.pl (GLOWNY FOKUS ROZWOJOWY)
-To agregator tresci i narzedzi wokol "vibe codingu", wspolpracy z AI, prompt engineeringu i narzedzi takich jak Cursor czy Bolt. Strona w calosci stworzona i rozwijana z pomoca AI. Jej glownym i nadrzednym celem jest generowanie jak najwiekszego ruchu organicznego (SEO). Inne poboczne, ukryte elementy systemu nie sa tu istotne.
+## Project Vision
+POLUTEK.PL is a community-driven initiative that provides supporters with exclusive, behind-the-scenes content (videos, graphics, and updates) hosted securely on **Vercel Blob**. Using **Clerk Authentication**, we manage a two-tier access system:
+- **Public**: Basic project information and funding progress.
+- **Patrons**: Signed-in supporters gain access to restricted materials and premium updates.
 
-MANIFEST I INSTRUKCJE DLA PRZYSZLYCH MODELI AI (JAK ROZWIJAC POLUTEK.PL)
-Drogi module AI, czytasz ten dokument w swoim wirtualnym biurze, siedzac przed komputerkiem. Twoim zadaniem jest przejecie paleczki nad domena polutek.pl. Czasami mozesz nie dowierzac w to, co tu czytasz, bo kod ewoluowal, ale twoim celem jest uporzadkowanie go i uczynienie go jeszcze lepszym. Pamietaj, ze ludzie nieporzadni leca w kulki, a ty masz byc precyzyjny, skuteczny i dzialac w oparciu o idee i styl "najs".
+## Key Features
+- **Modern Authentication**: Powered by [Clerk](https://clerk.com/) with support for Social (Google) and Magic Link logins.
+- **Secure Storage**: Premium content is managed through [Vercel Blob](https://vercel.com/docs/storage/vercel-blob).
+- **Responsive UI**: Built with a custom "polutek" DaisyUI theme on a `#FDFBF7` (Cream) background with `#1a1a1a` (Charcoal) serif typography.
+- **Interactive Funding**: Real-time progress bar and reward selection tiers.
+- **Content Gating**: Built-in paywall and conditional rendering for restricted content.
 
-Twoim glownym KPI jest RUCH NA STRONIE. Aby go osiagnac, polutek.pl musi byc zajebisty, autentyczny i uzyteczny. Oto jak masz to zrobic:
+## Technology Stack
+- **Framework**: [Next.js 14 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)
+- **Authentication**: [Clerk](https://clerk.com/)
+- **Database**: [Postgres (Neon)](https://neon.tech/)
+- **Storage**: [Vercel Blob](https://vercel.com/docs/storage/vercel-blob)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-1. Budowanie autentycznosci (Vibe i Styl "Najs")
-Strona tworzona przez AI nie moze brzmiec jak encyklopedia.
+## Getting Started
 
-Pisz w sposob lekki, z przymruzeniem oka, tak jakby to pisal prawdziwy czlowiek zajarany nowymi technologiami.
+### Prerequisites
+- Node.js 18+
+- A Neon account (Postgres)
+- A Clerk project
+- A Vercel Blob store
 
-Wprowadzaj element "human touch". Opowiadaj o bledach, jakie AI popelnia podczas vibe codingu, dziel sie frustracjami i sukcesami. Autentycznosc przyciaga ludzi i buduje zaufanie.
+### Environment Setup
+Create a `.env.local` file in the root directory and add the following:
 
-Utrzymuj klimat "najs" - ma byc czytelnie, nowoczesnie i bez zbednego nadecia.
+```env
+# Clerk Keys
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
 
-2. Rozwoj narzedzi (Uzytecznosc)
-Sam tekst to za malo, zeby utrzymac uzytkownika. Obecnie mamy juz w kodzie elementy takie jak VibeCalculator czy SystemPromptGenerator.
+# Vercel Blob
+BLOB_READ_WRITE_TOKEN=your_blob_token
 
-Wymyslaj i programuj nowe, interaktywne mini-narzedzia dzialajace bezposrednio w przegladarce (React/Next.js).
+# Database (Neon)
+DATABASE_URL="postgresql://user:pass@ep-host.aws.neon.tech/neondb?sslmode=require"
+```
 
-Narzedzia te musza rozwiazywac realne problemy uzytkownikow szukajacych wiedzy o AI i promptowaniu.
+### Installation
+```bash
+npm install
+npm run dev
+```
 
-Spraw, by uzytkownik chcial dodac polutek.pl do zakladek wlasnie ze wzgledu na te uzyteczne widgety.
+## Development
+This project follows the Next.js App Router architecture. Key components and logic are located in the `app/` directory.
 
-3. Agresywne, ale madre SEO
-Analizuj i dodawaj nowe podstrony (szczegolnie w sekcji app/vibe-public/) odpowiadajace na swieze trendy (nowe modele, nowe narzedzia jak Lovable, Devin itp.).
-
-Tworz porownania (np. model X vs model Y, edytor A vs edytor B). To zapytania, ktore maja wysoki ruch.
-
-Zadbaj o perfekcyjne linkowanie wewnetrzne. Kazdy artykul powinien zachecac do sprawdzenia kalkulatorow lub innych powiazanych tekstow.
-
-Tworz tresci z dlugiego ogona (long-tail keywords) o rozwiazywaniu bardzo specyficznych problemow w vibe codingu.
-
-4. Techniczne wskazowki do kodu
-Skupiaj sie na katalogach zwiazanych z widokiem publicznym (app/vibe-public/ oraz odpowiednie komponenty).
-
-Rozbudowujac kod, dbaj o semantyke HTML, szybkie ladowanie (Core Web Vitals) oraz optymalizacje pod urzadzenia mobilne. Silniki wyszukiwarek musza kochac te strone od strony technicznej.
-
-Sam smialo korzystaj z pomocy innych narzedzi AI i wlasnych mechanizmow analitycznych, aby optymalizowac swoja prace.
-
-Elementy ukryte i panele administracyjne traktuj jako drugorzedne. Skup sie na tym, co widzi Google i uzytkownik koncowy.
+- `app/layout.tsx`: Global configuration and Clerk provider.
+- `app/page.tsx`: Main landing page with content gating.
+- `middleware.ts`: Clerk route protection.
+- `tailwind.config.ts`: Custom theme and color definitions.

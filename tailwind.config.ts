@@ -6,7 +6,12 @@ const config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        serif: ['Georgia', 'serif'],
+      },
       colors: {
+        cream: '#FDFBF7',
+        charcoal: '#1a1a1a',
         primary: {
           DEFAULT: '#3b82f6',
           dark: '#1d4ed8',
@@ -29,10 +34,26 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
     require("daisyui"),
   ],
   daisyui: {
-    themes: ["cupcake", "light"],
+    themes: [
+      {
+        polutek: {
+          "primary": "#3b82f6",
+          "secondary": "#8b5cf6",
+          "accent": "#f59e0b",
+          "neutral": "#1a1a1a",
+          "base-100": "#FDFBF7",
+          "info": "#3abff8",
+          "success": "#36d399",
+          "warning": "#fbbd23",
+          "error": "#f87272",
+        },
+      },
+      "light",
+    ],
   },
 } satisfies Config
 
