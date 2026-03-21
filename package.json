@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.7.5",
+    "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/blob": "^2.3.1",
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.5.19",
+    "dotenv": "^17.3.1",
     "next": "^14.2.32",
+    "pg": "^8.20.0",
     "postcss": "^8.5.6",
     "prisma": "^7.5.0",
     "react": "^18",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
