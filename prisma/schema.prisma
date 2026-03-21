@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserTier {
+  GUEST
+  FREE
+  OBSERVER
+  WITNESS
+  INSIDER
+  ARCHITECT
+}
+
+enum SystemRole {
+  ADMIN
+  MODERATOR
+  CREATOR
+  USER
+}
+
+model User {
+  id               String       @id @default(uuid())
+  clerkUserId      String       @unique
+  email            String       @unique
+  tier             UserTier     @default(FREE)
+  role             SystemRole   @default(USER)
+  stripeCustomerId String?      @unique
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  subscriptions    Subscription[]
+  donations        Donation[]
+  projectAccess    UserProjectAccess[]
+}
+
+model Subscription {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id])
+  stripeSubscriptionId String   @unique
+  status               String   // active, canceled, past_due
+  currentPeriodEnd     DateTime
+  createdAt            DateTime @default(now())
+}
+
+model Donation {
+  id               String   @id @default(uuid())
+  userId           String
+  user                 User     @relation(fields: [userId], references: [id])
+  amount           Int      // in cents/grosz
+  currency         String   @default("EUR")
+  stripePaymentId  String   @unique
+  createdAt        DateTime @default(now())
+}
+
+model UserProjectAccess {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  projectId    String
+  tierLevel    Int       // 1, 2, 3, 4, 5
+  accessType   String    // one_time_payment, subscription, free_sample, admin_grant
+  grantedAt    DateTime  @default(now())
+  expiresAt    DateTime? // NULL = permanent
+
+  @@unique([userId, projectId])
+}
