@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -16,8 +19,8 @@ const Navbar = () => {
             <li><a href="#updates">Updates</a></li>
           </ul>
         </div>
-        <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter text-primary">
-          CROWDFUND
+        <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter uppercase">
+          POLUTEK<span className="text-primary">.PL</span>
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
@@ -28,8 +31,15 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end gap-2">
-        <button className="btn btn-ghost btn-sm font-bold">Log in</button>
-        <button className="btn btn-primary btn-sm md:btn-md rounded-xl font-black">
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-charcoal">Log in</button>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <UserButton afterSignOutUrl="/" />
+        </SignedIn>
+        <button className="btn btn-primary btn-sm md:btn-md rounded-xl font-black shadow-lg">
           Back Project
         </button>
       </div>

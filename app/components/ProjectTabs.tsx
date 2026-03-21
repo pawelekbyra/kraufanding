@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { Campaign } from '../types/campaign';
@@ -7,9 +7,10 @@ import Rewards from './Rewards';
 
 interface ProjectTabsProps {
   campaign: Campaign;
+  restrictedContent?: React.ReactNode;
 }
 
-const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
+const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign, restrictedContent }) => {
   const [activeTab, setActiveTab] = useState('story');
 
   const tabs = [
@@ -37,7 +38,12 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
       </div>
 
       <div className="min-h-[400px]">
-        {activeTab === 'story' && <ProjectStory campaign={campaign} />}
+        {activeTab === 'story' && (
+          <div className="space-y-8">
+            <ProjectStory campaign={campaign} />
+            {restrictedContent}
+          </div>
+        )}
 
         {activeTab === 'rewards' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
