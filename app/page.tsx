@@ -1,57 +1,198 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Stats from './components/Stats';
-import ProjectTabs from './components/ProjectTabs';
-import StartCampaignCTA from './components/StartCampaignCTA';
-import Footer from './components/Footer';
-import { mockCampaigns } from './data/mock-campaigns';
+import React, { useState } from "react";
 
-export default function Home() {
-  const campaign = mockCampaigns[0];
+export default function Fundraiser() {
+  const [raised, setRaised] = useState(6500);
+  const goal = 10000;
+  const [activeTab, setActiveTab] = useState(0);
+  const [comments, setComments] = useState<string[]>([]);
+  const [commentText, setCommentText] = useState("");
+
+  const percent = Math.min((raised / goal) * 100, 100);
+
+  const donate = () => {
+    const val = prompt("Amount:");
+    if (!val || isNaN(Number(val))) return;
+    setRaised((prev) => prev + Number(val));
+  };
+
+  const donateFixed = (v: number) => {
+    setRaised((prev) => prev + v);
+  };
+
+  const addComment = () => {
+    if (!commentText) return;
+    setComments((prev) => [...prev, commentText]);
+    setCommentText("");
+  };
 
   return (
-    <div className="min-h-screen bg-base-100">
-      <Navbar />
+    <div style={{ margin: 0, fontFamily: "Arial, sans-serif", background: "#f4f6f9", color: "#222", minHeight: "100vh" }}>
+      <header style={{ background: "#111", color: "white", padding: "20px", textAlign: "center" }}>
+        <h1 style={{ margin: 0 }}>I raise money for my secret project</h1>
+      </header>
 
-      <main>
-        <Hero campaign={campaign} />
-        <Stats />
+      <main style={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "30px" }}>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="story">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2">
-              <ProjectTabs campaign={campaign} />
+          <div style={{ flex: "2 1 600px", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ background: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.08)" }}>
+              <img src="https://picsum.photos/1000/400" alt="Project" style={{ width: "100%", borderRadius: "12px" }} />
+              <h2 style={{ marginTop: "20px" }}>About Project</h2>
+              <p>This is a secret project. Support now to be part of something big.</p>
             </div>
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-8">
-                <div className="card bg-primary text-primary-content p-8 shadow-2xl">
-                  <h3 className="text-2xl font-black mb-4">Wesprzyj teraz</h3>
-                  <p className="mb-6 opacity-90 font-medium">Bądź częścią czegoś wielkiego i pomóż nam zmienić świat.</p>
-                  <button className="btn btn-secondary btn-block font-black text-lg h-16 rounded-2xl">
-                    Wybierz Nagrodę
-                  </button>
-                </div>
 
-                <div className="card bg-base-200 p-8">
-                  <h3 className="text-xl font-black mb-4">Udostępnij projekt</h3>
-                  <div className="flex gap-2">
-                    <button className="btn btn-circle btn-outline flex-1">FB</button>
-                    <button className="btn btn-circle btn-outline flex-1">X</button>
-                    <button className="btn btn-circle btn-outline flex-1">LI</button>
+            <div style={{ background: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.08)" }}>
+              <div style={{ display: "flex", gap: "5px", marginBottom: "20px" }}>
+                <button
+                  onClick={() => setActiveTab(0)}
+                  style={{
+                    padding: "10px 15px",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    background: activeTab === 0 ? "#28a745" : "#ddd",
+                    color: activeTab === 0 ? "white" : "#222",
+                  }}
+                >
+                  Story
+                </button>
+                <button
+                  onClick={() => setActiveTab(1)}
+                  style={{
+                    padding: "10px 15px",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    background: activeTab === 1 ? "#28a745" : "#ddd",
+                    color: activeTab === 1 ? "white" : "#222",
+                  }}
+                >
+                  Updates
+                </button>
+                <button
+                  onClick={() => setActiveTab(2)}
+                  style={{
+                    padding: "10px 15px",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    background: activeTab === 2 ? "#28a745" : "#ddd",
+                    color: activeTab === 2 ? "white" : "#222",
+                  }}
+                >
+                  Comments
+                </button>
+              </div>
+
+              <div>
+                {activeTab === 0 && <p>Long story about the project.</p>}
+                {activeTab === 1 && <p>No updates yet.</p>}
+                {activeTab === 2 && (
+                  <div>
+                    <div>
+                      {comments.map((c, i) => (
+                        <div key={i} style={{ padding: "10px", borderBottom: "1px solid #eee" }}>{c}</div>
+                      ))}
+                    </div>
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Write comment"
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginTop: "10px",
+                        borderRadius: "6px",
+                        border: "1px solid #ccc",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    <button
+                      onClick={addComment}
+                      style={{
+                        padding: "10px 20px",
+                        marginTop: "10px",
+                        background: "#28a745",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Add comment
+                    </button>
                   </div>
-                </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ flex: "1 1 300px", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ background: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.08)" }}>
+              <h3 style={{ marginTop: 0 }}>Funding</h3>
+              <div style={{ height: "10px", background: "#eee", borderRadius: "20px", overflow: "hidden", margin: "10px 0" }}>
+                <div style={{ height: "100%", background: "#28a745", width: percent + "%", transition: "0.5s" }}></div>
+              </div>
+              <p><b>€{raised}</b> raised of €{goal}</p>
+              <button
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  marginTop: "10px",
+                }}
+                onClick={donate}
+              >
+                Back this project
+              </button>
+            </div>
+
+            <div style={{ background: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.08)" }}>
+              <h3 style={{ marginTop: 0 }}>Rewards</h3>
+
+              <div style={{ border: "1px solid #eee", padding: "15px", borderRadius: "10px", marginBottom: "10px" }}>
+                <b>€10</b>
+                <p>Thank you email</p>
+                <button
+                  style={{ width: "100%", padding: "8px", background: "#28a745", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}
+                  onClick={() => donateFixed(10)}
+                >
+                  Select
+                </button>
+              </div>
+
+              <div style={{ border: "1px solid #eee", padding: "15px", borderRadius: "10px", marginBottom: "10px" }}>
+                <b>€50</b>
+                <p>Early access</p>
+                <button
+                  style={{ width: "100%", padding: "8px", background: "#28a745", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}
+                  onClick={() => donateFixed(50)}
+                >
+                  Select
+                </button>
+              </div>
+
+              <div style={{ border: "1px solid #eee", padding: "15px", borderRadius: "10px", marginBottom: "10px" }}>
+                <b>€100</b>
+                <p>VIP supporter</p>
+                <button
+                  style={{ width: "100%", padding: "8px", background: "#28a745", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}
+                  onClick={() => donateFixed(100)}
+                >
+                  Select
+                </button>
               </div>
             </div>
           </div>
         </div>
-
-        <StartCampaignCTA />
       </main>
-
-      <Footer />
     </div>
   );
 }
