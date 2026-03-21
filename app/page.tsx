@@ -29,8 +29,15 @@ export default function Fundraiser() {
 
   return (
     <div style={{ margin: 0, fontFamily: "Arial, sans-serif", background: "#f4f6f9", color: "#222", minHeight: "100vh" }}>
-      <header style={{ background: "#111", color: "white", padding: "20px", textAlign: "center" }}>
-        <h1 style={{ margin: 0 }}>I raise money for my secret project</h1>
+      <header style={{ background: "white", padding: "15px 30px", borderBottom: "1px solid #eee", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#28a745" }}>POLUTEK.PL</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "bold" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Log in
+        </div>
       </header>
 
       <main style={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
