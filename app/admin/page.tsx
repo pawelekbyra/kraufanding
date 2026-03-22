@@ -18,7 +18,7 @@ export default async function AdminPanel() {
   });
 
   // Authorization: Only CREATOR, ADMIN, or specific email
-  const isAuthorized = user?.role === 'ADMIN' || user?.role === 'CREATOR' || user?.email === 'pawel.perfect@protonmail.com';
+  const isAuthorized = user?.role === 'ADMIN' || user?.role === 'CREATOR' || user?.email === 'pawel.perfect@protonmail.com' || user?.email === 'pawel.perfect@gmail.com';
 
   if (!isAuthorized) {
     notFound();

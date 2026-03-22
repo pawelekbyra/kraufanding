@@ -29,7 +29,7 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
       select: { role: true, email: true }
     });
 
-    if (userData?.role === 'ADMIN' || userData?.role === 'CREATOR' || userData?.email === 'pawel.perfect@protonmail.com') {
+    if (userData?.role === 'ADMIN' || userData?.role === 'CREATOR' || userData?.email === 'pawel.perfect@protonmail.com' || userData?.email === 'pawel.perfect@gmail.com') {
       return 5;
     }
 

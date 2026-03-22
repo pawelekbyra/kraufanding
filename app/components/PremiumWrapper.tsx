@@ -88,9 +88,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
         ŚCIŚLE TAJNE
       </h4>
       <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-        {isLoggedIn
-          ? 'Dołącz do Patronów aby obczaić.'
-          : 'Zaloguj się, aby obczaić.'}
+        Dołącz do Patronów aby obczaić.
       </p>
       <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
          <img

@@ -6,13 +6,16 @@ import Link from 'next/link';
 
 const Navbar = () => {
   const { user } = useUser();
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com';
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com' || user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
     <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-12 font-serif">
       <div className="navbar-start">
-        <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter">
-          polutek<span className="text-primary">.pl</span>
-        </a>
+        <div className="flex flex-col">
+          <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter h-auto min-h-0 py-0 flex flex-col items-start gap-0">
+            <div>polutek<span className="text-primary">.pl</span></div>
+            <span className="text-[10px] font-bold lowercase opacity-50 tracking-tight leading-none">Byle nie do pracy!</span>
+          </a>
+        </div>
       </div>
       <div className="navbar-center hidden lg:flex">
         {isAdmin && (
