@@ -5,7 +5,7 @@ import React from 'react';
 
 interface PremiumWrapperProps {
   children: React.ReactNode;
-  teaser?: React.ReactNode | ((userTierLevel: number) => React.ReactNode);
+  teaser?: React.ReactNode | ((userTierLevel: number, isLoggedIn: boolean) => React.ReactNode);
   minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
   projectId: string;
   mediaPath?: string; // Optional path to a gated media asset (e.g., 'v0/video.mp4')
@@ -26,6 +26,7 @@ export default async function PremiumWrapper({
   const userTierLevel = await getProjectAccess(clerkUserId, projectId);
 
   const hasAccess = userTierLevel >= minTier;
+  const isLoggedIn = !!clerkUserId;
 
   if (hasAccess) {
     return (
@@ -61,61 +62,61 @@ export default async function PremiumWrapper({
 
   // Render teaser if available
   if (teaser) {
-    const teaserNode = typeof teaser === 'function' ? teaser(userTierLevel) : teaser;
+    const teaserNode = typeof teaser === 'function' ? teaser(userTierLevel, isLoggedIn) : teaser;
     return (
       <div className="space-y-12">
         <div className="animate-in fade-in duration-700">
           {teaserNode}
         </div>
         {/* PAYWALL */}
-        <PaywallOverlay minTier={minTier} userTierLevel={userTierLevel} />
+        <PaywallOverlay minTier={minTier} isLoggedIn={isLoggedIn} />
       </div>
     );
   }
 
   // Paywall if no teaser
-  return <PaywallOverlay minTier={minTier} userTierLevel={userTierLevel} />;
+  return <PaywallOverlay minTier={minTier} isLoggedIn={isLoggedIn} />;
 }
 
-function PaywallOverlay({ minTier, userTierLevel }: { minTier: number, userTierLevel: number }) {
-  const isGuest = userTierLevel === 0;
-
+function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: boolean }) {
   return (
-    <div className="p-12 bg-[#FDFBF7] border-4 border-double border-[#1a1a1a]/10 rounded-3xl flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 inset-x-0 h-2 bg-primary/40"></div>
-      <div className="w-16 h-16 bg-[#1a1a1a]/5 rounded-full flex items-center justify-center mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 opacity-40">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] overflow-hidden group">
+      <h4 className="text-primary font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs italic">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
-      </div>
-      <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter text-[#1a1a1a] font-serif">
-        {isGuest ? 'Zawartość Zablokowana' : 'Zwiększ Swój Poziom Dostępu'}
-      </h3>
-      <p className="mb-8 text-[#1a1a1a]/70 max-w-md font-serif italic text-lg leading-relaxed">
-        {isGuest
-          ? 'Dostęp do tych poufnych materiałów jest ograniczony. Zarejestruj się za darmo, aby odblokować wstępne treści.'
-          : 'Ten wgląd jest zarezerwowany dla patronów wyższego poziomu. Wesprzyj projekt na wymaganym poziomie, aby odblokować pełne archiwum.'}
+        ŚCIŚLE TAJNE
+      </h4>
+      <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
+        {isLoggedIn
+          ? 'Zostań Patronem, żeby obczaić.'
+          : 'Zaloguj się, aby obczaić.'}
       </p>
-
-      {isGuest ? (
-        <SignInButton mode="modal">
-          <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl">
-            ZAREJESTRUJ SIĘ ZA DARMO
-          </button>
-        </SignInButton>
-      ) : (
-        <a
-          href="#rewards"
-          className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl group"
-        >
-          ZWIĘKSZ POZIOM DO {minTier}
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-          </svg>
-        </a>
-      )}
-
-      <p className="mt-6 text-xs font-bold uppercase tracking-widest opacity-30 italic text-[#1a1a1a]">Jednorazowa wpłata = Stały dostęp</p>
+      <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
+         <img
+           src="https://picsum.photos/seed/patron/1200/800"
+           alt="Locked"
+           className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-all duration-1000"
+         />
+         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Ściśle Tajne</span>
+            {!isLoggedIn ? (
+              <>
+                <SignInButton mode="modal">
+                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">Zaloguj się</button>
+                </SignInButton>
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
+              </>
+            ) : (
+              <>
+                <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">
+                  Zostań Patronem
+                </a>
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">żeby obczaić</span>
+              </>
+            )}
+         </div>
+      </div>
     </div>
   );
 }

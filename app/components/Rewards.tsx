@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Reward } from '../types/campaign';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useClerk } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 
 interface RewardsProps {
@@ -12,28 +12,36 @@ interface RewardsProps {
 
 const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [customAmounts, setCustomAmounts] = useState<Record<string, number>>({});
   const { userId } = useAuth();
+  const { openSignIn } = useClerk();
   const router = useRouter();
 
   const onSupport = async (reward: Reward, index: number) => {
     if (!userId) {
-      // For a smoother experience, you could open the Clerk sign-in modal here
-      // For now, we'll assume the user is signed in if they can see the button
-      alert("Please sign in to support this project.");
+      openSignIn();
       return;
     }
 
     try {
       setIsLoading(reward.id);
 
-      // Determine tier level based on reward order (2-5, assuming index 0-3 maps to levels)
-      // Level 2: Observer, 3: Witness, 4: Insider, 5: Architect
-      const tierLevel = Math.min(index + 2, 5);
+      const isTip = reward.title.toLowerCase().includes('napiwek');
+      const amount = isTip ? (customAmounts[reward.id] || reward.amount) : reward.amount;
+
+      // Determine tier level based on reward order or specific name
+      // Level 1: Tip, 2: Observer, 3: Witness, 4: Insider, 5: Architect
+      let tierLevel = Math.min(index + 1, 5);
+      if (isTip) {
+        tierLevel = 1;
+      } else if (reward.title.toLowerCase().includes('obserwator')) {
+        tierLevel = 2;
+      }
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
         body: JSON.stringify({
-          amount: reward.amount,
+          amount: amount,
           projectId: projectId,
           tierLevel,
           title: reward.title
@@ -69,16 +77,37 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
           <div className="space-y-6 relative z-10">
             <div className="space-y-2">
               <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                {reward.amount.toLocaleString('pl-PL')} €
+                {reward.title.toLowerCase().includes('napiwek')
+                  ? `${(customAmounts[reward.id] || reward.amount).toLocaleString('pl-PL')} €`
+                  : `${reward.amount.toLocaleString('pl-PL')} €`}
               </h4>
               <h3 className="text-xl font-bold text-[#1a1a1a]/80 italic">
                 {reward.title}
               </h3>
             </div>
 
-            <p className="text-[#1a1a1a]/60 text-lg leading-relaxed line-clamp-3">
-              {reward.description}
-            </p>
+            {reward.title.toLowerCase().includes('napiwek') ? (
+              <div className="space-y-4">
+                <p className="text-[#1a1a1a]/60 text-lg leading-relaxed italic">
+                  Wpisz kwotę, którą chcesz wesprzeć projekt:
+                </p>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={customAmounts[reward.id] || reward.amount}
+                    onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 1 }))}
+                    className="input input-bordered bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-xl w-32 font-black text-xl text-[#1a1a1a]"
+                  />
+                  <span className="text-2xl font-black text-[#1a1a1a]/30">€</span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-[#1a1a1a]/60 text-lg leading-relaxed line-clamp-3">
+                {reward.description}
+              </p>
+            )}
 
             <div className="flex justify-between items-end border-t border-[#1a1a1a]/5 pt-6">
               <div className="space-y-1">

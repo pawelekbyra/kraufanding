@@ -49,33 +49,35 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
                 projectId={projectId}
                 minTier={2}
                 mediaPath="public.blob.vercel-storage.com/evidence-report-v1.pdf"
-                teaser={(userTierLevel) => (
+                teaser={(userTierLevel, isLoggedIn) => (
                   <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] overflow-hidden group">
                     <h4 className="text-primary font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs italic">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
-                      OGRANICZONY PODGLĄD
+                      ŚCIŚLE TAJNE
                     </h4>
                     <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-                      Ten wstępny wgląd jest dostępny tylko dla zarejestrowanych obserwatorów.
-                      Wesprzyj projekt lub zaloguj się, aby odblokować poufne archiwum.
+                      {!isLoggedIn
+                        ? 'Ten wstępny wgląd jest dostępny tylko dla zarejestrowanych użytkowników. Zaloguj się, aby odblokować.'
+                        : 'Jesteś zalogowany. Ten wstępny raport jest dla Ciebie dostępny.'}
                     </p>
                     <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
                        <img
-                         src={userTierLevel >= 1 ? "https://picsum.photos/seed/secret/800/450" : "https://picsum.photos/seed/secret/800/450"}
+                         src="https://picsum.photos/seed/secret/800/450"
                          alt="Free Sample"
-                         className={`object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ${userTierLevel >= 1 ? 'grayscale-0' : 'opacity-40 blur-[10px] grayscale'}`}
+                         className={`object-cover w-full h-full transform group-hover:scale-105 transition-all duration-1000 ${isLoggedIn ? 'grayscale-0' : 'opacity-40 blur-[10px] grayscale'}`}
                        />
-                       {userTierLevel < 1 && (
-                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                            <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Podgląd Zablokowany</span>
+                       {!isLoggedIn && (
+                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                            <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Ściśle Tajne</span>
                             <SignInButton mode="modal">
-                               <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl">Zaloguj się</button>
+                               <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">Zaloguj się</button>
                             </SignInButton>
+                            <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
                          </div>
                        )}
-                       {userTierLevel >= 1 && (
+                       {isLoggedIn && (
                          <div className="absolute top-4 right-4">
                             <span className="bg-primary text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl">Dostęp Darmowy</span>
                          </div>
