@@ -9,10 +9,9 @@ import Link from 'next/link';
 
 interface ProjectViewProps {
   campaign: Campaign;
-  otherCampaigns?: Campaign[];
 }
 
-export default async function ProjectView({ campaign, otherCampaigns }: ProjectViewProps) {
+export default async function ProjectView({ campaign }: ProjectViewProps) {
   const projectId = campaign.id;
   const { userId } = auth();
   const user = await currentUser();
@@ -97,7 +96,7 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
                 ];
 
                 return (
-                    <div key={i} className="group cursor-pointer flex gap-3 p-2 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors">
+                    <Link key={i} href="#" className="group flex gap-3 p-2 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors">
                       <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
                         <PremiumWrapper projectId={projectId} minTier={isLocked ? 2 : 1} variant="thumbnail">
                            <img
@@ -126,7 +125,7 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
                            <span className="text-[8px] font-black uppercase tracking-widest text-primary">Unlocked</span>
                         )}
                       </div>
-                    </div>
+                    </Link>
                 );
             })}
 
@@ -134,40 +133,6 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
 
         </div>
 
-        {/* OTHER PROJECTS GALLERY (at the end of the section) */}
-        {otherCampaigns && otherCampaigns.length > 0 && (
-          <section className="mt-32 pt-24 border-t-4 border-double border-[#1a1a1a]/10">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-black uppercase tracking-tighter mb-4 text-[#1a1a1a]">Inne Zrzutki</h2>
-              <p className="text-xl italic opacity-50 font-serif">Odkryj więcej projektów na polutek.pl</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {otherCampaigns.map((other) => (
-                <Link key={other.id} href={`/projects/${other.slug}`} className="group">
-                  <div className="bg-white border-2 border-[#1a1a1a]/5 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                    <div className="aspect-[16/9] relative overflow-hidden bg-[#1a1a1a]/5">
-                      <img
-                        src={other.thumbnail}
-                        alt={other.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale group-hover:grayscale-0"
-                      />
-                    </div>
-                    <div className="p-8 space-y-6">
-                      <h3 className="text-xl font-black uppercase tracking-tight group-hover:text-primary transition-colors line-clamp-1">{other.title}</h3>
-                      <div className="flex justify-between items-center pt-4 border-t border-[#1a1a1a]/5">
-                         <span className="text-sm font-black uppercase tracking-widest text-[#1a1a1a]/40">Zobacz projekt</span>
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 text-primary">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                         </svg>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </main>
   );

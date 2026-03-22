@@ -90,7 +90,7 @@ async function FeaturedHome({ project }: { project: any }) {
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
             <Navbar />
-            <ProjectView campaign={campaign} otherCampaigns={otherCampaigns} />
+            <ProjectView campaign={campaign} />
             <Footer />
         </div>
     );
