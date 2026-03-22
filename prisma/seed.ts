@@ -84,11 +84,11 @@ async function main() {
   await prisma.project.upsert({
     where: { slug: 'secret-project' },
     update: {
-      title: 'I rise money for my secret project',
+      title: 'I raise money for my Secret Project',
     },
     create: {
       creatorId: creator.id,
-      title: 'I rise money for my secret project',
+      title: 'I raise money for my Secret Project',
       slug: 'secret-project',
       goalAmount: 1000000,
       collectedAmount: 650000,

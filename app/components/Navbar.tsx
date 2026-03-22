@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="navbar-end gap-4">
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest">Sign In</button>
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-xs">Sign In / Sign Up</button>
           </SignInButton>
         </SignedOut>
         <SignedIn>

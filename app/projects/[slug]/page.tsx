@@ -61,10 +61,31 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     comments: []
   };
 
+  // Fetch other projects for the gallery at the bottom
+  const otherProjects = await prisma.project.findMany({
+    where: { id: { not: project.id } },
+    include: { creator: true },
+    take: 6,
+    orderBy: { createdAt: 'desc' }
+  });
+
+  const otherCampaigns: Campaign[] = otherProjects.map(p => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    description: p.title,
+    category: "Technology",
+    author: p.creator.name,
+    goal: p.goalAmount / 100,
+    raised: p.collectedAmount / 100,
+    thumbnail: "https://picsum.photos/seed/" + p.slug + "/800/450",
+    endDate: p.publishedAt?.toISOString() || "",
+  }));
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
       <Navbar />
-      <ProjectView campaign={campaign} />
+      <ProjectView campaign={campaign} otherCampaigns={otherCampaigns} />
       <Footer />
     </div>
   );
