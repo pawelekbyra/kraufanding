@@ -10,30 +10,43 @@ import { incrementProjectViews } from '@/lib/actions/interactions';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // Fetch the "Secret Project" (main featured project)
-  const secretProject = await prisma.project.findUnique({
-    where: { slug: 'secret-project' },
-    include: {
-      creator: true,
-      tiers: true,
-      posts: true,
-    },
-  });
-
-  if (!secretProject) {
-    // If not found by slug, fallback to the latest project or 404
-    const latest = await prisma.project.findFirst({
-        include: { creator: true, tiers: true, posts: true },
-        orderBy: { createdAt: 'desc' }
+  try {
+    // Fetch the "Secret Project" (main featured project)
+    const secretProject = await prisma.project.findUnique({
+      where: { slug: 'secret-project' },
+      include: {
+        creator: true,
+        tiers: true,
+        posts: true,
+      },
     });
-    if (!latest) return notFound();
-    return <FeaturedHome project={latest} />;
+
+    if (!secretProject) {
+      // If not found by slug, fallback to the latest project or 404
+      const latest = await prisma.project.findFirst({
+          include: { creator: true, tiers: true, posts: true },
+          orderBy: { createdAt: 'desc' }
+      });
+      if (!latest) return notFound();
+      return <FeaturedHome project={latest} />;
+    }
+
+    // Increment views in background
+    incrementProjectViews(secretProject.id).catch(err => console.error("[HOME_VIEW_INCREMENT_ERROR]", err));
+
+    return <FeaturedHome project={secretProject} />;
+  } catch (error) {
+    console.error("[HOME_FETCH_ERROR]", error);
+    // Fallback to a safe UI if DB is in transition
+    return (
+        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-12 text-center">
+            <div className="space-y-4">
+                <h1 className="text-4xl font-black uppercase">Platforma w trakcie aktualizacji</h1>
+                <p className="text-lg italic opacity-50">Wróć za chwilę, przygotowujemy dla Ciebie nowe materiały.</p>
+            </div>
+        </div>
+    );
   }
-
-  // Increment views in background
-  incrementProjectViews(secretProject.id).catch(err => console.error("[HOME_VIEW_INCREMENT_ERROR]", err));
-
-  return <FeaturedHome project={secretProject} />;
 }
 
 async function FeaturedHome({ project }: { project: any }) {
@@ -71,27 +84,6 @@ async function FeaturedHome({ project }: { project: any }) {
         comments: []
     };
 
-    // Fetch other projects for the gallery at the bottom
-    const otherProjects = await prisma.project.findMany({
-        where: { id: { not: project.id } },
-        include: { creator: true },
-        take: 6,
-        orderBy: { createdAt: 'desc' }
-    });
-
-    const otherCampaigns: Campaign[] = otherProjects.map(p => ({
-        id: p.id,
-        slug: p.slug,
-        title: p.title,
-        description: p.title,
-        category: "Technology",
-        author: p.creator.name,
-        goal: p.goalAmount / 100,
-        raised: p.collectedAmount / 100,
-        views: (p as any).views || 0,
-        thumbnail: "https://picsum.photos/seed/" + p.slug + "/800/450",
-        endDate: p.publishedAt?.toISOString() || "",
-    }));
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">

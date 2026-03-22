@@ -16,21 +16,22 @@ interface ProjectPageProps {
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = await prisma.project.findUnique({
-    where: { slug: params.slug },
-    include: {
-      creator: true,
-      tiers: true,
-      posts: true,
-    },
-  });
+  try {
+    const project = await prisma.project.findUnique({
+      where: { slug: params.slug },
+      include: {
+        creator: true,
+        tiers: true,
+        posts: true,
+      },
+    });
 
-  if (!project) {
-    notFound();
-  }
+    if (!project) {
+      notFound();
+    }
 
-  // Increment views in the background
-  incrementProjectViews(project.id).catch(err => console.error("[PROJECT_VIEW_INCREMENT_ERROR]", err));
+    // Increment views in background
+    incrementProjectViews(project.id).catch(err => console.error("[PROJECT_VIEW_INCREMENT_ERROR]", err));
 
   // Map Prisma project to Campaign interface
   const campaign: Campaign = {
@@ -66,11 +67,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     comments: []
   };
 
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
-      <Navbar />
-      <ProjectView campaign={campaign} />
-      <Footer />
-    </div>
-  );
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
+        <Navbar />
+        <ProjectView campaign={campaign} />
+        <Footer />
+      </div>
+    );
+  } catch (error) {
+    console.error("[PROJECT_PAGE_ERROR]", error);
+    return notFound();
+  }
 }
