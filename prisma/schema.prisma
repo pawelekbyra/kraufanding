@@ -21,6 +21,8 @@ model User {
   payments         Payment[]
   subscriptions    Subscription[]
   projectAccess    UserProjectAccess[]
+  comments         Comment[]
+  commentLikes     CommentLike[]
 }
 
 model Creator {
@@ -53,6 +55,7 @@ model Project {
   creator         Creator             @relation(fields: [creatorId], references: [id])
   tiers           Tier[]
   projectAccess   UserProjectAccess[]
+  comments        Comment[]
 }
 
 model Tier {
@@ -136,6 +139,41 @@ model Payment {
   project         Project  @relation(fields: [projectId], references: [id])
   tier            Tier?    @relation(fields: [tierId], references: [id])
   user            User     @relation(fields: [userId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  imageUrl  String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Self-relation for replies
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  likes     CommentLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([parentId])
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId])
+  @@index([commentId])
 }
 
 enum UserTier {

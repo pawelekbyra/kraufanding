@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Campaign } from '../types/campaign';
 import ProjectStory from './ProjectStory';
 import Rewards from './Rewards';
+import EmbeddedComments from './comments/EmbeddedComments';
+import { useAuth, useUser } from '@clerk/nextjs';
 
 interface ProjectTabsProps {
   campaign: Campaign;
@@ -11,6 +13,8 @@ interface ProjectTabsProps {
 
 const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
   const [activeTab, setActiveTab] = useState('story');
+  const { userId } = useAuth();
+  const { user } = useUser();
 
   const tabs = [
     { id: 'story', label: 'Story' },
@@ -65,28 +69,10 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
 
         {activeTab === 'comments' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.comments?.length ? (
-              campaign.comments.map((comment) => (
-                <div key={comment.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
-                  <div className="flex items-center gap-4">
-                    {comment.avatar && (
-                      <div className="avatar">
-                        <div className="w-12 h-12 rounded-full border border-base-200">
-                          <img src={comment.avatar} alt={comment.author} />
-                        </div>
-                      </div>
-                    )}
-                    <div>
-                      <h4 className="font-black text-base-content">{comment.author}</h4>
-                      <p className="text-xs text-base-content/50 font-bold">{comment.date}</p>
-                    </div>
-                  </div>
-                  <p className="text-base-content/70 leading-relaxed">{comment.content}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-base-content/50 py-12">No comments yet.</p>
-            )}
+            <EmbeddedComments
+              projectId={campaign.id}
+              userProfile={userId ? { id: userId, email: user?.primaryEmailAddress?.emailAddress || '' } : null}
+            />
           </div>
         )}
       </div>

@@ -54,16 +54,16 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
-                      FREE PREVIEW UNLOCKED
+                      RESTRICTED PREVIEW
                     </h4>
                     <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-                      As a registered user, you have access to this initial insight. The full investigation
-                      is reserved for our patrons.
+                      This initial insight is available only for registered observers.
+                      Support the project or log in to unlock the confidential archive.
                     </p>
                     <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
-                       <img src="https://picsum.photos/seed/secret/800/450" alt="Free Sample" className="object-cover w-full h-full opacity-40 blur-[4px] grayscale transform group-hover:scale-105 transition-transform duration-1000" />
-                       <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10">Sample Preview</span>
+                       <img src="https://picsum.photos/seed/secret/800/450" alt="Free Sample" className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-transform duration-1000" />
+                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                          <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10">Locked Preview</span>
                        </div>
                     </div>
                   </div>
