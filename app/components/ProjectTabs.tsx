@@ -17,10 +17,10 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
   const { user } = useUser();
 
   const tabs = [
-    { id: 'story', label: 'Story' },
-    { id: 'rewards', label: 'Rewards' },
-    { id: 'updates', label: 'Updates' },
-    { id: 'comments', label: 'Comments' },
+    { id: 'story', label: 'O Projekcie' },
+    { id: 'rewards', label: 'Nagrody' },
+    { id: 'updates', label: 'Aktualizacje' },
+    { id: 'comments', label: 'Komentarze' },
   ];
 
   return (
@@ -62,7 +62,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
                 </div>
               ))
             ) : (
-              <p className="text-center text-base-content/50 py-12">No updates yet.</p>
+              <p className="text-center text-base-content/50 py-12">Brak aktualizacji.</p>
             )}
           </div>
         )}

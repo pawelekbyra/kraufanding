@@ -70,11 +70,11 @@ export default async function Home() {
                     <div className="flex justify-between items-end">
                       <div>
                         <span className="block text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-1 italic">Raised</span>
-                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.raised.toLocaleString()}</span>
+                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.raised.toLocaleString('pl-PL')}</span>
                       </div>
                       <div className="text-right">
                         <span className="block text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-1 italic">Goal</span>
-                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.goal.toLocaleString()}</span>
+                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.goal.toLocaleString('pl-PL')}</span>
                       </div>
                     </div>
                   </div>

@@ -24,15 +24,15 @@ const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft }) => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
           <h2 className="text-5xl font-black text-[#1a1a1a] tracking-tighter uppercase leading-none">
-            {raised.toLocaleString()} €
+            {raised.toLocaleString('pl-PL')} €
           </h2>
           <p className="text-[#1a1a1a]/50 text-xl italic leading-relaxed">
-            zebrane z {goal.toLocaleString()} €
+            zebrane z {goal.toLocaleString('pl-PL')} €
           </p>
         </div>
         <div className="text-right">
           <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-sm font-black mb-1">Cel:</p>
-          <p className="text-3xl font-black text-[#1a1a1a] tracking-tight">{goal.toLocaleString()} €</p>
+          <p className="text-3xl font-black text-[#1a1a1a] tracking-tight">{goal.toLocaleString('pl-PL')} €</p>
         </div>
       </div>
 

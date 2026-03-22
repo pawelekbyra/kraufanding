@@ -69,7 +69,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
           <div className="space-y-6 relative z-10">
             <div className="space-y-2">
               <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                {reward.amount.toLocaleString()} €
+                {reward.amount.toLocaleString('pl-PL')} €
               </h4>
               <h3 className="text-xl font-bold text-[#1a1a1a]/80 italic">
                 {reward.title}

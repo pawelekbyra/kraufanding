@@ -5,7 +5,7 @@ import React from 'react';
 
 interface PremiumWrapperProps {
   children: React.ReactNode;
-  teaser?: React.ReactNode;
+  teaser?: React.ReactNode | ((userTierLevel: number) => React.ReactNode);
   minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
   projectId: string;
   mediaPath?: string; // Optional path to a gated media asset (e.g., 'v0/video.mp4')
@@ -36,11 +36,11 @@ export default async function PremiumWrapper({
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
           </div>
-          <span className="text-sm font-black uppercase tracking-[0.2em] text-primary">Patron Verified Access</span>
+          <span className="text-sm font-black uppercase tracking-[0.2em] text-primary">Weryfikacja Patrona Pomyślna</span>
         </div>
         {mediaPath && (
           <div className="mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-            <p className="text-xs font-black uppercase tracking-widest text-primary/60 mb-2">Secure Stream Link</p>
+            <p className="text-xs font-black uppercase tracking-widest text-primary/60 mb-2">Bezpieczny link do streamu</p>
             <a
               href={`/api/media/${mediaPath}?projectId=${projectId}&minTier=${minTier}`}
               target="_blank"
@@ -50,7 +50,7 @@ export default async function PremiumWrapper({
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
-              Download Protected Asset: {mediaPath.split('/').pop()}
+              Pobierz chroniony plik: {mediaPath.split('/').pop()}
             </a>
           </div>
         )}
@@ -61,10 +61,11 @@ export default async function PremiumWrapper({
 
   // Render teaser if available
   if (teaser) {
+    const teaserNode = typeof teaser === 'function' ? teaser(userTierLevel) : teaser;
     return (
       <div className="space-y-12">
         <div className="animate-in fade-in duration-700">
-          {teaser}
+          {teaserNode}
         </div>
         {/* PAYWALL */}
         <PaywallOverlay minTier={minTier} userTierLevel={userTierLevel} />
@@ -88,18 +89,18 @@ function PaywallOverlay({ minTier, userTierLevel }: { minTier: number, userTierL
         </svg>
       </div>
       <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter text-[#1a1a1a] font-serif">
-        {isGuest ? 'Locked Content' : 'Elevate Your Access'}
+        {isGuest ? 'Zawartość Zablokowana' : 'Zwiększ Swój Poziom Dostępu'}
       </h3>
       <p className="mb-8 text-[#1a1a1a]/70 max-w-md font-serif italic text-lg leading-relaxed">
         {isGuest
-          ? 'Access to this confidential material is restricted. Please register for free to unlock our introductory content.'
-          : 'This insight is reserved for higher level patrons. Support the project at the required tier to unlock the full archive.'}
+          ? 'Dostęp do tych poufnych materiałów jest ograniczony. Zarejestruj się za darmo, aby odblokować wstępne treści.'
+          : 'Ten wgląd jest zarezerwowany dla patronów wyższego poziomu. Wesprzyj projekt na wymaganym poziomie, aby odblokować pełne archiwum.'}
       </p>
 
       {isGuest ? (
         <SignInButton mode="modal">
           <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl">
-            REGISTER FOR FREE
+            ZAREJESTRUJ SIĘ ZA DARMO
           </button>
         </SignInButton>
       ) : (
@@ -107,14 +108,14 @@ function PaywallOverlay({ minTier, userTierLevel }: { minTier: number, userTierL
           href="#rewards"
           className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl group"
         >
-          UPGRADE TO LEVEL {minTier}
+          ZWIĘKSZ POZIOM DO {minTier}
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>
         </a>
       )}
 
-      <p className="mt-6 text-xs font-bold uppercase tracking-widest opacity-30 italic text-[#1a1a1a]">One-time payment = Permanent Access</p>
+      <p className="mt-6 text-xs font-bold uppercase tracking-widest opacity-30 italic text-[#1a1a1a]">Jednorazowa wpłata = Stały dostęp</p>
     </div>
   );
 }
