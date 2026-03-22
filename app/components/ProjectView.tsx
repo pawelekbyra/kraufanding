@@ -32,17 +32,24 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
        const dbUser = await prisma.user.findUnique({
          where: { clerkUserId: userId },
          select: { id: true, isSubscribed: true }
-       });
+       }).catch(() => null);
 
        if (dbUser) {
-          const projectLike = await prisma.projectLike.findUnique({
-              where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
-          });
-          initialIsLiked = !!projectLike;
-          initialIsSubscribed = dbUser.isSubscribed;
+          try {
+            const projectLike = await prisma.projectLike.findUnique({
+                where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
+            });
+            initialIsLiked = !!projectLike;
+          } catch (e) {}
+
+          initialIsSubscribed = (dbUser as any).isSubscribed || false;
        }
     }
-    likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
+    try {
+        likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
+    } catch (e) {
+        likesCount = 0;
+    }
   } catch (error) {
     console.error("[PROJECT_VIEW_INTERACTION_FETCH_ERROR]", error);
   }

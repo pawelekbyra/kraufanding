@@ -10,43 +10,44 @@ import { incrementProjectViews } from '@/lib/actions/interactions';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  try {
-    // Fetch the "Secret Project" (main featured project)
-    const secretProject = await prisma.project.findUnique({
-      where: { slug: 'secret-project' },
-      include: {
-        creator: true,
-        tiers: true,
-        posts: true,
-      },
-    });
+  // Fetch the "Secret Project" (main featured project)
+  // We use a broader fetch and handle missing fields in mapping to be resilient to DB transitions
+  const secretProject = await prisma.project.findUnique({
+    where: { slug: 'secret-project' },
+    include: {
+      creator: true,
+      tiers: true,
+      posts: true,
+    },
+  }).catch(err => {
+    console.error("[HOME_FETCH_ERROR]", err);
+    return null;
+  });
 
-    if (!secretProject) {
-      // If not found by slug, fallback to the latest project or 404
-      const latest = await prisma.project.findFirst({
-          include: { creator: true, tiers: true, posts: true },
-          orderBy: { createdAt: 'desc' }
-      });
-      if (!latest) return notFound();
-      return <FeaturedHome project={latest} />;
-    }
+  if (!secretProject) {
+    // If not found by slug, fallback to the latest project or 404
+    const latest = await prisma.project.findFirst({
+        include: { creator: true, tiers: true, posts: true },
+        orderBy: { createdAt: 'desc' }
+    }).catch(() => null);
 
-    // Increment views in background
-    incrementProjectViews(secretProject.id).catch(err => console.error("[HOME_VIEW_INCREMENT_ERROR]", err));
-
-    return <FeaturedHome project={secretProject} />;
-  } catch (error) {
-    console.error("[HOME_FETCH_ERROR]", error);
-    // Fallback to a safe UI if DB is in transition
-    return (
-        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-12 text-center">
-            <div className="space-y-4">
-                <h1 className="text-4xl font-black uppercase">Platforma w trakcie aktualizacji</h1>
-                <p className="text-lg italic opacity-50">Wróć za chwilę, przygotowujemy dla Ciebie nowe materiały.</p>
+    if (!latest) {
+        return (
+            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-12 text-center">
+                <div className="space-y-4">
+                    <h1 className="text-4xl font-black uppercase">Brak aktywnych projektów</h1>
+                    <p className="text-lg italic opacity-50">Zapraszamy wkrótce.</p>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return <FeaturedHome project={latest} />;
   }
+
+  // Increment views in background - swallow errors if column missing
+  incrementProjectViews(secretProject.id).catch(() => {});
+
+  return <FeaturedHome project={secretProject} />;
 }
 
 async function FeaturedHome({ project }: { project: any }) {
