@@ -11,44 +11,51 @@ const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft }) => {
   const percentage = Math.round((raised / goal) * 100);
 
   return (
-    <section className="bg-transparent py-4">
-      <div className="max-w-7xl mx-auto px-0">
-        <div className="stats stats-vertical lg:stats-horizontal shadow-xl w-full bg-white border border-neutral/10 rounded-3xl">
-          <div className="stat p-8">
-            <div className="stat-figure text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div className="stat-title font-black uppercase tracking-widest text-xs opacity-40">Backers</div>
-            <div className="stat-value text-primary font-black">{backers.toLocaleString()}</div>
-            <div className="stat-desc font-bold text-neutral/40 uppercase tracking-tighter mt-1">Supporters</div>
-          </div>
-
-          <div className="stat p-8">
-            <div className="stat-figure text-secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-              </svg>
-            </div>
-            <div className="stat-title font-black uppercase tracking-widest text-xs opacity-40">Time Left</div>
-            <div className="stat-value text-secondary font-black">{daysLeft} Days</div>
-            <div className="stat-desc font-bold text-neutral/40 uppercase tracking-tighter mt-1">Active Campaign</div>
-          </div>
-
-          <div className="stat p-8">
-            <div className="stat-figure text-accent">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-              </svg>
-            </div>
-            <div className="stat-title font-black uppercase tracking-widest text-xs opacity-40">Funded</div>
-            <div className="stat-value text-accent font-black">{percentage}%</div>
-            <div className="stat-desc font-bold text-neutral/40 uppercase tracking-tighter mt-1">Goal: €{goal.toLocaleString()}</div>
-          </div>
+    <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2.5rem] p-10 shadow-xl space-y-10 font-serif">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="space-y-2">
+          <h2 className="text-5xl font-black text-[#1a1a1a] tracking-tighter uppercase leading-none">
+            {raised.toLocaleString()} €
+          </h2>
+          <p className="text-[#1a1a1a]/50 text-xl italic leading-relaxed">
+            zebrane z {goal.toLocaleString()} €
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-sm font-black mb-1">Cel:</p>
+          <p className="text-3xl font-black text-[#1a1a1a] tracking-tight">{goal.toLocaleString()} €</p>
         </div>
       </div>
-    </section>
+
+      <div className="relative h-4 bg-[#1a1a1a]/5 rounded-full overflow-hidden border border-[#1a1a1a]/5">
+        <div
+          className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 ease-out"
+          style={{ width: `${Math.min(percentage, 100)}%` }}
+        ></div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-8 text-center">
+        <div className="space-y-1">
+          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{percentage}%</p>
+          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">zrealizowano</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{backers}</p>
+          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">wspierających</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{daysLeft}</p>
+          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">dni do końca</p>
+        </div>
+      </div>
+
+      <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-lg w-full rounded-2xl font-black tracking-widest text-lg shadow-xl shadow-[#1a1a1a]/10 group transition-all duration-500">
+        WESPRZYJ PROJEKT
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
+      </button>
+    </div>
   );
 };
 

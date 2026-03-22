@@ -1,5 +1,6 @@
 export interface Campaign {
   id: string;
+  slug: string;
   title: string;
   description: string;
   category: string;

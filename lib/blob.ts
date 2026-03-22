@@ -25,16 +25,25 @@ export async function getGatedBlobResponse(
   }
 
   try {
+    // 1. Get the metadata/signed URL for the private blob
     const result = await get(blobUrl, { access: 'private' });
 
-    if (!result || result.statusCode !== 200) {
+    if (!result) {
       return new NextResponse('Not found', { status: 404 });
     }
 
-    return new NextResponse(result.stream, {
+    // 2. Fetch the actual content from the Vercel Blob storage
+    const response = await fetch(result.blob.url);
+
+    if (!response.ok) {
+      return new NextResponse('Error fetching content', { status: response.status });
+    }
+
+    // 3. Return the response stream with proper headers
+    return new NextResponse(response.body, {
       headers: {
-        'Content-Type': result.blob.contentType || 'application/octet-stream',
-        'Content-Disposition': result.blob.contentDisposition,
+        'Content-Type': response.headers.get('Content-Type') || 'application/octet-stream',
+        'Content-Disposition': response.headers.get('Content-Disposition') || 'attachment',
       },
     });
   } catch (error) {

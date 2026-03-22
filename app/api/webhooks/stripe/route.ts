@@ -43,7 +43,9 @@ export async function POST(req: Request) {
       const session = event.data.object as Stripe.Checkout.Session;
       const clerkUserId = session.metadata?.clerkUserId;
       const projectId = session.metadata?.projectId;
-      const tierLevel = parseInt(session.metadata?.tierLevel || "0");
+      // Stripe metadata is always strings; ensure robust parsing
+      const tierLevelStr = session.metadata?.tierLevel || "0";
+      const tierLevel = parseInt(tierLevelStr, 10);
       const mode = session.mode;
 
       if (clerkUserId && projectId) {
