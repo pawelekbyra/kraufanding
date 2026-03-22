@@ -59,7 +59,7 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
                     </h4>
                     <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
                       {!isLoggedIn
-                        ? 'Ten wstępny wgląd jest dostępny tylko dla zarejestrowanych użytkowników. Zaloguj się, aby odblokować.'
+                        ? 'Zostaw Napiwek, aby obczaić.'
                         : 'Jesteś zalogowany. Ten wstępny raport jest dla Ciebie dostępny.'}
                     </p>
                     <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
@@ -72,7 +72,7 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
                          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                             <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Ściśle Tajne</span>
                             <SignInButton mode="modal">
-                               <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">Zaloguj się</button>
+                               <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">Zostaw Napiwek</button>
                             </SignInButton>
                             <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
                          </div>

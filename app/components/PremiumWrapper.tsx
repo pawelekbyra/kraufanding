@@ -88,7 +88,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
         ŚCIŚLE TAJNE
       </h4>
       <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-        Dołącz do Patronów aby obczaić.
+        Zostaw Napiwek, aby obczaić.
       </p>
       <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
          <img
@@ -101,14 +101,14 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
             {!isLoggedIn ? (
               <SignInButton mode="modal">
                 <div className="flex flex-col items-center cursor-pointer group/btn">
-                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">Dołącz do Patronów</button>
+                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">Zostaw Napiwek</button>
                    <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
                 </div>
               </SignInButton>
             ) : (
               <div className="flex flex-col items-center">
                 <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 hover:scale-105 transition-transform">
-                  Dołącz do Patronów
+                  Zostaw Napiwek
                 </a>
                 <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
               </div>
