@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getGatedBlobResponse } from '@/lib/blob';
 import { prisma } from '@/lib/prisma';
@@ -11,13 +11,13 @@ export async function GET(
   const { searchParams } = new URL(req.url);
 
   if (!userId) {
-    return new Response('Unauthorized', { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const projectId = searchParams.get('projectId');
 
   if (!projectId) {
-    return new Response('Bad Request: projectId is required', { status: 400 });
+    return NextResponse.json({ error: 'Bad Request: projectId is required' }, { status: 400 });
   }
 
   const filePath = params.path.join('/');

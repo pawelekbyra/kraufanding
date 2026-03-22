@@ -6,24 +6,24 @@ export const dynamic = 'force-dynamic';
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-01-27' as any,
+      apiVersion: '2024-12-18.acacia' as any,
     })
   : null;
 
 export async function POST(req: Request) {
   if (!stripe) {
-    return new NextResponse("Stripe not configured", { status: 500 });
+    return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { amount, projectId, tierLevel, title } = await req.json();
 
     if (!amount || !projectId || !tierLevel) {
-      return new NextResponse("Missing parameters", { status: 400 });
+      return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -54,6 +54,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("[STRIPE_CHECKOUT_ERROR]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({
+      error: "Internal Error",
+      message: error instanceof Error ? error.message : "Unknown error"
+    }, { status: 500 });
   }
 }
