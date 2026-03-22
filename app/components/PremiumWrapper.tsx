@@ -99,19 +99,19 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
             <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Ściśle Tajne</span>
             {!isLoggedIn ? (
-              <>
-                <SignInButton mode="modal">
-                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">Zaloguj się</button>
-                </SignInButton>
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
-              </>
+              <SignInButton mode="modal">
+                <div className="flex flex-col items-center cursor-pointer group/btn">
+                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">Dołącz do Patronów</button>
+                   <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
+                </div>
+              </SignInButton>
             ) : (
-              <>
-                <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">
+              <div className="flex flex-col items-center">
+                <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 hover:scale-105 transition-transform">
                   Dołącz do Patronów
                 </a>
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
-              </>
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
+              </div>
             )}
          </div>
       </div>

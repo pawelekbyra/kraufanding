@@ -23,7 +23,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
       return;
     }
 
-    const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota');
+    const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') || reward.title.toLowerCase().includes('zostaw napiwek');
     const amount = isCustom ? (customAmounts[reward.id] || reward.amount) : reward.amount;
 
     if (isCustom && amount < 10) {
@@ -39,7 +39,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
       let tierLevel = Math.min(index + 1, 5);
       if (isCustom) {
         tierLevel = 1;
-      } else if (reward.title.toLowerCase().includes('obserwator') || reward.title.toLowerCase().includes('dyszka')) {
+      } else if (reward.title.toLowerCase().includes('obserwator') || reward.title.toLowerCase().includes('dyszka') || reward.title.toLowerCase().includes('dostep obserwatora')) {
         tierLevel = 2;
       }
 
@@ -68,7 +68,9 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
 
   return (
     <div className="space-y-8 font-serif">
-      {rewards.map((reward, index) => (
+      {rewards.map((reward, index) => {
+        const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') || reward.title.toLowerCase().includes('zostaw napiwek');
+        return (
         <div
           key={reward.id}
           className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-8 shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-all duration-500 group cursor-pointer relative overflow-hidden"
@@ -82,7 +84,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
           <div className="space-y-6 relative z-10">
             <div className="space-y-2">
               <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                {reward.title.toLowerCase().includes('napiwek')
+                {isCustom
                   ? `${(customAmounts[reward.id] || reward.amount).toLocaleString('pl-PL')} €`
                   : `${reward.amount.toLocaleString('pl-PL')} €`}
               </h4>
@@ -91,7 +93,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
               </h3>
             </div>
 
-            {reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') ? (
+            {isCustom ? (
               <div className="space-y-4">
                 <p className="text-[#1a1a1a]/60 text-lg leading-relaxed italic">
                   Wpisz kwotę, którą chcesz wesprzeć projekt (min. 10 €):
@@ -138,7 +140,8 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
             </button>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
