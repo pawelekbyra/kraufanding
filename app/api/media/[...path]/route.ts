@@ -15,11 +15,23 @@ export async function GET(
 
   const projectId = searchParams.get('projectId');
   const minTierStr = searchParams.get('minTier') || '1';
-  const minTier = parseInt(minTierStr, 10);
+  let minTier = parseInt(minTierStr, 10);
 
   if (!projectId) {
     return new Response('Bad Request: projectId is required', { status: 400 });
   }
+
+  /**
+   * SECURITY NOTE:
+   * In a production environment, the required `minTier` for a specific file should be
+   * fetched from a server-side database mapping (e.g., a 'MediaAsset' table).
+   * Relying on a client-provided `minTier` query parameter allows users to bypass
+   * access checks by manually changing the URL.
+   *
+   * For this implementation, we enforce a minimum tier of 1 (FREE) to ensure
+   * only authenticated users can access any media through this route.
+   */
+  minTier = Math.max(minTier, 1);
 
   const blobUrl = params.path.join('/');
 
