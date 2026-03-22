@@ -10,6 +10,7 @@ export const mockCampaigns: Campaign[] = [
     author: "Secret Author",
     goal: 10000,
     raised: 6500,
+    views: 124562,
     thumbnail: "https://picsum.photos/900/400",
     endDate: "2024-12-31",
     story: [
@@ -70,6 +71,7 @@ export const mockCampaigns: Campaign[] = [
     author: "Green Future Team",
     goal: 50000,
     raised: 12500,
+    views: 124562,
     thumbnail: "https://picsum.photos/seed/eco/900/400",
     endDate: "2025-06-01",
     story: [

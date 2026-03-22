@@ -6,6 +6,7 @@ import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
 interface ProjectViewProps {
   campaign: Campaign;
@@ -21,6 +22,21 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
     email: user?.primaryEmailAddress?.emailAddress || ''
   } : null;
 
+  // Fetch initial interactivity state for the project
+  let initialIsLiked = false;
+  let initialIsSubscribed = false;
+  let likesCount = 0;
+  if (userId) {
+     const dbUser = await prisma.user.findUnique({ where: { clerkUserId: userId }, select: { id: true, isSubscribed: true } });
+     if (dbUser) {
+        initialIsLiked = !!(await prisma.projectLike.findUnique({
+            where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
+        }));
+        initialIsSubscribed = dbUser.isSubscribed;
+     }
+  }
+  likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
+
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
       {/* EXACT YOUTUBE WIDTH */}
@@ -33,18 +49,18 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
           <div className="col-span-12 lg:col-span-8">
 
             {/* VIDEO PLAYER & METADATA */}
-            <Hero campaign={campaign} />
+            <Hero campaign={{ ...campaign, initialIsLiked, initialIsSubscribed, likesCount }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
             <div className="mt-4 bg-[#1a1a1a]/5 rounded-xl p-4 space-y-2 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-sm font-bold">
-                  <span>124,562 wyświetleń</span>
+                  <span>{(campaign as any).views?.toLocaleString() || '124,562'} wyświetleń</span>
                   <span>21 mar 2025</span>
                </div>
                <div className="text-sm leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90">
                   {campaign.description}
                   <br />
-                  Zapraszam do obczajenia mojej nowej zrzutki. Wspierając ten projekt, zyskujesz dostęp do tajnych materiałów operacyjnych.
+                  Zapraszam do obczajenia moich nowych materiałów wideo. Wspierając ten projekt, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
                </div>
                <button className="text-xs font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
             </div>
