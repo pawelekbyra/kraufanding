@@ -96,10 +96,17 @@ async function main() {
         create: [
           {
             level: 2,
-            name: 'Observer Access',
-            description: 'Access to the confidential archive and base reports.',
-            priceOneTime: 25000,
+            name: 'Dostęp Obserwatora',
+            description: 'Dostęp do poufnego archiwum i raportów bazowych.',
+            priceOneTime: 1000,
             slotsTaken: 24,
+          },
+          {
+            level: 1,
+            name: 'Wyślij napiwek',
+            description: 'Dowolna kwota wsparcia projektu.',
+            priceOneTime: 1000,
+            slotsTaken: 0,
           },
         ],
       },
