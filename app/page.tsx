@@ -30,8 +30,8 @@ export default async function Home() {
     return <FeaturedHome project={latest} />;
   }
 
-  // Increment views
-  incrementProjectViews(secretProject.id);
+  // Increment views in background
+  incrementProjectViews(secretProject.id).catch(err => console.error("[HOME_VIEW_INCREMENT_ERROR]", err));
 
   return <FeaturedHome project={secretProject} />;
 }
