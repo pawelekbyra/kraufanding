@@ -105,13 +105,33 @@ export async function POST(req: Request) {
 
     case 'customer.subscription.deleted': {
       const subscription = event.data.object as Stripe.Subscription;
-      // We don't have a direct mapping from stripeSubscriptionId to UserProjectAccess in this webhook
-      // but we might want to update a separate Subscription table if we had one.
-      // Based on schema, we do have a Subscription model.
-      await prisma.subscription.update({
+
+      const sub = await prisma.subscription.update({
         where: { stripeSubscriptionId: subscription.id },
-        data: { status: 'canceled' }
+        data: { status: 'canceled' },
+        include: { user: true }
       }).catch(() => null);
+
+      if (sub && sub.user) {
+        // Find if this user had active project access via subscription
+        // and downgrade them to FREE tier for that project.
+        await prisma.userProjectAccess.updateMany({
+          where: {
+            userId: sub.user.id,
+            accessType: 'subscription'
+          },
+          data: {
+            tierLevel: 1, // Reset to FREE
+            expiresAt: new Date() // Expire now
+          }
+        });
+
+        // Also reset user global tier if it was tied to this sub
+        await prisma.user.update({
+          where: { id: sub.user.id },
+          data: { tier: UserTier.FREE }
+        });
+      }
       break;
     }
 
