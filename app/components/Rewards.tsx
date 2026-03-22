@@ -22,13 +22,13 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
     id: 'tip-reward',
     title: 'Zostaw Napiwek',
     amount: 10,
-    description: 'Dostęp do treści dla Patronów i moja ogromna wdzięczność.',
+    description: 'Wpłać dowolną kwotę i uzyskaj dostęp do treści dla Patronów.',
     deliveryDate: 'Natychmiast',
     backers: 124
   };
 
-  // Prepend it to the list of rewards
-  const allRewards = [tipReward, ...rewards];
+  // Only show the "Zostaw Napiwek" reward (hide others as requested)
+  const allRewards = [tipReward];
 
   const onSupport = async (reward: Reward, index: number) => {
     if (!userId) {

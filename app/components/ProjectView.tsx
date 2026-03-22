@@ -93,7 +93,7 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
 
           {/* RIGHT COLUMN: SIDEBAR REWARDS */}
           <aside className="lg:col-span-4 space-y-12" id="rewards">
-            <div className="sticky top-24">
+            <div>
               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 text-[#1a1a1a] font-serif border-b-2 border-[#1a1a1a]/5 pb-4">
                 Nagrody
               </h3>
