@@ -95,18 +95,18 @@ async function main() {
       tiers: {
         create: [
           {
-            level: 2,
-            name: 'Dostęp Obserwatora',
-            description: 'Dostęp do poufnego archiwum i raportów bazowych.',
-            priceOneTime: 1000,
-            slotsTaken: 24,
-          },
-          {
             level: 1,
-            name: 'Wyślij napiwek',
-            description: 'Dowolna kwota wsparcia projektu.',
+            name: 'Twoja Kwota',
+            description: 'Dowolna kwota wsparcia projektu (minimum 10 €).',
             priceOneTime: 1000,
             slotsTaken: 0,
+          },
+          {
+            level: 2,
+            name: 'Dyszka',
+            description: 'Podstawowy dostęp do archiwum.',
+            priceOneTime: 1000,
+            slotsTaken: 24,
           },
         ],
       },

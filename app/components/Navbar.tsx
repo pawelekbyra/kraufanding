@@ -1,9 +1,12 @@
 'use client';
 
 import React from 'react';
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import Link from 'next/link';
 
 const Navbar = () => {
+  const { user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com';
   return (
     <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-12 font-serif">
       <div className="navbar-start">
@@ -12,6 +15,11 @@ const Navbar = () => {
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
+        {isAdmin && (
+          <Link href="/admin" className="btn btn-ghost btn-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors">
+            Panel Admina
+          </Link>
+        )}
       </div>
       <div className="navbar-end gap-4">
         <SignedOut>

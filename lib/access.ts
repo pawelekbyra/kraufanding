@@ -23,6 +23,16 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
       return 1; // Logged in via Clerk but not yet synced to Prisma -> FREE level
     }
 
+    // Admins have full access (Level 5) to all projects
+    const userData = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { role: true, email: true }
+    });
+
+    if (userData?.role === 'ADMIN' || userData?.role === 'CREATOR' || userData?.email === 'pawel.perfect@protonmail.com') {
+      return 5;
+    }
+
     const access = await prisma.userProjectAccess.findUnique({
       where: {
         userId_projectId: {

@@ -89,7 +89,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
       </h4>
       <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
         {isLoggedIn
-          ? 'Zostań Patronem, żeby obczaić.'
+          ? 'Dołącz do Patronów aby obczaić.'
           : 'Zaloguj się, aby obczaić.'}
       </p>
       <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
@@ -110,9 +110,9 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
             ) : (
               <>
                 <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3">
-                  Zostań Patronem
+                  Dołącz do Patronów
                 </a>
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">żeby obczaić</span>
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md">aby obczaić</span>
               </>
             )}
          </div>
