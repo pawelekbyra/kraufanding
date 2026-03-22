@@ -2,11 +2,18 @@ import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27' as any,
-});
+export const dynamic = 'force-dynamic';
+
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-01-27' as any,
+    })
+  : null;
 
 export async function POST(req: Request) {
+  if (!stripe) {
+    return new NextResponse("Stripe not configured", { status: 500 });
+  }
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {

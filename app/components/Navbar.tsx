@@ -24,11 +24,6 @@ const Navbar = () => {
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 font-bold">
-          <li><a href="/#story">Story</a></li>
-          <li><a href="/#rewards">Rewards</a></li>
-          <li><a href="/#updates">Updates</a></li>
-        </ul>
       </div>
       <div className="navbar-end gap-4">
         <SignedOut>
@@ -39,9 +34,6 @@ const Navbar = () => {
         <SignedIn>
           <UserButton afterSignOutUrl="/" />
         </SignedIn>
-        <button className="btn btn-primary btn-sm md:btn-md rounded-xl font-black shadow-lg">
-          BACK PROJECT
-        </button>
       </div>
     </div>
   );
