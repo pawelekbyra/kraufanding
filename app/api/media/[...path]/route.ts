@@ -26,5 +26,7 @@ export async function GET(
   // We can't easily verify the project/tier without more metadata in the request,
   // but we can at least demonstrate the gated response utility.
   // In a real scenario, you'd pass the actual project ID and required tier level here.
-  return getGatedBlobResponse(fullUrl, userId, 'project_1', 1);
+  // Swapped arguments fixed:
+  // getGatedBlobResponse(clerkUserId, projectId, blobUrl, minTier)
+  return getGatedBlobResponse(userId, 'project_1', fullUrl, 1);
 }

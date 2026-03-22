@@ -3,6 +3,7 @@ import { Campaign } from "../types/campaign";
 export const mockCampaigns: Campaign[] = [
   {
     id: "secret-project",
+    slug: "secret-project",
     title: "I raise money for my secret projekt",
     description: "This is a secret project that aims to change something big. I cannot reveal all details yet, but your support will help bring this idea to life. Every contribution counts and pushes this project forward.",
     category: "Technology",
@@ -59,5 +60,42 @@ export const mockCampaigns: Campaign[] = [
         content: "This looks amazing! I can't wait to get my hands on it."
       }
     ]
+  },
+  {
+    id: "eco-city",
+    slug: "eco-city-initiative",
+    title: "Eco City: Sustainable Urban Living",
+    description: "Help us transform urban spaces into green oases. We are developing modular vertical gardens and automated composting systems for city dwellers.",
+    category: "Environment",
+    author: "Green Future Team",
+    goal: 50000,
+    raised: 12500,
+    thumbnail: "https://picsum.photos/seed/eco/900/400",
+    endDate: "2025-06-01",
+    story: [
+      "Urbanization is moving fast, but our cities are losing their connection to nature.",
+      "Eco City is a mission to bring green back to every balcony and rooftop.",
+      "We've designed a modular system that's easy to install and maintain, even for the busiest professionals."
+    ],
+    rewards: [
+      {
+        id: "eco-1",
+        title: "Starter Kit",
+        amount: 100,
+        description: "One vertical garden module and organic seeds.",
+        deliveryDate: "August 2025",
+        backers: 45
+      },
+      {
+        id: "eco-2",
+        title: "Home Forest",
+        amount: 500,
+        description: "Five modules plus an automated irrigation system.",
+        deliveryDate: "July 2025",
+        backers: 12
+      }
+    ],
+    updates: [],
+    comments: []
   }
 ];

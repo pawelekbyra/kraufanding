@@ -14,9 +14,9 @@ const Navbar = () => {
             </svg>
           </div>
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a href="#story">Story</a></li>
-            <li><a href="#rewards">Rewards</a></li>
-            <li><a href="#updates">Updates</a></li>
+            <li><a href="/#story">Story</a></li>
+            <li><a href="/#rewards">Rewards</a></li>
+            <li><a href="/#updates">Updates</a></li>
           </ul>
         </div>
         <a href="/" className="btn btn-ghost text-2xl font-black tracking-tighter uppercase">
@@ -25,9 +25,9 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 font-bold">
-          <li><a href="#story">Story</a></li>
-          <li><a href="#rewards">Rewards</a></li>
-          <li><a href="#updates">Updates</a></li>
+          <li><a href="/#story">Story</a></li>
+          <li><a href="/#rewards">Rewards</a></li>
+          <li><a href="/#updates">Updates</a></li>
         </ul>
       </div>
       <div className="navbar-end gap-4">
