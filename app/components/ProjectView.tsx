@@ -33,18 +33,8 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
         {/* MAIN LAYOUT (CONTENT + SIDEBAR) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
 
-          {/* LEFT COLUMN: PROGRESS & COMMENTS */}
+          {/* LEFT COLUMN: COMMENTS */}
           <div className="lg:col-span-8 space-y-16">
-
-            {/* PROGRESS BOX */}
-            <div className="pt-8 border-t border-[#1a1a1a]/5">
-              <Stats
-                raised={campaign.raised}
-                goal={campaign.goal}
-                backers={248}
-                daysLeft={14}
-              />
-            </div>
 
             {/* COMMENTS SECTION */}
             <div className="pt-16 border-t border-[#1a1a1a]/5">
@@ -73,28 +63,32 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
                   Ekskluzywne Materiały
                 </h3>
 
-                <div className="space-y-6">
-                   <div className="group cursor-pointer">
-                      <PremiumWrapper projectId={projectId} minTier={1}>
-                        <div className="aspect-video rounded-2xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
-                           <img src="https://picsum.photos/seed/ops/400/225" alt="Ops" className="w-full h-full object-cover" />
-                        </div>
-                      </PremiumWrapper>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+                   <div className="group cursor-pointer flex lg:flex-col gap-4 lg:gap-0">
+                      <div className="w-40 lg:w-full shrink-0">
+                        <PremiumWrapper projectId={projectId} minTier={1}>
+                          <div className="aspect-video rounded-xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
+                             <img src="https://picsum.photos/seed/ops/400/225" alt="Ops" className="w-full h-full object-cover" />
+                          </div>
+                        </PremiumWrapper>
+                      </div>
                       <div className="!mt-0">
-                         <p className="text-sm font-black uppercase tracking-tight line-clamp-2">Briefing Operacyjny: Tajne dane</p>
-                         <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Zalogowanych</p>
+                         <p className="text-xs font-black uppercase tracking-tight line-clamp-2">Briefing Operacyjny: Tajne dane</p>
+                         <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Zalogowanych</p>
                       </div>
                    </div>
 
-                   <div className="group cursor-pointer">
-                      <PremiumWrapper projectId={projectId} minTier={2}>
-                        <div className="aspect-video rounded-2xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
-                           <img src="https://picsum.photos/seed/premium/400/225" alt="Secret" className="w-full h-full object-cover" />
-                        </div>
-                      </PremiumWrapper>
+                   <div className="group cursor-pointer flex lg:flex-col gap-4 lg:gap-0">
+                      <div className="w-40 lg:w-full shrink-0">
+                        <PremiumWrapper projectId={projectId} minTier={2}>
+                          <div className="aspect-video rounded-xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
+                             <img src="https://picsum.photos/seed/premium/400/225" alt="Secret" className="w-full h-full object-cover" />
+                          </div>
+                        </PremiumWrapper>
+                      </div>
                       <div className="!mt-0">
-                         <p className="text-sm font-black uppercase tracking-tight line-clamp-2">Pełny Raport Śledczy: Dowody</p>
-                         <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Patronów</p>
+                         <p className="text-xs font-black uppercase tracking-tight line-clamp-2">Pełny Raport Śledczy: Dowody</p>
+                         <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Patronów</p>
                       </div>
                    </div>
                 </div>
@@ -104,47 +98,6 @@ export default async function ProjectView({ campaign, otherCampaigns }: ProjectV
 
         </div>
 
-        {/* OTHER PROJECTS GALLERY */}
-        {otherCampaigns && otherCampaigns.length > 0 && (
-          <section className="mt-48 pt-24 border-t-4 border-double border-[#1a1a1a]/10">
-            <div className="text-center mb-16">
-              <h2 className="text-5xl font-black uppercase tracking-tighter mb-4 text-[#1a1a1a]">Inne Zrzutki</h2>
-              <p className="text-xl italic opacity-50 font-serif">Odkryj więcej projektów na polutek.pl</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {otherCampaigns.map((other) => (
-                <Link key={other.id} href={`/projects/${other.slug}`} className="group">
-                  <div className="bg-white border-2 border-[#1a1a1a]/5 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                    <div className="aspect-[16/9] relative overflow-hidden bg-[#1a1a1a]/5">
-                      <img
-                        src={other.thumbnail}
-                        alt={other.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale group-hover:grayscale-0"
-                      />
-                    </div>
-                    <div className="p-8 space-y-6">
-                      <h3 className="text-2xl font-black uppercase tracking-tight group-hover:text-primary transition-colors line-clamp-1">{other.title}</h3>
-
-                      <div className="space-y-4">
-                        <div className="h-1.5 bg-[#1a1a1a]/5 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary transition-all duration-1000"
-                            style={{ width: `${Math.min((other.raised / other.goal) * 100, 100)}%` }}
-                          ></div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                           <span className="text-lg font-black">€{other.raised.toLocaleString('pl-PL')}</span>
-                           <span className="text-[10px] font-black uppercase tracking-widest opacity-30 italic">z €{other.goal.toLocaleString('pl-PL')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </main>
   );

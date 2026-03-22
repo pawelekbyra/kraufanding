@@ -19,6 +19,7 @@ model User {
   creators         Creator[]
   donations        Donation[]
   payments         Payment[]
+  tips             Tip[]
   subscriptions    Subscription[]
   projectAccess    UserProjectAccess[]
   comments         Comment[]
@@ -152,6 +153,17 @@ model Payment {
   project         Project  @relation(fields: [projectId], references: [id])
   tier            Tier?    @relation(fields: [tierId], references: [id])
   user            User     @relation(fields: [userId], references: [id])
+}
+
+model Tip {
+  id              String   @id @default(uuid())
+  userId          String
+  amount          Int      // Amount in cents
+  currency        String   @default("EUR")
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Comment {

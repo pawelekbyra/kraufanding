@@ -28,6 +28,9 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
+          <Link href="/user-profile" className="btn btn-ghost btn-sm font-black uppercase tracking-widest text-[#1a1a1a]/60 hover:text-primary transition-colors">
+            Mój Profil
+          </Link>
           <UserButton afterSignOutUrl="/" />
         </SignedIn>
       </div>
