@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   try {
     let internalUserId = null;
     if (clerkUserId) {
-        const user = await prisma.user.findUnique({ where: { clerkUserId } });
+        const user = await prisma.user.findUnique({ where: { clerkUserId } }).catch(() => null);
         internalUserId = user?.id;
     }
 
@@ -48,9 +48,18 @@ export async function GET(request: NextRequest) {
     });
 
     const commentsWithLiked = await Promise.all(comments.map(async (c) => {
-        const isLiked = internalUserId ? !!(await prisma.commentLike.findUnique({
-            where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-        })) : false;
+        let isLiked = false;
+        try {
+            if (internalUserId) {
+                const like = await prisma.commentLike.findUnique({
+                    where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
+                });
+                isLiked = !!like;
+            }
+        } catch (e) {
+            // Swallow if model/table missing
+        }
+
         return {
             ...c,
             isLiked,
