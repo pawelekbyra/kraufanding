@@ -56,6 +56,20 @@ model Project {
   tiers           Tier[]
   projectAccess   UserProjectAccess[]
   comments        Comment[]
+  files           ProjectFile[]
+}
+
+model ProjectFile {
+  id        String   @id @default(uuid())
+  projectId String
+  path      String   @unique
+  url       String
+  minTier   Int      @default(1)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
 }
 
 model Tier {

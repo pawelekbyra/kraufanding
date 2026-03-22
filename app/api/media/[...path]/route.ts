@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getGatedBlobResponse } from '@/lib/blob';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   req: NextRequest,
@@ -14,31 +15,30 @@ export async function GET(
   }
 
   const projectId = searchParams.get('projectId');
-  const minTierStr = searchParams.get('minTier') || '1';
-  let minTier = parseInt(minTierStr, 10);
 
   if (!projectId) {
     return new Response('Bad Request: projectId is required', { status: 400 });
   }
 
-  /**
-   * SECURITY NOTE:
-   * In a production environment, the required `minTier` for a specific file should be
-   * fetched from a server-side database mapping (e.g., a 'MediaAsset' table).
-   * Relying on a client-provided `minTier` query parameter allows users to bypass
-   * access checks by manually changing the URL.
-   *
-   * For this implementation, we enforce a minimum tier of 1 (FREE) to ensure
-   * only authenticated users can access any media through this route.
-   */
-  minTier = Math.max(minTier, 1);
+  const filePath = params.path.join('/');
 
-  const blobUrl = params.path.join('/');
+  // Fetch the file configuration from the database to get the true minTier
+  const projectFile = await prisma.projectFile.findUnique({
+    where: { path: filePath },
+  });
 
-  // For this demonstration, we assume the path is the Vercel Blob host + path.
-  // In production, map this to a DB-stored blob URL for better security.
-  const fullUrl = `https://${blobUrl}`;
+  if (!projectFile) {
+    // If not found in DB, default to at least level 1 (FREE)
+    // and assume the user is trying to access a generic file.
+    // In a strict environment, you might return 404 here.
+    const minTier = 1;
+    const fullUrl = `https://${filePath}`;
+    return getGatedBlobResponse(userId, projectId, fullUrl, minTier);
+  }
+
+  // Use the verified minTier from the database
+  const fullUrl = projectFile.url;
 
   // Securely stream the gated content from Vercel Blob
-  return getGatedBlobResponse(userId, projectId, fullUrl, minTier);
+  return getGatedBlobResponse(userId, projectId, fullUrl, projectFile.minTier);
 }
