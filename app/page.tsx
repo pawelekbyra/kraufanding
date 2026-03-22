@@ -1,91 +1,97 @@
 import React from 'react';
-import Link from 'next/link';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ProjectView from './components/ProjectView';
 import { prisma } from '@/lib/prisma';
 import { Campaign } from './types/campaign';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const projects = await prisma.project.findMany({
+  // Fetch the "Secret Project" (main featured project)
+  const secretProject = await prisma.project.findUnique({
+    where: { slug: 'secret-project' },
     include: {
       creator: true,
       tiers: true,
+      posts: true,
     },
-    take: 6,
-    orderBy: { createdAt: 'desc' },
   });
 
-  const campaigns: Campaign[] = projects.map(project => ({
-    id: project.id,
-    slug: project.slug,
-    title: project.title,
-    description: project.title,
-    category: "Technology",
-    author: project.creator.name,
-    goal: project.goalAmount / 100,
-    raised: project.collectedAmount / 100,
-    thumbnail: "https://picsum.photos/seed/" + project.slug + "/800/450",
-    endDate: project.publishedAt?.toISOString() || "",
-  }));
+  if (!secretProject) {
+    // If not found by slug, fallback to the latest project or 404
+    const latest = await prisma.project.findFirst({
+        include: { creator: true, tiers: true, posts: true },
+        orderBy: { createdAt: 'desc' }
+    });
+    if (!latest) return notFound();
+    return <FeaturedHome project={latest} />;
+  }
 
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
-      <Navbar />
+  return <FeaturedHome project={secretProject} />;
+}
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-24">
-          <h1 className="text-7xl font-black uppercase tracking-tighter mb-6 text-[#1a1a1a]">Discover Secret Projects</h1>
-          <p className="text-2xl italic opacity-50 font-serif">Empowering confidential innovation and research.</p>
+async function FeaturedHome({ project }: { project: any }) {
+    // Map to Campaign interface
+    const campaign: Campaign = {
+        id: project.id,
+        slug: project.slug,
+        title: project.title,
+        description: project.title,
+        category: "Technology",
+        author: project.creator.name,
+        goal: project.goalAmount / 100,
+        raised: project.collectedAmount / 100,
+        thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
+        endDate: project.publishedAt?.toISOString() || "",
+        story: [
+          project.title + " aims to change something big.",
+          "Support this project to help bring this idea to life."
+        ],
+        rewards: project.tiers.map((t: any) => ({
+          id: t.id,
+          title: t.name,
+          amount: t.priceOneTime / 100,
+          description: t.description || "",
+          deliveryDate: "March 2025",
+          backers: t.slotsTaken
+        })),
+        updates: project.posts.map((p: any) => ({
+          id: p.id,
+          date: p.publishedAt.toISOString().split('T')[0],
+          title: p.title,
+          content: p.contentPublic || ""
+        })),
+        comments: []
+    };
+
+    // Fetch other projects for the gallery at the bottom
+    const otherProjects = await prisma.project.findMany({
+        where: { id: { not: project.id } },
+        include: { creator: true },
+        take: 6,
+        orderBy: { createdAt: 'desc' }
+    });
+
+    const otherCampaigns: Campaign[] = otherProjects.map(p => ({
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        description: p.title,
+        category: "Technology",
+        author: p.creator.name,
+        goal: p.goalAmount / 100,
+        raised: p.collectedAmount / 100,
+        thumbnail: "https://picsum.photos/seed/" + p.slug + "/800/450",
+        endDate: p.publishedAt?.toISOString() || "",
+    }));
+
+    return (
+        <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
+            <Navbar />
+            <ProjectView campaign={campaign} otherCampaigns={otherCampaigns} />
+            <Footer />
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-          {campaigns.map((campaign) => (
-            <Link key={campaign.id} href={`/projects/${campaign.slug}`} className="group">
-              <div className="bg-white border-2 border-[#1a1a1a]/5 rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 hover:-translate-y-4">
-                <div className="aspect-[16/9] relative overflow-hidden">
-                  <img
-                    src={campaign.thumbnail}
-                    alt={campaign.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                  />
-                  <div className="absolute top-6 left-6 bg-primary text-[#FDFBF7] text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2 rounded-full shadow-2xl">
-                    {campaign.category}
-                  </div>
-                </div>
-                <div className="p-10 space-y-8">
-                  <div className="space-y-3">
-                    <h3 className="text-3xl font-black mb-3 uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">{campaign.title}</h3>
-                    <p className="text-[#1a1a1a]/50 line-clamp-2 italic font-serif text-lg">{campaign.description}</p>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="h-2 bg-[#1a1a1a]/5 rounded-full overflow-hidden border border-[#1a1a1a]/5">
-                      <div
-                        className="h-full bg-primary transition-all duration-1000"
-                        style={{ width: `${Math.min((campaign.raised / campaign.goal) * 100, 100)}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <span className="block text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-1 italic">Raised</span>
-                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.raised.toLocaleString('pl-PL')}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="block text-[10px] font-black uppercase tracking-[0.2em] opacity-30 mb-1 italic">Goal</span>
-                        <span className="text-2xl font-black text-[#1a1a1a]">€{campaign.goal.toLocaleString('pl-PL')}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-
-      <Footer />
-    </div>
-  );
+    );
 }
