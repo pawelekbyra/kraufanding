@@ -1,7 +1,6 @@
 import React from 'react';
 import { Campaign } from '../types/campaign';
 import { ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
-import Stats from './Stats';
 
 interface HeroProps {
   campaign: Campaign;
@@ -9,8 +8,8 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ campaign }) => {
   return (
-    <section className="bg-[#FDFBF7] pt-12 pb-8">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#FDFBF7] pt-12 pb-4">
+      <div className="w-full">
         {/* FEATURED MEDIA (VIDEO PLACEHOLDER) */}
         <div className="relative aspect-video w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-[#1a1a1a]/5 mb-8 group bg-black">
           <img
@@ -33,7 +32,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
             {campaign.title} - Cover (Official Music Video)
           </h2>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-[#1a1a1a]/5">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-6 border-b border-[#1a1a1a]/5">
             <div className="flex items-center gap-4">
                <div className="w-12 h-12 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${campaign.author}`} alt={campaign.author} />
@@ -60,30 +59,6 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                   <span className="text-xs font-black uppercase tracking-widest">Udostępnij</span>
                </button>
             </div>
-          </div>
-
-          {/* DESCRIPTION BOX */}
-          <div className="bg-[#1a1a1a]/5 rounded-[2rem] p-6 sm:p-8 space-y-4">
-             <div className="flex gap-4 text-sm font-black uppercase tracking-widest">
-                <span>124,562 wyświetleń</span>
-                <span className="opacity-40 italic">21 mar 2025</span>
-             </div>
-             <div className="prose prose-neutral prose-lg italic text-[#1a1a1a]/70 leading-relaxed font-serif">
-                {campaign.description}
-                <br />
-                Zapraszam do obczajenia mojej nowej zrzutki. Wspierając ten projekt, zyskujesz dostęp do tajnych materiałów operacyjnych.
-             </div>
-          </div>
-
-          {/* CROWDFUNDING PROGRESS (FULL WIDTH) */}
-          <div className="pt-4">
-            <Stats
-              raised={campaign.raised}
-              goal={campaign.goal}
-              backers={248}
-              daysLeft={14}
-              compact
-            />
           </div>
         </div>
       </div>
