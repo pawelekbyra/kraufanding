@@ -103,12 +103,15 @@ function PaywallOverlay({ minTier, userTierLevel }: { minTier: number, userTierL
           </button>
         </SignInButton>
       ) : (
-        <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl group">
+        <a
+          href="#rewards"
+          className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-[#1a1a1a]/90 btn-lg px-12 font-black tracking-widest shadow-xl group"
+        >
           UPGRADE TO LEVEL {minTier}
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>
-        </button>
+        </a>
       )}
 
       <p className="mt-6 text-xs font-bold uppercase tracking-widest opacity-30 italic text-[#1a1a1a]">One-time payment = Permanent Access</p>

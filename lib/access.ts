@@ -20,7 +20,7 @@ export async function getProjectAccess(clerkUserId: string | null, projectId: st
     });
 
     if (!user) {
-      return 0;
+      return 1; // Logged in via Clerk but not yet synced to Prisma -> FREE level
     }
 
     const access = await prisma.userProjectAccess.findUnique({
