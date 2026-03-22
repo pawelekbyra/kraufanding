@@ -30,7 +30,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   // Increment views in the background
-  incrementProjectViews(project.id);
+  incrementProjectViews(project.id).catch(err => console.error("[PROJECT_VIEW_INCREMENT_ERROR]", err));
 
   // Map Prisma project to Campaign interface
   const campaign: Campaign = {

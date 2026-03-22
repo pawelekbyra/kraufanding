@@ -22,20 +22,30 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
     email: user?.primaryEmailAddress?.emailAddress || ''
   } : null;
 
-  // Fetch initial interactivity state for the project
+  // Fetch initial interactivity state for the project with error handling
   let initialIsLiked = false;
   let initialIsSubscribed = false;
   let likesCount = 0;
-  if (userId) {
-     const dbUser = await prisma.user.findUnique({ where: { clerkUserId: userId }, select: { id: true, isSubscribed: true } });
-     if (dbUser) {
-        initialIsLiked = !!(await prisma.projectLike.findUnique({
-            where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
-        }));
-        initialIsSubscribed = dbUser.isSubscribed;
-     }
+
+  try {
+    if (userId) {
+       const dbUser = await prisma.user.findUnique({
+         where: { clerkUserId: userId },
+         select: { id: true, isSubscribed: true }
+       });
+
+       if (dbUser) {
+          const projectLike = await prisma.projectLike.findUnique({
+              where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
+          });
+          initialIsLiked = !!projectLike;
+          initialIsSubscribed = dbUser.isSubscribed;
+       }
+    }
+    likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
+  } catch (error) {
+    console.error("[PROJECT_VIEW_INTERACTION_FETCH_ERROR]", error);
   }
-  likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
