@@ -162,9 +162,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
   return (
     <div className="space-y-12 max-w-4xl prose-lg">
-      <div className="flex items-center gap-6 mb-8">
-         <h3 className="text-xl font-black text-[#1a1a1a] uppercase tracking-widest">{comments.length} komentarzy</h3>
-         <button className="flex items-center gap-2 text-xs font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">
+      <div className="flex items-end gap-8 mb-8">
+         <h3 className="text-xl font-black text-[#1a1a1a] uppercase tracking-widest leading-none">{comments.length} komentarzy</h3>
+         <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity pb-0.5">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 4h18M6 12h12m-9 8h6" strokeLinecap="round" strokeLinejoin="round"/></svg>
             Sortuj według
          </button>
@@ -205,11 +205,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                  disabled={!newComment.trim() || postMutation.isPending}
                  className="bg-[#1a1a1a] text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest disabled:opacity-20 transition-all hover:bg-primary shadow-lg"
                >
-                 {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Komentarz')}
+                 {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Skomentuj')}
                </button>
              ) : (
                 <SignInButton mode="modal">
-                   <button id="signin-trigger" className="bg-[#1a1a1a]/5 text-[#1a1a1a] px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#1a1a1a]/10 transition-all">Zaloguj się</button>
+                   <button id="signin-trigger" className="bg-[#1a1a1a]/5 text-[#1a1a1a] px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#1a1a1a]/10 transition-all">Skomentuj</button>
                 </SignInButton>
              )}
           </div>
