@@ -64,7 +64,7 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { id, title, slug, goalAmount, collectedAmount, status } = await req.json();
+    const { id, title, slug, goalAmount, collectedAmount, status, creatorId } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
@@ -75,9 +75,10 @@ export async function PATCH(req: Request) {
       data: {
         title,
         slug,
-        goalAmount: goalAmount ? Math.round(goalAmount * 100) : undefined,
-        collectedAmount: collectedAmount ? Math.round(collectedAmount * 100) : undefined,
-        status
+        goalAmount: goalAmount !== undefined ? Math.round(Number(goalAmount) * 100) : undefined,
+        collectedAmount: collectedAmount !== undefined ? Math.round(Number(collectedAmount) * 100) : undefined,
+        status,
+        creatorId
       }
     });
 

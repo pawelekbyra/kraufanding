@@ -44,7 +44,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     enabled: !!projectId,
   });
 
-  const comments = data?.pages.flatMap((page) => page.comments) ?? [];
+  const comments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
 
   const postMutation = useMutation({
     mutationFn: async (text: string) => {
@@ -131,7 +131,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-lg">{comment.authorName || 'Użytkownik'}</span>
                 <span className="text-[10px] font-black text-[#1a1a1a]/20 uppercase tracking-[0.3em]">•</span>
                 <span className="text-[10px] font-black text-[#1a1a1a]/30 uppercase tracking-[0.2em] italic">
-                  {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl }) : ''}
+                  {comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
+                    ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
+                    : 'niedawno'}
                 </span>
               </div>
               <p className="text-[#1a1a1a]/70 font-serif text-xl leading-relaxed italic">

@@ -60,43 +60,30 @@ export default async function PremiumWrapper({
     );
   }
 
-  // Render teaser if available
-  if (teaser) {
-    const teaserNode = typeof teaser === 'function' ? teaser(userTierLevel, isLoggedIn) : teaser;
-    return (
-      <div className="space-y-12">
-        <div className="animate-in fade-in duration-700">
-          {teaserNode}
-        </div>
-        {/* PAYWALL */}
-        <PaywallOverlay minTier={minTier} isLoggedIn={isLoggedIn} />
-      </div>
-    );
-  }
-
-  // Paywall if no teaser
+  // Paywall if no access
   return <PaywallOverlay minTier={minTier} isLoggedIn={isLoggedIn} />;
 }
 
 function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: boolean }) {
   const isPatronGated = minTier >= 2;
-  const message = isPatronGated ? "Zostaw Napiwek, aby obczaić." : "Zaloguj się, aby obczaić.";
+  const headerText = isPatronGated
+    ? "Dołącz do grona Patronów, aby obczaić"
+    : "Zaloguj się, aby obczaić materiały operacyjne.";
+
+  const overlayText = isPatronGated
+    ? "Zostaw napiwek aby obczaić"
+    : "Zaloguj się aby obczaić";
+
   const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : (isLoggedIn ? "Dołącz" : "Zaloguj się");
 
   return (
-    <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] overflow-hidden group">
-      <h4 className="text-primary font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs italic">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-        ŚCIŚLE TAJNE
-      </h4>
-      <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-        {message}
+    <div className="animate-in fade-in duration-700">
+      <p className="font-serif italic text-[#1a1a1a]/60 mb-8 leading-relaxed text-lg">
+        {headerText}
       </p>
-      <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
+      <div className="aspect-video bg-[#1a1a1a]/5 rounded-[2rem] overflow-hidden mb-4 relative group border border-[#1a1a1a]/10">
          <img
-           src="https://picsum.photos/seed/patron/1200/800"
+           src={isPatronGated ? "https://picsum.photos/seed/secret/1200/800" : "https://picsum.photos/seed/operational/1200/800"}
            alt="Locked"
            className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-all duration-1000"
          />
@@ -106,7 +93,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
               <SignInButton mode="modal">
                 <div className="flex flex-col items-center cursor-pointer group/btn">
                    <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">{buttonText}</button>
-                   <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
+                   <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">{overlayText}</span>
                 </div>
               </SignInButton>
             ) : isPatronGated ? (
@@ -114,7 +101,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
                 <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 hover:scale-105 transition-transform">
                   {buttonText}
                 </a>
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
+                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">{overlayText}</span>
               </div>
             ) : null}
          </div>
