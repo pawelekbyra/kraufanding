@@ -23,18 +23,23 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
       return;
     }
 
+    const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota');
+    const amount = isCustom ? (customAmounts[reward.id] || reward.amount) : reward.amount;
+
+    if (isCustom && amount < 10) {
+      alert("Minimalna kwota wsparcia to 10 €");
+      return;
+    }
+
     try {
       setIsLoading(reward.id);
-
-      const isTip = reward.title.toLowerCase().includes('napiwek');
-      const amount = isTip ? (customAmounts[reward.id] || reward.amount) : reward.amount;
 
       // Determine tier level based on reward order or specific name
       // Level 1: Tip, 2: Observer, 3: Witness, 4: Insider, 5: Architect
       let tierLevel = Math.min(index + 1, 5);
-      if (isTip) {
+      if (isCustom) {
         tierLevel = 1;
-      } else if (reward.title.toLowerCase().includes('obserwator')) {
+      } else if (reward.title.toLowerCase().includes('obserwator') || reward.title.toLowerCase().includes('dyszka')) {
         tierLevel = 2;
       }
 
@@ -86,15 +91,15 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
               </h3>
             </div>
 
-            {reward.title.toLowerCase().includes('napiwek') ? (
+            {reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') ? (
               <div className="space-y-4">
                 <p className="text-[#1a1a1a]/60 text-lg leading-relaxed italic">
-                  Wpisz kwotę, którą chcesz wesprzeć projekt:
+                  Wpisz kwotę, którą chcesz wesprzeć projekt (min. 10 €):
                 </p>
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
-                    min="1"
+                    min="10"
                     step="1"
                     value={customAmounts[reward.id] || reward.amount}
                     onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 1 }))}
@@ -102,6 +107,9 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
                   />
                   <span className="text-2xl font-black text-[#1a1a1a]/30">€</span>
                 </div>
+                {(customAmounts[reward.id] || reward.amount) < 10 && (
+                  <p className="text-error text-xs font-black uppercase tracking-widest">Kwota musi wynosić co najmniej 10 €</p>
+                )}
               </div>
             ) : (
               <p className="text-[#1a1a1a]/60 text-lg leading-relaxed line-clamp-3">
