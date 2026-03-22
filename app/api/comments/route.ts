@@ -32,7 +32,14 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
       include: {
         author: {
-          select: { id: true, email: true } // Adapt to our User model
+          select: { id: true, email: true }
+        },
+        replies: {
+          include: {
+            author: { select: { id: true, email: true } },
+            _count: { select: { likes: true } }
+          },
+          orderBy: { createdAt: 'asc' }
         },
         _count: {
           select: { likes: true, replies: true }
