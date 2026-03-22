@@ -3,6 +3,7 @@
 import React from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
+import { User } from "lucide-react";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -28,10 +29,15 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <Link href="/user-profile" className="btn btn-ghost btn-sm font-black uppercase tracking-widest text-[#1a1a1a]/60 hover:text-primary transition-colors">
-            Mój Profil
-          </Link>
-          <UserButton afterSignOutUrl="/" />
+          <UserButton afterSignOutUrl="/">
+            <UserButton.MenuItems>
+              <UserButton.Link
+                label="Mój Profil"
+                href="/user-profile"
+                labelIcon={<User size={16} />}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
         </SignedIn>
       </div>
     </div>
