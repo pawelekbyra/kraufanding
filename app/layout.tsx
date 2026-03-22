@@ -1,4 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs'
+import Providers from "@/app/components/Providers";
 import "./globals.css";
 
 export const metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html lang="en" data-theme="polutek">
         <body className="font-serif bg-base-100 text-neutral min-h-screen">
-          {children}
+          <Providers>
+            {children}
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

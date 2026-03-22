@@ -45,7 +45,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
 
         {activeTab === 'rewards' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Rewards rewards={campaign.rewards || []} />
+            <Rewards rewards={campaign.rewards || []} projectId={campaign.id} />
           </div>
         )}
 

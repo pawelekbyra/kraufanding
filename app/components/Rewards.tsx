@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 
 interface RewardsProps {
   rewards: Reward[];
+  projectId: string;
 }
 
-const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
+const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const { userId } = useAuth();
   const router = useRouter();
@@ -33,7 +34,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
         method: 'POST',
         body: JSON.stringify({
           amount: reward.amount,
-          projectId: 'project_1', // Using first seeded project ID as fallback
+          projectId: projectId,
           tierLevel,
           title: reward.title
         }),

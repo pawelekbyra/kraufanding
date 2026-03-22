@@ -5,6 +5,7 @@ import ProjectTabs from './ProjectTabs';
 import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
 import { Campaign } from '../types/campaign';
+import { SignInButton } from '@clerk/nextjs';
 
 interface ProjectViewProps {
   campaign: Campaign;
@@ -64,6 +65,9 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
                        <img src="https://picsum.photos/seed/secret/800/450" alt="Free Sample" className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-transform duration-1000" />
                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                           <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10">Locked Preview</span>
+                          <SignInButton mode="modal">
+                             <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl">Log In</button>
+                          </SignInButton>
                        </div>
                     </div>
                   </div>
@@ -102,7 +106,7 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 text-[#1a1a1a] font-serif border-b-2 border-[#1a1a1a]/5 pb-4">
                 Nagrody
               </h3>
-              <Rewards rewards={campaign.rewards || []} />
+              <Rewards rewards={campaign.rewards || []} projectId={projectId} />
             </div>
           </aside>
 
