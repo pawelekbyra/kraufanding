@@ -10,7 +10,7 @@ async function isAuthorized(clerkUserId: string | null) {
     where: { clerkUserId },
     select: { role: true, email: true }
   });
-  return user?.role === 'ADMIN' || user?.role === 'CREATOR' || user?.email === 'pawel.perfect@protonmail.com';
+  return user?.role === 'ADMIN' || user?.role === 'CREATOR' || user?.email === 'pawel.perfect@protonmail.com' || user?.email === 'pawel.perfect@gmail.com';
 }
 
 export async function GET() {
