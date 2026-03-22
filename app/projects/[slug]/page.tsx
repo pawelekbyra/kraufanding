@@ -44,7 +44,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       project.title + " aims to change something big.",
       "Support this project to help bring this idea to life."
     ],
-    rewards: project.tiers.map(t => ({
+    rewards: project.tiers.sort((a, b) => a.level - b.level).map(t => ({
       id: t.id,
       title: t.name,
       amount: t.priceOneTime / 100,

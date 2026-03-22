@@ -85,33 +85,39 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
             <div className="space-y-2">
               <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
                 {isCustom
-                  ? `${(customAmounts[reward.id] || reward.amount).toLocaleString('pl-PL')} €`
+                  ? "Zostaw Napiwek"
                   : `${reward.amount.toLocaleString('pl-PL')} €`}
               </h4>
               <h3 className="text-xl font-bold text-[#1a1a1a]/80 italic">
-                {reward.title}
+                {isCustom ? "Twoja Kwota" : reward.title}
               </h3>
             </div>
 
             {isCustom ? (
-              <div className="space-y-4">
-                <p className="text-[#1a1a1a]/60 text-lg leading-relaxed italic">
-                  Wpisz kwotę, którą chcesz wesprzeć projekt (min. 10 €):
-                </p>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="number"
-                    min="10"
-                    step="1"
-                    value={customAmounts[reward.id] || reward.amount}
-                    onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 1 }))}
-                    className="input input-bordered bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-xl w-32 font-black text-xl text-[#1a1a1a]"
-                  />
-                  <span className="text-2xl font-black text-[#1a1a1a]/30">€</span>
+              <div className="space-y-6">
+                <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                  <p className="text-primary font-black text-xs uppercase tracking-widest mb-4">Wsparcie Dowolną Kwotą</p>
+                  <div className="flex items-center gap-4">
+                    <div className="relative flex-1">
+                      <input
+                        type="number"
+                        min="10"
+                        step="1"
+                        placeholder="10"
+                        value={customAmounts[reward.id] || ""}
+                        onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 0 }))}
+                        className="input input-bordered bg-white border-2 border-primary/20 rounded-xl w-full font-black text-2xl text-primary focus:border-primary transition-all pr-12"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-black text-xl">€</span>
+                    </div>
+                  </div>
+                  {(customAmounts[reward.id] || 0) > 0 && (customAmounts[reward.id] || 0) < 10 && (
+                    <p className="text-error text-[10px] font-black uppercase tracking-widest mt-3 animate-pulse">Minimum 10 € wymagane</p>
+                  )}
                 </div>
-                {(customAmounts[reward.id] || reward.amount) < 10 && (
-                  <p className="text-error text-xs font-black uppercase tracking-widest">Kwota musi wynosić co najmniej 10 €</p>
-                )}
+                <p className="text-[#1a1a1a]/60 text-sm leading-relaxed italic">
+                  Twoje wsparcie pozwala nam realizować kolejne etapy projektu. Każda kwota powyżej minimum ma znaczenie!
+                </p>
               </div>
             ) : (
               <p className="text-[#1a1a1a]/60 text-lg leading-relaxed line-clamp-3">

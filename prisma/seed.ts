@@ -95,18 +95,18 @@ async function main() {
       tiers: {
         create: [
           {
-            level: 1,
-            name: 'Zostaw Napiwek',
-            description: 'Dowolna kwota wsparcia projektu (minimum 10 €).',
-            priceOneTime: 1000,
-            slotsTaken: 0,
-          },
-          {
             level: 2,
             name: 'Dyszka',
             description: 'Podstawowy dostęp do archiwum.',
             priceOneTime: 1000,
             slotsTaken: 24,
+          },
+          {
+            level: 3,
+            name: 'Zostaw Napiwek',
+            description: 'Dowolna kwota wsparcia projektu (minimum 10 €).',
+            priceOneTime: 1000,
+            slotsTaken: 0,
           },
         ],
       },
