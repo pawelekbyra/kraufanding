@@ -70,7 +70,8 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
         {activeTab === 'comments' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <EmbeddedComments
-              projectId={campaign.id}
+              entityId={campaign.id}
+              entityType="PROJECT"
               userProfile={userId ? { id: userId, email: user?.primaryEmailAddress?.emailAddress || '' } : null}
             />
           </div>

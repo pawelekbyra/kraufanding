@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon } from 'lucide-react';
+import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight } from 'lucide-react';
 import { SignInButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import { DEFAULT_AVATAR_URL } from '@/lib/constants';
@@ -15,15 +15,18 @@ interface EmbeddedCommentsProps {
     id: string;
     email: string;
   } | null;
-  projectId: string;
+  entityId: string;
+  entityType?: 'PROJECT' | 'POST';
 }
 
 const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   userProfile,
-  projectId,
+  entityId,
+  entityType = 'PROJECT',
 }) => {
   const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState('');
+  const [replyTo, setReplyTo] = useState<string | null>(null);
 
   const {
     data,
@@ -32,17 +35,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['comments', projectId],
+    queryKey: ['comments', entityId, entityType],
     queryFn: async ({ pageParam }) => {
         const url = new URL('/api/comments', window.location.origin);
-        url.searchParams.append('projectId', projectId);
+        url.searchParams.append('entityId', entityId);
+        url.searchParams.append('entityType', entityType);
         if (pageParam) url.searchParams.append('cursor', pageParam as string);
         const res = await fetch(url.toString());
         return res.json();
     },
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: !!projectId,
+    enabled: !!entityId,
   });
 
   const [isClient, setIsClient] = useState(false);
@@ -54,40 +58,97 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   const comments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
 
   const postMutation = useMutation({
-    mutationFn: async (text: string) => {
+    mutationFn: async ({ text, parentId }: { text: string; parentId?: string }) => {
         const res = await fetch('/api/comments', {
             method: 'POST',
-            body: JSON.stringify({ projectId, text }),
+            body: JSON.stringify({ entityId, entityType, text, parentId }),
             headers: { 'Content-Type': 'application/json' }
         });
         return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['comments', entityId, entityType] });
       setNewComment('');
+      setReplyTo(null);
     },
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+        const res = await fetch('/api/comments/like', {
+            method: 'POST',
+            body: JSON.stringify({ commentId }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return res.json();
+    },
+    onMutate: async (commentId) => {
+        await queryClient.cancelQueries({ queryKey: ['comments', entityId, entityType] });
+        const previousData = queryClient.getQueryData(['comments', entityId, entityType]);
+
+        queryClient.setQueryData(['comments', entityId, entityType], (old: any) => {
+            if (!old) return old;
+            return {
+                ...old,
+                pages: old.pages.map((page: any) => ({
+                    ...page,
+                    comments: page.comments.map((c: any) => {
+                        if (c.id === commentId) {
+                            const currentlyLiked = c.isLiked;
+                            return {
+                                ...c,
+                                isLiked: !currentlyLiked,
+                                _count: {
+                                    ...c._count,
+                                    likes: currentlyLiked ? Math.max(0, c._count.likes - 1) : c._count.likes + 1
+                                }
+                            };
+                        }
+                        return c;
+                    })
+                }))
+            };
+        });
+
+        return { previousData };
+    },
+    onError: (err, commentId, context) => {
+        if (context?.previousData) {
+            queryClient.setQueryData(['comments', entityId, entityType], context.previousData);
+        }
+    },
+    onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ['comments', entityId, entityType] });
+    }
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim() || !userProfile) return;
-    postMutation.mutate(newComment);
+    postMutation.mutate({ text: newComment, parentId: replyTo || undefined });
   };
 
   return (
-    <div className="space-y-12 max-w-4xl mx-auto">
+    <div className="space-y-12 max-w-4xl mx-auto prose-lg">
       {/* Input Area */}
       {userProfile ? (
-        <form onSubmit={handleSubmit} className="flex gap-4 items-start p-6 bg-white rounded-[2rem] border border-[#1a1a1a]/5 shadow-lg transition-all focus-within:shadow-xl focus-within:scale-[1.01] duration-500">
-          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shrink-0 border border-primary shadow-xl">
-             <span className="font-black text-white text-2xl uppercase">{userProfile.email[0]}</span>
+        <form onSubmit={handleSubmit} className="flex gap-4 items-start p-8 bg-[#FDFBF7] rounded-[2rem] border border-[#1a1a1a]/5 shadow-xl transition-all focus-within:shadow-2xl focus-within:scale-[1.01] duration-500">
+          <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a] flex items-center justify-center shrink-0 border border-[#1a1a1a] shadow-xl">
+             <span className="font-black text-white text-2xl uppercase">{userProfile.email.charAt(0)}</span>
           </div>
           <div className="flex-1 space-y-4">
+            {replyTo && (
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-4 py-2 rounded-full w-fit">
+                <CornerDownRight size={14} />
+                Odpowiadasz na komentarz
+                <button onClick={() => setReplyTo(null)} className="ml-2 hover:text-primary/70">✕</button>
+              </div>
+            )}
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Co o tym sądzisz?"
-              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-xl resize-none min-h-[120px] font-serif italic py-2"
+              placeholder={replyTo ? "Napisz odpowiedź..." : "Co o tym sądzisz?"}
+              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-xl resize-none min-h-[120px] font-serif italic py-2 leading-relaxed"
             />
             <div className="flex justify-end items-center pt-4 border-t border-[#1a1a1a]/5">
               <button
@@ -96,7 +157,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 className="bg-[#1a1a1a] hover:bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 disabled:opacity-50 transition-all active:scale-95 shadow-2xl"
               >
                 {postMutation.isPending ? <Loader2 className="animate-spin" size={20} /> : <ArrowUp size={20} />}
-                Publikuj
+                {replyTo ? 'Odpowiedz' : 'Publikuj'}
               </button>
             </div>
           </div>
@@ -119,10 +180,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       <div className="space-y-12">
         {isLoading && Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="flex gap-4 animate-pulse">
-            <div className="w-12 h-12 bg-slate-200 rounded-2xl" />
+            <div className="w-12 h-12 bg-[#1a1a1a]/5 rounded-2xl" />
             <div className="flex-1 space-y-4">
-              <div className="h-4 bg-slate-200 rounded w-1/4" />
-              <div className="h-20 bg-slate-200 rounded w-full" />
+              <div className="h-4 bg-[#1a1a1a]/5 rounded w-1/4" />
+              <div className="h-20 bg-[#1a1a1a]/5 rounded w-full" />
             </div>
           </div>
         ))}
@@ -134,7 +195,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         )}
 
         {comments.map((comment: any) => (
-          <div key={comment.id} className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div key={comment.id} className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 bg-white/50 p-6 rounded-[2rem] hover:bg-white transition-colors border border-transparent hover:border-[#1a1a1a]/5">
              <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
                 <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U').charAt(0)}</span>
              </div>
@@ -153,12 +214,20 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </p>
               <div className="flex items-center gap-8 pt-2">
                 <button
-                  className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-primary transition-colors"
+                  onClick={() => userProfile && likeMutation.mutate(comment.id)}
+                  disabled={!userProfile || likeMutation.isPending}
+                  className={cn(
+                    "flex items-center gap-2 transition-all hover:scale-110",
+                    comment.isLiked ? "text-primary" : "text-[#1a1a1a]/30 hover:text-primary"
+                  )}
                 >
-                  <Heart size={20} className={cn(comment.isLiked && "fill-primary text-primary")} />
+                  <Heart size={20} className={cn(comment.isLiked && "fill-primary")} />
                   <span className="text-xs font-black tracking-widest">{comment._count?.likes || 0}</span>
                 </button>
-                <button className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60 transition-colors">
+                <button
+                  onClick={() => userProfile && setReplyTo(comment.id)}
+                  className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60 transition-all hover:scale-110"
+                >
                   <MessageSquare size={20} />
                   <span className="text-xs font-black tracking-widest">{comment._count?.replies || 0}</span>
                 </button>

@@ -6,14 +6,15 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const projectId = searchParams.get('projectId');
+  const entityId = searchParams.get('entityId');
+  const entityType = searchParams.get('entityType') || 'PROJECT';
   const cursor = searchParams.get('cursor') || undefined;
   const limit = parseInt(searchParams.get('limit') || '20', 10);
 
   const { userId: clerkUserId } = auth();
 
-  if (!projectId) {
-    return NextResponse.json({ success: false, message: 'projectId is required' }, { status: 400 });
+  if (!entityId) {
+    return NextResponse.json({ success: false, message: 'entityId is required' }, { status: 400 });
   }
 
   try {
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     const comments = await prisma.comment.findMany({
-      where: { projectId, parentId: null },
+      where: { entityId, entityType, parentId: null },
       take: limit,
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
@@ -71,15 +72,16 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: 'User not found in database.' }, { status: 404 });
     }
 
-    const { projectId, text, parentId, imageUrl } = await request.json();
+    const { entityId, entityType, text, parentId, imageUrl } = await request.json();
 
-    if (!projectId || (!text && !imageUrl)) {
-      return NextResponse.json({ success: false, message: 'projectId and text or imageUrl are required' }, { status: 400 });
+    if (!entityId || (!text && !imageUrl)) {
+      return NextResponse.json({ success: false, message: 'entityId and text or imageUrl are required' }, { status: 400 });
     }
 
     const newComment = await prisma.comment.create({
         data: {
-            projectId,
+            entityId,
+            entityType: entityType || 'PROJECT',
             text: text?.trim() || '',
             authorId: user.id,
             parentId: parentId || null,

@@ -55,7 +55,6 @@ model Project {
   creator         Creator             @relation(fields: [creatorId], references: [id])
   tiers           Tier[]
   projectAccess   UserProjectAccess[]
-  comments        Comment[]
   files           ProjectFile[]
 }
 
@@ -156,25 +155,28 @@ model Payment {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
-  text      String
-  imageUrl  String?
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  projectId String
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  text       String
+  imageUrl   String?
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Polymorphic fields
+  entityId   String   // The ID of the thing being commented on (Project, Post, etc.)
+  entityType String   // The type of the thing (e.g., 'PROJECT', 'POST')
 
   // Self-relation for replies
-  parentId  String?
-  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   Comment[] @relation("CommentReplies")
+  parentId   String?
+  parent     Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    Comment[] @relation("CommentReplies")
 
-  likes     CommentLike[]
+  likes      CommentLike[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@index([projectId])
+  @@index([entityId])
+  @@index([entityType])
   @@index([parentId])
 }
 
