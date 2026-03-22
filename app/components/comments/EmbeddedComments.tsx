@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon } from 'lucide-react';
+import { SignInButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import { DEFAULT_AVATAR_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -44,6 +45,12 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     enabled: !!projectId,
   });
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const comments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
 
   const postMutation = useMutation({
@@ -71,34 +78,39 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     <div className="space-y-12 max-w-4xl mx-auto">
       {/* Input Area */}
       {userProfile ? (
-        <form onSubmit={handleSubmit} className="flex gap-4 items-start p-6 bg-white rounded-3xl border border-slate-100 shadow-sm transition-all focus-within:shadow-md">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 border border-slate-200">
-             <span className="font-black text-primary text-xl uppercase">{userProfile.email[0]}</span>
+        <form onSubmit={handleSubmit} className="flex gap-4 items-start p-6 bg-white rounded-[2rem] border border-[#1a1a1a]/5 shadow-lg transition-all focus-within:shadow-xl focus-within:scale-[1.01] duration-500">
+          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shrink-0 border border-primary shadow-xl">
+             <span className="font-black text-white text-2xl uppercase">{userProfile.email[0]}</span>
           </div>
           <div className="flex-1 space-y-4">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Co o tym sądzisz?"
-              className="w-full bg-transparent text-slate-900 focus:outline-none text-lg resize-none min-h-[100px] font-serif"
+              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-xl resize-none min-h-[120px] font-serif italic py-2"
             />
-            <div className="flex justify-end items-center pt-4 border-t border-slate-50">
+            <div className="flex justify-end items-center pt-4 border-t border-[#1a1a1a]/5">
               <button
                 type="submit"
                 disabled={!newComment.trim() || postMutation.isPending}
-                className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95 shadow-lg"
+                className="bg-[#1a1a1a] hover:bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 disabled:opacity-50 transition-all active:scale-95 shadow-2xl"
               >
-                {postMutation.isPending ? <Loader2 className="animate-spin" size={18} /> : <ArrowUp size={18} />}
+                {postMutation.isPending ? <Loader2 className="animate-spin" size={20} /> : <ArrowUp size={20} />}
                 Publikuj
               </button>
             </div>
           </div>
         </form>
       ) : (
-        <div className="p-12 bg-[#FDFBF7] rounded-[2.5rem] border-4 border-double border-[#1a1a1a]/10 text-center space-y-4">
-          <p className="text-[#1a1a1a]/60 font-serif italic text-xl">Zaloguj się, aby dołączyć do dyskusji i wspierać projekt.</p>
-          <div className="flex justify-center">
-             <button className="btn btn-primary rounded-xl font-black uppercase tracking-widest px-8">Zaloguj się teraz</button>
+        <div className="p-12 bg-[#FDFBF7] rounded-[2.5rem] border-4 border-double border-[#1a1a1a]/10 text-center space-y-6">
+          <div className="flex justify-center opacity-20">
+             <MessageSquare size={48} className="text-[#1a1a1a]" />
+          </div>
+          <p className="text-[#1a1a1a]/60 font-serif italic text-2xl max-w-md mx-auto leading-relaxed">Zaloguj się, aby dołączyć do dyskusji i wspierać projekt.</p>
+          <div className="flex justify-center pt-4">
+             <SignInButton mode="modal">
+                <button className="btn btn-primary btn-lg rounded-2xl font-black uppercase tracking-widest px-12 shadow-2xl hover:scale-105 transition-transform">Zaloguj się teraz</button>
+             </SignInButton>
           </div>
         </div>
       )}
@@ -131,9 +143,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-lg">{comment.authorName || 'Użytkownik'}</span>
                 <span className="text-[10px] font-black text-[#1a1a1a]/20 uppercase tracking-[0.3em]">•</span>
                 <span className="text-[10px] font-black text-[#1a1a1a]/30 uppercase tracking-[0.2em] italic">
-                  {comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
+                  {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                     ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
-                    : 'niedawno'}
+                    : isClient ? 'niedawno' : ''}
                 </span>
               </div>
               <p className="text-[#1a1a1a]/70 font-serif text-xl leading-relaxed italic">
