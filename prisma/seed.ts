@@ -96,7 +96,7 @@ async function main() {
         create: [
           {
             level: 1,
-            name: 'Twoja Kwota',
+            name: 'Zostaw Napiwek',
             description: 'Dowolna kwota wsparcia projektu (minimum 10 €).',
             priceOneTime: 1000,
             slotsTaken: 0,
