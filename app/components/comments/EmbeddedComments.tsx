@@ -161,7 +161,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-12 max-w-4xl prose-lg">
+    <div className="space-y-12 max-w-4xl prose-lg bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#1a1a1a]/5">
       <div className="flex items-end gap-8 mb-8">
          <h3 className="text-xl font-black text-[#1a1a1a] uppercase tracking-widest leading-none">{comments.length} komentarzy</h3>
          <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity pb-0.5">
@@ -233,7 +233,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                       : isClient ? 'niedawno' : ''}
                   </span>
                 </div>
-                <p className="text-[#1a1a1a] font-serif text-base leading-relaxed italic">
+                <p className="text-[#1a1a1a] font-serif text-[17px] leading-relaxed italic">
                   {comment.text}
                 </p>
                 <div className="flex items-center gap-4 pt-1">
@@ -281,7 +281,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                             : 'niedawno'}
                         </span>
                       </div>
-                      <p className="text-[#1a1a1a]/80 font-serif text-sm leading-relaxed italic">
+                      <p className="text-[#1a1a1a]/80 font-serif text-[15px] leading-relaxed italic">
                         {reply.text}
                       </p>
                     </div>

@@ -1,12 +1,58 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useOptimistic } from 'react';
 import { Campaign } from '../types/campaign';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
+import { useAuth, useClerk } from '@clerk/nextjs';
+import { toggleProjectLike, toggleSubscription } from '@/lib/actions/interactions';
+import { cn } from '@/lib/utils';
 
 interface HeroProps {
-  campaign: Campaign;
+  campaign: Campaign & {
+    views?: number;
+    initialIsLiked?: boolean;
+    initialIsSubscribed?: boolean;
+    likesCount?: number;
+  };
 }
 
 const Hero: React.FC<HeroProps> = ({ campaign }) => {
+  const { userId } = useAuth();
+  const { openSignIn } = useClerk();
+
+  const [optimisticLike, addOptimisticLike] = useOptimistic(
+    { isLiked: campaign.initialIsLiked, count: campaign.likesCount || 0 },
+    (state, newLiked: boolean) => ({
+      isLiked: newLiked,
+      count: newLiked ? state.count + 1 : Math.max(0, state.count - 1)
+    })
+  );
+
+  const [optimisticSub, addOptimisticSub] = useOptimistic(
+    campaign.initialIsSubscribed || false,
+    (state, newSub: boolean) => newSub
+  );
+
+  const handleLike = async () => {
+    if (!userId) return openSignIn();
+    addOptimisticLike(!optimisticLike.isLiked);
+    try {
+      await toggleProjectLike(campaign.id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    if (!userId) return openSignIn();
+    addOptimisticSub(!optimisticSub);
+    try {
+      await toggleSubscription();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <section className="bg-[#FDFBF7]">
       <div className="w-full">
@@ -41,16 +87,32 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                   <p className="font-bold text-[#1a1a1a] text-[15px] leading-tight truncate">{campaign.author}</p>
                   <p className="text-[12px] opacity-60">1.2M subskrybentów</p>
                </div>
-               <button className="bg-[#1a1a1a] text-white text-[14px] font-bold rounded-full px-4 py-2 hover:bg-[#1a1a1a]/90 transition-all ml-1">Subskrybuj</button>
+               <button
+                 onClick={handleSubscribe}
+                 className={cn(
+                    "text-[14px] font-bold rounded-full px-6 py-2 transition-all ml-1",
+                    optimisticSub
+                        ? "bg-[#1a1a1a]/5 text-[#1a1a1a] hover:bg-[#1a1a1a]/10"
+                        : "bg-[#1a1a1a] text-white hover:bg-[#1a1a1a]/90"
+                 )}
+               >
+                 {optimisticSub ? 'Subskrybujesz' : 'Subskrybuj'}
+               </button>
             </div>
 
             <div className="flex items-center gap-2">
                <div className="flex items-center bg-[#1a1a1a]/5 rounded-full p-0.5">
-                  <button className="flex items-center gap-2 px-3 py-1.5 hover:bg-[#1a1a1a]/5 rounded-l-full transition-colors border-r border-[#1a1a1a]/10">
-                     <ThumbsUp size={18} />
-                     <span className="text-[13px] font-bold">42K</span>
+                  <button
+                    onClick={handleLike}
+                    className={cn(
+                        "flex items-center gap-2 px-4 py-1.5 hover:bg-[#1a1a1a]/5 rounded-l-full transition-colors border-r border-[#1a1a1a]/10",
+                        optimisticLike.isLiked && "text-primary"
+                    )}
+                  >
+                     <ThumbsUp size={18} className={cn(optimisticLike.isLiked && "fill-primary")} />
+                     <span className="text-[13px] font-bold">{optimisticLike.count.toLocaleString()}</span>
                   </button>
-                  <button className="px-3 py-1.5 hover:bg-[#1a1a1a]/5 rounded-r-full transition-colors">
+                  <button className="px-4 py-1.5 hover:bg-[#1a1a1a]/5 rounded-r-full transition-colors">
                      <ThumbsDown size={18} />
                   </button>
                </div>

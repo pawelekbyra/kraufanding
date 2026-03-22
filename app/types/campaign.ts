@@ -7,6 +7,7 @@ export interface Campaign {
   author: string;
   goal: number;
   raised: number;
+  views: number;
   thumbnail: string;
   endDate: string;
   story?: string[];

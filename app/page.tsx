@@ -5,6 +5,7 @@ import ProjectView from './components/ProjectView';
 import { prisma } from '@/lib/prisma';
 import { Campaign } from './types/campaign';
 import { notFound } from 'next/navigation';
+import { incrementProjectViews } from '@/lib/actions/interactions';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +30,9 @@ export default async function Home() {
     return <FeaturedHome project={latest} />;
   }
 
+  // Increment views
+  incrementProjectViews(secretProject.id);
+
   return <FeaturedHome project={secretProject} />;
 }
 
@@ -43,6 +47,7 @@ async function FeaturedHome({ project }: { project: any }) {
         author: project.creator.name,
         goal: project.goalAmount / 100,
         raised: project.collectedAmount / 100,
+        views: project.views,
         thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
         endDate: project.publishedAt?.toISOString() || "",
         story: [
@@ -83,6 +88,7 @@ async function FeaturedHome({ project }: { project: any }) {
         author: p.creator.name,
         goal: p.goalAmount / 100,
         raised: p.collectedAmount / 100,
+        views: (p as any).views || 0,
         thumbnail: "https://picsum.photos/seed/" + p.slug + "/800/450",
         endDate: p.publishedAt?.toISOString() || "",
     }));

@@ -5,6 +5,7 @@ import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import ProjectView from '@/app/components/ProjectView';
 import { Campaign } from '@/app/types/campaign';
+import { incrementProjectViews } from '@/lib/actions/interactions';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  // Increment views in the background
+  incrementProjectViews(project.id);
+
   // Map Prisma project to Campaign interface
   const campaign: Campaign = {
     id: project.id,
@@ -38,6 +42,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     author: project.creator.name,
     goal: project.goalAmount / 100, // Convert from cents
     raised: project.collectedAmount / 100, // Convert from cents
+    views: project.views,
     thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
     endDate: project.publishedAt?.toISOString() || "",
     story: [
