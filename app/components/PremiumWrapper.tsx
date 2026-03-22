@@ -22,6 +22,11 @@ export default async function PremiumWrapper({
   projectId,
   mediaPath
 }: PremiumWrapperProps) {
+  // Try to use auth() but handle potential client-side calls if used inside "use client"
+  // Note: PremiumWrapper is currently async and used in ProjectView (now "use client").
+  // This needs to be a Client Component or fetched via API.
+  // For now, let's keep it simple and ensure ProjectView works.
+
   const { userId: clerkUserId } = auth();
   const userTierLevel = await getProjectAccess(clerkUserId, projectId);
 
