@@ -79,6 +79,10 @@ export default async function PremiumWrapper({
 }
 
 function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: boolean }) {
+  const isPatronGated = minTier >= 2;
+  const message = isPatronGated ? "Zostaw Napiwek, aby obczaić." : "Zaloguj się, aby obczaić.";
+  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : (isLoggedIn ? "Dołącz" : "Zaloguj się");
+
   return (
     <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] overflow-hidden group">
       <h4 className="text-primary font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs italic">
@@ -88,7 +92,7 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
         ŚCIŚLE TAJNE
       </h4>
       <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
-        Zostaw Napiwek, aby obczaić.
+        {message}
       </p>
       <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
          <img
@@ -101,18 +105,18 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
             {!isLoggedIn ? (
               <SignInButton mode="modal">
                 <div className="flex flex-col items-center cursor-pointer group/btn">
-                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">Zostaw Napiwek</button>
+                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">{buttonText}</button>
                    <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
                 </div>
               </SignInButton>
-            ) : (
+            ) : isPatronGated ? (
               <div className="flex flex-col items-center">
                 <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 hover:scale-105 transition-transform">
-                  Zostaw Napiwek
+                  {buttonText}
                 </a>
                 <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">aby obczaić</span>
               </div>
-            )}
+            ) : null}
          </div>
       </div>
     </div>

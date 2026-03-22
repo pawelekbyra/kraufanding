@@ -17,13 +17,26 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
   const { openSignIn } = useClerk();
   const router = useRouter();
 
+  // Create the "Zostaw Napiwek" reward
+  const tipReward: Reward = {
+    id: 'tip-reward',
+    title: 'Zostaw Napiwek',
+    amount: 10,
+    description: 'Dostęp do treści dla Patronów i moja ogromna wdzięczność.',
+    deliveryDate: 'Natychmiast',
+    backers: 124
+  };
+
+  // Prepend it to the list of rewards
+  const allRewards = [tipReward, ...rewards];
+
   const onSupport = async (reward: Reward, index: number) => {
     if (!userId) {
       openSignIn();
       return;
     }
 
-    const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') || reward.title.toLowerCase().includes('zostaw napiwek');
+    const isCustom = reward.id === 'tip-reward' || reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota');
     const amount = isCustom ? (customAmounts[reward.id] || reward.amount) : reward.amount;
 
     if (isCustom && amount < 10) {
@@ -34,13 +47,19 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
     try {
       setIsLoading(reward.id);
 
-      // Determine tier level based on reward order or specific name
-      // Level 1: Tip, 2: Observer, 3: Witness, 4: Insider, 5: Architect
-      let tierLevel = Math.min(index + 1, 5);
-      if (isCustom) {
-        tierLevel = 1;
-      } else if (reward.title.toLowerCase().includes('obserwator') || reward.title.toLowerCase().includes('dyszka') || reward.title.toLowerCase().includes('dostep obserwatora')) {
-        tierLevel = 2;
+      // Determine tier level
+      // Level 1: FREE, 2: Observer (Patron), 3: Witness, 4: Insider, 5: Architect
+      let tierLevel = 2; // Default for tip/patron access
+
+      if (!isCustom) {
+        // Other rewards get higher tiers based on their position (starting from 3)
+        tierLevel = Math.min(index + 2, 5);
+
+        // Specific name matching for robustness
+        if (reward.title.toLowerCase().includes('obserwator')) tierLevel = 2;
+        else if (reward.title.toLowerCase().includes('świadek') || reward.title.toLowerCase().includes('witness')) tierLevel = 3;
+        else if (reward.title.toLowerCase().includes('insider')) tierLevel = 4;
+        else if (reward.title.toLowerCase().includes('architekt')) tierLevel = 5;
       }
 
       const response = await fetch('/api/checkout', {
@@ -68,8 +87,10 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
 
   return (
     <div className="space-y-8 font-serif">
-      {rewards.map((reward, index) => {
-        const isCustom = reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota') || reward.title.toLowerCase().includes('zostaw napiwek');
+      {allRewards.map((reward, index) => {
+        const isCustom = reward.id === 'tip-reward' || reward.title.toLowerCase().includes('napiwek') || reward.title.toLowerCase().includes('twoja kwota');
+        const currentAmount = isCustom ? (customAmounts[reward.id] || reward.amount) : reward.amount;
+
         return (
         <div
           key={reward.id}
@@ -84,39 +105,37 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
           <div className="space-y-6 relative z-10">
             <div className="space-y-2">
               <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                {isCustom
-                  ? `${(customAmounts[reward.id] || reward.amount).toLocaleString('pl-PL')} €`
-                  : `${reward.amount.toLocaleString('pl-PL')} €`}
+                {currentAmount.toLocaleString('pl-PL')} €
               </h4>
               <h3 className="text-xl font-bold text-[#1a1a1a]/80 italic">
                 {reward.title}
               </h3>
             </div>
 
-            {isCustom ? (
-              <div className="space-y-4">
-                <p className="text-[#1a1a1a]/60 text-lg leading-relaxed italic">
-                  Wpisz kwotę, którą chcesz wesprzeć projekt (min. 10 €):
+            <p className="text-[#1a1a1a]/60 text-lg leading-relaxed">
+              {reward.description}
+            </p>
+
+            {isCustom && (
+              <div className="space-y-4 pt-2 border-t border-[#1a1a1a]/5">
+                <p className="text-[#1a1a1a]/60 text-sm italic font-bold">
+                  Wpisz własną kwotę wsparcia (min. 10 €):
                 </p>
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
                     min="10"
                     step="1"
-                    value={customAmounts[reward.id] || reward.amount}
-                    onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 1 }))}
+                    value={currentAmount}
+                    onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 0 }))}
                     className="input input-bordered bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-xl w-32 font-black text-xl text-[#1a1a1a]"
                   />
                   <span className="text-2xl font-black text-[#1a1a1a]/30">€</span>
                 </div>
-                {(customAmounts[reward.id] || reward.amount) < 10 && (
-                  <p className="text-error text-xs font-black uppercase tracking-widest">Kwota musi wynosić co najmniej 10 €</p>
+                {currentAmount < 10 && (
+                  <p className="text-error text-xs font-black uppercase tracking-widest animate-pulse">Kwota musi wynosić co najmniej 10 €</p>
                 )}
               </div>
-            ) : (
-              <p className="text-[#1a1a1a]/60 text-lg leading-relaxed line-clamp-3">
-                {reward.description}
-              </p>
             )}
 
             <div className="flex justify-between items-end border-t border-[#1a1a1a]/5 pt-6">
@@ -133,8 +152,8 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
 
             <button
               onClick={() => onSupport(reward, index)}
-              disabled={!!isLoading}
-              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading === reward.id ? 'loading' : ''}`}
+              disabled={!!isLoading || (isCustom && currentAmount < 10)}
+              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading === reward.id ? 'loading' : ''} ${(isCustom && currentAmount < 10) ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isLoading === reward.id ? 'ŁADOWANIE...' : 'WYBIERZ'}
             </button>
