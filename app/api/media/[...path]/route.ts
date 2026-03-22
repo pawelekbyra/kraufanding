@@ -7,26 +7,26 @@ export async function GET(
   { params }: { params: { path: string[] } }
 ) {
   const { userId } = auth();
+  const { searchParams } = new URL(req.url);
 
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  const projectId = searchParams.get('projectId');
+  const minTierStr = searchParams.get('minTier') || '1';
+  const minTier = parseInt(minTierStr, 10);
+
+  if (!projectId) {
+    return new Response('Bad Request: projectId is required', { status: 400 });
+  }
+
   const blobUrl = params.path.join('/');
 
-  // Here we would typically map a virtual path to a real Vercel Blob URL
-  // For this demonstration, we'll assume the client sends the path they want to access.
-  // In a production app, you'd look up the actual blob URL in a DB based on a slug or ID.
-
-  // For now, let's assume 'params.path' is the intended Vercel Blob URL (after https:// prefixing if needed)
-  // or a key we look up.
-
+  // For this demonstration, we assume the path is the Vercel Blob host + path.
+  // In production, map this to a DB-stored blob URL for better security.
   const fullUrl = `https://${blobUrl}`;
 
-  // We can't easily verify the project/tier without more metadata in the request,
-  // but we can at least demonstrate the gated response utility.
-  // In a real scenario, you'd pass the actual project ID and required tier level here.
-  // Swapped arguments fixed:
-  // getGatedBlobResponse(clerkUserId, projectId, blobUrl, minTier)
-  return getGatedBlobResponse(userId, 'project_1', fullUrl, 1);
+  // Securely stream the gated content from Vercel Blob
+  return getGatedBlobResponse(userId, projectId, fullUrl, minTier);
 }

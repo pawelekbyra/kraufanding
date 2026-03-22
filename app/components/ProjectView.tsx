@@ -14,78 +14,79 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
   const projectId = campaign.id;
 
   return (
-    <main>
-      {/* HERO SECTION */}
+    <main className="bg-[#FDFBF7] min-h-screen">
+      {/* HEADER & FEATURED IMAGE */}
       <Hero campaign={campaign} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        {/* FUNDING BOX (FULL WIDTH BELOW IMAGE) */}
+        <div className="mb-24">
+          <Stats
+            raised={campaign.raised}
+            goal={campaign.goal}
+            backers={248}
+            daysLeft={14}
+          />
+        </div>
+
+        {/* MAIN LAYOUT (TABS + SIDEBAR) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
 
           {/* LEFT COLUMN: STORY & UPDATES */}
           <div className="lg:col-span-8 space-y-24">
-
-            {/* STATS BAR (MOBILE ONLY) */}
-            <div className="lg:hidden">
-              <Stats
-                raised={campaign.raised}
-                goal={campaign.goal}
-                backers={248}
-                daysLeft={14}
-              />
-            </div>
 
             {/* PROJECT TABS (STORY, UPDATES, COMMENTS) */}
             <div className="prose prose-lg prose-neutral max-w-none">
               <ProjectTabs campaign={campaign} />
             </div>
 
-            {/* EXAMPLE OF GATED CONTENT USING PremiumWrapper */}
-            <section className="pt-12 border-t border-neutral/10">
-              <h2 className="text-4xl font-black uppercase tracking-tighter mb-12">Confidential Archive</h2>
+            {/* PREMIUM SECTION */}
+            <section className="pt-24 border-t-4 border-double border-[#1a1a1a]/10">
+              <h2 className="text-4xl font-black uppercase tracking-tighter mb-12 text-[#1a1a1a]">Confidential Archive</h2>
 
               <PremiumWrapper
                 projectId={projectId}
                 minTier={2}
                 mediaPath="public.blob.vercel-storage.com/evidence-report-v1.pdf"
                 teaser={
-                  <div className="p-8 bg-primary/5 border border-primary/20 rounded-2xl">
-                    <h4 className="text-primary font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] overflow-hidden group">
+                    <h4 className="text-primary font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs italic">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
                       FREE PREVIEW UNLOCKED
                     </h4>
-                    <p className="font-serif italic opacity-80 mb-6 leading-relaxed text-lg">
+                    <p className="font-serif italic opacity-70 mb-8 leading-relaxed text-lg">
                       As a registered user, you have access to this initial insight. The full investigation
                       is reserved for our patrons.
                     </p>
-                    <div className="aspect-video bg-neutral/10 rounded-xl overflow-hidden mb-4 relative">
-                       <img src="https://picsum.photos/seed/secret/800/450" alt="Free Sample" className="object-cover w-full h-full opacity-50 blur-[2px]" />
+                    <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden mb-4 relative">
+                       <img src="https://picsum.photos/seed/secret/800/450" alt="Free Sample" className="object-cover w-full h-full opacity-40 blur-[4px] grayscale transform group-hover:scale-105 transition-transform duration-1000" />
                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-white/90 px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-xl">Sample Preview</span>
+                          <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10">Sample Preview</span>
                        </div>
                     </div>
                   </div>
                 }
               >
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                  <div className="aspect-video bg-neutral/5 rounded-3xl overflow-hidden border border-neutral/10 shadow-inner">
-                    <img src="https://picsum.photos/seed/premium/1200/800" alt="Premium Content" className="w-full h-full object-cover" />
+                <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                  <div className="aspect-video bg-[#1a1a1a]/5 rounded-[2.5rem] overflow-hidden border border-[#1a1a1a]/5 shadow-2xl">
+                    <img src="https://picsum.photos/seed/premium/1200/800" alt="Premium Content" className="w-full h-full object-cover grayscale-0" />
                   </div>
-                  <div className="bg-white p-10 rounded-3xl border border-neutral/10 shadow-xl space-y-6">
-                    <h3 className="text-3xl font-bold uppercase tracking-tight">Full Investigation Report</h3>
-                    <p className="text-xl leading-relaxed opacity-80">
+                  <div className="bg-white p-12 rounded-[2.5rem] border border-[#1a1a1a]/10 shadow-2xl space-y-8 font-serif">
+                    <h3 className="text-4xl font-black uppercase tracking-tight text-[#1a1a1a]">Full Investigation Report</h3>
+                    <p className="text-xl leading-relaxed opacity-70 italic">
                       This is the complete, unrestricted access to the secret project data.
                       As a patron, you now hold the keys to the entire archive of evidence and research.
                     </p>
-                    <div className="grid grid-cols-2 gap-4 pt-4">
-                       <div className="p-6 bg-[#FDFBF7] rounded-2xl border border-neutral/5">
-                          <span className="block text-xs font-black uppercase tracking-widest opacity-40 mb-2">File Format</span>
-                          <span className="text-lg font-bold">PDF / High Resolution</span>
+                    <div className="grid grid-cols-2 gap-6 pt-6">
+                       <div className="p-8 bg-[#FDFBF7] rounded-3xl border border-[#1a1a1a]/5 shadow-inner">
+                          <span className="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-3 italic">File Format</span>
+                          <span className="text-2xl font-black text-[#1a1a1a] tracking-tight">PDF / High Res</span>
                        </div>
-                       <div className="p-6 bg-[#FDFBF7] rounded-2xl border border-neutral/5">
-                          <span className="block text-xs font-black uppercase tracking-widest opacity-40 mb-2">Access Level</span>
-                          <span className="text-lg font-bold">Observer+</span>
+                       <div className="p-8 bg-[#FDFBF7] rounded-3xl border border-[#1a1a1a]/5 shadow-inner">
+                          <span className="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-3 italic">Access Level</span>
+                          <span className="text-2xl font-black text-[#1a1a1a] tracking-tight">Observer+</span>
                        </div>
                     </div>
                   </div>
@@ -95,18 +96,13 @@ export default function ProjectView({ campaign }: ProjectViewProps) {
 
           </div>
 
-          {/* RIGHT COLUMN: STATS & REWARDS (DESKTOP ONLY) */}
+          {/* RIGHT COLUMN: SIDEBAR REWARDS */}
           <aside className="lg:col-span-4 space-y-12">
-            <div className="hidden lg:block sticky top-24">
-              <Stats
-                raised={campaign.raised}
-                goal={campaign.goal}
-                backers={248}
-                daysLeft={14}
-              />
-              <div className="mt-12">
-                <Rewards rewards={campaign.rewards || []} />
-              </div>
+            <div className="sticky top-24">
+              <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 text-[#1a1a1a] font-serif border-b-2 border-[#1a1a1a]/5 pb-4">
+                Nagrody
+              </h3>
+              <Rewards rewards={campaign.rewards || []} />
             </div>
           </aside>
 

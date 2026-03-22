@@ -42,7 +42,7 @@ export default async function PremiumWrapper({
           <div className="mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
             <p className="text-xs font-black uppercase tracking-widest text-primary/60 mb-2">Secure Stream Link</p>
             <a
-              href={`/api/media/${mediaPath}`}
+              href={`/api/media/${mediaPath}?projectId=${projectId}&minTier=${minTier}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary font-serif italic hover:underline flex items-center gap-2"
