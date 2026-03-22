@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight } from 'lucide-react';
+import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { SignInButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import { DEFAULT_AVATAR_URL } from '@/lib/constants';
@@ -18,6 +18,36 @@ interface EmbeddedCommentsProps {
   entityId: string;
   entityType?: 'PROJECT' | 'POST';
 }
+
+const MOCK_COMMENTS = [
+  {
+    id: 'mock-1',
+    authorName: 'Alex Innowator',
+    text: 'Ten cover jest niesamowity! Czekałem na taką wersję od dawna. Produkcja na najwyższym poziomie.',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+    _count: { likes: 124, replies: 2 },
+    isLiked: false,
+    replies: [
+        { id: 'mock-1-1', author: { email: 'fan@polutek.pl' }, text: 'Zgadzam się, wokal wgniata w fotel!', createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString() }
+    ]
+  },
+  {
+    id: 'mock-2',
+    authorName: 'Marta Muzyk',
+    text: 'Czysty profesjonalizm. Sekrety w sidebarze to świetny pomysł, już zostawiłam napiwek!',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    _count: { likes: 89, replies: 0 },
+    isLiked: true,
+  },
+  {
+    id: 'mock-3',
+    authorName: 'Techno Freak',
+    text: 'Czy planujesz wypuścić też wersję instrumentalną? Brzmi to bardzo obiecująco.',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+    _count: { likes: 12, replies: 1 },
+    isLiked: false,
+  }
+];
 
 const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   userProfile,
@@ -55,7 +85,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     setIsClient(true);
   }, []);
 
-  const comments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
+  const apiComments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
+  const comments = [...apiComments, ...MOCK_COMMENTS];
 
   const postMutation = useMutation({
     mutationFn: async ({ text, parentId }: { text: string; parentId?: string }) => {
@@ -75,6 +106,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
   const likeMutation = useMutation({
     mutationFn: async (commentId: string) => {
+        if (commentId.startsWith('mock')) return { success: true };
         const res = await fetch('/api/comments/like', {
             method: 'POST',
             body: JSON.stringify({ commentId }),
@@ -129,16 +161,28 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-12 max-w-4xl mx-auto prose-lg">
+    <div className="space-y-12 max-w-4xl prose-lg">
+      <div className="flex items-center gap-6 mb-8">
+         <h3 className="text-xl font-black text-[#1a1a1a] uppercase tracking-widest">{comments.length} komentarzy</h3>
+         <button className="flex items-center gap-2 text-xs font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 4h18M6 12h12m-9 8h6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Sortuj według
+         </button>
+      </div>
+
       {/* Input Area */}
-      {userProfile ? (
-        <form onSubmit={handleSubmit} className="flex gap-4 items-start p-8 bg-[#FDFBF7] rounded-[2rem] border border-[#1a1a1a]/5 shadow-xl transition-all focus-within:shadow-2xl focus-within:scale-[1.01] duration-500">
-          <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a] flex items-center justify-center shrink-0 border border-[#1a1a1a] shadow-xl">
-             <span className="font-black text-white text-2xl uppercase">{userProfile.email.charAt(0)}</span>
-          </div>
-          <div className="flex-1 space-y-4">
+      <div className="flex gap-4 items-start mb-12">
+        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/10">
+           {userProfile ? (
+             <span className="font-black text-primary text-lg uppercase">{userProfile.email.charAt(0)}</span>
+           ) : (
+             <Smile size={20} className="text-primary/40" />
+           )}
+        </div>
+        <div className="flex-1 space-y-4">
+          <div className="relative group">
             {replyTo && (
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-4 py-2 rounded-full w-fit">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-4 py-2 rounded-full w-fit mb-2">
                 <CornerDownRight size={14} />
                 Odpowiadasz na komentarz
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:text-primary/70">✕</button>
@@ -147,90 +191,70 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder={replyTo ? "Napisz odpowiedź..." : "Co o tym sądzisz?"}
-              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-xl resize-none min-h-[120px] font-serif italic py-2 leading-relaxed"
+              placeholder={replyTo ? "Dodaj publiczną odpowiedź..." : "Dodaj komentarz..."}
+              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-base border-b border-[#1a1a1a]/10 focus:border-[#1a1a1a] transition-colors resize-none py-2 font-serif italic"
+              onClick={() => !userProfile && document.getElementById('signin-trigger')?.click()}
             />
-            <div className="flex justify-end items-center pt-4 border-t border-[#1a1a1a]/5">
-              <button
-                type="submit"
-                disabled={!newComment.trim() || postMutation.isPending}
-                className="bg-[#1a1a1a] hover:bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 disabled:opacity-50 transition-all active:scale-95 shadow-2xl"
-              >
-                {postMutation.isPending ? <Loader2 className="animate-spin" size={20} /> : <ArrowUp size={20} />}
-                {replyTo ? 'Odpowiedz' : 'Publikuj'}
-              </button>
-            </div>
           </div>
-        </form>
-      ) : (
-        <div className="p-12 bg-[#FDFBF7] rounded-[2.5rem] border-4 border-double border-[#1a1a1a]/10 text-center space-y-6">
-          <div className="flex justify-center opacity-20">
-             <MessageSquare size={48} className="text-[#1a1a1a]" />
-          </div>
-          <p className="text-[#1a1a1a]/60 font-serif italic text-2xl max-w-md mx-auto leading-relaxed">Zaloguj się, aby dołączyć do dyskusji i wspierać projekt.</p>
-          <div className="flex justify-center pt-4">
-             <SignInButton mode="modal">
-                <button className="btn btn-primary btn-lg rounded-2xl font-black uppercase tracking-widest px-12 shadow-2xl hover:scale-105 transition-transform">Zaloguj się teraz</button>
-             </SignInButton>
+
+          <div className="flex justify-end gap-3 items-center">
+             <button onClick={() => {setNewComment(''); setReplyTo(null);}} className="text-xs font-black uppercase tracking-widest opacity-40 hover:opacity-100 px-4 py-2 transition-all">Anuluj</button>
+             {userProfile ? (
+               <button
+                 onClick={handleSubmit}
+                 disabled={!newComment.trim() || postMutation.isPending}
+                 className="bg-[#1a1a1a] text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest disabled:opacity-20 transition-all hover:bg-primary shadow-lg"
+               >
+                 {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Komentarz')}
+               </button>
+             ) : (
+                <SignInButton mode="modal">
+                   <button id="signin-trigger" className="bg-[#1a1a1a]/5 text-[#1a1a1a] px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#1a1a1a]/10 transition-all">Zaloguj się</button>
+                </SignInButton>
+             )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* Comments List */}
-      <div className="space-y-12">
-        {isLoading && Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="flex gap-4 animate-pulse">
-            <div className="w-12 h-12 bg-[#1a1a1a]/5 rounded-2xl" />
-            <div className="flex-1 space-y-4">
-              <div className="h-4 bg-[#1a1a1a]/5 rounded w-1/4" />
-              <div className="h-20 bg-[#1a1a1a]/5 rounded w-full" />
-            </div>
-          </div>
-        ))}
-
-        {!isLoading && comments.length === 0 && (
-          <div className="text-center py-24 border-2 border-dashed border-[#1a1a1a]/5 rounded-[2.5rem]">
-            <p className="text-[#1a1a1a]/30 font-black uppercase tracking-[0.2em] italic">Brak komentarzy. Bądź pierwszy!</p>
-          </div>
-        )}
-
+      <div className="space-y-8">
         {comments.map((comment: any) => (
-          <div key={comment.id} className="space-y-6">
-            <div className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 bg-white/50 p-6 rounded-[2rem] hover:bg-white transition-colors border border-transparent hover:border-[#1a1a1a]/5">
-               <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
-                  <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U').charAt(0)}</span>
+          <div key={comment.id} className="space-y-4">
+            <div className="flex gap-4 items-start">
+               <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.authorName || comment.author?.email}`} alt="Avatar" />
                </div>
-              <div className="flex-1 space-y-4">
-                <div className="flex items-center gap-3">
-                  <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-lg">{comment.authorName || 'Użytkownik'}</span>
-                  <span className="text-[10px] font-black text-[#1a1a1a]/20 uppercase tracking-[0.3em]">•</span>
-                  <span className="text-[10px] font-black text-[#1a1a1a]/30 uppercase tracking-[0.2em] italic">
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-[#1a1a1a] uppercase text-xs">@{comment.authorName || 'Użytkownik'}</span>
+                  <span className="text-[10px] font-bold text-[#1a1a1a]/30 italic">
                     {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                       ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                       : isClient ? 'niedawno' : ''}
                   </span>
                 </div>
-                <p className="text-[#1a1a1a]/70 font-serif text-xl leading-relaxed italic">
+                <p className="text-[#1a1a1a] font-serif text-base leading-relaxed italic">
                   {comment.text}
                 </p>
-                <div className="flex items-center gap-8 pt-2">
+                <div className="flex items-center gap-4 pt-1">
                   <button
                     onClick={() => userProfile && likeMutation.mutate(comment.id)}
-                    disabled={!userProfile || likeMutation.isPending}
                     className={cn(
-                      "flex items-center gap-2 transition-all hover:scale-110",
-                      comment.isLiked ? "text-primary" : "text-[#1a1a1a]/30 hover:text-primary"
+                      "flex items-center gap-1 transition-all group",
+                      comment.isLiked ? "text-primary" : "text-[#1a1a1a]/40"
                     )}
                   >
-                    <Heart size={20} className={cn(comment.isLiked && "fill-primary")} />
-                    <span className="text-xs font-black tracking-widest">{comment._count?.likes || 0}</span>
+                    <ThumbsUp size={14} className={cn(comment.isLiked && "fill-primary")} />
+                    <span className="text-[10px] font-black">{comment._count?.likes || 0}</span>
+                  </button>
+                  <button className="text-[#1a1a1a]/40 hover:text-[#1a1a1a] transition-all">
+                    <ThumbsDown size={14} />
                   </button>
                   <button
                     onClick={() => userProfile && setReplyTo(comment.id)}
-                    className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60 transition-all hover:scale-110"
+                    className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/60 hover:text-[#1a1a1a] ml-4"
                   >
-                    <MessageSquare size={20} />
-                    <span className="text-xs font-black tracking-widest">{comment._count?.replies || 0}</span>
+                    Odpowiedz
                   </button>
                 </div>
               </div>
@@ -238,23 +262,26 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
             {/* NESTED REPLIES */}
             {comment.replies && comment.replies.length > 0 && (
-              <div className="pl-20 space-y-4">
+              <div className="pl-14 space-y-4">
+                 <button className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-2 mb-4">
+                    <div className="w-4 h-[2px] bg-primary/30"></div>
+                    Pokaż {comment.replies.length} odpowiedzi
+                 </button>
                 {comment.replies.map((reply: any) => (
-                  <div key={reply.id} className="flex gap-4 items-start bg-white/30 p-4 rounded-2xl border border-transparent hover:border-[#1a1a1a]/5 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
-                      <span className="font-black text-[#1a1a1a]/40 text-sm uppercase">{(reply.author?.email?.[0] || 'U')}</span>
+                  <div key={reply.id} className="flex gap-3 items-start">
+                    <div className="w-6 h-6 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
+                       <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.author?.email}`} alt="Avatar" />
                     </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-3">
-                        <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-sm">{reply.author?.email?.split('@')[0] || 'Użytkownik'}</span>
-                        <span className="text-[8px] opacity-30">•</span>
-                        <span className="text-[10px] font-black text-[#1a1a1a]/30 italic">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-[#1a1a1a] uppercase text-[10px]">@{reply.author?.email?.split('@')[0] || 'Użytkownik'}</span>
+                        <span className="text-[9px] font-bold text-[#1a1a1a]/30 italic">
                           {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
                             ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
                             : 'niedawno'}
                         </span>
                       </div>
-                      <p className="text-[#1a1a1a]/60 font-serif text-lg leading-relaxed italic">
+                      <p className="text-[#1a1a1a]/80 font-serif text-sm leading-relaxed italic">
                         {reply.text}
                       </p>
                     </div>
@@ -266,7 +293,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         ))}
 
         {hasNextPage && (
-          <div className="pt-12 flex justify-center">
+          <div className="pt-8 flex justify-center">
             <button
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}

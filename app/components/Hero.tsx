@@ -1,6 +1,7 @@
 import React from 'react';
 import { Campaign } from '../types/campaign';
 import { ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
+import Stats from './Stats';
 
 interface HeroProps {
   campaign: Campaign;
@@ -72,6 +73,17 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                 <br />
                 Zapraszam do obczajenia mojej nowej zrzutki. Wspierając ten projekt, zyskujesz dostęp do tajnych materiałów operacyjnych.
              </div>
+          </div>
+
+          {/* CROWDFUNDING PROGRESS (FULL WIDTH) */}
+          <div className="pt-4">
+            <Stats
+              raised={campaign.raised}
+              goal={campaign.goal}
+              backers={248}
+              daysLeft={14}
+              compact
+            />
           </div>
         </div>
       </div>
