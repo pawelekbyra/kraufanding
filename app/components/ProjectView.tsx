@@ -5,7 +5,7 @@ import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
-import { useAuth, useUser } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 
 interface ProjectViewProps {
@@ -13,10 +13,15 @@ interface ProjectViewProps {
   otherCampaigns?: Campaign[];
 }
 
-export default function ProjectView({ campaign, otherCampaigns }: ProjectViewProps) {
+export default async function ProjectView({ campaign, otherCampaigns }: ProjectViewProps) {
   const projectId = campaign.id;
-  const { userId } = useAuth();
-  const { user } = useUser();
+  const { userId } = auth();
+  const user = await currentUser();
+
+  const userProfile = userId ? {
+    id: userId,
+    email: user?.primaryEmailAddress?.emailAddress || ''
+  } : null;
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
@@ -47,7 +52,7 @@ export default function ProjectView({ campaign, otherCampaigns }: ProjectViewPro
                <EmbeddedComments
                  entityId={campaign.id}
                  entityType="PROJECT"
-                 userProfile={userId ? { id: userId, email: user?.primaryEmailAddress?.emailAddress || '' } : null}
+                 userProfile={userProfile}
                />
             </div>
           </div>
