@@ -1,34 +1,31 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+// Define routes that should be protected
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 export default clerkMiddleware((auth, req) => {
   const { userId, sessionClaims } = auth();
+  const role = (sessionClaims?.publicMetadata as any)?.role;
 
-  // 1. GUEST ACCESS (Handled by clerkMiddleware as default)
-
-  // 2. ADMIN PROTECTION
+  // 1. ADMIN PROTECTION
   if (isAdminRoute(req)) {
-    const role = (sessionClaims?.publicMetadata as any)?.role;
     if (role !== "ADMIN") {
-      const url = new URL("/", req.url);
-      return NextResponse.redirect(url);
+      const homeUrl = new URL("/", req.url);
+      return NextResponse.redirect(homeUrl);
     }
   }
 
-  // 3. DASHBOARD PROTECTION (At least user role or creator)
+  // 2. DASHBOARD PROTECTION
   if (isDashboardRoute(req)) {
     if (!userId) {
-      const url = new URL("/sign-in", req.url);
-      return NextResponse.redirect(url);
+      const signInUrl = new URL("/sign-in", req.url);
+      return NextResponse.redirect(signInUrl);
     }
-    const role = (sessionClaims?.publicMetadata as any)?.role;
-    if (!["ADMIN", "MODERATOR", "CREATOR", "USER"].includes(role)) {
-       // if they have no role at all (not in DB)
-       const url = new URL("/", req.url);
-       return NextResponse.redirect(url);
+    if (!role || !["ADMIN", "MODERATOR", "CREATOR", "USER"].includes(role)) {
+       const homeUrl = new URL("/", req.url);
+       return NextResponse.redirect(homeUrl);
     }
   }
 
