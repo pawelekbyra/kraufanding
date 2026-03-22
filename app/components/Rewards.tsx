@@ -104,10 +104,12 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
 
           <div className="space-y-6 relative z-10">
             <div className="space-y-2">
-              <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                {currentAmount.toLocaleString('pl-PL')} €
-              </h4>
-              <h3 className="text-xl font-bold text-[#1a1a1a]/80 italic">
+              {!isCustom && (
+                <h4 className="text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
+                  {currentAmount.toLocaleString('pl-PL')} €
+                </h4>
+              )}
+              <h3 className={isCustom ? "text-3xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors" : "text-xl font-bold text-[#1a1a1a]/80 italic"}>
                 {reward.title}
               </h3>
             </div>
@@ -140,17 +142,19 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
               </div>
             )}
 
-            <div className="flex justify-between items-end border-t border-[#1a1a1a]/5 pt-6">
-              <div className="space-y-1">
-                <span className="block text-[10px] uppercase tracking-widest text-[#1a1a1a]/30 font-black italic">Dostawa</span>
-                <span className="text-sm text-[#1a1a1a] font-black">{reward.deliveryDate}</span>
+            {!isCustom && (
+              <div className="flex justify-between items-end border-t border-[#1a1a1a]/5 pt-6">
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase tracking-widest text-[#1a1a1a]/30 font-black italic">Dostawa</span>
+                  <span className="text-sm text-[#1a1a1a] font-black">{reward.deliveryDate}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-black text-primary bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                    {reward.backers} wspierających
+                  </span>
+                </div>
               </div>
-              <div className="text-right">
-                <span className="text-xs font-black text-primary bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                  {reward.backers} wspierających
-                </span>
-              </div>
-            </div>
+            )}
 
             <button
               onClick={() => onSupport(reward, index)}

@@ -71,8 +71,8 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
     : "Zaloguj się, aby obczaić materiały operacyjne.";
 
   const overlayText = isPatronGated
-    ? "Zostaw napiwek aby obczaić"
-    : "Zaloguj się aby obczaić";
+    ? "Ściśle tajne Zostaw napiwek aby obczaić"
+    : "Ściśle Tajne Zaloguj się aby obczaić";
 
   const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : (isLoggedIn ? "Dołącz" : "Zaloguj się");
 
@@ -87,21 +87,20 @@ function PaywallOverlay({ minTier, isLoggedIn }: { minTier: number, isLoggedIn: 
            alt="Locked"
            className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-all duration-1000"
          />
-         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-            <span className="bg-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl border border-[#1a1a1a]/10 text-[#1a1a1a]">Ściśle Tajne</span>
+         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
             {!isLoggedIn ? (
               <SignInButton mode="modal">
                 <div className="flex flex-col items-center cursor-pointer group/btn">
-                   <button className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 group-hover/btn:scale-105 transition-transform">{buttonText}</button>
-                   <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">{overlayText}</span>
+                   <button className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl group-hover/btn:scale-105 transition-transform">{buttonText}</button>
+                   <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
                 </div>
               </SignInButton>
             ) : isPatronGated ? (
               <div className="flex flex-col items-center">
-                <a href="#rewards" className="btn btn-primary btn-xs rounded-lg font-black uppercase tracking-widest px-4 shadow-xl mt-3 hover:scale-105 transition-transform">
+                <a href="#rewards" className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl hover:scale-105 transition-transform">
                   {buttonText}
                 </a>
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest drop-shadow-md mt-1">{overlayText}</span>
+                <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
               </div>
             ) : null}
          </div>
