@@ -195,44 +195,73 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         )}
 
         {comments.map((comment: any) => (
-          <div key={comment.id} className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 bg-white/50 p-6 rounded-[2rem] hover:bg-white transition-colors border border-transparent hover:border-[#1a1a1a]/5">
-             <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
-                <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U').charAt(0)}</span>
-             </div>
-            <div className="flex-1 space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-lg">{comment.authorName || 'Użytkownik'}</span>
-                <span className="text-[10px] font-black text-[#1a1a1a]/20 uppercase tracking-[0.3em]">•</span>
-                <span className="text-[10px] font-black text-[#1a1a1a]/30 uppercase tracking-[0.2em] italic">
-                  {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
-                    ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
-                    : isClient ? 'niedawno' : ''}
-                </span>
-              </div>
-              <p className="text-[#1a1a1a]/70 font-serif text-xl leading-relaxed italic">
-                {comment.text}
-              </p>
-              <div className="flex items-center gap-8 pt-2">
-                <button
-                  onClick={() => userProfile && likeMutation.mutate(comment.id)}
-                  disabled={!userProfile || likeMutation.isPending}
-                  className={cn(
-                    "flex items-center gap-2 transition-all hover:scale-110",
-                    comment.isLiked ? "text-primary" : "text-[#1a1a1a]/30 hover:text-primary"
-                  )}
-                >
-                  <Heart size={20} className={cn(comment.isLiked && "fill-primary")} />
-                  <span className="text-xs font-black tracking-widest">{comment._count?.likes || 0}</span>
-                </button>
-                <button
-                  onClick={() => userProfile && setReplyTo(comment.id)}
-                  className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60 transition-all hover:scale-110"
-                >
-                  <MessageSquare size={20} />
-                  <span className="text-xs font-black tracking-widest">{comment._count?.replies || 0}</span>
-                </button>
+          <div key={comment.id} className="space-y-6">
+            <div className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700 bg-white/50 p-6 rounded-[2rem] hover:bg-white transition-colors border border-transparent hover:border-[#1a1a1a]/5">
+               <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
+                  <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U').charAt(0)}</span>
+               </div>
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-lg">{comment.authorName || 'Użytkownik'}</span>
+                  <span className="text-[10px] font-black text-[#1a1a1a]/20 uppercase tracking-[0.3em]">•</span>
+                  <span className="text-[10px] font-black text-[#1a1a1a]/30 uppercase tracking-[0.2em] italic">
+                    {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
+                      ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
+                      : isClient ? 'niedawno' : ''}
+                  </span>
+                </div>
+                <p className="text-[#1a1a1a]/70 font-serif text-xl leading-relaxed italic">
+                  {comment.text}
+                </p>
+                <div className="flex items-center gap-8 pt-2">
+                  <button
+                    onClick={() => userProfile && likeMutation.mutate(comment.id)}
+                    disabled={!userProfile || likeMutation.isPending}
+                    className={cn(
+                      "flex items-center gap-2 transition-all hover:scale-110",
+                      comment.isLiked ? "text-primary" : "text-[#1a1a1a]/30 hover:text-primary"
+                    )}
+                  >
+                    <Heart size={20} className={cn(comment.isLiked && "fill-primary")} />
+                    <span className="text-xs font-black tracking-widest">{comment._count?.likes || 0}</span>
+                  </button>
+                  <button
+                    onClick={() => userProfile && setReplyTo(comment.id)}
+                    className="flex items-center gap-2 text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60 transition-all hover:scale-110"
+                  >
+                    <MessageSquare size={20} />
+                    <span className="text-xs font-black tracking-widest">{comment._count?.replies || 0}</span>
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* NESTED REPLIES */}
+            {comment.replies && comment.replies.length > 0 && (
+              <div className="pl-20 space-y-4">
+                {comment.replies.map((reply: any) => (
+                  <div key={reply.id} className="flex gap-4 items-start bg-white/30 p-4 rounded-2xl border border-transparent hover:border-[#1a1a1a]/5 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
+                      <span className="font-black text-[#1a1a1a]/40 text-sm uppercase">{(reply.author?.email?.[0] || 'U')}</span>
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center gap-3">
+                        <span className="font-black text-[#1a1a1a] uppercase tracking-tighter text-sm">{reply.author?.email?.split('@')[0] || 'Użytkownik'}</span>
+                        <span className="text-[8px] opacity-30">•</span>
+                        <span className="text-[10px] font-black text-[#1a1a1a]/30 italic">
+                          {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
+                            ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
+                            : 'niedawno'}
+                        </span>
+                      </div>
+                      <p className="text-[#1a1a1a]/60 font-serif text-lg leading-relaxed italic">
+                        {reply.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 

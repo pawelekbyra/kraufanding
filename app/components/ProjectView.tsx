@@ -1,11 +1,11 @@
 import React from 'react';
 import Hero from './Hero';
 import Stats from './Stats';
-import ProjectTabs from './ProjectTabs';
 import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
+import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
-import { SignInButton } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 
 interface ProjectViewProps {
@@ -15,91 +15,85 @@ interface ProjectViewProps {
 
 export default function ProjectView({ campaign, otherCampaigns }: ProjectViewProps) {
   const projectId = campaign.id;
+  const { userId } = useAuth();
+  const { user } = useUser();
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
-      {/* HEADER & FEATURED IMAGE */}
+      {/* YOUTUBE STYLE HERO (IMAGE, TITLES, DESC) */}
       <Hero campaign={campaign} />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        {/* FUNDING BOX (FULL WIDTH BELOW IMAGE) */}
-        <div className="mb-24">
-          <Stats
-            raised={campaign.raised}
-            goal={campaign.goal}
-            backers={248}
-            daysLeft={14}
-          />
-        </div>
 
-        {/* MAIN LAYOUT (TABS + SIDEBAR) */}
+        {/* MAIN LAYOUT (CONTENT + SIDEBAR) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
 
-          {/* LEFT COLUMN: STORY & UPDATES */}
-          <div className="lg:col-span-8 space-y-24">
+          {/* LEFT COLUMN: PROGRESS & COMMENTS */}
+          <div className="lg:col-span-8 space-y-16">
 
-            {/* PROJECT TABS (STORY, UPDATES, COMMENTS) */}
-            <div className="prose prose-lg prose-neutral max-w-none">
-              <ProjectTabs campaign={campaign} />
+            {/* PROGRESS BOX */}
+            <div className="pt-8 border-t border-[#1a1a1a]/5">
+              <Stats
+                raised={campaign.raised}
+                goal={campaign.goal}
+                backers={248}
+                daysLeft={14}
+              />
             </div>
 
-            {/* UNIFIED MATERIALS SECTION */}
-            <section className="pt-24 border-t-4 border-double border-[#1a1a1a]/10">
-              <h2 className="text-4xl font-black uppercase tracking-tighter mb-12 text-[#1a1a1a]">Materiały</h2>
-
-              <div className="space-y-24">
-                <PremiumWrapper projectId={projectId} minTier={1}>
-                  <div className="bg-white p-12 rounded-[2.5rem] border border-[#1a1a1a]/10 shadow-2xl space-y-8 font-serif">
-                      <h3 className="text-4xl font-black uppercase tracking-tight text-[#1a1a1a]">Briefing Operacyjny</h3>
-                      <p className="text-xl leading-relaxed opacity-70 italic">
-                        Dostęp do podstawowych materiałów dla wszystkich zarejestrowanych członków polutek.pl.
-                      </p>
-                      <div className="aspect-video bg-[#1a1a1a]/5 rounded-2xl overflow-hidden border border-[#1a1a1a]/5">
-                         <img src="https://picsum.photos/seed/ops/1200/800" alt="Ops Content" className="w-full h-full object-cover" />
-                      </div>
-                  </div>
-                </PremiumWrapper>
-
-                <PremiumWrapper
-                  projectId={projectId}
-                  minTier={2}
-                  mediaPath="public.blob.vercel-storage.com/evidence-report-v1.pdf"
-                >
-                  <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    <div className="aspect-video bg-[#1a1a1a]/5 rounded-[2.5rem] overflow-hidden border border-[#1a1a1a]/5 shadow-2xl">
-                      <img src="https://picsum.photos/seed/premium/1200/800" alt="Premium Content" className="w-full h-full object-cover grayscale-0" />
-                    </div>
-                    <div className="bg-white p-12 rounded-[2.5rem] border border-[#1a1a1a]/10 shadow-2xl space-y-8 font-serif">
-                      <h3 className="text-4xl font-black uppercase tracking-tight text-[#1a1a1a]">Pełny Raport Śledczy</h3>
-                      <p className="text-xl leading-relaxed opacity-70 italic">
-                        To jest kompletny, nieograniczony dostęp do danych tajnego projektu.
-                        Jako patron, masz teraz klucze do całego archiwum dowodów i badań.
-                      </p>
-                      <div className="grid grid-cols-2 gap-6 pt-6">
-                         <div className="p-8 bg-[#FDFBF7] rounded-3xl border border-[#1a1a1a]/5 shadow-inner">
-                            <span className="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-3 italic">Format Pliku</span>
-                            <span className="text-2xl font-black text-[#1a1a1a] tracking-tight">PDF / High Res</span>
-                         </div>
-                         <div className="p-8 bg-[#FDFBF7] rounded-3xl border border-[#1a1a1a]/5 shadow-inner">
-                            <span className="block text-[10px] font-black uppercase tracking-widest opacity-40 mb-3 italic">Poziom Dostępu</span>
-                            <span className="text-2xl font-black text-[#1a1a1a] tracking-tight">Obserwator+</span>
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </PremiumWrapper>
-              </div>
-            </section>
-
+            {/* COMMENTS SECTION */}
+            <div className="pt-16 border-t border-[#1a1a1a]/5">
+               <h3 className="text-2xl font-black uppercase tracking-widest mb-12 text-[#1a1a1a]">Komentarze</h3>
+               <EmbeddedComments
+                 entityId={campaign.id}
+                 entityType="PROJECT"
+                 userProfile={userId ? { id: userId, email: user?.primaryEmailAddress?.emailAddress || '' } : null}
+               />
+            </div>
           </div>
 
-          {/* RIGHT COLUMN: SIDEBAR REWARDS */}
+          {/* RIGHT COLUMN: SIDEBAR (TIP + SECRETS) */}
           <aside className="lg:col-span-4 space-y-12" id="rewards">
-            <div>
-              <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 text-[#1a1a1a] font-serif border-b-2 border-[#1a1a1a]/5 pb-4">
-                Nagrody
-              </h3>
-              <Rewards rewards={campaign.rewards || []} projectId={projectId} />
+            <div className="space-y-12">
+              <div className="space-y-6">
+                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#1a1a1a]/40 italic border-b border-[#1a1a1a]/5 pb-4">
+                  Wesprzyj Twórcę
+                </h3>
+                <Rewards rewards={campaign.rewards || []} projectId={projectId} />
+              </div>
+
+              {/* SECRETS AS THUMBNAILS IN SIDEBAR */}
+              <div className="space-y-8 pt-8 border-t border-[#1a1a1a]/5">
+                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#1a1a1a]/40 italic">
+                  Ekskluzywne Materiały
+                </h3>
+
+                <div className="space-y-6">
+                   <div className="group cursor-pointer">
+                      <PremiumWrapper projectId={projectId} minTier={1}>
+                        <div className="aspect-video rounded-2xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
+                           <img src="https://picsum.photos/seed/ops/400/225" alt="Ops" className="w-full h-full object-cover" />
+                        </div>
+                      </PremiumWrapper>
+                      <div className="!mt-0">
+                         <p className="text-sm font-black uppercase tracking-tight line-clamp-2">Briefing Operacyjny: Tajne dane</p>
+                         <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Zalogowanych</p>
+                      </div>
+                   </div>
+
+                   <div className="group cursor-pointer">
+                      <PremiumWrapper projectId={projectId} minTier={2}>
+                        <div className="aspect-video rounded-2xl overflow-hidden bg-[#1a1a1a]/5 border border-[#1a1a1a]/5 mb-3">
+                           <img src="https://picsum.photos/seed/premium/400/225" alt="Secret" className="w-full h-full object-cover" />
+                        </div>
+                      </PremiumWrapper>
+                      <div className="!mt-0">
+                         <p className="text-sm font-black uppercase tracking-tight line-clamp-2">Pełny Raport Śledczy: Dowody</p>
+                         <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest mt-1 italic">Dla Patronów</p>
+                      </div>
+                   </div>
+                </div>
+              </div>
             </div>
           </aside>
 

@@ -94,7 +94,7 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
         return (
         <div
           key={reward.id}
-          className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-8 shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-all duration-500 group cursor-pointer relative overflow-hidden"
+          className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-8 shadow-lg transition-all duration-500 group cursor-pointer relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
