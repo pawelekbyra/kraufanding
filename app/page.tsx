@@ -49,6 +49,7 @@ export default function Home() {
                 <PremiumWrapper
                   projectId={projectId}
                   minTier={2}
+                  mediaPath="public.blob.vercel-storage.com/evidence-report-v1.pdf"
                   teaser={
                     <div className="p-8 bg-primary/5 border border-primary/20 rounded-2xl">
                       <h4 className="text-primary font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-sm">

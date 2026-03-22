@@ -12,12 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en" data-theme="polutek">
-        <body className="font-serif bg-base-100 text-neutral min-h-screen">
+    <html lang="en" data-theme="polutek">
+      <body className="font-serif bg-base-100 text-neutral min-h-screen">
+        <ClerkProvider>
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

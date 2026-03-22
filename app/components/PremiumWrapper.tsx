@@ -8,6 +8,7 @@ interface PremiumWrapperProps {
   teaser?: React.ReactNode;
   minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
   projectId: string;
+  mediaPath?: string; // Optional path to a gated media asset (e.g., 'v0/video.mp4')
 }
 
 /**
@@ -18,7 +19,8 @@ export default async function PremiumWrapper({
   children,
   teaser,
   minTier,
-  projectId
+  projectId,
+  mediaPath
 }: PremiumWrapperProps) {
   const { userId: clerkUserId } = auth();
   const userTierLevel = await getProjectAccess(clerkUserId, projectId);
@@ -36,6 +38,22 @@ export default async function PremiumWrapper({
           </div>
           <span className="text-sm font-black uppercase tracking-[0.2em] text-primary">Patron Verified Access</span>
         </div>
+        {mediaPath && (
+          <div className="mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+            <p className="text-xs font-black uppercase tracking-widest text-primary/60 mb-2">Secure Stream Link</p>
+            <a
+              href={`/api/media/${mediaPath}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-serif italic hover:underline flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+              </svg>
+              Download Protected Asset: {mediaPath.split('/').pop()}
+            </a>
+          </div>
+        )}
         {children}
       </div>
     );
