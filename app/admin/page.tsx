@@ -43,9 +43,9 @@ export default async function AdminPanel() {
             <h1 className="text-6xl font-black uppercase tracking-tighter mb-4">Panel Zarządzania</h1>
             <p className="text-xl italic opacity-50 font-serif">Witaj, {user?.email}. Masz pełny dostęp do zrzutek.</p>
           </div>
-          <button className="btn btn-primary btn-lg rounded-2xl font-black tracking-widest px-12 shadow-xl">
+          <Link href="/admin/projects/new" className="btn btn-primary btn-lg rounded-2xl font-black tracking-widest px-12 shadow-xl">
              DODAJ NOWĄ ZRZUTKĘ
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-8">
@@ -89,7 +89,7 @@ export default async function AdminPanel() {
 
                <div className="flex flex-col gap-3 w-full lg:w-48">
                   <Link href={`/projects/${project.slug}`} className="btn btn-ghost border-2 border-[#1a1a1a]/5 rounded-xl font-black tracking-widest uppercase text-xs btn-sm">Podgląd</Link>
-                  <button className="btn bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-xl font-black tracking-widest uppercase text-xs btn-sm">Edytuj</button>
+                  <Link href={`/admin/projects/${project.id}`} className="btn bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-xl font-black tracking-widest uppercase text-xs btn-sm flex items-center justify-center">Edytuj</Link>
                   <button className="btn btn-ghost text-error hover:bg-error/10 border-none rounded-xl font-black tracking-widest uppercase text-xs btn-sm">Usuń</button>
                </div>
             </div>

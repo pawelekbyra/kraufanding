@@ -117,23 +117,25 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
             </p>
 
             {isCustom && (
-              <div className="space-y-4 pt-2 border-t border-[#1a1a1a]/5">
-                <p className="text-[#1a1a1a]/60 text-sm italic font-bold">
-                  Wpisz własną kwotę wsparcia (min. 10 €):
-                </p>
-                <div className="flex items-center gap-3">
+              <div className="space-y-4 pt-4 border-t border-[#1a1a1a]/5">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-2 italic">
+                  Własna kwota wsparcia (min. 10 €)
+                </label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                    <span className="text-2xl font-black text-[#1a1a1a]/20 group-focus-within/input:text-primary transition-colors">€</span>
+                  </div>
                   <input
                     type="number"
                     min="10"
                     step="1"
                     value={currentAmount}
                     onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 0 }))}
-                    className="input input-bordered bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-xl w-32 font-black text-xl text-[#1a1a1a]"
+                    className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-5 pl-14 pr-6 font-black text-3xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                   />
-                  <span className="text-2xl font-black text-[#1a1a1a]/30">€</span>
                 </div>
                 {currentAmount < 10 && (
-                  <p className="text-error text-xs font-black uppercase tracking-widest animate-pulse">Kwota musi wynosić co najmniej 10 €</p>
+                  <p className="text-error text-[10px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
                 )}
               </div>
             )}
