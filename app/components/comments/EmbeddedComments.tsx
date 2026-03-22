@@ -136,7 +136,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         {comments.map((comment: any) => (
           <div key={comment.id} className="group flex gap-6 items-start animate-in fade-in slide-in-from-bottom-8 duration-700">
              <div className="w-14 h-14 rounded-2xl bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 border border-[#1a1a1a]/5">
-                <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U')[0]}</span>
+                <span className="font-black text-[#1a1a1a]/40 text-2xl uppercase">{(comment.authorName || 'U').charAt(0)}</span>
              </div>
             <div className="flex-1 space-y-4">
               <div className="flex items-center gap-3">
