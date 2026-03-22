@@ -1,14 +1,60 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import { Reward } from '../types/campaign';
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 interface RewardsProps {
   rewards: Reward[];
 }
 
 const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
+  const [isLoading, setIsLoading] = useState<string | null>(null);
+  const { userId } = useAuth();
+  const router = useRouter();
+
+  const onSupport = async (reward: Reward, index: number) => {
+    if (!userId) {
+      // For a smoother experience, you could open the Clerk sign-in modal here
+      // For now, we'll assume the user is signed in if they can see the button
+      alert("Please sign in to support this project.");
+      return;
+    }
+
+    try {
+      setIsLoading(reward.id);
+
+      // Determine tier level based on reward order (2-5, assuming index 0-3 maps to levels)
+      // Level 2: Observer, 3: Witness, 4: Insider, 5: Architect
+      const tierLevel = Math.min(index + 2, 5);
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        body: JSON.stringify({
+          amount: reward.amount,
+          projectId: 'project_1', // Using first seeded project ID as fallback
+          tierLevel,
+          title: reward.title
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.assign(data.url);
+      }
+    } catch (error) {
+      console.error("Payment error", error);
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   return (
     <div className="space-y-8 font-serif">
-      {rewards.map((reward) => (
+      {rewards.map((reward, index) => (
         <div
           key={reward.id}
           className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-8 shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-all duration-500 group cursor-pointer relative overflow-hidden"
@@ -45,8 +91,12 @@ const Rewards: React.FC<RewardsProps> = ({ rewards }) => {
               </div>
             </div>
 
-            <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300">
-              WYBIERZ
+            <button
+              onClick={() => onSupport(reward, index)}
+              disabled={!!isLoading}
+              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading === reward.id ? 'loading' : ''}`}
+            >
+              {isLoading === reward.id ? 'ŁADOWANIE...' : 'WYBIERZ'}
             </button>
           </div>
         </div>

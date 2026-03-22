@@ -10,6 +10,13 @@ interface StatsProps {
 const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft }) => {
   const percentage = Math.round((raised / goal) * 100);
 
+  const scrollToRewards = () => {
+    const rewardsSection = document.getElementById('rewards');
+    if (rewardsSection) {
+      rewardsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2.5rem] p-10 shadow-xl space-y-10 font-serif">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -49,7 +56,10 @@ const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft }) => {
         </div>
       </div>
 
-      <button className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-lg w-full rounded-2xl font-black tracking-widest text-lg shadow-xl shadow-[#1a1a1a]/10 group transition-all duration-500">
+      <button
+        onClick={scrollToRewards}
+        className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-lg w-full rounded-2xl font-black tracking-widest text-lg shadow-xl shadow-[#1a1a1a]/10 group transition-all duration-500"
+      >
         WESPRZYJ PROJEKT
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform">
           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
