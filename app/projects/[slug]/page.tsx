@@ -5,9 +5,9 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import ProjectView from '@/app/components/ProjectView';
-import { Campaign } from '@/app/types/campaign';
+import { Project } from '@/app/types/project';
 import { incrementProjectViews } from '@/lib/actions/interactions';
-import { mockCampaigns } from '@/app/data/mock-campaigns';
+import { mockProjects } from '@/app/data/mock-projects';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,23 +22,23 @@ interface ProjectPageProps {
 
 export default async function ProjectPage({ params, searchParams }: ProjectPageProps) {
   // 1. Try DB
-  const project = await prisma.project.findUnique({
+  const projectFromDb = await prisma.project.findUnique({
     where: { slug: params.slug },
     include: {
       creator: true,
-      tiers: true,
       posts: true,
+      files: true,
     },
   }).catch(() => null);
 
-  if (project) {
-    incrementProjectViews(project.id).catch(() => {});
-    const campaign = mapDbToCampaign(project);
-    return renderPage(campaign, searchParams.v);
+  if (projectFromDb) {
+    incrementProjectViews(projectFromDb.id).catch(() => {});
+    const project = mapDbToProject(projectFromDb);
+    return renderPage(project, searchParams.v);
   }
 
   // 2. Try Mock Data
-  const mock = mockCampaigns.find(c => c.slug === params.slug);
+  const mock = mockProjects.find(c => c.slug === params.slug);
   if (mock) {
     return renderPage(mock, searchParams.v);
   }
@@ -46,7 +46,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
   return notFound();
 }
 
-function mapDbToCampaign(project: any): Campaign {
+function mapDbToProject(project: any): Project {
     return {
         id: project.id,
         slug: project.slug,
@@ -54,34 +54,32 @@ function mapDbToCampaign(project: any): Campaign {
         description: project.title,
         category: "Technology",
         author: project.creator.name,
-        goal: project.goalAmount / 100,
-        raised: project.collectedAmount / 100,
         views: (project as any).views || 0,
         thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
-        endDate: project.publishedAt?.toISOString() || "",
+        publishedAt: project.publishedAt?.toISOString() || "",
         story: [
           project.title + " aims to change something big.",
           "Support this project to help bring this idea to life."
         ],
-        rewards: project.tiers.map((t: any) => ({
-          id: t.id,
-          title: t.name,
-          amount: t.priceOneTime / 100,
-          description: t.description || "",
-          deliveryDate: "March 2025",
-          backers: t.slotsTaken
-        })),
         updates: project.posts.map((p: any) => ({
           id: p.id,
           date: p.publishedAt.toISOString().split('T')[0],
           title: p.title,
           content: p.contentPublic || ""
         })),
+        materials: project.files.map((f: any) => ({
+            id: f.id,
+            title: f.path.split('/').pop() || "Material",
+            thumbnail: "https://picsum.photos/seed/" + f.id + "/400/225",
+            description: "Materiał wideo z archiwum Polutka.",
+            minTier: f.minTier,
+            publishedAt: f.createdAt.toISOString().split('T')[0]
+        })),
         comments: []
     };
 }
 
-async function renderPage(campaign: Campaign, videoId?: string) {
+async function renderPage(project: Project, videoId?: string) {
     const { userId } = auth();
     const user = await currentUser();
 
@@ -94,7 +92,7 @@ async function renderPage(campaign: Campaign, videoId?: string) {
       <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
         <Navbar />
         <ProjectView
-          campaign={campaign}
+          project={project}
           videoId={videoId}
           userProfile={userProfile}
         />
