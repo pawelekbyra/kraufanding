@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -23,12 +23,22 @@ export async function toggleProjectLike(projectId: string) {
   const { userId: clerkUserId } = auth();
   if (!clerkUserId) throw new Error("Unauthorized");
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { clerkUserId },
     select: { id: true }
   });
 
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    const clerkUser = await currentUser();
+    if (!clerkUser) throw new Error("Clerk User not found");
+    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+    const imageUrl = clerkUser.imageUrl || null;
+    user = await prisma.user.upsert({
+      where: { clerkUserId },
+      update: { email, imageUrl },
+      create: { clerkUserId, email, imageUrl }
+    });
+  }
 
   const existingLike = await prisma.projectLike.findUnique({
     where: {
@@ -59,12 +69,22 @@ export async function toggleSubscription() {
   const { userId: clerkUserId } = auth();
   if (!clerkUserId) throw new Error("Unauthorized");
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { clerkUserId },
     select: { id: true, isSubscribed: true }
   });
 
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    const clerkUser = await currentUser();
+    if (!clerkUser) throw new Error("Clerk User not found");
+    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+    const imageUrl = clerkUser.imageUrl || null;
+    user = await prisma.user.upsert({
+      where: { clerkUserId },
+      update: { email, imageUrl },
+      create: { clerkUserId, email, imageUrl }
+    });
+  }
 
   const updatedUser = await prisma.user.update({
     where: { id: user.id },

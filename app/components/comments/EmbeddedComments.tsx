@@ -5,7 +5,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2 } from 'lucide-react';
-import { SignInButton } from '@clerk/nextjs';
+import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import { DEFAULT_AVATAR_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -52,12 +52,20 @@ const MOCK_COMMENTS = [
 ];
 
 const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
-  userProfile,
+  userProfile: initialUserProfile,
   entityId,
   entityType = 'PROJECT',
   showMocks = false
 }) => {
   const queryClient = useQueryClient();
+  const { isSignedIn, userId } = useAuth();
+  const { user } = useUser();
+
+  const userProfile = isSignedIn ? {
+    id: userId!,
+    email: user?.primaryEmailAddress?.emailAddress || '',
+    imageUrl: user?.imageUrl || null
+  } : null;
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);

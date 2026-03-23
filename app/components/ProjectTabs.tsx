@@ -72,11 +72,6 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
             <EmbeddedComments
               entityId={project.id}
               entityType="PROJECT"
-              userProfile={userId ? {
-                id: userId,
-                email: user?.primaryEmailAddress?.emailAddress || '',
-                imageUrl: user?.imageUrl || null
-              } : null}
             />
           </div>
         )}

@@ -21,12 +21,28 @@ export async function GET(request: NextRequest) {
     let internalUserId = null;
     if (clerkUserId) {
         try {
-            const user = await prisma.user.findUnique({
+            let user = await prisma.user.findUnique({
                 where: { clerkUserId },
                 select: { id: true }
             });
+
+            if (!user) {
+                // If user is authenticated but not in our DB, sync them now
+                const clerkUser = await currentUser();
+                if (clerkUser) {
+                    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+                    const imageUrl = clerkUser.imageUrl || null;
+                    user = await prisma.user.upsert({
+                        where: { clerkUserId },
+                        update: { email, imageUrl },
+                        create: { clerkUserId, email, imageUrl }
+                    });
+                }
+            }
             internalUserId = user?.id;
-        } catch (e) {}
+        } catch (e) {
+            console.error("Error syncing user during GET comments:", e);
+        }
     }
 
     let comments: any[] = [];
