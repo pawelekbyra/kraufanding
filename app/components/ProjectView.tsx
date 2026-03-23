@@ -1,19 +1,23 @@
 import React from 'react';
 import Hero from './Hero';
-import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { cn } from '@/lib/utils';
 
 interface ProjectViewProps {
   campaign: Campaign;
+  videoId?: string;
 }
 
-export default async function ProjectView({ campaign }: ProjectViewProps) {
+export default async function ProjectView({ campaign, videoId }: ProjectViewProps) {
   const projectId = campaign.id;
+  const currentVideoId = videoId || (campaign.videos?.[0]?.id || 'promo');
+  const currentVideo = campaign.videos?.find(v => v.id === currentVideoId) || campaign.videos?.[0];
+
   const { userId } = auth();
   const user = await currentUser();
 
@@ -66,12 +70,20 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
           <div className="col-span-12 lg:col-span-8">
 
             {/* VIDEO PLAYER & METADATA */}
-            <Hero campaign={{ ...campaign, initialIsLiked, initialIsSubscribed, likesCount }} />
+            <Hero campaign={{
+                ...campaign,
+                title: currentVideo?.title || campaign.title,
+                thumbnail: currentVideo?.thumbnail || campaign.thumbnail,
+                minTier: currentVideo?.minTier || 0,
+                initialIsLiked,
+                initialIsSubscribed,
+                likesCount
+            }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
             <div className="mt-3 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[14px] font-bold">
-                  <span>{(campaign as any).views?.toLocaleString() || '124,562'} wyświetleń</span>
+                  <span>{(campaign as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
                   <span>21 mar 2025</span>
                </div>
                <div className="text-[14px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
@@ -85,56 +97,43 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
             {/* COMMENTS SECTION */}
             <div className="mt-6">
                <EmbeddedComments
-                 entityId={campaign.id}
-                 entityType="PROJECT"
+                 entityId={currentVideoId}
+                 entityType="VIDEO"
                  userProfile={userProfile}
                />
             </div>
           </div>
 
-          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST (TIP + SECRETS) */}
+          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST */}
           <aside className="col-span-12 lg:col-span-4 space-y-4">
             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-2 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
 
-            {/* MOCK PLAYLIST ITEMS (12+ items) */}
-            {Array.from({ length: 15 }).map((_, i) => {
-                const isDonate = i === 2;
-                if (isDonate) {
-                    return (
-                        <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-                           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-2 px-2">Wesprzyj Twórcę</h3>
-                           <Rewards rewards={campaign.rewards || []} projectId={projectId} />
-                        </div>
-                    );
-                }
-
-                const isLocked = i > 0;
-                const seed = `secret-${i}`;
-                const titles = [
-                    "Briefing Operacyjny: Tajne dane",
-                    "Analiza systemów: Infiltracja",
-                    "Pełny Raport Śledczy: Dowody",
-                    "Nagranie z monitoringu: Sektor 7",
-                    "Logi serwera: Przejęcie kontroli",
-                    "Rozmowa przechwycona: Cel X",
-                    "Dokumentacja techniczna v2.1",
-                    "Kody źródłowe: Moduł Alpha",
-                    "Wywiad terenowy: Operacja Noc",
-                    "Zapisy audio: Świadek Zero",
-                    "Mapa powiązań: Architekt",
-                    "Zdjęcia satelitarne: Baza",
-                    "Protokół bezpieczeństwa 99",
-                    "Archiwum X: Niepublikowane",
-                    "Finałowy raport: Rozwiązanie"
-                ];
+            {/* PLAYLIST ITEMS */}
+            {(campaign.videos || []).sort((a, b) => {
+                // Sort current video first
+                if (a.id === currentVideoId) return -1;
+                if (b.id === currentVideoId) return 1;
+                // Then by minTier
+                return a.minTier - b.minTier;
+            }).map((video, i) => {
+                const isLocked = video.minTier > 0;
+                const isCurrent = video.id === currentVideoId;
 
                 return (
-                    <Link key={i} href="#" className="group flex gap-2 p-1 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors">
+                    <Link
+                      key={video.id}
+                      href={`/projects/${campaign.slug}?v=${video.id}`}
+                      scroll={false}
+                      className={cn(
+                        "group flex gap-2 p-1 rounded-lg transition-colors",
+                        isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+                      )}
+                    >
                       <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
-                        <PremiumWrapper projectId={projectId} minTier={isLocked ? 2 : 1} variant="thumbnail">
+                        <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
                            <img
-                             src={`https://picsum.photos/seed/${seed}/400/225`}
-                             alt="Thumbnail"
+                             src={video.thumbnail}
+                             alt={video.title}
                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                            />
                         </PremiumWrapper>
@@ -142,7 +141,7 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
                         <h4 className="text-[13px] font-bold text-[#1a1a1a] line-clamp-2 leading-tight uppercase tracking-tight">
-                           {titles[i % titles.length]}
+                           {video.title}
                         </h4>
                         <div className="text-[11px] text-[#1a1a1a]/60 flex flex-col">
                            <span>Polutek Archive</span>

@@ -4,12 +4,10 @@ export const mockCampaigns: Campaign[] = [
   {
     id: "secret-project",
     slug: "secret-project",
-    title: "I raise money for my secret projekt",
+    title: "I raise money for my Secret Project",
     description: "This is a secret project that aims to change something big. I cannot reveal all details yet, but your support will help bring this idea to life. Every contribution counts and pushes this project forward.",
     category: "Technology",
-    author: "Secret Author",
-    goal: 10000,
-    raised: 6500,
+    author: "Paweł Polutek",
     views: 124562,
     thumbnail: "https://picsum.photos/900/400",
     endDate: "2024-12-31",
@@ -52,6 +50,104 @@ export const mockCampaigns: Campaign[] = [
         content: "We are happy to announce that our first working prototype successfully passed all laboratory tests. This is a huge step forward!"
       }
     ],
+    videos: [
+      {
+        id: "promo",
+        title: "I raise money for my Secret Project - Cover (Official Music Video)",
+        thumbnail: "https://picsum.photos/seed/promo/1200/675",
+        minTier: 0
+      },
+      {
+        id: "briefing",
+        title: "Briefing Operacyjny: Tajne dane",
+        thumbnail: "https://picsum.photos/seed/secret-0/1200/675",
+        minTier: 1
+      },
+      {
+        id: "analiza",
+        title: "Analiza systemów: Infiltracja",
+        thumbnail: "https://picsum.photos/seed/secret-1/1200/675",
+        minTier: 2
+      },
+      {
+        id: "raport",
+        title: "Pełny Raport Śledczy: Dowody",
+        thumbnail: "https://picsum.photos/seed/secret-2/1200/675",
+        minTier: 2
+      },
+      {
+        id: "monitoring",
+        title: "Nagranie z monitoringu: Sektor 7",
+        thumbnail: "https://picsum.photos/seed/secret-3/1200/675",
+        minTier: 2
+      },
+      {
+        id: "logi",
+        title: "Logi serwera: Przejęcie kontroli",
+        thumbnail: "https://picsum.photos/seed/secret-4/1200/675",
+        minTier: 2
+      },
+      {
+        id: "rozmowa",
+        title: "Rozmowa przechwycona: Cel X",
+        thumbnail: "https://picsum.photos/seed/secret-5/1200/675",
+        minTier: 2
+      },
+      {
+        id: "dokumentacja",
+        title: "Dokumentacja techniczna v2.1",
+        thumbnail: "https://picsum.photos/seed/secret-6/1200/675",
+        minTier: 2
+      },
+      {
+        id: "kody",
+        title: "Kody źródłowe: Moduł Alpha",
+        thumbnail: "https://picsum.photos/seed/secret-7/1200/675",
+        minTier: 2
+      },
+      {
+        id: "wywiad",
+        title: "Wywiad terenowy: Operacja Noc",
+        thumbnail: "https://picsum.photos/seed/secret-8/1200/675",
+        minTier: 2
+      },
+      {
+        id: "audio",
+        title: "Zapisy audio: Świadek Zero",
+        thumbnail: "https://picsum.photos/seed/secret-9/1200/675",
+        minTier: 2
+      },
+      {
+        id: "mapa",
+        title: "Mapa powiązań: Architekt",
+        thumbnail: "https://picsum.photos/seed/secret-10/1200/675",
+        minTier: 2
+      },
+      {
+        id: "satelitarne",
+        title: "Zdjęcia satelitarne: Baza",
+        thumbnail: "https://picsum.photos/seed/secret-11/1200/675",
+        minTier: 2
+      },
+      {
+        id: "protokol",
+        title: "Protokół bezpieczeństwa 99",
+        thumbnail: "https://picsum.photos/seed/secret-12/1200/675",
+        minTier: 2
+      },
+      {
+        id: "archiwum",
+        title: "Archiwum X: Niepublikowane",
+        thumbnail: "https://picsum.photos/seed/secret-13/1200/675",
+        minTier: 2
+      },
+      {
+        id: "final",
+        title: "Finałowy raport: Rozwiązanie",
+        thumbnail: "https://picsum.photos/seed/secret-14/1200/675",
+        minTier: 2
+      }
+    ],
     comments: [
       {
         id: "com-1",
@@ -69,8 +165,6 @@ export const mockCampaigns: Campaign[] = [
     description: "Help us transform urban spaces into green oases. We are developing modular vertical gardens and automated composting systems for city dwellers.",
     category: "Environment",
     author: "Green Future Team",
-    goal: 50000,
-    raised: 12500,
     views: 124562,
     thumbnail: "https://picsum.photos/seed/eco/900/400",
     endDate: "2025-06-01",

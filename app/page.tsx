@@ -10,7 +10,7 @@ import { mockCampaigns } from './data/mock-campaigns';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: { v?: string } }) {
   // 1. Try to fetch from DB
   const secretProject = await prisma.project.findUnique({
     where: { slug: 'secret-project' },
@@ -24,7 +24,7 @@ export default async function Home() {
   if (secretProject) {
     incrementProjectViews(secretProject.id).catch(() => {});
     const campaign = mapDbToCampaign(secretProject);
-    return <FeaturedHome campaign={campaign} />;
+    return <FeaturedHome campaign={campaign} searchParams={searchParams} />;
   }
 
   // 2. Try latest from DB
@@ -36,12 +36,12 @@ export default async function Home() {
   if (latest) {
     incrementProjectViews(latest.id).catch(() => {});
     const campaign = mapDbToCampaign(latest);
-    return <FeaturedHome campaign={campaign} />;
+    return <FeaturedHome campaign={campaign} searchParams={searchParams} />;
   }
 
   // 3. Fallback to Mock Data (User requirement: always show content)
   const mock = mockCampaigns.find(c => c.slug === 'secret-project') || mockCampaigns[0];
-  return <FeaturedHome campaign={mock} />;
+  return <FeaturedHome campaign={mock} searchParams={searchParams} />;
 }
 
 function mapDbToCampaign(project: any): Campaign {
@@ -79,11 +79,11 @@ function mapDbToCampaign(project: any): Campaign {
     };
 }
 
-async function FeaturedHome({ campaign }: { campaign: Campaign }) {
+async function FeaturedHome({ campaign, searchParams }: { campaign: Campaign, searchParams: { v?: string } }) {
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
             <Navbar />
-            <ProjectView campaign={campaign} />
+            <ProjectView campaign={campaign} videoId={searchParams.v} />
             <Footer />
         </div>
     );

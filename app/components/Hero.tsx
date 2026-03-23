@@ -6,6 +6,7 @@ import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { toggleProjectLike, toggleSubscription } from '@/lib/actions/interactions';
 import { cn } from '@/lib/utils';
+import PremiumWrapper from './PremiumWrapper';
 
 interface HeroProps {
   campaign: Campaign & {
@@ -13,6 +14,7 @@ interface HeroProps {
     initialIsLiked?: boolean;
     initialIsSubscribed?: boolean;
     likesCount?: number;
+    minTier?: number;
   };
 }
 
@@ -58,18 +60,20 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
       <div className="w-full">
         {/* FEATURED MEDIA (VIDEO PLAYER) - SHARPER CORNERS */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
-          <img
-            src={campaign.thumbnail}
-            alt={campaign.title}
-            className="w-full h-full object-cover opacity-90 transition duration-1000"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-             <div className="w-16 h-16 bg-[#1a1a1a]/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10">
-                <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
-                   <path d="M8 5v14l11-7z" />
-                </svg>
-             </div>
-          </div>
+          <PremiumWrapper projectId={campaign.id} minTier={campaign.minTier || 0}>
+            <img
+                src={campaign.thumbnail}
+                alt={campaign.title}
+                className="w-full h-full object-cover opacity-90 transition duration-1000"
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-16 h-16 bg-[#1a1a1a]/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
+                    <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                    </svg>
+                </div>
+            </div>
+          </PremiumWrapper>
         </div>
 
         {/* YOUTUBE-STYLE INFO - EXACT SCALE */}
@@ -85,7 +89,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                </div>
                <div className="min-w-0 pr-4">
                   <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{campaign.author}</p>
-                  <p className="text-[12px] text-[#606060]">1.2M subskrybentów</p>
+                  <p className="text-[12px] text-[#606060]">1.2 M subskrajberów</p>
                </div>
                <button
                  onClick={handleSubscribe}
@@ -96,7 +100,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                         : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
                  )}
                >
-                 {optimisticSub ? 'Subskrybujesz' : 'Subskrybuj'}
+                 {optimisticSub ? 'Subskrajbujesz' : 'Subskrajb'}
                </button>
             </div>
 
@@ -110,7 +114,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                     )}
                   >
                      <ThumbsUp size={18} className={cn(optimisticLike.isLiked && "fill-primary")} />
-                     <span className="text-[14px] font-bold">{optimisticLike.count.toLocaleString()}</span>
+                     <span className="text-[14px] font-bold">{optimisticLike.count.toLocaleString('pl-PL')}</span>
                   </button>
                   <button className="px-4 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
                      <ThumbsDown size={18} />
