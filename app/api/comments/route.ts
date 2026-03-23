@@ -123,22 +123,31 @@ export async function POST(request: NextRequest) {
         if (!clerkUser) return NextResponse.json({ success: false, message: 'User not found.' }, { status: 404 });
 
         try {
-            user = await prisma.user.create({
-                data: {
+            user = await prisma.user.upsert({
+                where: { clerkUserId },
+                update: { email: clerkUser.primaryEmailAddress?.emailAddress || "" },
+                create: {
                     clerkUserId,
                     email: clerkUser.primaryEmailAddress?.emailAddress || "",
                 }
             });
         } catch (e: any) {
-            return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
+            console.error("[COMMENT_POST_USER_SYNC_ERROR]", e);
+            // Try to find the user again, maybe it was created by another concurrent request
+            user = await prisma.user.findUnique({ where: { clerkUserId } });
+            if (!user) return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
         }
     }
 
-    const { entityId, entityType, text, parentId, imageUrl } = await request.json();
+    const body = await request.json();
+    const { entityId, entityType, text, parentId, imageUrl } = body;
 
     if (!entityId || (!text && !imageUrl)) {
       return NextResponse.json({ success: false, message: 'Missing content.' }, { status: 400 });
     }
+
+    // Sanitize parentId - we cannot reply to mock comments in the database
+    const sanitizedParentId = (parentId && parentId.toString().startsWith('mock')) ? null : parentId;
 
     const newComment = await prisma.comment.create({
         data: {
@@ -146,7 +155,7 @@ export async function POST(request: NextRequest) {
             entityType: entityType || 'PROJECT',
             text: text?.trim() || '',
             authorId: user.id,
-            parentId: parentId || null,
+            parentId: sanitizedParentId || null,
             imageUrl: imageUrl || null,
         },
         include: {
