@@ -161,18 +161,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-12 max-w-4xl prose-lg bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#1a1a1a]/5">
-      <div className="flex items-center gap-8 mb-8">
-         <h3 className="text-xl font-black text-[#1a1a1a] uppercase tracking-widest leading-none">{comments.length} komentarzy</h3>
-         <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity translate-y-[1px]">
+    <div className="space-y-8 max-w-4xl prose bg-white p-0 rounded-none border-none">
+      <div className="flex items-center gap-8 mb-6">
+         <h3 className="text-[20px] font-bold text-[#0f0f0f] leading-none">{comments.length} komentarzy</h3>
+         <button className="flex items-center gap-2 text-[14px] font-bold opacity-100 hover:bg-[#000000]/5 px-2 py-1 rounded-sm transition-opacity">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 4h18M6 12h12m-9 8h6" strokeLinecap="round" strokeLinejoin="round"/></svg>
             Sortuj według
          </button>
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-4 items-start mb-12">
-        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/10">
+      <div className="flex gap-4 items-start mb-8">
+        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0">
            {userProfile ? (
              <span className="font-black text-primary text-lg uppercase">{userProfile.email.charAt(0)}</span>
            ) : (
@@ -192,7 +192,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder={replyTo ? "Dodaj publiczną odpowiedź..." : "Dodaj komentarz..."}
-              className="w-full bg-transparent text-[#1a1a1a] focus:outline-none text-base border-b border-[#1a1a1a]/10 focus:border-[#1a1a1a] transition-colors resize-none py-2 font-serif italic"
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-[#0f0f0f] transition-colors resize-none py-1 min-h-[1.5rem]"
               onClick={() => !userProfile && document.getElementById('signin-trigger')?.click()}
             />
           </div>
@@ -227,14 +227,14 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-black text-[#1a1a1a] uppercase text-xs">@{comment.authorName || 'Użytkownik'}</span>
-                  <span className="text-[10px] font-bold text-[#1a1a1a]/30 italic">
+                  <span className="font-bold text-[#0f0f0f] text-[13px]">@{comment.authorName || 'Użytkownik'}</span>
+                  <span className="text-[12px] text-[#606060]">
                     {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                       ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                       : isClient ? 'niedawno' : ''}
                   </span>
                 </div>
-                <p className="text-[#1a1a1a] font-serif text-[17px] leading-relaxed italic">
+                <p className="text-[#0f0f0f] text-[14px] leading-relaxed">
                   {comment.text}
                 </p>
                 <div className="flex items-center gap-4 pt-1">
@@ -242,18 +242,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     onClick={() => userProfile && likeMutation.mutate(comment.id)}
                     className={cn(
                       "flex items-center gap-1 transition-all group",
-                      comment.isLiked ? "text-primary" : "text-[#1a1a1a]/40"
+                      comment.isLiked ? "text-primary" : "text-[#606060] hover:text-[#0f0f0f]"
                     )}
                   >
                     <ThumbsUp size={14} className={cn(comment.isLiked && "fill-primary")} />
-                    <span className="text-[10px] font-black">{comment._count?.likes || 0}</span>
+                    <span className="text-[12px] font-normal">{comment._count?.likes || 0}</span>
                   </button>
-                  <button className="text-[#1a1a1a]/40 hover:text-[#1a1a1a] transition-all">
+                  <button className="text-[#606060] hover:text-[#0f0f0f] transition-all">
                     <ThumbsDown size={14} />
                   </button>
                   <button
                     onClick={() => userProfile && setReplyTo(comment.id)}
-                    className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/60 hover:text-[#1a1a1a] ml-4"
+                    className="text-[12px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-3 py-1 rounded-full ml-2 transition-all"
                   >
                     Odpowiedz
                   </button>
@@ -282,7 +282,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                             : 'niedawno'}
                         </span>
                       </div>
-                      <p className="text-[#1a1a1a]/80 font-serif text-[15px] leading-relaxed italic">
+                      <p className="text-[#0f0f0f] text-[14px] leading-relaxed">
                         {reply.text}
                       </p>
                     </div>

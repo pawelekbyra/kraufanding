@@ -56,8 +56,8 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
-      {/* EXACT YOUTUBE WIDTH */}
-      <div className="max-w-[1280px] mx-auto px-4 py-6">
+      {/* EXACT YOUTUBE WIDTH & MARGINS */}
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 py-4">
 
         {/* YOUTUBE STYLE GRID LAYOUT (12 COLS) */}
         <div className="grid grid-cols-12 gap-6">
@@ -69,21 +69,21 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
             <Hero campaign={{ ...campaign, initialIsLiked, initialIsSubscribed, likesCount }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
-            <div className="mt-4 bg-[#1a1a1a]/5 rounded-xl p-4 space-y-2 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-sm font-bold">
+            <div className="mt-3 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
+               <div className="flex gap-4 text-[14px] font-bold">
                   <span>{(campaign as any).views?.toLocaleString() || '124,562'} wyświetleń</span>
                   <span>21 mar 2025</span>
                </div>
-               <div className="text-sm leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90">
+               <div className="text-[14px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
                   {campaign.description}
                   <br />
                   Zapraszam do obczajenia moich nowych materiałów wideo. Wspierając ten projekt, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
                </div>
-               <button className="text-xs font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
+               <button className="text-[12px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
             </div>
 
             {/* COMMENTS SECTION */}
-            <div className="mt-8">
+            <div className="mt-6">
                <EmbeddedComments
                  entityId={campaign.id}
                  entityType="PROJECT"
@@ -94,7 +94,7 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
 
           {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST (TIP + SECRETS) */}
           <aside className="col-span-12 lg:col-span-4 space-y-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-4 border-b border-[#1a1a1a]/5 pb-2">Materiały</h3>
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-2 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
 
             {/* MOCK PLAYLIST ITEMS (12+ items) */}
             {Array.from({ length: 15 }).map((_, i) => {
@@ -129,7 +129,7 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
                 ];
 
                 return (
-                    <Link key={i} href="#" className="group flex gap-3 p-2 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors">
+                    <Link key={i} href="#" className="group flex gap-2 p-1 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors">
                       <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
                         <PremiumWrapper projectId={projectId} minTier={isLocked ? 2 : 1} variant="thumbnail">
                            <img
@@ -140,8 +140,8 @@ export default async function ProjectView({ campaign }: ProjectViewProps) {
                         </PremiumWrapper>
                         <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
                       </div>
-                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
-                        <h4 className="text-sm font-bold text-[#1a1a1a] line-clamp-2 leading-tight uppercase tracking-tight">
+                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+                        <h4 className="text-[13px] font-bold text-[#1a1a1a] line-clamp-2 leading-tight uppercase tracking-tight">
                            {titles[i % titles.length]}
                         </h4>
                         <div className="text-[11px] text-[#1a1a1a]/60 flex flex-col">
