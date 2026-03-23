@@ -40,10 +40,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-white border border-neutral/10 rounded-l-full px-4 text-sm focus:outline-none focus:border-primary shadow-sm focus:ring-1 focus:ring-primary transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#f8f8f8] border border-neutral/10 border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-[#1a1a1a]/70" />
             </button>
           </form>

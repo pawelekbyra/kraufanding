@@ -62,17 +62,19 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
             }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
-            <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold">
+            <div className="mt-2.5 bg-neutral/5 rounded-xl p-3 hover:bg-neutral/10 transition-colors cursor-pointer group">
+               <div className="flex gap-4 text-[13px] font-sans font-semibold">
                   <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
                   <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
                </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
+               <div className="text-[14px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
                   {currentVideo?.description || project.description}
                   <br />
-                  Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
+                  <span className="italic mt-2 block border-l-2 border-primary/20 pl-3">
+                    Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
+                  </span>
                </div>
-               <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
+               <button className="text-[11px] font-sans font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
             </div>
 
             {/* COMMENTS SECTION */}
