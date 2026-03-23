@@ -51,27 +51,27 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
   };
 
   return (
-    <div className="space-y-4 font-serif px-2" id="donations">
+    <div className="space-y-4 font-sans px-2" id="donations">
         <div
-          className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-6 shadow-lg transition-all duration-500 group relative overflow-hidden"
+          className="bg-gradient-to-br from-white to-cream border border-neutral/10 rounded-[2.5rem] p-8 shadow-sm hover:shadow-glow hover:border-primary/20 transition-all duration-700 group relative overflow-hidden"
         >
-          <div className="space-y-4 relative z-10">
-            <div className="space-y-1">
-              <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
+          <div className="space-y-6 relative z-10">
+            <div className="space-y-2">
+              <h3 className="text-3xl font-serif font-black text-neutral tracking-tight uppercase group-hover:text-primary transition-colors">
                 Zostaw Napiwek
               </h3>
-              <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
+              <p className="text-muted text-sm leading-relaxed max-w-[240px]">
                 Wpłać dowolną kwotę i uzyskaj dożywotni dostęp do treści dla Patronów.
               </p>
             </div>
 
-            <div className="space-y-2 pt-2">
-              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
+            <div className="space-y-3 pt-2">
+              <label className="block text-[10px] font-bold uppercase tracking-[0.25em] text-neutral/40">
                 Kwota wsparcia (min. 10 €)
               </label>
               <div className="relative group/input">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="text-xl font-black text-[#1a1a1a]/20 group-focus-within/input:text-primary transition-colors">€</span>
+                <div className="absolute inset-y-0 left-0 pl-1 flex items-center pointer-events-none">
+                  <span className="text-2xl font-serif font-black text-neutral/10 group-focus-within/input:text-primary/30 transition-colors">€</span>
                 </div>
                 <input
                   type="number"
@@ -79,22 +79,25 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
                   step="1"
                   value={amount}
                   onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
-                  className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                  className="w-full bg-transparent border-b-2 border-neutral/10 py-4 pl-8 pr-4 font-serif font-black text-4xl text-neutral focus:border-primary outline-none transition-all"
                 />
               </div>
               {amount < 10 && (
-                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
+                <p className="text-error text-[9px] font-bold uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
               )}
             </div>
 
             <button
               onClick={onSupport}
               disabled={isLoading || amount < 10}
-              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`btn h-14 bg-neutral text-cream hover:bg-primary border-none btn-block rounded-2xl font-bold tracking-[0.2em] transition-all duration-500 shadow-xl hover:shadow-primary/20 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-30 cursor-not-allowed' : ''}`}
             >
-              {isLoading ? 'ŁADOWANIE...' : 'WESPRZYJ'}
+              {isLoading ? 'ŁADOWANIE...' : 'WESPRZYJ PROJEKT'}
             </button>
           </div>
+
+          {/* Artistic background element */}
+          <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
         </div>
     </div>
   );

@@ -7,7 +7,8 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'serif'],
       },
       colors: {
         cream: '#FDFBF7',
@@ -20,6 +21,7 @@ const config = {
           DEFAULT: '#8b5cf6',
           dark: '#6d28d9',
         },
+        muted: '#64748b', // slate-500
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
