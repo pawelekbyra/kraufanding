@@ -67,7 +67,7 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                   <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
                   <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
                </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
+               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
                   {currentVideo?.description || project.description}
                   <br />
                   Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.

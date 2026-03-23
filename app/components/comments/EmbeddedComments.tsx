@@ -14,6 +14,7 @@ interface EmbeddedCommentsProps {
   userProfile?: {
     id: string;
     email: string;
+    imageUrl?: string | null;
   } | null;
   entityId: string;
   entityType?: 'PROJECT' | 'POST' | 'VIDEO';
@@ -189,7 +190,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       <div className="flex gap-4 items-start mb-6">
         <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
            {userProfile ? (
-             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`} alt="Avatar" className="w-full h-full" />
+             <img
+               src={userProfile.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`}
+               alt="Avatar"
+               className="w-full h-full object-cover"
+             />
            ) : (
              <Smile size={20} className="text-[#606060]" />
            )}
@@ -251,7 +256,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
           <div key={comment.id} className="space-y-3">
             <div className="flex gap-3 items-start group/comment">
                <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.authorName || comment.author?.email}`} alt="Avatar" />
+                  <img
+                    src={comment.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.authorName || comment.author?.email}`}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
                </div>
               <div className="flex-1 space-y-0.5 min-w-0">
                 <div className="flex items-center justify-between">
@@ -311,7 +320,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start">
                     <div className="w-6 h-6 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
-                       <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.author?.email || reply.authorName}`} alt="Avatar" />
+                       <img
+                         src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.author?.email || reply.authorName}`}
+                         alt="Avatar"
+                         className="w-full h-full object-cover"
+                       />
                     </div>
                     <div className="flex-1 space-y-0.5">
                       <div className="flex items-center gap-1.5">

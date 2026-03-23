@@ -83,7 +83,8 @@ async function FeaturedHome({ project, searchParams }: { project: Project, searc
 
     const userProfile = userId ? {
         id: userId,
-        email: user?.primaryEmailAddress?.emailAddress || ''
+        email: user?.primaryEmailAddress?.emailAddress || '',
+        imageUrl: user?.imageUrl || null
     } : null;
 
     return (
