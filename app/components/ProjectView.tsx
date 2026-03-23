@@ -112,7 +112,7 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                         isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
                       )}
                     >
-                      <div className="w-[160px] h-[90px] shrink-0 overflow-hidden rounded-lg bg-black relative">
+                      <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
                         <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
                            <img
                              src={video.thumbnail}
@@ -120,13 +120,13 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                            />
                         </PremiumWrapper>
-                        <div className="absolute bottom-1 right-1 bg-black text-white text-[9px] font-bold px-1 rounded">12:45</div>
+                        <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                        <h4 className="text-[12px] font-bold text-[#1a1a1a] line-clamp-2 leading-tight uppercase tracking-tight">
+                        <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
                            {video.title}
                         </h4>
-                        <div className="text-[10px] text-[#1a1a1a]/60 flex flex-col">
+                        <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
                            <span>Polutek Archive</span>
                            <div className="flex items-center gap-1">
                               <span>12K wyświetleń</span>
@@ -135,9 +135,9 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                            </div>
                         </div>
                         {isLocked ? (
-                           <span className="text-[7px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic">Dla Patronów</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
                         ) : (
-                           <span className="text-[7px] font-black uppercase tracking-widest text-primary">Dostępne</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
                         )}
                       </div>
                     </Link>
