@@ -21,6 +21,9 @@ export interface Video {
   id: string;
   title: string;
   thumbnail: string;
+  description?: string;
+  likesCount?: number;
+  publishedAt?: string;
   minTier: number; // 0: Public, 1: Logged-in, 2: Patron
 }
 

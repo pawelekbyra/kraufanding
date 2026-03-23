@@ -1,63 +1,43 @@
+"use client";
+
 import React from 'react';
 import Hero from './Hero';
 import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
-import { auth, currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 
 interface ProjectViewProps {
   campaign: Campaign;
   videoId?: string;
+  userProfile?: { id: string; email: string } | null;
+  initialLikes?: { [videoId: string]: number };
 }
 
-export default async function ProjectView({ campaign, videoId }: ProjectViewProps) {
+export default function ProjectView({ campaign, videoId, userProfile, initialLikes }: ProjectViewProps) {
   const projectId = campaign.id;
   const currentVideoId = videoId || (campaign.videos?.[0]?.id || 'promo');
   const currentVideo = campaign.videos?.find(v => v.id === currentVideoId) || campaign.videos?.[0];
 
-  const { userId } = auth();
-  const user = await currentUser();
+  const queryClient = useQueryClient();
 
-  const userProfile = userId ? {
-    id: userId,
-    email: user?.primaryEmailAddress?.emailAddress || ''
-  } : null;
-
-  // Fetch initial interactivity state for the project with error handling
-  let initialIsLiked = false;
-  let initialIsSubscribed = false;
-  let likesCount = 0;
-
-  try {
-    if (userId) {
-       const dbUser = await prisma.user.findUnique({
-         where: { clerkUserId: userId },
-         select: { id: true, isSubscribed: true }
-       }).catch(() => null);
-
-       if (dbUser) {
-          try {
-            const projectLike = await prisma.projectLike.findUnique({
-                where: { userId_projectId: { userId: dbUser.id, projectId: campaign.id } }
-            });
-            initialIsLiked = !!projectLike;
-          } catch (e) {}
-
-          initialIsSubscribed = (dbUser as any).isSubscribed || false;
-       }
-    }
-    try {
-        likesCount = await prisma.projectLike.count({ where: { projectId: campaign.id } });
-    } catch (e) {
-        likesCount = 0;
-    }
-  } catch (error) {
-    console.error("[PROJECT_VIEW_INTERACTION_FETCH_ERROR]", error);
-  }
+  // Simple prefetch function for comments
+  const prefetchVideo = (vidId: string) => {
+    queryClient.prefetchInfiniteQuery({
+        queryKey: ['comments', vidId, 'VIDEO'],
+        queryFn: async () => {
+            const url = new URL('/api/comments', window.location.origin);
+            url.searchParams.append('entityId', vidId);
+            url.searchParams.append('entityType', 'VIDEO');
+            const res = await fetch(url.toString());
+            return res.json();
+        },
+        initialPageParam: '',
+    });
+  };
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
@@ -76,19 +56,19 @@ export default async function ProjectView({ campaign, videoId }: ProjectViewProp
                 title: currentVideo?.title || campaign.title,
                 thumbnail: currentVideo?.thumbnail || campaign.thumbnail,
                 minTier: currentVideo?.minTier || 0,
-                initialIsLiked,
-                initialIsSubscribed,
-                likesCount
+                initialIsLiked: false, // These will be handled by Hero component internal state/actions
+                initialIsSubscribed: false,
+                likesCount: currentVideo?.likesCount ?? 0
             }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
             <div className="mt-3 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[14px] font-bold">
                   <span>{(campaign as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
-                  <span>21 mar 2025</span>
+                  <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
                </div>
                <div className="text-[14px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
-                  {campaign.description}
+                  {currentVideo?.description || campaign.description}
                   <br />
                   Zapraszam do obczajenia moich nowych materiałów wideo. Wspierając ten projekt, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
                </div>
@@ -125,6 +105,7 @@ export default async function ProjectView({ campaign, videoId }: ProjectViewProp
                       key={video.id}
                       href={`/projects/${campaign.slug}?v=${video.id}`}
                       scroll={false}
+                      onMouseEnter={() => prefetchVideo(video.id)}
                       className={cn(
                         "group flex gap-2 p-1 rounded-lg transition-colors",
                         isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"

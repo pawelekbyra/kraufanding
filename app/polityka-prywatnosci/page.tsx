@@ -7,11 +7,11 @@ export default function PolitykaPrywatnosciPage() {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-24">
-        <h1 className="text-4xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Polityka Prywatności</h1>
-        <div className="prose prose-lg prose-neutral leading-relaxed space-y-8">
+      <main className="max-w-3xl mx-auto px-4 py-16">
+        <h1 className="text-3xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Polityka Prywatności</h1>
+        <div className="prose prose-md prose-neutral leading-relaxed space-y-8">
           <section>
-            <h2 className="text-xl font-black uppercase tracking-tight text-[#1a1a1a]">1. Dane osobowe i logowanie</h2>
+            <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Dane osobowe i logowanie</h2>
             <p>
               Dla bezpieczeństwa i wygody użytkowników, polutek.pl korzysta z zewnętrznego systemu uwierzytelniania <strong>Clerk</strong>.
               Clerk zarządza procesem rejestracji, logowania oraz danymi profilowymi użytkowników. Rejestrując się, zgadzasz się na

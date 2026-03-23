@@ -55,108 +55,148 @@ export const mockCampaigns: Campaign[] = [
         id: "promo",
         title: "I raise money for my Secret Project - Cover (Official Music Video)",
         thumbnail: "https://picsum.photos/seed/promo/1200/675",
+        description: "Oficjalny teledysk do mojego najnowszego projektu. To dopiero początek drogi.",
+        likesCount: 15420,
+        publishedAt: "21 mar 2025",
         minTier: 0
       },
       {
         id: "briefing",
         title: "Briefing Operacyjny: Tajne dane",
         thumbnail: "https://picsum.photos/seed/secret-0/1200/675",
+        description: "Szczegółowe omówienie założeń operacyjnych. Materiał przeznaczony dla zarejestrowanych użytkowników.",
+        likesCount: 850,
+        publishedAt: "22 mar 2025",
         minTier: 1
       },
       {
         id: "analiza",
         title: "Analiza systemów: Infiltracja",
         thumbnail: "https://picsum.photos/seed/secret-1/1200/675",
+        description: "Głęboka analiza systemowa. Dowiedz się jak infiltrujemy zabezpieczenia.",
+        likesCount: 3200,
+        publishedAt: "23 mar 2025",
         minTier: 2
       },
       {
         id: "raport",
         title: "Pełny Raport Śledczy: Dowody",
         thumbnail: "https://picsum.photos/seed/secret-2/1200/675",
+        description: "Kompletna dokumentacja zebranych dowodów. Tylko dla Patronów.",
+        likesCount: 1100,
+        publishedAt: "24 mar 2025",
         minTier: 2
       },
       {
         id: "monitoring",
         title: "Nagranie z monitoringu: Sektor 7",
         thumbnail: "https://picsum.photos/seed/secret-3/1200/675",
+        description: "Przechwycone nagranie z kamer sektora siódmego.",
+        likesCount: 450,
+        publishedAt: "25 mar 2025",
         minTier: 2
       },
       {
         id: "logi",
         title: "Logi serwera: Przejęcie kontroli",
         thumbnail: "https://picsum.photos/seed/secret-4/1200/675",
+        description: "Zapis logów z momentu przejmowania głównego serwera.",
+        likesCount: 890,
+        publishedAt: "26 mar 2025",
         minTier: 2
       },
       {
         id: "rozmowa",
         title: "Rozmowa przechwycona: Cel X",
         thumbnail: "https://picsum.photos/seed/secret-5/1200/675",
+        description: "Zapis audio rozmowy z celem X.",
+        likesCount: 120,
+        publishedAt: "27 mar 2025",
         minTier: 2
       },
       {
         id: "dokumentacja",
         title: "Dokumentacja techniczna v2.1",
         thumbnail: "https://picsum.photos/seed/secret-6/1200/675",
+        description: "Nowe schematy techniczne i plany rozwoju.",
+        likesCount: 760,
+        publishedAt: "28 mar 2025",
         minTier: 2
       },
       {
         id: "kody",
         title: "Kody źródłowe: Moduł Alpha",
         thumbnail: "https://picsum.photos/seed/secret-7/1200/675",
+        description: "Przegląd kodu źródłowego modułu Alpha.",
+        likesCount: 2300,
+        publishedAt: "29 mar 2025",
         minTier: 2
       },
       {
         id: "wywiad",
         title: "Wywiad terenowy: Operacja Noc",
         thumbnail: "https://picsum.photos/seed/secret-8/1200/675",
+        description: "Relacja z wywiadu przeprowadzonego pod osłoną nocy.",
+        likesCount: 940,
+        publishedAt: "30 mar 2025",
         minTier: 2
       },
       {
         id: "audio",
         title: "Zapisy audio: Świadek Zero",
         thumbnail: "https://picsum.photos/seed/secret-9/1200/675",
+        description: "Zeznania świadka zero w formacie audio.",
+        likesCount: 560,
+        publishedAt: "31 mar 2025",
         minTier: 2
       },
       {
         id: "mapa",
         title: "Mapa powiązań: Architekt",
         thumbnail: "https://picsum.photos/seed/secret-10/1200/675",
+        description: "Wizualizacja powiązań tajemniczego Architekta.",
+        likesCount: 110,
+        publishedAt: "01 kwi 2025",
         minTier: 2
       },
       {
         id: "satelitarne",
         title: "Zdjęcia satelitarne: Baza",
         thumbnail: "https://picsum.photos/seed/secret-11/1200/675",
+        description: "Zdjęcia satelitarne wysokiej rozdzielczości głównej bazy.",
+        likesCount: 880,
+        publishedAt: "02 kwi 2025",
         minTier: 2
       },
       {
         id: "protokol",
         title: "Protokół bezpieczeństwa 99",
         thumbnail: "https://picsum.photos/seed/secret-12/1200/675",
+        description: "Wyjaśnienie procedur protokołu 99.",
+        likesCount: 1450,
+        publishedAt: "03 kwi 2025",
         minTier: 2
       },
       {
         id: "archiwum",
         title: "Archiwum X: Niepublikowane",
         thumbnail: "https://picsum.photos/seed/secret-13/1200/675",
+        description: "Materiały które nigdy miały nie ujrzeć światła dziennego.",
+        likesCount: 9990,
+        publishedAt: "04 kwi 2025",
         minTier: 2
       },
       {
         id: "final",
         title: "Finałowy raport: Rozwiązanie",
         thumbnail: "https://picsum.photos/seed/secret-14/1200/675",
+        description: "Wszystko staje się jasne. Finał projektu.",
+        likesCount: 25000,
+        publishedAt: "05 kwi 2025",
         minTier: 2
       }
     ],
-    comments: [
-      {
-        id: "com-1",
-        author: "John D.",
-        avatar: "https://i.pravatar.cc/150?u=john",
-        date: "2024-06-10",
-        content: "This looks amazing! I can't wait to get my hands on it."
-      }
-    ]
+    comments: []
   },
   {
     id: "eco-city",
