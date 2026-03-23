@@ -1,23 +1,21 @@
-export interface Campaign {
+export interface Project {
   id: string;
   slug: string;
   title: string;
   description: string;
   category: string;
   author: string;
-  goal?: number;
-  raised?: number;
   views: number;
   thumbnail: string;
-  endDate: string;
+  publishedAt?: string;
   story?: string[];
-  rewards?: Reward[];
+  donations?: Donation[];
   updates?: Update[];
   comments?: Comment[];
-  videos?: Video[];
+  materials?: Material[];
 }
 
-export interface Video {
+export interface Material {
   id: string;
   title: string;
   thumbnail: string;
@@ -27,13 +25,11 @@ export interface Video {
   minTier: number; // 0: Public, 1: Logged-in, 2: Patron
 }
 
-export interface Reward {
+export interface Donation {
   id: string;
-  title: string;
   amount: number;
-  description: string;
-  deliveryDate: string;
-  backers: number;
+  currency: string;
+  createdAt: string;
 }
 
 export interface Update {

@@ -47,25 +47,39 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    const commentsWithLiked = await Promise.all(comments.map(async (c) => {
+    const mapComment = async (c: any) => {
         let isLiked = false;
-        try {
-            if (internalUserId) {
-                const like = await prisma.commentLike.findUnique({
-                    where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-                });
-                isLiked = !!like;
-            }
-        } catch (e) {
-            // Swallow if model/table missing
+        if (internalUserId) {
+            const like = await prisma.commentLike.findUnique({
+                where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
+            });
+            isLiked = !!like;
         }
+
+        const replies = c.replies ? await Promise.all(c.replies.map(async (r: any) => {
+            let rLiked = false;
+            if (internalUserId) {
+                const rLike = await prisma.commentLike.findUnique({
+                    where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
+                });
+                rLiked = !!rLike;
+            }
+            return {
+                ...r,
+                isLiked: rLiked,
+                authorName: r.author.email.split('@')[0],
+            };
+        })) : [];
 
         return {
             ...c,
             isLiked,
-            authorName: c.author.email.split('@')[0], // Fallback name
+            authorName: c.author.email.split('@')[0],
+            replies,
         };
-    }));
+    };
+
+    const commentsWithLiked = await Promise.all(comments.map(mapComment));
 
     const nextCursor = comments.length === limit ? comments[limit - 1].id : null;
     return NextResponse.json({ success: true, comments: commentsWithLiked, nextCursor });
@@ -119,10 +133,49 @@ export async function POST(request: NextRequest) {
             ...newComment,
             isLiked: false,
             authorName: newComment.author.email.split('@')[0],
+            replies: [],
         }
     }, { status: 201 });
   } catch (error: any) {
     console.error('Error posting comment:', error);
     return NextResponse.json({ success: false, message: error.message || 'Internal Server Error' }, { status: 500 });
   }
+}
+
+export async function DELETE(request: NextRequest) {
+    const { userId: clerkUserId } = auth();
+    if (!clerkUserId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({ where: { clerkUserId } });
+        const { searchParams } = new URL(request.url);
+        const commentId = searchParams.get('id');
+
+        if (!commentId || !user) {
+            return NextResponse.json({ error: "Missing ID or user" }, { status: 400 });
+        }
+
+        const comment = await prisma.comment.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!comment) {
+            return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+        }
+
+        // Check ownership
+        if (comment.authorId !== user.id) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        await prisma.comment.delete({
+            where: { id: commentId }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }

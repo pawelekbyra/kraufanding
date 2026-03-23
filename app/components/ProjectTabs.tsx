@@ -1,24 +1,24 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Campaign } from '../types/campaign';
+import { Project } from '../types/project';
 import ProjectStory from './ProjectStory';
-import Rewards from './Rewards';
+import VideoPlaylist from './VideoPlaylist';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { useAuth, useUser } from '@clerk/nextjs';
 
 interface ProjectTabsProps {
-  campaign: Campaign;
+  project: Project;
 }
 
-const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
+const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
   const [activeTab, setActiveTab] = useState('story');
   const { userId } = useAuth();
   const { user } = useUser();
 
   const tabs = [
     { id: 'story', label: 'O Projekcie' },
-    { id: 'rewards', label: 'Nagrody' },
+    { id: 'donations', label: 'Wesprzyj' },
     { id: 'updates', label: 'Aktualizacje' },
     { id: 'comments', label: 'Komentarze' },
   ];
@@ -41,18 +41,18 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
       </div>
 
       <div className="min-h-[400px]">
-        {activeTab === 'story' && <ProjectStory campaign={campaign} />}
+        {activeTab === 'story' && <ProjectStory project={project} />}
 
-        {activeTab === 'rewards' && (
+        {activeTab === 'donations' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Rewards rewards={campaign.rewards || []} projectId={campaign.id} />
+            <VideoPlaylist projectId={project.id} />
           </div>
         )}
 
         {activeTab === 'updates' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {campaign.updates?.length ? (
-              campaign.updates.map((update) => (
+            {project.updates?.length ? (
+              project.updates.map((update) => (
                 <div key={update.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xl font-black text-base-content">{update.title}</h3>
@@ -70,7 +70,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ campaign }) => {
         {activeTab === 'comments' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <EmbeddedComments
-              entityId={campaign.id}
+              entityId={project.id}
               entityType="PROJECT"
               userProfile={userId ? { id: userId, email: user?.primaryEmailAddress?.emailAddress || '' } : null}
             />
