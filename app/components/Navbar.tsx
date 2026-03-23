@@ -16,7 +16,7 @@ const Navbar = () => {
         </a>
       </div>
 
-      <div className="navbar-center flex-[2] max-w-[720px] hidden md:flex mx-2 lg:mx-4 min-w-0">
+      <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
         <div className="relative w-full group">
           <form className="flex w-full">
             <div className="relative flex-1 flex items-center min-w-0">
