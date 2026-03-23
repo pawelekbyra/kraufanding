@@ -36,18 +36,22 @@ body {
 
 /* Custom Scrollbar for better UI */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: rgba(26, 26, 26, 0.1);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: rgba(26, 26, 26, 0.2);
+}
+
+::selection {
+  background-color: rgba(59, 130, 246, 0.2); /* primary/20 */
 }

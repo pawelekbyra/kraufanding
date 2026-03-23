@@ -186,7 +186,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-4 items-start mb-6">
+      <div className="flex gap-4 items-start mb-6 font-sans">
         <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
            {userProfile ? (
              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`} alt="Avatar" className="w-full h-full" />
@@ -197,7 +197,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-neutral/5 px-3 py-1 rounded-full w-fit mb-2">
                 <CornerDownRight size={12} />
                 Odpowiadasz
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
@@ -208,7 +208,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-neutral/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
               onClick={() => !userProfile && document.getElementById('signin-trigger')?.click()}
             />
           </div>
@@ -246,9 +246,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       </div>
 
       {/* Comments List */}
-      <div className="space-y-6">
+      <div className="space-y-6 font-sans">
         {comments.map((comment: any) => (
-          <div key={comment.id} className="space-y-3">
+          <div key={comment.id} className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="flex gap-3 items-start group/comment">
                <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.authorName || comment.author?.email}`} alt="Avatar" />

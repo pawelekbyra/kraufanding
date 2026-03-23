@@ -78,7 +78,7 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
 
         {/* YOUTUBE-STYLE INFO - EXACT SCALE */}
         <div className="space-y-3 pt-3">
-          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
+          <h2 className="text-[22px] font-sans font-semibold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
             {project.title}
           </h2>
 
@@ -88,16 +88,16 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${project.author}`} alt={project.author} className="w-full h-full object-cover" />
                </div>
                <div className="min-w-0 pr-1">
-                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{project.author}</p>
-                  <p className="text-[12px] text-[#606060] whitespace-nowrap">1.2 M subskrajberów</p>
+                  <p className="font-serif font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{project.author}</p>
+                  <p className="font-serif text-[12px] text-[#606060] whitespace-nowrap italic">1.2 M subskrajberów</p>
                </div>
                <button
                  onClick={handleSubscribe}
                  className={cn(
-                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
+                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0 active:scale-95",
                     optimisticSub
-                        ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                        : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
+                        ? "bg-neutral/5 text-[#0f0f0f] hover:bg-neutral/10"
+                        : "bg-slate-900 text-white hover:bg-slate-800"
                  )}
                >
                  {optimisticSub ? 'Subskrajbujesz' : 'Subskrajb'}
@@ -105,26 +105,26 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0">
+               <div className="flex items-center bg-neutral/5 rounded-full h-9 shrink-0">
                   <button
                     onClick={handleLike}
                     className={cn(
-                        "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
+                        "flex items-center gap-2 px-3 h-full hover:bg-neutral/10 rounded-l-full transition-colors border-r border-black/10 active:scale-95",
                         optimisticLike.isLiked && "text-primary"
                     )}
                   >
                      <ThumbsUp size={16} className={cn(optimisticLike.isLiked && "fill-primary")} />
                      <span className="text-[13px] font-bold">{optimisticLike.count.toLocaleString('pl-PL')}</span>
                   </button>
-                  <button className="px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
+                  <button className="px-3 h-full hover:bg-neutral/10 rounded-r-full transition-colors active:scale-95">
                      <ThumbsDown size={16} />
                   </button>
                </div>
-               <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+               <button className="flex items-center gap-2 px-3 h-9 bg-neutral/5 hover:bg-neutral/10 rounded-full transition-colors shrink-0 active:scale-95">
                   <Share2 size={16} />
                   <span className="text-[13px] font-bold">Udostępnij</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+               <button className="w-9 h-9 flex items-center justify-center bg-neutral/5 hover:bg-neutral/10 rounded-full transition-colors shrink-0 active:scale-95">
                   <MoreHorizontal size={16} />
                </button>
             </div>
