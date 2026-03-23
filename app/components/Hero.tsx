@@ -82,19 +82,19 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
             {campaign.title} - Cover (Official Music Video)
           </h2>
 
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3">
+            <div className="flex items-center gap-3 min-w-0">
                <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${campaign.author}`} alt={campaign.author} className="w-full h-full object-cover" />
                </div>
-               <div className="min-w-0 pr-4">
-                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{campaign.author}</p>
-                  <p className="text-[12px] text-[#606060]">1.2 M subskrajberów</p>
+               <div className="min-w-0 pr-2">
+                  <p className="font-bold text-[#0f0f0f] text-[15px] leading-tight truncate">{campaign.author}</p>
+                  <p className="text-[11px] text-[#606060] whitespace-nowrap">1.2 M subskrajberów</p>
                </div>
                <button
                  onClick={handleSubscribe}
                  className={cn(
-                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1",
+                    "text-[13px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
                     optimisticSub
                         ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
                         : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
@@ -104,28 +104,28 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                </button>
             </div>
 
-            <div className="flex items-center gap-2">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9">
+            <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
+               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0">
                   <button
                     onClick={handleLike}
                     className={cn(
-                        "flex items-center gap-2 px-4 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
+                        "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
                         optimisticLike.isLiked && "text-primary"
                     )}
                   >
-                     <ThumbsUp size={18} className={cn(optimisticLike.isLiked && "fill-primary")} />
-                     <span className="text-[14px] font-bold">{optimisticLike.count.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={16} className={cn(optimisticLike.isLiked && "fill-primary")} />
+                     <span className="text-[13px] font-bold">{optimisticLike.count.toLocaleString('pl-PL')}</span>
                   </button>
-                  <button className="px-4 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
-                     <ThumbsDown size={18} />
+                  <button className="px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
+                     <ThumbsDown size={16} />
                   </button>
                </div>
-               <button className="flex items-center gap-2 px-4 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors">
-                  <Share2 size={18} />
-                  <span className="text-[14px] font-bold">Udostępnij</span>
+               <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+                  <Share2 size={16} />
+                  <span className="text-[13px] font-bold">Udostępnij</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors">
-                  <MoreHorizontal size={18} />
+               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+                  <MoreHorizontal size={16} />
                </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Hero from './Hero';
+import Rewards from './Rewards';
 import PremiumWrapper from './PremiumWrapper';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { Campaign } from '../types/campaign';
@@ -115,11 +116,11 @@ export default async function ProjectView({ campaign, videoId }: ProjectViewProp
                 if (b.id === currentVideoId) return 1;
                 // Then by minTier
                 return a.minTier - b.minTier;
-            }).map((video, i) => {
+            }).reduce((acc: any[], video, i) => {
                 const isLocked = video.minTier > 0;
                 const isCurrent = video.id === currentVideoId;
 
-                return (
+                acc.push(
                     <Link
                       key={video.id}
                       href={`/projects/${campaign.slug}?v=${video.id}`}
@@ -159,7 +160,19 @@ export default async function ProjectView({ campaign, videoId }: ProjectViewProp
                       </div>
                     </Link>
                 );
-            })}
+
+                // Add donation button after 2 items
+                if (i === 1) {
+                  acc.push(
+                    <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-2 px-2">Wesprzyj Twórcę</h3>
+                        <Rewards rewards={campaign.rewards || []} projectId={projectId} />
+                    </div>
+                  );
+                }
+
+                return acc;
+            }, [])}
 
           </aside>
 
