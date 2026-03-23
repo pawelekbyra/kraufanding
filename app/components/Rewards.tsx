@@ -119,13 +119,13 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
             </p>
 
             {isCustom && (
-              <div className="space-y-4 pt-4 border-t border-[#1a1a1a]/5">
-                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-2 italic">
-                  Własna kwota wsparcia (min. 10 €)
+              <div className="space-y-6 pt-8 border-t border-[#1a1a1a]/5 flex flex-col items-center">
+                <label className="block text-[12px] font-black uppercase tracking-[0.3em] text-primary mb-2 italic">
+                  Własna kwota wsparcia
                 </label>
-                <div className="relative group/input">
-                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                    <span className="text-2xl font-black text-[#1a1a1a]/20 group-focus-within/input:text-primary transition-colors">€</span>
+                <div className="relative group/input w-full max-w-[280px]">
+                  <div className="absolute inset-y-0 left-0 pl-8 flex items-center pointer-events-none">
+                    <span className="text-4xl font-black text-[#1a1a1a]/10 group-focus-within/input:text-primary/20 transition-colors">€</span>
                   </div>
                   <input
                     type="number"
@@ -133,12 +133,16 @@ const Rewards: React.FC<RewardsProps> = ({ rewards, projectId }) => {
                     step="1"
                     value={currentAmount}
                     onChange={(e) => setCustomAmounts(prev => ({ ...prev, [reward.id]: parseInt(e.target.value) || 0 }))}
-                    className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-5 pl-14 pr-6 font-black text-3xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                    className="w-full bg-[#FDFBF7] border-4 border-[#1a1a1a]/5 rounded-[2.5rem] py-8 px-10 text-center font-black text-6xl text-[#1a1a1a] focus:border-primary focus:ring-[12px] focus:ring-primary/5 outline-none transition-all shadow-inner"
                   />
                 </div>
-                {currentAmount < 10 && (
-                  <p className="text-error text-[10px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
-                )}
+                <div className="text-center h-4">
+                  {currentAmount < 10 ? (
+                    <p className="text-error text-[10px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
+                  ) : (
+                    <p className="text-[#1a1a1a]/20 text-[10px] font-black uppercase tracking-widest">Min. 10 € wsparcia</p>
+                  )}
+                </div>
               </div>
             )}
 

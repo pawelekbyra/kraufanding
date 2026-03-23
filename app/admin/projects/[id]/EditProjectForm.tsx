@@ -8,6 +8,10 @@ interface EditProjectFormProps {
     id: string;
     title: string;
     slug: string;
+    description: string | null;
+    category: string | null;
+    thumbnail: string | null;
+    story: string[];
     goalAmount: number;
     collectedAmount: number;
     status: string;
@@ -21,6 +25,10 @@ export default function EditProjectForm({ project, creators }: EditProjectFormPr
   const [formData, setFormData] = useState({
     title: project.title,
     slug: project.slug,
+    description: project.description || "",
+    category: project.category || "",
+    thumbnail: project.thumbnail || "",
+    story: project.story.join("\n"),
     goalAmount: project.goalAmount / 100,
     collectedAmount: project.collectedAmount / 100,
     status: project.status,
@@ -94,6 +102,48 @@ export default function EditProjectForm({ project, creators }: EditProjectFormPr
              required
            />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Opis</label>
+        <input
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Kategoria</label>
+          <input
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Thumbnail (URL)</label>
+          <input
+            name="thumbnail"
+            value={formData.thumbnail}
+            onChange={handleChange}
+            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Historia (akapity rozdzielone nową linią)</label>
+        <textarea
+          name="story"
+          value={formData.story}
+          onChange={(e: any) => setFormData(prev => ({ ...prev, story: e.target.value }))}
+          rows={6}
+          className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-medium text-lg text-[#1a1a1a] focus:border-primary outline-none transition-all"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

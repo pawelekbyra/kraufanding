@@ -47,6 +47,10 @@ model Project {
   creatorId       String
   title           String
   slug            String              @unique
+  description     String?
+  category        String?
+  thumbnail       String?
+  story           String[]            @default([])
   goalAmount      Int
   collectedAmount Int                 @default(0)
   views           Int                 @default(0)

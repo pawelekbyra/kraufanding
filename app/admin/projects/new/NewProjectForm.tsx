@@ -12,6 +12,10 @@ export default function NewProjectForm({ creators }: NewProjectFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
+    description: "",
+    category: "Technology",
+    thumbnail: "",
+    story: "",
     goalAmount: 1000,
     status: "draft",
     creatorId: creators[0]?.id || ""
@@ -83,6 +87,52 @@ export default function NewProjectForm({ creators }: NewProjectFormProps) {
              required
            />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Opis</label>
+        <input
+          name="description"
+          placeholder="Brief description of the project"
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Kategoria</label>
+          <input
+            name="category"
+            placeholder="Technology, Art, etc."
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Thumbnail (URL)</label>
+          <input
+            name="thumbnail"
+            placeholder="https://picsum.photos/900/400"
+            value={formData.thumbnail}
+            onChange={handleChange}
+            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Historia (akapity rozdzielone nową linią)</label>
+        <textarea
+          name="story"
+          value={formData.story}
+          onChange={(e: any) => setFormData(prev => ({ ...prev, story: e.target.value }))}
+          rows={6}
+          className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-medium text-lg text-[#1a1a1a] focus:border-primary outline-none transition-all"
+          placeholder="First paragraph...&#10;Second paragraph..."
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

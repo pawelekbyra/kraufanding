@@ -84,8 +84,8 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${campaign.author}`} alt={campaign.author} className="w-full h-full object-cover" />
                </div>
                <div className="min-w-0 pr-4">
-                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{campaign.author}</p>
-                  <p className="text-[12px] text-[#606060]">1.2M subskrybentów</p>
+                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">Paweł Polutek</p>
+                  <p className="text-[12px] text-[#606060]">1.2M subskrajberów</p>
                </div>
                <button
                  onClick={handleSubscribe}
@@ -96,7 +96,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                         : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
                  )}
                >
-                 {optimisticSub ? 'Subskrybujesz' : 'Subskrybuj'}
+                 {optimisticSub ? 'Subskrajbujesz' : 'Subskrajb'}
                </button>
             </div>
 

@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { title, slug, goalAmount, status, creatorId } = await req.json();
+    const { title, slug, description, category, thumbnail, story, goalAmount, status, creatorId } = await req.json();
 
     if (!title || !slug || !goalAmount || !creatorId) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
@@ -44,6 +44,10 @@ export async function POST(req: Request) {
       data: {
         title,
         slug,
+        description,
+        category,
+        thumbnail,
+        story: Array.isArray(story) ? story : (story ? [story] : []),
         goalAmount: Math.round(goalAmount * 100), // convert to cents
         status: status || 'draft',
         creatorId
@@ -64,7 +68,7 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { id, title, slug, goalAmount, collectedAmount, status, creatorId } = await req.json();
+    const { id, title, slug, description, category, thumbnail, story, goalAmount, collectedAmount, status, creatorId } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
@@ -75,6 +79,10 @@ export async function PATCH(req: Request) {
       data: {
         title,
         slug,
+        description,
+        category,
+        thumbnail,
+        story: Array.isArray(story) ? story : (story ? [story] : undefined),
         goalAmount: goalAmount !== undefined ? Math.round(Number(goalAmount) * 100) : undefined,
         collectedAmount: collectedAmount !== undefined ? Math.round(Number(collectedAmount) * 100) : undefined,
         status,
