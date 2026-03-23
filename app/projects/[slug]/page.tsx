@@ -14,9 +14,12 @@ interface ProjectPageProps {
   params: {
     slug: string;
   };
+  searchParams: {
+    v?: string;
+  };
 }
 
-export default async function ProjectPage({ params }: ProjectPageProps) {
+export default async function ProjectPage({ params, searchParams }: ProjectPageProps) {
   // 1. Try DB
   const project = await prisma.project.findUnique({
     where: { slug: params.slug },
@@ -30,13 +33,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (project) {
     incrementProjectViews(project.id).catch(() => {});
     const campaign = mapDbToCampaign(project);
-    return renderPage(campaign);
+    return renderPage(campaign, searchParams.v);
   }
 
   // 2. Try Mock Data
   const mock = mockCampaigns.find(c => c.slug === params.slug);
   if (mock) {
-    return renderPage(mock);
+    return renderPage(mock, searchParams.v);
   }
 
   return notFound();
@@ -77,11 +80,11 @@ function mapDbToCampaign(project: any): Campaign {
     };
 }
 
-function renderPage(campaign: Campaign) {
+function renderPage(campaign: Campaign, videoId?: string) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
         <Navbar />
-        <ProjectView campaign={campaign} />
+        <ProjectView campaign={campaign} videoId={videoId} />
         <Footer />
       </div>
     );

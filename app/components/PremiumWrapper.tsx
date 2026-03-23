@@ -1,87 +1,83 @@
-import { auth } from "@clerk/nextjs/server";
-import { SignInButton } from "@clerk/nextjs";
-import { getProjectAccess } from "@/lib/access";
-import React from 'react';
+"use client";
+
+import { useAuth, SignInButton } from "@clerk/nextjs";
+import React, { useEffect, useState } from 'react';
 
 interface PremiumWrapperProps {
   children: React.ReactNode;
-  teaser?: React.ReactNode | ((userTierLevel: number, isLoggedIn: boolean) => React.ReactNode);
   minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
   projectId: string;
-  mediaPath?: string; // Optional path to a gated media asset (e.g., 'v0/video.mp4')
   variant?: 'default' | 'thumbnail';
 }
 
 /**
- * PremiumWrapper decides whether to render children (premium content)
- * or a teaser/paywall based on the user's tier level for the project.
+ * Client-side PremiumWrapper that checks access via an API or props
+ * For now, we'll use a simplified version that handles the UI gating.
+ * In a real app, you'd fetch the user's tier level from an API.
  */
-export default async function PremiumWrapper({
+export default function PremiumWrapper({
   children,
-  teaser,
   minTier,
   projectId,
-  mediaPath,
   variant = 'default'
 }: PremiumWrapperProps) {
-  // Try to use auth() but handle potential client-side calls if used inside "use client"
-  // Note: PremiumWrapper is currently async and used in ProjectView (now "use client").
-  // This needs to be a Client Component or fetched via API.
-  // For now, let's keep it simple and ensure ProjectView works.
+  const { userId, isLoaded } = useAuth();
+  const [userTierLevel, setUserTierLevel] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { userId: clerkUserId } = auth();
-  const userTierLevel = await getProjectAccess(clerkUserId, projectId);
+  useEffect(() => {
+    async function checkAccess() {
+      if (!isLoaded) return;
+      if (!userId) {
+        setUserTierLevel(0);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/access?projectId=${projectId}`);
+        const data = await response.json();
+        setUserTierLevel(data.tierLevel || 1);
+      } catch (error) {
+        console.error("Error checking access:", error);
+        setUserTierLevel(1); // Fallback to FREE if logged in
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    checkAccess();
+  }, [userId, isLoaded, projectId]);
+
+  if (isLoading) {
+    return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
+  }
 
   const hasAccess = userTierLevel >= minTier;
-  const isLoggedIn = !!clerkUserId;
+  const isLoggedIn = !!userId;
 
   if (hasAccess) {
     return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <div className="flex items-center gap-3 mb-8 pb-4 border-b border-primary/20">
-          <div className="bg-primary text-white p-2 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-          </div>
-          <span className="text-sm font-black uppercase tracking-[0.2em] text-primary">Weryfikacja Patrona Pomyślna</span>
-        </div>
-        {mediaPath && (
-          <div className="mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-            <p className="text-xs font-black uppercase tracking-widest text-primary/60 mb-2">Bezpieczny link do streamu</p>
-            <a
-              href={`/api/media/${mediaPath}?projectId=${projectId}&minTier=${minTier}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary font-serif italic hover:underline flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-              </svg>
-              Pobierz chroniony plik: {mediaPath.split('/').pop()}
-            </a>
-          </div>
-        )}
+      <div className="animate-in fade-in duration-500 h-full w-full">
         {children}
       </div>
     );
   }
 
-  // Paywall if no access
   return <PaywallOverlay minTier={minTier} isLoggedIn={isLoggedIn} variant={variant} />;
 }
 
 function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isPatronGated = minTier >= 2;
   const headerText = isPatronGated
-    ? "Dołącz do grona Patronów, aby obczaić"
+    ? "Ten materiał jest dostępny tylko dla wspierających"
     : "Zaloguj się, aby obczaić materiały operacyjne.";
 
   const overlayText = isPatronGated
     ? "Ściśle tajne Zostaw napiwek aby obczaić"
     : "Ściśle Tajne Zaloguj się aby obczaić";
 
-  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : (isLoggedIn ? "Dołącz" : "Zaloguj się");
+  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : "Zaloguj się";
 
   if (variant === 'thumbnail') {
     return (
@@ -104,11 +100,8 @@ function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isL
   }
 
   return (
-    <div className="animate-in fade-in duration-700">
-      <p className="font-serif italic text-[#1a1a1a]/60 mb-8 leading-relaxed text-lg">
-        {headerText}
-      </p>
-      <div className="aspect-video bg-[#1a1a1a]/5 rounded-[2rem] overflow-hidden mb-4 relative group border border-[#1a1a1a]/10">
+    <div className="animate-in fade-in duration-700 h-full w-full relative">
+      <div className="aspect-video bg-[#1a1a1a]/5 rounded-xl overflow-hidden relative group border border-[#1a1a1a]/10 h-full w-full">
          <img
            src={isPatronGated ? "https://picsum.photos/seed/secret/1200/800" : "https://picsum.photos/seed/operational/1200/800"}
            alt="Locked"

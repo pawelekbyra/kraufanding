@@ -16,7 +16,7 @@ interface EmbeddedCommentsProps {
     email: string;
   } | null;
   entityId: string;
-  entityType?: 'PROJECT' | 'POST';
+  entityType?: 'PROJECT' | 'POST' | 'VIDEO';
 }
 
 const MOCK_COMMENTS = [

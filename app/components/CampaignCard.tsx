@@ -6,7 +6,9 @@ interface CampaignCardProps {
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({ campaign }) => {
-  const percentage = Math.min(Math.round((campaign.raised / campaign.goal) * 100), 100);
+  const goal = campaign.goal || 1;
+  const raised = campaign.raised || 0;
+  const percentage = Math.min(Math.round((raised / goal) * 100), 100);
 
   return (
     <div className="group bg-zinc-900/50 rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 transition-all hover:bg-zinc-900 shadow-xl">
@@ -46,7 +48,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign }) => {
               <span className="text-gray-500 uppercase tracking-tighter text-[10px]">Zebrano</span>
             </div>
             <div className="flex flex-col text-right">
-              <span className="text-white">{campaign.raised.toLocaleString()} PLN</span>
+              <span className="text-white">{raised.toLocaleString()} PLN</span>
               <span className="text-gray-500 uppercase tracking-tighter text-[10px]">Kwota</span>
             </div>
           </div>

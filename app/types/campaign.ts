@@ -5,8 +5,8 @@ export interface Campaign {
   description: string;
   category: string;
   author: string;
-  goal: number;
-  raised: number;
+  goal?: number;
+  raised?: number;
   views: number;
   thumbnail: string;
   endDate: string;
@@ -14,6 +14,14 @@ export interface Campaign {
   rewards?: Reward[];
   updates?: Update[];
   comments?: Comment[];
+  videos?: Video[];
+}
+
+export interface Video {
+  id: string;
+  title: string;
+  thumbnail: string;
+  minTier: number; // 0: Public, 1: Logged-in, 2: Patron
 }
 
 export interface Reward {
