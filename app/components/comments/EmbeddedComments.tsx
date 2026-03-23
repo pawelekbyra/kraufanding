@@ -176,28 +176,28 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none">
-      <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none">{comments.length} komentarzy</h3>
-         <button className="flex items-center gap-2 text-[12px] font-bold opacity-100 hover:bg-[#000000]/5 px-2 py-1 rounded-sm transition-opacity">
+    <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-sans">
+      <div className="flex items-center gap-6 mb-6">
+         <h3 className="text-[16px] font-bold text-neutral leading-none tracking-tight">{comments.length} Komentarzy</h3>
+         <button className="flex items-center gap-2 text-[13px] font-bold text-muted hover:text-neutral transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 4h18M6 12h12m-9 8h6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            Sortuj według
+            Sortuj
          </button>
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-4 items-start mb-6">
-        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
+      <div className="flex gap-4 items-start mb-8">
+        <div className="w-10 h-10 rounded-full bg-neutral/5 flex items-center justify-center shrink-0 overflow-hidden border border-neutral/5">
            {userProfile ? (
              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`} alt="Avatar" className="w-full h-full" />
            ) : (
-             <Smile size={20} className="text-[#606060]" />
+             <Smile size={20} className="text-muted" />
            )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-neutral bg-neutral/5 px-3 py-1 rounded-full w-fit mb-2">
                 <CornerDownRight size={12} />
                 Odpowiadasz
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
@@ -208,7 +208,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
+              className="w-full bg-transparent text-neutral focus:outline-none text-[14px] border-b border-neutral/10 focus:border-primary transition-all duration-300 resize-none py-1 min-h-[1.5rem]"
               onClick={() => !userProfile && document.getElementById('signin-trigger')?.click()}
             />
           </div>
@@ -246,18 +246,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       </div>
 
       {/* Comments List */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {comments.map((comment: any) => (
-          <div key={comment.id} className="space-y-3">
-            <div className="flex gap-3 items-start group/comment">
-               <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
+          <div key={comment.id} className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="flex gap-4 items-start group/comment">
+               <div className="w-10 h-10 rounded-full bg-neutral/5 flex items-center justify-center shrink-0 overflow-hidden border border-neutral/5">
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.authorName || comment.author?.email}`} alt="Avatar" />
                </div>
-              <div className="flex-1 space-y-0.5 min-w-0">
+              <div className="flex-1 space-y-1 min-w-0">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[12px]">@{comment.authorName || 'Użytkownik'}</span>
-                        <span className="text-[11px] text-[#606060]">
+                    <div className="flex items-center gap-2">
+                        <span className="font-bold text-neutral text-[13px]">@{comment.authorName || 'Użytkownik'}</span>
+                        <span className="text-[11px] text-muted">
                             {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                             ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                             : isClient ? 'niedawno' : ''}
@@ -266,33 +266,35 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     {userProfile?.id === comment.authorId && (
                         <button
                           onClick={() => confirm('Usunąć komentarz?') && deleteMutation.mutate(comment.id)}
-                          className="opacity-0 group-hover/comment:opacity-40 hover:!opacity-100 transition-opacity p-1"
+                          className="opacity-0 group-hover/comment:opacity-100 transition-opacity p-1"
                         >
-                            <Trash2 size={12} className="text-error" />
+                            <Trash2 size={12} className="text-error/60 hover:text-error" />
                         </button>
                     )}
                 </div>
-                <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
+                <p className="text-neutral/90 text-[14px] leading-relaxed">
                   {comment.text}
                 </p>
-                <div className="flex items-center gap-3 pt-0.5">
-                  <button
-                    onClick={() => userProfile && likeMutation.mutate(comment.id)}
-                    className={cn(
-                      "flex items-center gap-1 transition-all group",
-                      comment.isLiked ? "text-primary" : "text-[#606060] hover:text-[#0f0f0f]"
-                    )}
-                  >
-                    <ThumbsUp size={13} className={cn(comment.isLiked && "fill-primary")} />
-                    <span className="text-[11px] font-normal">{comment._count?.likes || 0}</span>
-                  </button>
-                  <button className="text-[#606060] hover:text-[#0f0f0f] transition-all">
-                    <ThumbsDown size={13} />
-                  </button>
+                <div className="flex items-center gap-4 pt-1">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => userProfile && likeMutation.mutate(comment.id)}
+                      className={cn(
+                        "flex items-center gap-1 transition-all hover:bg-neutral/5 p-1 rounded-full",
+                        comment.isLiked ? "text-primary" : "text-muted hover:text-neutral"
+                      )}
+                    >
+                      <ThumbsUp size={14} className={cn(comment.isLiked && "fill-primary")} />
+                    </button>
+                    <span className="text-[11px] text-muted font-medium">{comment._count?.likes || 0}</span>
+                    <button className="text-muted hover:text-neutral transition-all hover:bg-neutral/5 p-1 rounded-full ml-1">
+                      <ThumbsDown size={14} />
+                    </button>
+                  </div>
                   {!comment.id.toString().startsWith('mock') && (
                     <button
                         onClick={() => userProfile && setReplyTo(comment.id)}
-                        className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                        className="text-[11px] font-bold text-neutral hover:bg-neutral/5 px-3 py-1 rounded-full transition-all"
                     >
                         Odpowiedz
                     </button>

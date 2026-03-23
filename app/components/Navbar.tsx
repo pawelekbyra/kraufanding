@@ -21,9 +21,11 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com' || user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/5 px-4 lg:px-6 h-14 min-h-14 font-sans flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden transition-all duration-300">
       <div className="navbar-start flex-1 md:w-56 md:flex-none">
-        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-wider uppercase shrink-0 px-1 md:px-2 min-h-0 h-10 hover:bg-transparent">
+          <span className="font-sans">POLUTEK</span><span className="text-primary font-serif">.PL</span>
+        </Link>
       </div>
 
       <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
@@ -40,11 +42,11 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-white border border-neutral/10 rounded-l-full px-4 text-sm focus:outline-none focus:border-primary/50 shadow-none focus:shadow-sm transition-all placeholder:text-neutral/30"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
+            <button type="submit" className="h-9 bg-neutral/5 border border-neutral/10 border-l-0 rounded-r-full px-5 hover:bg-neutral/10 transition-all border-r-neutral/10 shrink-0 flex items-center justify-center group/search" title="Szukaj">
+              <Search size={16} className="text-neutral/50 group-hover/search:text-neutral transition-colors" />
             </button>
           </form>
         </div>
