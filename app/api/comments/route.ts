@@ -11,11 +11,11 @@ export async function GET(request: NextRequest) {
   const cursor = searchParams.get('cursor') || undefined;
   const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-  const { userId: clerkUserId } = auth();
-
   if (!entityId) {
     return NextResponse.json({ success: false, message: 'entityId is required' }, { status: 400 });
   }
+
+  const { userId: clerkUserId } = auth();
 
   try {
     let internalUserId = null;
@@ -49,32 +49,40 @@ export async function GET(request: NextRequest) {
 
     const mapComment = async (c: any) => {
         let isLiked = false;
-        if (internalUserId) {
-            const like = await prisma.commentLike.findUnique({
-                where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-            });
-            isLiked = !!like;
+        try {
+            if (internalUserId) {
+                const like = await prisma.commentLike.findUnique({
+                    where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
+                });
+                isLiked = !!like;
+            }
+        } catch (e) {
+            console.error("Error checking like status:", e);
         }
 
         const replies = c.replies ? await Promise.all(c.replies.map(async (r: any) => {
             let rLiked = false;
-            if (internalUserId) {
-                const rLike = await prisma.commentLike.findUnique({
-                    where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
-                });
-                rLiked = !!rLike;
+            try {
+                if (internalUserId) {
+                    const rLike = await prisma.commentLike.findUnique({
+                        where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
+                    });
+                    rLiked = !!rLike;
+                }
+            } catch (e) {
+                console.error("Error checking reply like status:", e);
             }
             return {
                 ...r,
                 isLiked: rLiked,
-                authorName: r.author.email.split('@')[0],
+                authorName: r.author?.email?.split('@')[0] || "Użytkownik",
             };
         })) : [];
 
         return {
             ...c,
             isLiked,
-            authorName: c.author.email.split('@')[0],
+            authorName: c.author?.email?.split('@')[0] || "Użytkownik",
             replies,
         };
     };
@@ -83,9 +91,9 @@ export async function GET(request: NextRequest) {
 
     const nextCursor = comments.length === limit ? comments[limit - 1].id : null;
     return NextResponse.json({ success: true, comments: commentsWithLiked, nextCursor });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching comments:', error);
-    return NextResponse.json({ success: false, message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -100,7 +108,6 @@ export async function POST(request: NextRequest) {
     let user = await prisma.user.findUnique({ where: { clerkUserId } });
 
     if (!user) {
-        // Sync user from Clerk if missing in Prisma
         const clerkUser = await currentUser();
         if (!clerkUser) {
             return NextResponse.json({ success: false, message: 'Clerk user not found.' }, { status: 404 });
@@ -144,7 +151,7 @@ export async function POST(request: NextRequest) {
         comment: {
             ...newComment,
             isLiked: false,
-            authorName: newComment.author.email.split('@')[0],
+            authorName: newComment.author?.email?.split('@')[0] || "Użytkownik",
             replies: [],
         }
     }, { status: 201 });
@@ -177,7 +184,6 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: "Comment not found" }, { status: 404 });
         }
 
-        // Check ownership
         if (comment.authorId !== user.id) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
