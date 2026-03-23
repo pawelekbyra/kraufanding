@@ -6,12 +6,12 @@ import { prisma } from '@/lib/prisma';
 import { Campaign } from './types/campaign';
 import { notFound } from 'next/navigation';
 import { incrementProjectViews } from '@/lib/actions/interactions';
+import { mockCampaigns } from './data/mock-campaigns';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // Fetch the "Secret Project" (main featured project)
-  // We use a broader fetch and handle missing fields in mapping to be resilient to DB transitions
+  // 1. Try to fetch from DB
   const secretProject = await prisma.project.findUnique({
     where: { slug: 'secret-project' },
     include: {
@@ -19,40 +19,33 @@ export default async function Home() {
       tiers: true,
       posts: true,
     },
-  }).catch(err => {
-    console.error("[HOME_FETCH_ERROR]", err);
-    return null;
-  });
+  }).catch(() => null);
 
-  if (!secretProject) {
-    // If not found by slug, fallback to the latest project or 404
-    const latest = await prisma.project.findFirst({
-        include: { creator: true, tiers: true, posts: true },
-        orderBy: { createdAt: 'desc' }
-    }).catch(() => null);
-
-    if (!latest) {
-        return (
-            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center p-12 text-center">
-                <div className="space-y-4">
-                    <h1 className="text-4xl font-black uppercase">Brak aktywnych projektów</h1>
-                    <p className="text-lg italic opacity-50">Zapraszamy wkrótce.</p>
-                </div>
-            </div>
-        );
-    }
-    return <FeaturedHome project={latest} />;
+  if (secretProject) {
+    incrementProjectViews(secretProject.id).catch(() => {});
+    const campaign = mapDbToCampaign(secretProject);
+    return <FeaturedHome campaign={campaign} />;
   }
 
-  // Increment views in background - swallow errors if column missing
-  incrementProjectViews(secretProject.id).catch(() => {});
+  // 2. Try latest from DB
+  const latest = await prisma.project.findFirst({
+    include: { creator: true, tiers: true, posts: true },
+    orderBy: { createdAt: 'desc' }
+  }).catch(() => null);
 
-  return <FeaturedHome project={secretProject} />;
+  if (latest) {
+    incrementProjectViews(latest.id).catch(() => {});
+    const campaign = mapDbToCampaign(latest);
+    return <FeaturedHome campaign={campaign} />;
+  }
+
+  // 3. Fallback to Mock Data (User requirement: always show content)
+  const mock = mockCampaigns.find(c => c.slug === 'secret-project') || mockCampaigns[0];
+  return <FeaturedHome campaign={mock} />;
 }
 
-async function FeaturedHome({ project }: { project: any }) {
-    // Map to Campaign interface
-    const campaign: Campaign = {
+function mapDbToCampaign(project: any): Campaign {
+    return {
         id: project.id,
         slug: project.slug,
         title: project.title,
@@ -61,7 +54,7 @@ async function FeaturedHome({ project }: { project: any }) {
         author: project.creator.name,
         goal: project.goalAmount / 100,
         raised: project.collectedAmount / 100,
-        views: project.views,
+        views: (project as any).views || 0,
         thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
         endDate: project.publishedAt?.toISOString() || "",
         story: [
@@ -84,8 +77,9 @@ async function FeaturedHome({ project }: { project: any }) {
         })),
         comments: []
     };
+}
 
-
+async function FeaturedHome({ campaign }: { campaign: Campaign }) {
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
             <Navbar />
