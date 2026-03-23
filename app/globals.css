@@ -2,23 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@400;500;700&display=swap');
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+:root {
+  --foreground-rgb: 26, 26, 26;
+  --background-rgb: 253, 251, 247;
 }
 
 body {
   color: #1a1a1a;
   background-color: #FDFBF7;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: 200px 200px;
+  background-blend-mode: overlay;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
@@ -32,22 +36,42 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .elegant-shadow {
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+  }
 }
 
 /* Custom Scrollbar for better UI */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: #B89E6C;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: #8C764D;
+}
+
+/* Smooth Transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* DaisyUI Overrides */
+.btn {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.card {
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  background-color: white;
 }
