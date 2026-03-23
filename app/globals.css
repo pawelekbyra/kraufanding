@@ -16,9 +16,19 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   color: #1a1a1a;
   background-color: #FDFBF7;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-sm;
+  }
 }
 
 @layer utilities {
@@ -36,18 +46,18 @@ body {
 
 /* Custom Scrollbar for better UI */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: #cbd5e1;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: #94a3b8;
 }

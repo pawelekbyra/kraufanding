@@ -21,9 +21,9 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com' || user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="navbar glass sticky top-0 z-50 px-4 lg:px-6 h-16 min-h-16 flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       <div className="navbar-start flex-1 md:w-56 md:flex-none">
-        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+        <Link href="/" className="flex items-center gap-1 text-lg md:text-xl font-light tracking-[0.3em] uppercase font-serif shrink-0 px-1 md:px-2 min-h-0 h-10 hover:opacity-70 transition-opacity">POLUTEK<span className="text-secondary font-bold">.PL</span></Link>
       </div>
 
       <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
@@ -40,7 +40,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-slate-100/50 border border-slate-200 rounded-l-full px-4 text-sm focus:outline-none focus:border-slate-300 focus:ring-2 focus:ring-slate-200 transition-all placeholder:text-slate-400"
               />
             </div>
             <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">

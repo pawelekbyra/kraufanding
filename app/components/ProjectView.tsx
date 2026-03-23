@@ -62,17 +62,17 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
             }} />
 
             {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
-            <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold">
+            <div className="mt-4 bg-stone-50 border border-slate-100 rounded-2xl p-6 shadow-sm hover:bg-stone-100/50 transition-colors cursor-pointer group">
+               <div className="flex gap-4 text-[13px] font-bold text-slate-900 mb-2">
                   <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
                   <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
                </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
+               <div className="text-[14px] leading-relaxed whitespace-pre-wrap font-sans text-slate-600">
                   {currentVideo?.description || project.description}
                   <br />
-                  Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
+                  <span className="inline-block mt-2 text-gold font-medium">Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.</span>
                </div>
-               <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
+               <button className="text-[11px] font-black uppercase mt-4 text-slate-400 group-hover:text-slate-900 transition-colors tracking-widest">Pokaż więcej</button>
             </div>
 
             {/* COMMENTS SECTION */}
@@ -108,8 +108,8 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                       scroll={false}
                       onMouseEnter={() => prefetchVideo(video.id)}
                       className={cn(
-                        "group flex gap-2 p-0.5 rounded-lg transition-colors",
-                        isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+                        "group flex gap-3 p-2 rounded-xl transition-all duration-300",
+                        isCurrent ? "bg-slate-100 shadow-sm" : "hover:bg-slate-50"
                       )}
                     >
                       <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
@@ -123,7 +123,7 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                         <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                        <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
+                        <h4 className="text-[14px] font-semibold text-slate-900 line-clamp-2 leading-[1.3] tracking-tight font-sans">
                            {video.title}
                         </h4>
                         <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
