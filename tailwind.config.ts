@@ -7,11 +7,22 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-playfair)", "Georgia", "serif"],
       },
       colors: {
         cream: '#FDFBF7',
         charcoal: '#1a1a1a',
+        gold: "#C5A059",
+        slate: {
+          900: "#0F172A",
+          800: "#1E293B",
+          700: "#334155",
+        },
+        stone: {
+          50: "#F9F8F6",
+          100: "#F1F0ED",
+        },
         primary: {
           DEFAULT: '#3b82f6',
           dark: '#1d4ed8',
@@ -41,9 +52,9 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
+          "primary": "#0F172A",
+          "secondary": "#C5A059",
+          "accent": "#C5A059",
           "neutral": "#1a1a1a",
           "base-100": "#FDFBF7",
           "info": "#3abff8",

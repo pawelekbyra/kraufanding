@@ -176,17 +176,17 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none">
-      <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none">{comments.length} komentarzy</h3>
-         <button className="flex items-center gap-2 text-[12px] font-bold opacity-100 hover:bg-[#000000]/5 px-2 py-1 rounded-sm transition-opacity">
+    <div className="space-y-6 max-w-4xl prose bg-transparent p-0 rounded-none border-none">
+      <div className="flex items-center gap-6 mb-8">
+         <h3 className="text-[20px] font-bold text-slate-900 leading-none font-serif">{comments.length} komentarzy</h3>
+         <button className="flex items-center gap-2 text-[12px] font-bold text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M3 4h18M6 12h12m-9 8h6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            Sortuj według
+            Sortuj
          </button>
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-4 items-start mb-6">
+      <div className="flex gap-4 items-start mb-10 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
         <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
            {userProfile ? (
              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`} alt="Avatar" className="w-full h-full" />
@@ -256,8 +256,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="flex-1 space-y-0.5 min-w-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[12px]">@{comment.authorName || 'Użytkownik'}</span>
-                        <span className="text-[11px] text-[#606060]">
+                        <span className="font-bold text-slate-900 text-[13px]">@{comment.authorName || 'Użytkownik'}</span>
+                        <span className="text-[11px] text-slate-400">
                             {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                             ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                             : isClient ? 'niedawno' : ''}
@@ -272,7 +272,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         </button>
                     )}
                 </div>
-                <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
+                <p className="text-slate-700 text-[14px] leading-relaxed">
                   {comment.text}
                 </p>
                 <div className="flex items-center gap-3 pt-0.5">

@@ -59,7 +59,7 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
     <section className="bg-[#FDFBF7]">
       <div className="w-full">
         {/* FEATURED MEDIA (VIDEO PLAYER) - SHARPER CORNERS */}
-        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
+        <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border border-black/5 mb-3 group bg-black">
           <PremiumWrapper projectId={project.id} minTier={project.minTier || 0}>
             <img
                 src={project.thumbnail}
@@ -67,8 +67,8 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
                 className="w-full h-full object-cover opacity-90 transition duration-1000"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
-                    <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/30 pointer-events-auto">
+                    <svg className="w-10 h-10 text-white fill-current ml-1" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                     </svg>
                 </div>
@@ -77,12 +77,12 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
         </div>
 
         {/* YOUTUBE-STYLE INFO - EXACT SCALE */}
-        <div className="space-y-3 pt-3">
-          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
+        <div className="space-y-3 pt-4">
+          <h2 className="text-[28px] font-bold text-slate-900 tracking-tight leading-[1.2] uppercase font-serif">
             {project.title}
           </h2>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
             <div className="flex items-center gap-3 min-w-0">
                <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${project.author}`} alt={project.author} className="w-full h-full object-cover" />
@@ -94,10 +94,10 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
                <button
                  onClick={handleSubscribe}
                  className={cn(
-                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
+                    "text-[14px] font-medium rounded-full px-8 h-10 flex items-center transition-all ml-1 shrink-0 active:scale-95",
                     optimisticSub
-                        ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                        : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
+                        ? "bg-slate-100 text-slate-900 hover:bg-slate-200"
+                        : "bg-slate-900 text-white hover:bg-slate-800"
                  )}
                >
                  {optimisticSub ? 'Subskrajbujesz' : 'Subskrajb'}
