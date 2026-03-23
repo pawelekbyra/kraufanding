@@ -7,11 +7,11 @@ export default function RegulaminPage() {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-24">
-        <h1 className="text-4xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Regulamin Serwisu</h1>
-        <div className="prose prose-lg prose-neutral leading-relaxed space-y-8">
+      <main className="max-w-3xl mx-auto px-4 py-16">
+        <h1 className="text-3xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Regulamin Serwisu</h1>
+        <div className="prose prose-md prose-neutral leading-relaxed space-y-8">
           <section>
-            <h2 className="text-xl font-black uppercase tracking-tight text-[#1a1a1a]">1. Postanowienia ogólne</h2>
+            <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Postanowienia ogólne</h2>
             <p>
               Serwis polutek.pl jest prywatną platformą służącą do zbierania środków przez twórcę serwisu, <strong>Pawła Polutka</strong>.
               Korzystanie z serwisu i dokonywanie jakichkolwiek wpłat jest równoznaczne z akceptacją niniejszego regulaminu.

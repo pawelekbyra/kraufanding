@@ -1,6 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import ProjectView from '@/app/components/ProjectView';
@@ -80,11 +81,23 @@ function mapDbToCampaign(project: any): Campaign {
     };
 }
 
-function renderPage(campaign: Campaign, videoId?: string) {
+async function renderPage(campaign: Campaign, videoId?: string) {
+    const { userId } = auth();
+    const user = await currentUser();
+
+    const userProfile = userId ? {
+        id: userId,
+        email: user?.primaryEmailAddress?.emailAddress || ''
+    } : null;
+
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif selection:bg-primary selection:text-white">
         <Navbar />
-        <ProjectView campaign={campaign} videoId={videoId} />
+        <ProjectView
+          campaign={campaign}
+          videoId={videoId}
+          userProfile={userProfile}
+        />
         <Footer />
       </div>
     );

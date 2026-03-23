@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProjectView from './components/ProjectView';
 import { prisma } from '@/lib/prisma';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { Campaign } from './types/campaign';
 import { notFound } from 'next/navigation';
 import { incrementProjectViews } from '@/lib/actions/interactions';
@@ -80,10 +81,22 @@ function mapDbToCampaign(project: any): Campaign {
 }
 
 async function FeaturedHome({ campaign, searchParams }: { campaign: Campaign, searchParams: { v?: string } }) {
+    const { userId } = auth();
+    const user = await currentUser();
+
+    const userProfile = userId ? {
+        id: userId,
+        email: user?.primaryEmailAddress?.emailAddress || ''
+    } : null;
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
             <Navbar />
-            <ProjectView campaign={campaign} videoId={searchParams.v} />
+            <ProjectView
+              campaign={campaign}
+              videoId={searchParams.v}
+              userProfile={userProfile}
+            />
             <Footer />
         </div>
     );
