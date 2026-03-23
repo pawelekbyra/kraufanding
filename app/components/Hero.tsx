@@ -72,28 +72,28 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
           </div>
         </div>
 
-        {/* YOUTUBE-STYLE INFO - SMALLER SCALE */}
+        {/* YOUTUBE-STYLE INFO - EXACT SCALE */}
         <div className="space-y-3">
-          <h2 className="text-xl font-bold text-[#1a1a1a] tracking-normal leading-tight">
+          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-tight">
             {campaign.title} - Cover (Official Music Video)
           </h2>
 
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3">
             <div className="flex items-center gap-3">
                <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${campaign.author}`} alt={campaign.author} />
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${campaign.author}`} alt={campaign.author} className="w-full h-full object-cover" />
                </div>
                <div className="min-w-0 pr-4">
-                  <p className="font-bold text-[#1a1a1a] text-[15px] leading-tight truncate">{campaign.author}</p>
-                  <p className="text-[12px] opacity-60">1.2M subskrybentów</p>
+                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{campaign.author}</p>
+                  <p className="text-[12px] text-[#606060]">1.2M subskrybentów</p>
                </div>
                <button
                  onClick={handleSubscribe}
                  className={cn(
-                    "text-[14px] font-bold rounded-full px-6 py-2 transition-all ml-1",
+                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1",
                     optimisticSub
-                        ? "bg-[#1a1a1a]/5 text-[#1a1a1a] hover:bg-[#1a1a1a]/10"
-                        : "bg-[#1a1a1a] text-white hover:bg-[#1a1a1a]/90"
+                        ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
+                        : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
                  )}
                >
                  {optimisticSub ? 'Subskrybujesz' : 'Subskrybuj'}
@@ -101,26 +101,26 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
             </div>
 
             <div className="flex items-center gap-2">
-               <div className="flex items-center bg-[#1a1a1a]/5 rounded-full p-0.5">
+               <div className="flex items-center bg-[#000000]/5 rounded-full h-9">
                   <button
                     onClick={handleLike}
                     className={cn(
-                        "flex items-center gap-2 px-4 py-1.5 hover:bg-[#1a1a1a]/5 rounded-l-full transition-colors border-r border-[#1a1a1a]/10",
+                        "flex items-center gap-2 px-4 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
                         optimisticLike.isLiked && "text-primary"
                     )}
                   >
                      <ThumbsUp size={18} className={cn(optimisticLike.isLiked && "fill-primary")} />
-                     <span className="text-[13px] font-bold">{optimisticLike.count.toLocaleString()}</span>
+                     <span className="text-[14px] font-bold">{optimisticLike.count.toLocaleString()}</span>
                   </button>
-                  <button className="px-4 py-1.5 hover:bg-[#1a1a1a]/5 rounded-r-full transition-colors">
+                  <button className="px-4 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
                      <ThumbsDown size={18} />
                   </button>
                </div>
-               <button className="flex items-center gap-2 px-4 py-1.5 bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors">
+               <button className="flex items-center gap-2 px-4 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors">
                   <Share2 size={18} />
-                  <span className="text-[13px] font-bold">Udostępnij</span>
+                  <span className="text-[14px] font-bold">Udostępnij</span>
                </button>
-               <button className="p-2 bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors">
                   <MoreHorizontal size={18} />
                </button>
             </div>
