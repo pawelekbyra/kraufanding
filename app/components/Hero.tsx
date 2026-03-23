@@ -67,7 +67,7 @@ const Hero: React.FC<HeroProps> = ({ campaign }) => {
                 className="w-full h-full object-cover opacity-90 transition duration-1000"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 bg-[#1a1a1a]/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
+                <div className="w-16 h-16 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
                     <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                     </svg>
