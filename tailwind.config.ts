@@ -13,8 +13,8 @@ const config = {
         cream: '#FDFBF7',
         charcoal: '#1a1a1a',
         primary: {
-          DEFAULT: '#1a1a1a',
-          dark: '#000000',
+          DEFAULT: '#3b82f6',
+          dark: '#1d4ed8',
         },
         secondary: {
           DEFAULT: '#8b5cf6',
@@ -41,9 +41,9 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#1a1a1a",
-          "secondary": "#333333",
-          "accent": "#4d4d4d",
+          "primary": "#3b82f6",
+          "secondary": "#8b5cf6",
+          "accent": "#f59e0b",
           "neutral": "#1a1a1a",
           "base-100": "#FDFBF7",
           "info": "#3abff8",
