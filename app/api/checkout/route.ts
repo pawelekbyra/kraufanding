@@ -1,5 +1,6 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +18,27 @@ export async function POST(req: Request) {
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      console.error("[STRIPE_CHECKOUT] No clerkUserId found in auth().");
+      return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
+    }
+
+    // Sync user to DB if not exists
+    try {
+        let user = await prisma.user.findUnique({ where: { clerkUserId } });
+        if (!user) {
+            const clerkUser = await currentUser();
+            if (clerkUser) {
+                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+                const imageUrl = clerkUser.imageUrl || null;
+                await prisma.user.upsert({
+                    where: { clerkUserId },
+                    update: { email, imageUrl },
+                    create: { clerkUserId, email, imageUrl }
+                });
+            }
+        }
+    } catch (e) {
+        console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
     const { amount, projectId, tierLevel, title } = await req.json();
