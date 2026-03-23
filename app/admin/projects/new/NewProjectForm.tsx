@@ -12,7 +12,6 @@ export default function NewProjectForm({ creators }: NewProjectFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
-    goalAmount: 1000,
     status: "draft",
     creatorId: creators[0]?.id || ""
   });
@@ -86,17 +85,6 @@ export default function NewProjectForm({ creators }: NewProjectFormProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Cel (EUR)</label>
-          <input
-            type="number"
-            name="goalAmount"
-            value={formData.goalAmount}
-            onChange={handleChange}
-            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
-            required
-          />
-        </div>
         <div className="space-y-2">
           <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Status</label>
           <select

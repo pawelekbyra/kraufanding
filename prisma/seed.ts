@@ -38,35 +38,8 @@ async function main() {
       creatorId: creator.id,
       title: 'Nowoczesny plecak smart',
       slug: 'smart-backpack',
-      goalAmount: 2000000, // 20,000.00 PLN in cents
-      collectedAmount: 1250000, // 12,500.00 PLN in cents
       status: 'active',
       publishedAt: new Date(),
-      tiers: {
-        create: [
-          {
-            level: 2,
-            name: 'Wsparcie 50 PLN',
-            description: 'Podziękowanie + newsletter',
-            priceOneTime: 5000,
-            slotsTaken: 45,
-          },
-          {
-            level: 3,
-            name: 'Wsparcie 200 PLN',
-            description: 'Plecak early bird',
-            priceOneTime: 20000,
-            slotsTaken: 12,
-          },
-          {
-            level: 4,
-            name: 'Wsparcie 500 PLN',
-            description: 'Plecak + edycja limitowana',
-            priceOneTime: 50000,
-            slotsTaken: 5,
-          },
-        ],
-      },
       posts: {
         create: [
           {
@@ -90,28 +63,8 @@ async function main() {
       creatorId: creator.id,
       title: 'I raise money for my Secret Project',
       slug: 'secret-project',
-      goalAmount: 1000000,
-      collectedAmount: 650000,
       status: 'active',
       publishedAt: new Date(),
-      tiers: {
-        create: [
-          {
-            level: 1,
-            name: 'Zostaw Napiwek',
-            description: 'Dowolna kwota wsparcia projektu (minimum 10 €).',
-            priceOneTime: 1000,
-            slotsTaken: 0,
-          },
-          {
-            level: 2,
-            name: 'Dyszka',
-            description: 'Podstawowy dostęp do archiwum.',
-            priceOneTime: 1000,
-            slotsTaken: 24,
-          },
-        ],
-      },
     },
   });
 

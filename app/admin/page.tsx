@@ -67,14 +67,10 @@ export default async function AdminPanel() {
                     <p className="text-[#1a1a1a]/50 italic font-serif text-lg leading-relaxed line-clamp-2">/{project.slug}</p>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                     <div>
-                       <span className="block text-[10px] font-black uppercase tracking-widest opacity-30 mb-1 italic">Cel</span>
-                       <span className="text-xl font-black">€{(project.goalAmount / 100).toLocaleString('pl-PL')}</span>
-                    </div>
-                    <div>
-                       <span className="block text-[10px] font-black uppercase tracking-widest opacity-30 mb-1 italic">Zebrane</span>
-                       <span className="text-xl font-black">€{(project.collectedAmount / 100).toLocaleString('pl-PL')}</span>
+                       <span className="block text-[10px] font-black uppercase tracking-widest opacity-30 mb-1 italic">Wyświetlenia</span>
+                       <span className="text-xl font-black">{project.views.toLocaleString('pl-PL')}</span>
                     </div>
                     <div>
                        <span className="block text-[10px] font-black uppercase tracking-widest opacity-30 mb-1 italic">Wpłaty</span>

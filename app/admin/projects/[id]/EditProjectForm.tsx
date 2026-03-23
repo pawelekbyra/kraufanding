@@ -8,8 +8,6 @@ interface EditProjectFormProps {
     id: string;
     title: string;
     slug: string;
-    goalAmount: number;
-    collectedAmount: number;
     status: string;
     creatorId: string;
   };
@@ -21,8 +19,6 @@ export default function EditProjectForm({ project, creators }: EditProjectFormPr
   const [formData, setFormData] = useState({
     title: project.title,
     slug: project.slug,
-    goalAmount: project.goalAmount / 100,
-    collectedAmount: project.collectedAmount / 100,
     status: project.status,
     creatorId: project.creatorId
   });
@@ -96,30 +92,6 @@ export default function EditProjectForm({ project, creators }: EditProjectFormPr
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Cel (EUR)</label>
-          <input
-            type="number"
-            name="goalAmount"
-            value={formData.goalAmount}
-            onChange={handleChange}
-            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-widest opacity-40 italic ml-4">Zebrane (EUR)</label>
-          <input
-            type="number"
-            name="collectedAmount"
-            value={formData.collectedAmount}
-            onChange={handleChange}
-            className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-4 px-6 font-black text-xl text-[#1a1a1a] focus:border-primary outline-none transition-all"
-            required
-          />
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
