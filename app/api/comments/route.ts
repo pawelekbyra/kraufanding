@@ -120,40 +120,63 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
         const clerkUser = await currentUser();
-        if (!clerkUser) return NextResponse.json({ success: false, message: 'User not found.' }, { status: 404 });
+        if (!clerkUser) return NextResponse.json({ success: false, message: 'Clerk User not found.' }, { status: 404 });
+
+        const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || "user@polutek.pl";
 
         try {
-            user = await prisma.user.create({
-                data: {
+            user = await prisma.user.upsert({
+                where: { clerkUserId },
+                update: { email },
+                create: {
                     clerkUserId,
-                    email: clerkUser.primaryEmailAddress?.emailAddress || "",
+                    email,
                 }
             });
         } catch (e: any) {
-            return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
+            console.error("[COMMENT_POST_USER_SYNC_ERROR]", e);
+            // Try to find the user again, maybe it was created by another concurrent request
+            user = await prisma.user.findUnique({ where: { clerkUserId } });
+            if (!user) return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
         }
     }
 
-    const { entityId, entityType, text, parentId, imageUrl } = await request.json();
+    let body;
+    try {
+        body = await request.json();
+    } catch (e) {
+        return NextResponse.json({ success: false, message: 'Invalid JSON body' }, { status: 400 });
+    }
+
+    const { entityId, entityType, text, parentId, imageUrl } = body;
 
     if (!entityId || (!text && !imageUrl)) {
-      return NextResponse.json({ success: false, message: 'Missing content.' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Missing content: entityId and (text or imageUrl) required.' }, { status: 400 });
     }
 
-    const newComment = await prisma.comment.create({
-        data: {
-            entityId,
-            entityType: entityType || 'PROJECT',
-            text: text?.trim() || '',
-            authorId: user.id,
-            parentId: parentId || null,
-            imageUrl: imageUrl || null,
-        },
-        include: {
-            author: { select: { id: true, email: true } },
-            _count: { select: { likes: true, replies: true } }
-        }
-    });
+    // Sanitize parentId - we cannot reply to mock comments in the database
+    const sanitizedParentId = (parentId && parentId.toString().startsWith('mock')) ? null : parentId;
+
+    let newComment;
+    try {
+        newComment = await prisma.comment.create({
+            data: {
+                entityId,
+                entityType: entityType || 'PROJECT',
+                text: text?.trim() || '',
+                authorId: user.id,
+                parentId: sanitizedParentId || null,
+                imageUrl: imageUrl || null,
+            },
+            include: {
+                author: { select: { id: true, email: true } },
+                _count: { select: { likes: true, replies: true } }
+            }
+        });
+    } catch (e: any) {
+        console.error("[COMMENT_POST_CREATE_ERROR]", e);
+        return NextResponse.json({ success: false, message: 'Database error creating comment: ' + e.message }, { status: 500 });
+    }
 
     return NextResponse.json({
         success: true,

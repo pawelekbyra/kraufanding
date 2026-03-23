@@ -289,12 +289,14 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   <button className="text-[#606060] hover:text-[#0f0f0f] transition-all">
                     <ThumbsDown size={13} />
                   </button>
-                  <button
-                    onClick={() => userProfile && setReplyTo(comment.id)}
-                    className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-2.5 py-0.5 rounded-full ml-1 transition-all"
-                  >
-                    Odpowiedz
-                  </button>
+                  {!comment.id.toString().startsWith('mock') && (
+                    <button
+                        onClick={() => userProfile && setReplyTo(comment.id)}
+                        className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                    >
+                        Odpowiedz
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
