@@ -59,6 +59,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<string | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     data,
@@ -185,49 +186,62 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-3 items-start mb-6">
-        <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0">
+      <div className="flex gap-4 items-start mb-6">
+        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden">
            {userProfile ? (
-             <span className="font-black text-primary text-md uppercase">{userProfile.email.charAt(0)}</span>
+             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`} alt="Avatar" className="w-full h-full" />
            ) : (
-             <Smile size={18} className="text-primary/40" />
+             <Smile size={20} className="text-[#606060]" />
            )}
         </div>
-        <div className="flex-1 space-y-3">
-          <div className="relative group">
+        <div className="flex-1 min-w-0">
+          <div className="relative">
             {replyTo && (
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1.5 rounded-full w-fit mb-2">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
                 <CornerDownRight size={12} />
                 Odpowiadasz
-                <button onClick={() => setReplyTo(null)} className="ml-1.5 hover:text-primary/70">✕</button>
+                <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
               </div>
             )}
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder={replyTo ? "Dodaj publiczną odpowiedź..." : "Dodaj komentarz..."}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[13px] border-b border-[#000000]/10 focus:border-[#0f0f0f] transition-colors resize-none py-1 min-h-[1.5rem]"
+              onFocus={() => setIsInputFocused(true)}
+              placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
               onClick={() => !userProfile && document.getElementById('signin-trigger')?.click()}
             />
           </div>
 
-          <div className="flex justify-end gap-2 items-center">
-             <button onClick={() => {setNewComment(''); setReplyTo(null);}} className="text-[11px] font-black uppercase tracking-widest opacity-40 hover:opacity-100 px-3 py-1.5 transition-all">Anuluj</button>
+          {(isInputFocused || newComment.trim() || replyTo) && (
+            <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+               <button
+                 onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-4 py-2 rounded-full transition-all"
+               >
+                 Anuluj
+               </button>
 
-             {userProfile ? (
-                <button
-                  onClick={handleSubmit}
-                  disabled={!newComment.trim() || postMutation.isPending}
-                  className="bg-[#1a1a1a] text-white px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest disabled:opacity-20 transition-all hover:bg-primary shadow-sm"
-                >
-                  {postMutation.isPending ? <Loader2 className="animate-spin" size={12} /> : (replyTo ? 'Odpowiedz' : 'Skomentuj')}
-                </button>
-             ) : (
-                <SignInButton mode="modal">
-                   <button className="bg-[#1a1a1a]/5 text-[#1a1a1a] px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-[#1a1a1a]/10 transition-all shadow-sm">Skomentuj</button>
-                </SignInButton>
-             )}
-          </div>
+               {userProfile ? (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!newComment.trim() || postMutation.isPending}
+                    className={cn(
+                        "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
+                        newComment.trim()
+                            ? "bg-[#065fd4] text-white hover:bg-[#0556bf]"
+                            : "bg-[#000000]/5 text-[#606060] cursor-not-allowed"
+                    )}
+                  >
+                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Skomentuj')}
+                  </button>
+               ) : (
+                  <SignInButton mode="modal">
+                     <button className="bg-[#065fd4] text-white px-4 py-2 rounded-full text-[14px] font-bold hover:bg-[#0556bf] transition-all">Zaloguj się</button>
+                  </SignInButton>
+               )}
+            </div>
+          )}
         </div>
       </div>
 

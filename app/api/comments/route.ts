@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -97,9 +97,21 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { clerkUserId } });
+    let user = await prisma.user.findUnique({ where: { clerkUserId } });
+
     if (!user) {
-        return NextResponse.json({ success: false, message: 'User not found in database.' }, { status: 404 });
+        // Sync user from Clerk if missing in Prisma
+        const clerkUser = await currentUser();
+        if (!clerkUser) {
+            return NextResponse.json({ success: false, message: 'Clerk user not found.' }, { status: 404 });
+        }
+
+        user = await prisma.user.create({
+            data: {
+                clerkUserId,
+                email: clerkUser.primaryEmailAddress?.emailAddress || "",
+            }
+        });
     }
 
     const { entityId, entityType, text, parentId, imageUrl } = await request.json();
