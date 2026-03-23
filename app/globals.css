@@ -3,22 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  /* Core Colors - Sophisticated Ecru/Cream Palette */
+  --background: 45 20% 97%;
+  --foreground: 30 10% 12%;
+  
+  --card: 45 25% 98%;
+  --card-foreground: 30 10% 12%;
+  
+  --popover: 45 25% 98%;
+  --popover-foreground: 30 10% 12%;
+  
+  --primary: 30 10% 12%;
+  --primary-foreground: 45 20% 97%;
+  
+  --secondary: 35 20% 92%;
+  --secondary-foreground: 30 10% 20%;
+  
+  --muted: 40 15% 94%;
+  --muted-foreground: 30 8% 45%;
+  
+  --accent: 24 60% 50%;
+  --accent-foreground: 45 20% 97%;
+  
+  --destructive: 0 65% 50%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 35 15% 88%;
+  --input: 35 15% 88%;
+  --ring: 30 10% 12%;
+  
+  --radius: 0.75rem;
 }
 
 body {
-  color: #1a1a1a;
-  background-color: #FDFBF7;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  font-feature-settings: "liga" 1, "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  ::selection {
+    background-color: hsl(30 10% 12% / 0.12);
+    color: hsl(var(--foreground));
+  }
 }
 
 @layer utilities {
@@ -34,20 +67,21 @@ body {
   }
 }
 
-/* Custom Scrollbar for better UI */
+/* Elegant Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: hsl(var(--border));
+  border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: hsl(var(--muted-foreground) / 0.5);
 }

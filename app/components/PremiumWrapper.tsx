@@ -2,19 +2,15 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { useEffect, useState } from 'react';
+import { Lock } from 'lucide-react';
 
 interface PremiumWrapperProps {
   children: React.ReactNode;
-  minTier: number; // 0: Guest, 1: FREE, 2: OBSERVER, 3: WITNESS, 4: INSIDER, 5: ARCHITECT
+  minTier: number;
   projectId: string;
   variant?: 'default' | 'thumbnail';
 }
 
-/**
- * Client-side PremiumWrapper that checks access via an API or props
- * For now, we'll use a simplified version that handles the UI gating.
- * In a real app, you'd fetch the user's tier level from an API.
- */
 export default function PremiumWrapper({
   children,
   minTier,
@@ -40,7 +36,7 @@ export default function PremiumWrapper({
         setUserTierLevel(data.tierLevel || 1);
       } catch (error) {
         console.error("Error checking access:", error);
-        setUserTierLevel(1); // Fallback to FREE if logged in
+        setUserTierLevel(1);
       } finally {
         setIsLoading(false);
       }
@@ -50,7 +46,7 @@ export default function PremiumWrapper({
   }, [userId, isLoaded, projectId]);
 
   if (isLoading) {
-    return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
+    return <div className="animate-pulse bg-muted rounded-lg w-full h-full" />;
   }
 
   const hasAccess = userTierLevel >= minTier;
@@ -69,30 +65,25 @@ export default function PremiumWrapper({
 
 function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isPatronGated = minTier >= 2;
-  const headerText = isPatronGated
-    ? "Ten materiał jest dostępny tylko dla wspierających"
-    : "Zaloguj się, aby obczaić materiały operacyjne.";
 
   const overlayText = isPatronGated
-    ? "Ściśle tajne Zostaw napiwek aby obczaić"
-    : "Ściśle Tajne Zaloguj się aby obczaić";
+    ? "Zostaw napiwek aby obczaic"
+    : "Zaloguj sie aby obczaic";
 
-  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : "Zaloguj się";
+  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : "Zaloguj sie";
 
   if (variant === 'thumbnail') {
     return (
-      <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg">
+      <div className="w-full h-full relative group bg-foreground/10 overflow-hidden rounded-md">
          <img
            src={isPatronGated ? "https://picsum.photos/seed/secret-thumb/400/225" : "https://picsum.photos/seed/ops-thumb/400/225"}
            alt="Locked"
-           className="object-cover w-full h-full opacity-30 blur-[4px] grayscale"
+           className="object-cover w-full h-full opacity-30 blur-[3px] grayscale"
          />
-         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-white/40 mb-1">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-            </svg>
-            <span className="text-[7px] font-black text-white uppercase tracking-[0.1em] opacity-80 leading-tight">
-               {overlayText.replace("Ściśle tajne ", "").replace("Ściśle Tajne ", "")}
+         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center bg-foreground/20">
+            <Lock className="w-5 h-5 text-background/60 mb-1" strokeWidth={2.5} />
+            <span className="font-sans text-[8px] font-semibold text-background uppercase tracking-wider opacity-90 leading-tight">
+               {overlayText}
             </span>
          </div>
       </div>
@@ -101,26 +92,35 @@ function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isL
 
   return (
     <div className="animate-in fade-in duration-700 h-full w-full relative">
-      <div className="aspect-video bg-[#1a1a1a]/5 rounded-xl overflow-hidden relative group border border-[#1a1a1a]/10 h-full w-full">
+      <div className="aspect-video bg-muted rounded-lg overflow-hidden relative group border border-border h-full w-full">
          <img
            src={isPatronGated ? "https://picsum.photos/seed/secret/1200/800" : "https://picsum.photos/seed/operational/1200/800"}
            alt="Locked"
-           className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-all duration-1000"
+           className="object-cover w-full h-full opacity-40 blur-[8px] grayscale transform group-hover:scale-105 transition-all duration-1000"
          />
-         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+         <div className="absolute inset-0 bg-foreground/10 flex flex-col items-center justify-center gap-3">
             {!isLoggedIn ? (
               <SignInButton mode="modal">
                 <div className="flex flex-col items-center cursor-pointer group/btn">
-                   <button className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl group-hover/btn:scale-105 transition-transform">{buttonText}</button>
-                   <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
+                   <button className="bg-foreground text-background font-sans text-sm font-semibold uppercase tracking-wider px-8 py-3 rounded-lg shadow-xl group-hover/btn:bg-accent group-hover/btn:scale-105 transition-all duration-300">
+                     {buttonText}
+                   </button>
+                   <span className="font-sans text-xs font-semibold text-background uppercase tracking-wider drop-shadow-lg mt-3 bg-foreground/60 px-4 py-1.5 rounded-full backdrop-blur-sm">
+                     {overlayText}
+                   </span>
                 </div>
               </SignInButton>
             ) : isPatronGated ? (
               <div className="flex flex-col items-center">
-                <a href="#rewards" className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl hover:scale-105 transition-transform">
+                <a 
+                  href="#rewards" 
+                  className="bg-foreground text-background font-sans text-sm font-semibold uppercase tracking-wider px-8 py-3 rounded-lg shadow-xl hover:bg-accent hover:scale-105 transition-all duration-300"
+                >
                   {buttonText}
                 </a>
-                <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
+                <span className="font-sans text-xs font-semibold text-background uppercase tracking-wider drop-shadow-lg mt-3 bg-foreground/60 px-4 py-1.5 rounded-full backdrop-blur-sm">
+                  {overlayText}
+                </span>
               </div>
             ) : null}
          </div>

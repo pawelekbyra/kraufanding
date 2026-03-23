@@ -87,7 +87,7 @@ async function FeaturedHome({ project, searchParams }: { project: Project, searc
     } : null;
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
+        <div className="min-h-screen bg-background text-foreground">
             <Navbar />
             <ProjectView
               project={project}

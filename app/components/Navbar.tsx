@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { User, Search } from "lucide-react";
@@ -20,64 +20,86 @@ const Navbar = () => {
   };
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@protonmail.com' || user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
+  
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
-      <div className="navbar-start flex-1 md:w-56 md:flex-none">
-        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
-      </div>
-
-      <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
-        <div className="relative w-full group">
-          {showMatrix ? (
-             <div className="absolute inset-0 flex items-center justify-center bg-black rounded-full overflow-hidden animate-in fade-in zoom-in duration-500 z-10">
-                <span className="text-green-500 font-mono text-sm tracking-widest animate-pulse">Matrix has You...</span>
-             </div>
-          ) : null}
-          <form onSubmit={handleSearch} className="flex w-full">
-            <div className="relative flex-1 flex items-center min-w-0">
-              <input
-                type="text"
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
-              />
-            </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
-            </button>
-          </form>
-        </div>
-      </div>
-      <div className="navbar-end flex-1 md:w-64 md:flex-none justify-end gap-1 md:gap-4">
-        <div className="md:hidden mr-2">
-            <button className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors">
-                <Search size={20} />
-            </button>
-        </div>
-        {isAdmin && (
-          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
-            Admin
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
+      <div className="flex h-14 items-center justify-between px-4 lg:px-6 max-w-full overflow-hidden gap-2 md:gap-4">
+        {/* Logo */}
+        <div className="flex-1 md:w-56 md:flex-none">
+          <Link href="/" className="group flex items-center gap-0.5 transition-opacity hover:opacity-80">
+            <span className="font-serif text-lg md:text-xl font-bold tracking-tight text-foreground">POLUTEK</span>
+            <span className="font-serif text-lg md:text-xl font-bold tracking-tight text-accent">.PL</span>
           </Link>
-        )}
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-xs">Sign In / Sign Up</button>
-          </SignInButton>
-        </SignedOut>
-        <SignedIn>
-          <UserButton afterSignOutUrl="/">
-            <UserButton.MenuItems>
-              <UserButton.Link
-                label="Mój Profil"
-                href="/user-profile"
-                labelIcon={<User size={16} />}
-              />
-            </UserButton.MenuItems>
-          </UserButton>
-        </SignedIn>
+        </div>
+
+        {/* Search */}
+        <div className="flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
+          <div className="relative w-full">
+            {showMatrix && (
+               <div className="absolute inset-0 flex items-center justify-center bg-foreground rounded-full overflow-hidden animate-in fade-in zoom-in duration-500 z-10">
+                  <span className="text-accent font-mono text-sm tracking-widest animate-pulse">Matrix has You...</span>
+               </div>
+            )}
+            <form onSubmit={handleSearch} className="flex w-full">
+              <div className="relative flex-1 flex items-center min-w-0">
+                <input
+                  type="text"
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-10 bg-secondary/50 border border-border rounded-l-full px-4 text-sm font-sans focus:outline-none focus:border-foreground/30 focus:bg-card transition-all placeholder:text-muted-foreground"
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="h-10 bg-secondary border border-border border-l-0 rounded-r-full px-5 hover:bg-muted transition-colors shrink-0 flex items-center justify-center" 
+                title="Szukaj"
+              >
+                <Search size={18} className="text-foreground/60" />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex-1 md:w-64 md:flex-none flex items-center justify-end gap-1 md:gap-3">
+          <div className="md:hidden mr-1">
+            <button className="p-2 hover:bg-secondary rounded-full transition-colors">
+              <Search size={20} className="text-foreground/70" />
+            </button>
+          </div>
+          
+          {isAdmin && (
+            <Link 
+              href="/admin" 
+              className="hidden sm:inline-flex items-center px-3 py-1.5 text-[10px] font-sans font-semibold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Admin
+            </Link>
+          )}
+          
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="inline-flex items-center px-4 py-2 text-[11px] font-sans font-semibold uppercase tracking-[0.1em] bg-foreground text-background rounded-full hover:bg-foreground/90 transition-all">
+                Zaloguj
+              </button>
+            </SignInButton>
+          </SignedOut>
+          
+          <SignedIn>
+            <UserButton afterSignOutUrl="/">
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="Mój Profil"
+                  href="/user-profile"
+                  labelIcon={<User size={16} />}
+                />
+              </UserButton.MenuItems>
+            </UserButton>
+          </SignedIn>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 

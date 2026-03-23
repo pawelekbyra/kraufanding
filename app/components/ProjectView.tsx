@@ -9,6 +9,7 @@ import { Project } from '../types/project';
 import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { Lock, Eye, Clock } from 'lucide-react';
 
 interface ProjectViewProps {
   project: Project;
@@ -24,7 +25,6 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
 
   const queryClient = useQueryClient();
 
-  // Simple prefetch function for comments
   const prefetchVideo = (vidId: string) => {
     queryClient.prefetchInfiniteQuery({
         queryKey: ['comments', vidId, 'VIDEO'],
@@ -40,17 +40,14 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
   };
 
   return (
-    <main className="bg-[#FDFBF7] min-h-screen">
-      {/* EXACT YOUTUBE WIDTH & MARGINS */}
-      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 py-3">
+    <main className="bg-background min-h-screen">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 py-4">
 
-        {/* YOUTUBE STYLE GRID LAYOUT (12 COLS) */}
-        <div className="grid grid-cols-12 gap-5">
+        <div className="grid grid-cols-12 gap-6">
 
-          {/* LEFT COLUMN (approx 68%): PLAYER + INFO + COMMENTS */}
+          {/* Main Content */}
           <div className="col-span-12 lg:col-span-8">
 
-            {/* VIDEO PLAYER & METADATA */}
             <Hero project={{
                 ...project,
                 title: currentVideo?.title || project.title,
@@ -61,100 +58,127 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                 likesCount: currentVideo?.likesCount ?? 0
             }} />
 
-            {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
-            <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold">
-                  <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
-                  <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
-               </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif italic text-[#1a1a1a]/90 mt-1">
-                  {currentVideo?.description || project.description}
-                  <br />
-                  Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
-               </div>
-               <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
+            {/* Description Box */}
+            <div className="mt-3 bg-card rounded-lg p-4 hover:bg-muted/50 transition-all duration-300 cursor-pointer group border border-border/50">
+              <div className="flex items-center gap-3 font-sans text-sm font-medium text-foreground">
+                <span className="flex items-center gap-1.5">
+                  <Eye size={14} className="text-muted-foreground" />
+                  {(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyswietlen
+                </span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span className="flex items-center gap-1.5">
+                  <Clock size={14} className="text-muted-foreground" />
+                  {currentVideo?.publishedAt || '21 mar 2025'}
+                </span>
+              </div>
+              <div className="font-serif text-sm leading-relaxed text-foreground/80 mt-2">
+                {currentVideo?.description || project.description}
+                <br />
+                <span className="text-muted-foreground italic">
+                  Zapraszam do obczajenia moich nowych materialow wideo. Zostajac Patronem, zyskujesz staly dostep do tajnych materialow operacyjnych.
+                </span>
+              </div>
+              <button className="font-sans text-xs font-semibold uppercase tracking-wider mt-3 text-muted-foreground group-hover:text-foreground transition-colors">
+                Pokaz wiecej
+              </button>
             </div>
 
-            {/* COMMENTS SECTION */}
-            <div className="mt-5">
-               <EmbeddedComments
-                 entityId={currentVideoId}
-                 entityType="VIDEO"
-                 userProfile={userProfile}
-                 showMocks={project.slug !== 'secret-project'}
-               />
+            {/* Comments */}
+            <div className="mt-6">
+              <EmbeddedComments
+                entityId={currentVideoId}
+                entityType="VIDEO"
+                userProfile={userProfile}
+                showMocks={project.slug !== 'secret-project'}
+              />
             </div>
           </div>
 
-          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST */}
-          <aside className="col-span-12 lg:col-span-4 space-y-3">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
+          {/* Sidebar */}
+          <aside className="col-span-12 lg:col-span-4 space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-foreground">Materialy</h3>
+              <span className="font-sans text-xs text-muted-foreground">{project.materials?.length || 0} wideo</span>
+            </div>
 
-            {/* PLAYLIST ITEMS */}
-            {(project.materials || []).sort((a, b) => {
-                // Sort current video first
-                if (a.id === currentVideoId) return -1;
-                if (b.id === currentVideoId) return 1;
-                // Then by minTier
-                return a.minTier - b.minTier;
-            }).reduce((acc: any[], video, i) => {
-                const isLocked = video.minTier > 0;
-                const isCurrent = video.id === currentVideoId;
+            {/* Playlist */}
+            <div className="space-y-2">
+              {(project.materials || []).sort((a, b) => {
+                  if (a.id === currentVideoId) return -1;
+                  if (b.id === currentVideoId) return 1;
+                  return a.minTier - b.minTier;
+              }).reduce((acc: any[], video, i) => {
+                  const isLocked = video.minTier > 0;
+                  const isCurrent = video.id === currentVideoId;
 
-                acc.push(
-                    <Link
-                      key={video.id}
-                      href={`/projects/${project.slug}?v=${video.id}`}
-                      scroll={false}
-                      onMouseEnter={() => prefetchVideo(video.id)}
-                      className={cn(
-                        "group flex gap-2 p-0.5 rounded-lg transition-colors",
-                        isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
-                      )}
-                    >
-                      <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
-                        <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
-                           <img
-                             src={video.thumbnail}
-                             alt={video.title}
-                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                           />
-                        </PremiumWrapper>
-                        <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
-                      </div>
-                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                        <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
-                           {video.title}
-                        </h4>
-                        <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
-                           <span>Polutek Archive</span>
-                           <div className="flex items-center gap-1">
-                              <span>12K wyświetleń</span>
-                              <span>•</span>
-                              <span>1 rok temu</span>
-                           </div>
-                        </div>
-                        {isLocked ? (
-                           <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
-                        ) : (
-                           <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
-                        )}
-                      </div>
-                    </Link>
-                );
-
-                // Add donation button after 2 items
-                if (i === 1) {
                   acc.push(
-                    <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
-                        <VideoPlaylist projectId={projectId} />
-                    </div>
+                      <Link
+                        key={video.id}
+                        href={`/projects/${project.slug}?v=${video.id}`}
+                        scroll={false}
+                        onMouseEnter={() => prefetchVideo(video.id)}
+                        className={cn(
+                          "group flex gap-3 p-2 rounded-lg transition-all duration-300",
+                          isCurrent 
+                            ? "bg-secondary border border-border" 
+                            : "hover:bg-muted/50 border border-transparent"
+                        )}
+                      >
+                        <div className="w-[160px] h-[90px] shrink-0 overflow-hidden rounded-md bg-foreground/5 relative">
+                          <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
+                            <img
+                              src={video.thumbnail}
+                              alt={video.title}
+                              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                            />
+                          </PremiumWrapper>
+                          <div className="absolute bottom-1.5 right-1.5 bg-foreground/90 text-background text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded">
+                            12:45
+                          </div>
+                          {isCurrent && (
+                            <div className="absolute inset-0 border-2 border-accent rounded-md" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+                          <h4 className="font-serif text-sm font-medium text-foreground line-clamp-2 leading-snug">
+                            {video.title}
+                          </h4>
+                          <div className="font-sans text-xs text-muted-foreground flex flex-col gap-0.5">
+                            <span>Polutek Archive</span>
+                            <div className="flex items-center gap-1">
+                              <span>12K wyswietlen</span>
+                              <span>-</span>
+                              <span>1 rok temu</span>
+                            </div>
+                          </div>
+                          {isLocked ? (
+                            <span className="inline-flex items-center gap-1 font-sans text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">
+                              <Lock size={10} />
+                              Dla Patronow
+                            </span>
+                          ) : (
+                            <span className="font-sans text-[10px] font-semibold uppercase tracking-wider text-accent mt-0.5">
+                              Dostepne
+                            </span>
+                          )}
+                        </div>
+                      </Link>
                   );
-                }
 
-                return acc;
-            }, [])}
+                  if (i === 1) {
+                    acc.push(
+                      <div key="donate" className="py-3 my-2 border-y border-border">
+                        <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-2 px-1">
+                          Wesprzyj Tworce
+                        </h3>
+                        <VideoPlaylist projectId={projectId} />
+                      </div>
+                    );
+                  }
+
+                  return acc;
+              }, [])}
+            </div>
 
           </aside>
 

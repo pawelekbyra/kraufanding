@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ArrowRight, Target, Users, Clock } from 'lucide-react';
 
 interface StatsProps {
   raised: number;
@@ -22,40 +23,40 @@ const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft, compact 
 
   if (compact) {
     return (
-      <div className="bg-white border border-[#1a1a1a]/5 rounded-3xl p-6 shadow-sm space-y-6 font-serif">
+      <div className="bg-card border border-border rounded-xl p-5 space-y-5">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-6">
              <div>
-                <h2 className="text-3xl font-black text-[#1a1a1a] tracking-tighter uppercase leading-none">
-                  {raised.toLocaleString('pl-PL')} €
+                <h2 className="font-serif text-2xl font-semibold text-foreground tracking-tight leading-none">
+                  {raised.toLocaleString('pl-PL')} EUR
                 </h2>
-                <p className="text-[#1a1a1a]/40 text-xs font-black uppercase tracking-widest italic mt-1">
-                  z €{goal.toLocaleString('pl-PL')}
+                <p className="font-sans text-xs text-muted-foreground mt-1">
+                  z {goal.toLocaleString('pl-PL')} EUR
                 </p>
              </div>
-             <div className="h-10 w-px bg-[#1a1a1a]/10 hidden md:block"></div>
-             <div className="grid grid-cols-2 gap-8">
+             <div className="h-10 w-px bg-border hidden md:block"></div>
+             <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
-                  <p className="text-xl font-black text-[#1a1a1a]">{percentage}%</p>
-                  <p className="text-[8px] font-black uppercase tracking-widest opacity-30 italic">Cel</p>
+                  <p className="font-serif text-xl font-semibold text-foreground">{percentage}%</p>
+                  <p className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground">Cel</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xl font-black text-[#1a1a1a]">{backers}</p>
-                  <p className="text-[8px] font-black uppercase tracking-widest opacity-30 italic">Ludzi</p>
+                  <p className="font-serif text-xl font-semibold text-foreground">{backers}</p>
+                  <p className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground">Ludzi</p>
                 </div>
              </div>
           </div>
           <button
             onClick={scrollToRewards}
-            className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-lg w-full md:w-auto"
+            className="bg-foreground text-background font-sans text-sm font-semibold uppercase tracking-wider px-6 py-2.5 rounded-lg hover:bg-accent transition-all w-full md:w-auto"
           >
-            WESPRZYJ
+            Wesprzyj
           </button>
         </div>
 
-        <div className="relative h-2 bg-[#1a1a1a]/5 rounded-full overflow-hidden">
+        <div className="relative h-2 bg-muted rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 ease-out"
+            className="absolute inset-y-0 left-0 bg-accent rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${Math.min(percentage, 100)}%` }}
           ></div>
         </div>
@@ -64,52 +65,59 @@ const Stats: React.FC<StatsProps> = ({ raised, goal, backers, daysLeft, compact 
   }
 
   return (
-    <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2.5rem] p-10 shadow-xl space-y-10 font-serif">
+    <div className="bg-card border border-border rounded-xl p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
-          <h2 className="text-5xl font-black text-[#1a1a1a] tracking-tighter uppercase leading-none">
-            {raised.toLocaleString('pl-PL')} €
+          <h2 className="font-serif text-4xl font-semibold text-foreground tracking-tight leading-none">
+            {raised.toLocaleString('pl-PL')} EUR
           </h2>
-          <p className="text-[#1a1a1a]/50 text-xl italic leading-relaxed">
-            zebrane z {goal.toLocaleString('pl-PL')} €
+          <p className="font-sans text-muted-foreground leading-relaxed">
+            zebrane z {goal.toLocaleString('pl-PL')} EUR
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-sm font-black mb-1">Cel:</p>
-          <p className="text-3xl font-black text-[#1a1a1a] tracking-tight">{goal.toLocaleString('pl-PL')} €</p>
+          <p className="font-sans text-xs uppercase tracking-wider text-muted-foreground mb-1">Cel:</p>
+          <p className="font-serif text-2xl font-semibold text-foreground">{goal.toLocaleString('pl-PL')} EUR</p>
         </div>
       </div>
 
-      <div className="relative h-4 bg-[#1a1a1a]/5 rounded-full overflow-hidden border border-[#1a1a1a]/5">
+      <div className="relative h-3 bg-muted rounded-full overflow-hidden">
         <div
-          className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000 ease-out"
+          className="absolute inset-y-0 left-0 bg-accent rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${Math.min(percentage, 100)}%` }}
         ></div>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 text-center">
-        <div className="space-y-1">
-          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{percentage}%</p>
-          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">zrealizowano</p>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="text-center p-4 bg-secondary/50 rounded-lg">
+          <div className="flex items-center justify-center mb-2">
+            <Target size={16} className="text-accent" />
+          </div>
+          <p className="font-serif text-2xl font-semibold text-foreground">{percentage}%</p>
+          <p className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground">zrealizowano</p>
         </div>
-        <div className="space-y-1">
-          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{backers}</p>
-          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">wspierających</p>
+        <div className="text-center p-4 bg-secondary/50 rounded-lg">
+          <div className="flex items-center justify-center mb-2">
+            <Users size={16} className="text-accent" />
+          </div>
+          <p className="font-serif text-2xl font-semibold text-foreground">{backers}</p>
+          <p className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground">wspierajacych</p>
         </div>
-        <div className="space-y-1">
-          <p className="text-3xl font-black text-[#1a1a1a] tracking-tighter">{daysLeft}</p>
-          <p className="text-[#1a1a1a]/40 uppercase tracking-widest text-[10px] font-black italic">dni do końca</p>
+        <div className="text-center p-4 bg-secondary/50 rounded-lg">
+          <div className="flex items-center justify-center mb-2">
+            <Clock size={16} className="text-accent" />
+          </div>
+          <p className="font-serif text-2xl font-semibold text-foreground">{daysLeft}</p>
+          <p className="font-sans text-[10px] uppercase tracking-wider text-muted-foreground">dni do konca</p>
         </div>
       </div>
 
       <button
         onClick={scrollToRewards}
-        className="btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-lg w-full rounded-2xl font-black tracking-widest text-lg shadow-xl shadow-[#1a1a1a]/10 group transition-all duration-500"
+        className="w-full flex items-center justify-center gap-2 bg-foreground text-background font-sans text-sm font-semibold uppercase tracking-wider py-4 rounded-lg hover:bg-accent transition-all duration-300 group"
       >
-        WESPRZYJ PROJEKT
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-        </svg>
+        Wesprzyj Projekt
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </button>
     </div>
   );

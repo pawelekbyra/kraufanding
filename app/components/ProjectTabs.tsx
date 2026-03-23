@@ -6,6 +6,7 @@ import ProjectStory from './ProjectStory';
 import VideoPlaylist from './VideoPlaylist';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { useAuth, useUser } from '@clerk/nextjs';
+import { cn } from '@/lib/utils';
 
 interface ProjectTabsProps {
   project: Project;
@@ -25,18 +26,20 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
 
   return (
     <div className="w-full">
-      <div role="tablist" className="tabs tabs-bordered mb-10 overflow-x-auto no-scrollbar">
+      <div className="flex gap-1 mb-8 overflow-x-auto no-scrollbar border-b border-border pb-px">
         {tabs.map((tab) => (
-          <a
+          <button
             key={tab.id}
-            role="tab"
             onClick={() => setActiveTab(tab.id)}
-            className={`tab h-14 text-sm font-black transition-all ${
-              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
-            }`}
+            className={cn(
+              "px-5 py-3 font-sans text-sm font-medium transition-all relative whitespace-nowrap",
+              activeTab === tab.id 
+                ? "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent" 
+                : "text-muted-foreground hover:text-foreground"
+            )}
           >
             {tab.label}
-          </a>
+          </button>
         ))}
       </div>
 
@@ -50,25 +53,25 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
         )}
 
         {activeTab === 'updates' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {project.updates?.length ? (
               project.updates.map((update) => (
-                <div key={update.id} className="card bg-base-100 border border-base-200 shadow-lg p-8 space-y-4">
+                <div key={update.id} className="bg-card border border-border rounded-lg p-6 space-y-3">
                   <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-black text-base-content">{update.title}</h3>
-                    <div className="badge badge-outline text-xs font-bold">{update.date}</div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground">{update.title}</h3>
+                    <span className="font-sans text-xs text-muted-foreground border border-border px-2 py-1 rounded">{update.date}</span>
                   </div>
-                  <p className="text-base-content/70 leading-relaxed">{update.content}</p>
+                  <p className="font-sans text-foreground/80 leading-relaxed">{update.content}</p>
                 </div>
               ))
             ) : (
-              <p className="text-center text-base-content/50 py-12">Brak aktualizacji.</p>
+              <p className="text-center font-sans text-muted-foreground py-12">Brak aktualizacji.</p>
             )}
           </div>
         )}
 
         {activeTab === 'comments' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <EmbeddedComments
               entityId={project.id}
               entityType="PROJECT"
