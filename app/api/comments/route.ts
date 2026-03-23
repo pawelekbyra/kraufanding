@@ -20,32 +20,43 @@ export async function GET(request: NextRequest) {
   try {
     let internalUserId = null;
     if (clerkUserId) {
-        const user = await prisma.user.findUnique({ where: { clerkUserId } }).catch(() => null);
-        internalUserId = user?.id;
+        try {
+            const user = await prisma.user.findUnique({
+                where: { clerkUserId },
+                select: { id: true }
+            });
+            internalUserId = user?.id;
+        } catch (e) {}
     }
 
-    const comments = await prisma.comment.findMany({
-      where: { entityId, entityType, parentId: null },
-      take: limit,
-      skip: cursor ? 1 : 0,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        author: {
-          select: { id: true, email: true }
-        },
-        replies: {
-          include: {
-            author: { select: { id: true, email: true } },
-            _count: { select: { likes: true } }
-          },
-          orderBy: { createdAt: 'asc' }
-        },
-        _count: {
-          select: { likes: true, replies: true }
-        }
-      }
-    });
+    let comments: any[] = [];
+    try {
+        comments = await prisma.comment.findMany({
+            where: { entityId, entityType, parentId: null },
+            take: limit,
+            skip: cursor ? 1 : 0,
+            cursor: cursor ? { id: cursor } : undefined,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                author: {
+                    select: { id: true, email: true }
+                },
+                replies: {
+                    include: {
+                        author: { select: { id: true, email: true } },
+                        _count: { select: { likes: true } }
+                    },
+                    orderBy: { createdAt: 'asc' }
+                },
+                _count: {
+                    select: { likes: true, replies: true }
+                }
+            }
+        });
+    } catch (e) {
+        console.error("Database error fetching comments:", e);
+        return NextResponse.json({ success: true, comments: [], nextCursor: null });
+    }
 
     const mapComment = async (c: any) => {
         let isLiked = false;
@@ -56,9 +67,7 @@ export async function GET(request: NextRequest) {
                 });
                 isLiked = !!like;
             }
-        } catch (e) {
-            console.error("Error checking like status:", e);
-        }
+        } catch (e) {}
 
         const replies = c.replies ? await Promise.all(c.replies.map(async (r: any) => {
             let rLiked = false;
@@ -69,9 +78,8 @@ export async function GET(request: NextRequest) {
                     });
                     rLiked = !!rLike;
                 }
-            } catch (e) {
-                console.error("Error checking reply like status:", e);
-            }
+            } catch (e) {}
+
             return {
                 ...r,
                 isLiked: rLiked,
@@ -92,8 +100,8 @@ export async function GET(request: NextRequest) {
     const nextCursor = comments.length === limit ? comments[limit - 1].id : null;
     return NextResponse.json({ success: true, comments: commentsWithLiked, nextCursor });
   } catch (error: any) {
-    console.error('Error fetching comments:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Internal Server Error' }, { status: 500 });
+    console.error('General error fetching comments:', error);
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
 
@@ -101,30 +109,35 @@ export async function POST(request: NextRequest) {
   const { userId: clerkUserId } = auth();
 
   if (!clerkUserId) {
-    return NextResponse.json({ success: false, message: 'Authentication required to comment.' }, { status: 401 });
+    return NextResponse.json({ success: false, message: 'Authentication required.' }, { status: 401 });
   }
 
   try {
-    let user = await prisma.user.findUnique({ where: { clerkUserId } });
+    let user = null;
+    try {
+        user = await prisma.user.findUnique({ where: { clerkUserId } });
+    } catch (e) {}
 
     if (!user) {
         const clerkUser = await currentUser();
-        if (!clerkUser) {
-            return NextResponse.json({ success: false, message: 'Clerk user not found.' }, { status: 404 });
-        }
+        if (!clerkUser) return NextResponse.json({ success: false, message: 'User not found.' }, { status: 404 });
 
-        user = await prisma.user.create({
-            data: {
-                clerkUserId,
-                email: clerkUser.primaryEmailAddress?.emailAddress || "",
-            }
-        });
+        try {
+            user = await prisma.user.create({
+                data: {
+                    clerkUserId,
+                    email: clerkUser.primaryEmailAddress?.emailAddress || "",
+                }
+            });
+        } catch (e: any) {
+            return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
+        }
     }
 
     const { entityId, entityType, text, parentId, imageUrl } = await request.json();
 
     if (!entityId || (!text && !imageUrl)) {
-      return NextResponse.json({ success: false, message: 'entityId and text or imageUrl are required' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Missing content.' }, { status: 400 });
     }
 
     const newComment = await prisma.comment.create({
@@ -137,12 +150,8 @@ export async function POST(request: NextRequest) {
             imageUrl: imageUrl || null,
         },
         include: {
-            author: {
-                select: { id: true, email: true }
-            },
-            _count: {
-                select: { likes: true, replies: true }
-            }
+            author: { select: { id: true, email: true } },
+            _count: { select: { likes: true, replies: true } }
         }
     });
 
@@ -157,41 +166,26 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
   } catch (error: any) {
     console.error('Error posting comment:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
     const { userId: clerkUserId } = auth();
-    if (!clerkUserId) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!clerkUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
         const user = await prisma.user.findUnique({ where: { clerkUserId } });
         const { searchParams } = new URL(request.url);
         const commentId = searchParams.get('id');
 
-        if (!commentId || !user) {
-            return NextResponse.json({ error: "Missing ID or user" }, { status: 400 });
-        }
+        if (!commentId || !user) return NextResponse.json({ error: "Bad request" }, { status: 400 });
 
-        const comment = await prisma.comment.findUnique({
-            where: { id: commentId }
-        });
+        const comment = await prisma.comment.findUnique({ where: { id: commentId } });
+        if (!comment) return NextResponse.json({ error: "Not found" }, { status: 404 });
+        if (comment.authorId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-        if (!comment) {
-            return NextResponse.json({ error: "Comment not found" }, { status: 404 });
-        }
-
-        if (comment.authorId !== user.id) {
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
-
-        await prisma.comment.delete({
-            where: { id: commentId }
-        });
-
+        await prisma.comment.delete({ where: { id: commentId } });
         return NextResponse.json({ success: true });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
