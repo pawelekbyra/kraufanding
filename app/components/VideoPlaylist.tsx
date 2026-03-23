@@ -42,9 +42,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
 
       if (data.url) {
         window.location.assign(data.url);
+      } else {
+        alert("Błąd: " + (data.message || data.error || "Nie udało się utworzyć sesji płatności."));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment error", error);
+      alert("Wystąpił błąd podczas procesowania płatności: " + error.message);
     } finally {
       setIsLoading(false);
     }
