@@ -39,11 +39,11 @@ export async function GET(request: NextRequest) {
             orderBy: { createdAt: 'desc' },
             include: {
                 author: {
-                    select: { id: true, email: true }
+                    select: { id: true, email: true, imageUrl: true }
                 },
                 replies: {
                     include: {
-                        author: { select: { id: true, email: true } },
+                        author: { select: { id: true, email: true, imageUrl: true } },
                         _count: { select: { likes: true } }
                     },
                     orderBy: { createdAt: 'asc' }
@@ -123,14 +123,16 @@ export async function POST(request: NextRequest) {
         if (!clerkUser) return NextResponse.json({ success: false, message: 'Clerk User not found.' }, { status: 404 });
 
         const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || "user@polutek.pl";
+        const imageUrl = clerkUser.imageUrl || null;
 
         try {
             user = await prisma.user.upsert({
                 where: { clerkUserId },
-                update: { email },
+                update: { email, imageUrl },
                 create: {
                     clerkUserId,
                     email,
+                    imageUrl,
                 }
             });
         } catch (e: any) {
@@ -169,7 +171,7 @@ export async function POST(request: NextRequest) {
                 imageUrl: imageUrl || null,
             },
             include: {
-                author: { select: { id: true, email: true } },
+                author: { select: { id: true, email: true, imageUrl: true } },
                 _count: { select: { likes: true, replies: true } }
             }
         });
