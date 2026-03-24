@@ -2,6 +2,7 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { useEffect, useState } from 'react';
+import { Lock, Gem } from 'lucide-react';
 
 interface PremiumWrapperProps {
   children: React.ReactNode;
@@ -69,30 +70,30 @@ export default function PremiumWrapper({
 
 function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isPatronGated = minTier >= 2;
-  const headerText = isPatronGated
-    ? "Ten materiał jest dostępny tylko dla wspierających"
-    : "Zaloguj się, aby obczaić materiały operacyjne.";
 
-  const overlayText = isPatronGated
-    ? "Ściśle tajne Zostaw napiwek aby obczaić"
-    : "Ściśle Tajne Zaloguj się aby obczaić";
+  // English text as requested
+  const mainTitle = "TOP SECRET";
+  const subTitle = isPatronGated ? "Patrons Only" : "Sign in to unlock";
 
-  const buttonText = isPatronGated && isLoggedIn ? "Zostaw Napiwek" : "Zaloguj się";
+  const buttonText = isPatronGated && isLoggedIn ? "Become a Patron" : "Sign In";
 
   if (variant === 'thumbnail') {
     return (
-      <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg">
-         <img
-           src={isPatronGated ? "https://picsum.photos/seed/secret-thumb/400/225" : "https://picsum.photos/seed/ops-thumb/400/225"}
-           alt="Locked"
-           className="object-cover w-full h-full opacity-30 blur-[4px] grayscale"
-         />
-         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-white/40 mb-1">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-            </svg>
-            <span className="text-[7px] font-black text-white uppercase tracking-[0.1em] opacity-80 leading-tight">
-               {overlayText.replace("Ściśle tajne ", "").replace("Ściśle Tajne ", "")}
+      <div className="w-full h-full relative group bg-[#1a1a1a] overflow-hidden rounded-lg">
+         <div className="absolute inset-0 z-0">
+            <div className={`w-full h-full opacity-50 blur-[4px] transition-all duration-700 group-hover:blur-[2px] ${isPatronGated ? 'bg-gradient-to-br from-amber-500/20 to-yellow-600/20' : 'bg-gradient-to-br from-blue-500/20 to-indigo-600/20'}`} />
+         </div>
+         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10">
+            {isPatronGated ? (
+              <Gem className="w-5 h-5 text-yellow-400 mb-1 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+            ) : (
+              <Lock className="w-5 h-5 text-blue-400 mb-1 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
+            )}
+            <span className="text-[8px] font-black text-white uppercase tracking-[0.1em] leading-tight">
+               {mainTitle}
+            </span>
+            <span className="text-[6px] font-bold text-white/60 uppercase tracking-widest mt-0.5">
+               {subTitle}
             </span>
          </div>
       </div>
@@ -100,29 +101,39 @@ function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isL
   }
 
   return (
-    <div className="animate-in fade-in duration-700 h-full w-full relative">
-      <div className="aspect-video bg-[#1a1a1a]/5 rounded-xl overflow-hidden relative group border border-[#1a1a1a]/10 h-full w-full">
-         <img
-           src={isPatronGated ? "https://picsum.photos/seed/secret/1200/800" : "https://picsum.photos/seed/operational/1200/800"}
-           alt="Locked"
-           className="object-cover w-full h-full opacity-40 blur-[10px] grayscale transform group-hover:scale-105 transition-all duration-1000"
-         />
-         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            {!isLoggedIn ? (
-              <SignInButton mode="modal">
-                <div className="flex flex-col items-center cursor-pointer group/btn">
-                   <button className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl group-hover/btn:scale-105 transition-transform">{buttonText}</button>
-                   <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
-                </div>
-              </SignInButton>
-            ) : isPatronGated ? (
-              <div className="flex flex-col items-center">
-                <a href="#rewards" className="btn btn-primary btn-md rounded-2xl font-black uppercase tracking-widest px-8 shadow-2xl hover:scale-105 transition-transform">
-                  {buttonText}
-                </a>
-                <span className="text-[12px] font-black text-white uppercase tracking-[0.2em] drop-shadow-lg mt-3 bg-[#1a1a1a]/40 px-4 py-1 rounded-full backdrop-blur-sm">{overlayText}</span>
-              </div>
-            ) : null}
+    <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative">
+      <div className="aspect-video bg-[#0f0f0f] rounded-2xl overflow-hidden relative group border-2 border-white/5 h-full w-full shadow-2xl">
+         {/* Background with subtle color tint */}
+         <div className="absolute inset-0 z-0">
+            <div className={`w-full h-full opacity-40 blur-[15px] transition-all duration-1000 group-hover:scale-110 ${isPatronGated ? 'bg-gradient-to-tr from-amber-900/40 via-yellow-600/20 to-orange-900/40' : 'bg-gradient-to-tr from-blue-900/40 via-indigo-600/20 to-cyan-900/40'}`} />
+         </div>
+
+         <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 bg-black/20 backdrop-blur-[2px]">
+            <div className="flex flex-col items-center text-center space-y-2">
+               <div className={`p-4 rounded-full mb-2 ${isPatronGated ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 shadow-[0_0_30px_rgba(234,179,8,0.2)]' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.2)]'}`}>
+                  {isPatronGated ? <Gem size={48} strokeWidth={1.5} /> : <Lock size={48} strokeWidth={1.5} />}
+               </div>
+               <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+                  {mainTitle}
+               </h2>
+               <p className={`text-sm md:text-base font-black uppercase tracking-[0.4em] ${isPatronGated ? 'text-yellow-500/80' : 'text-blue-500/80'}`}>
+                  {subTitle}
+               </p>
+            </div>
+
+            <div className="pt-4">
+               {!isLoggedIn ? (
+                 <SignInButton mode="modal">
+                   <button className="btn bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-12 h-14 text-lg font-black uppercase tracking-widest shadow-[0_8px_25px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95">
+                     {buttonText}
+                   </button>
+                 </SignInButton>
+               ) : isPatronGated ? (
+                 <a href="#donations" className="btn bg-yellow-500 hover:bg-yellow-400 text-black border-none rounded-full px-12 h-14 text-lg font-black uppercase tracking-widest shadow-[0_8px_25px_rgba(234,179,8,0.4)] transition-all hover:scale-105 active:scale-95">
+                   {buttonText}
+                 </a>
+               ) : null}
+            </div>
          </div>
       </div>
     </div>
