@@ -14,31 +14,20 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const projectId = searchParams.get('projectId');
+  const videoId = searchParams.get('videoId');
 
-  if (!projectId) {
-    return NextResponse.json({ error: 'Bad Request: projectId is required' }, { status: 400 });
+  if (!videoId) {
+    return NextResponse.json({ error: 'Bad Request: videoId is required' }, { status: 400 });
   }
 
-  const filePath = params.path.join('/');
-
-  // Fetch the file configuration from the database to get the true minTier
-  const projectFile = await prisma.projectFile.findUnique({
-    where: { path: filePath },
+  const video = await prisma.video.findUnique({
+    where: { id: videoId },
   });
 
-  if (!projectFile) {
-    // If not found in DB, default to at least level 1 (FREE)
-    // and assume the user is trying to access a generic file.
-    // In a strict environment, you might return 404 here.
-    const minTier = 1;
-    const fullUrl = `https://${filePath}`;
-    return getGatedBlobResponse(userId, projectId, fullUrl, minTier);
+  if (!video) {
+    return NextResponse.json({ error: 'Video not found' }, { status: 404 });
   }
 
-  // Use the verified minTier from the database
-  const fullUrl = projectFile.url;
-
   // Securely stream the gated content from Vercel Blob
-  return getGatedBlobResponse(userId, projectId, fullUrl, projectFile.minTier);
+  return getGatedBlobResponse(userId, videoId, video.videoUrl);
 }

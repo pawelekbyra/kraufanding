@@ -18,13 +18,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const { userId: clerkUserId } = auth();
-    console.log("[STRIPE_CHECKOUT] clerkUserId:", clerkUserId);
     if (!clerkUserId) {
-      console.error("[STRIPE_CHECKOUT] No clerkUserId found in auth().");
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 
-    // Sync user to DB if not exists (don't block if fails)
+    // Sync user to DB if not exists
     try {
         const user = await prisma.user.findUnique({ where: { clerkUserId } });
         if (!user) {
@@ -44,14 +42,14 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { amount, projectId, projectSlug, tierLevel, title } = body;
+    const { amount, videoId, videoSlug, title } = body;
 
-    if (!amount || !projectId) {
+    if (!amount) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
-    const redirectPath = projectSlug ? `/projects/${projectSlug}` : '';
+    const redirectPath = videoSlug ? `/videos/${videoSlug}` : '';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -60,7 +58,7 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Support: ${title || "Project"}`,
+              name: `Support: ${title || "Creator Support"}`,
               description: `Lifetime Patron Access`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
@@ -73,8 +71,7 @@ export async function POST(req: NextRequest) {
       cancel_url: `${appUrl}${redirectPath}?canceled=true`,
       metadata: {
         clerkUserId,
-        projectId,
-        tierLevel: (tierLevel || 2).toString(),
+        videoId: videoId || "",
       },
     });
 

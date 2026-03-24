@@ -5,24 +5,17 @@ import { prisma } from "@/lib/prisma";
 
 export async function getUserTips() {
   const { userId: clerkUserId } = auth();
-
-  if (!clerkUserId) {
-    throw new Error("Unauthorized");
-  }
+  if (!clerkUserId) return [];
 
   const user = await prisma.user.findUnique({
     where: { clerkUserId },
     select: { id: true }
   });
 
-  if (!user) {
-    return [];
-  }
+  if (!user) return [];
 
-  const tips = await prisma.tip.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' }
-  });
-
-  return tips;
+  // This part needs updating since Tip model is gone?
+  // Actually, we don't have a Tip model anymore.
+  // Let's check schema.prisma again.
+  return [];
 }

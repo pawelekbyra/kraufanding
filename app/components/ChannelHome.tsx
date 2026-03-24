@@ -5,22 +5,20 @@ import Hero from './Hero';
 import VideoPlaylist from './VideoPlaylist';
 import PremiumWrapper from './PremiumWrapper';
 import EmbeddedComments from './comments/EmbeddedComments';
-import { Project } from '../types/project';
+import { Video } from '../types/video';
 import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 
-interface ProjectViewProps {
-  project: Project;
-  videoId?: string;
-  userProfile?: { id: string; email: string } | null;
-  initialLikes?: { [videoId: string]: number };
+interface ChannelHomeProps {
+  mainVideo: Video;
+  allVideos: Video[];
+  currentVideoId?: string;
+  userProfile?: { id: string; email: string; imageUrl?: string | null } | null;
 }
 
-export default function ProjectView({ project, videoId, userProfile, initialLikes }: ProjectViewProps) {
-  const projectId = project.id;
-  const currentVideoId = videoId || (project.materials?.[0]?.id || 'promo');
-  const currentVideo = project.materials?.find(v => v.id === currentVideoId) || project.materials?.[0];
+export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
+  const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
 
   const queryClient = useQueryClient();
@@ -28,16 +26,15 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
   // Scroll to top when video changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [currentVideoId]);
+  }, [selectedVideo.id]);
 
   // Simple prefetch function for comments
-  const prefetchVideo = (vidId: string) => {
+  const prefetchVideoComments = (vidId: string) => {
     queryClient.prefetchInfiniteQuery({
-        queryKey: ['comments', vidId, 'VIDEO'],
+        queryKey: ['comments', vidId],
         queryFn: async () => {
             const url = new URL('/api/comments', window.location.origin);
-            url.searchParams.append('entityId', vidId);
-            url.searchParams.append('entityType', 'VIDEO');
+            url.searchParams.append('videoId', vidId);
             const res = await fetch(url.toString());
             return res.json();
         },
@@ -45,31 +42,30 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
     });
   };
 
-  const playlistItems = (project.materials || []).sort((a, b) => {
+  const playlistItems = allVideos.sort((a, b) => {
       // Sort current video first
-      if (a.id === currentVideoId) return -1;
-      if (b.id === currentVideoId) return 1;
-      // Then by minTier
-      return a.minTier - b.minTier;
+      if (a.id === selectedVideo.id) return -1;
+      if (b.id === selectedVideo.id) return 1;
+      return 0;
   }).reduce((acc: any[], video, i) => {
-      const isLocked = video.minTier > 0;
-      const isCurrent = video.id === currentVideoId;
+      const isCurrent = video.id === selectedVideo.id;
+      const isLocked = video.tier !== 'PUBLIC' && video.tier !== 'LOGGED_IN';
 
       acc.push(
           <Link
             key={video.id}
-            href={`/projects/${project.slug}?v=${video.id}`}
+            href={`/?v=${video.id}`}
             scroll={false}
-            onMouseEnter={() => prefetchVideo(video.id)}
+            onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
               "group flex gap-2 p-0.5 rounded-lg transition-colors",
               isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
             )}
           >
             <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
-              <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
+              <PremiumWrapper videoId={video.id} variant="thumbnail">
                  <img
-                   src={video.thumbnail}
+                   src={video.thumbnailUrl}
                    alt={video.title}
                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                  />
@@ -81,11 +77,11 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                  {video.title}
               </h4>
               <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
-                 <span>Polutek Archive</span>
+                 <span>{video.creator?.name || 'Polutek Archive'}</span>
                  <div className="flex items-center gap-1">
-                    <span>12K wyświetleń</span>
+                    <span>{video.views?.toLocaleString('pl-PL')} wyświetleń</span>
                     <span>•</span>
-                    <span>1 rok temu</span>
+                    <span>{video.publishedAt?.toString().split('T')[0] || 'Recently'}</span>
                  </div>
               </div>
               {isLocked ? (
@@ -103,9 +99,9 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
               <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
               <VideoPlaylist
-                 projectId={projectId}
-                 projectSlug={project.slug}
-                 projectTitle={project.title}
+                 videoId={selectedVideo.id}
+                 videoSlug={selectedVideo.slug}
+                 videoTitle={selectedVideo.title}
               />
           </div>
         );
@@ -116,34 +112,18 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
-      {/* EXACT YOUTUBE WIDTH & MARGINS */}
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 py-3">
-
-        {/* YOUTUBE STYLE GRID LAYOUT (12 COLS) */}
         <div className="grid grid-cols-12 gap-5">
-
-          {/* LEFT COLUMN (approx 68%): PLAYER + INFO + COMMENTS */}
           <div className="col-span-12 lg:col-span-8">
+            <Hero video={selectedVideo} />
 
-            {/* VIDEO PLAYER & METADATA */}
-            <Hero project={{
-                ...project,
-                title: currentVideo?.title || project.title,
-                thumbnail: currentVideo?.thumbnail || project.thumbnail,
-                minTier: currentVideo?.minTier || 0,
-                initialIsLiked: false,
-                initialIsSubscribed: false,
-                likesCount: currentVideo?.likesCount ?? 0
-            }} />
-
-            {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[13px] font-bold">
-                  <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
-                  <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
+                  <span>{selectedVideo.views?.toLocaleString('pl-PL')} wyświetleń</span>
+                  <span>{selectedVideo.publishedAt?.toString().split('T')[0] || 'Recently'}</span>
                </div>
                <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
-                  {currentVideo?.description || project.description}
+                  {selectedVideo.description}
                   <br />
                   Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
                </div>
@@ -176,10 +156,8 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
             <div className="lg:hidden mt-5">
                {activeTab === 'comments' ? (
                  <EmbeddedComments
-                   entityId={currentVideoId}
-                   entityType="VIDEO"
+                   videoId={selectedVideo.id}
                    userProfile={userProfile}
-                   showMocks={project.slug !== 'secret-project'}
                  />
                ) : (
                  <div className="space-y-3">
@@ -191,22 +169,18 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
             {/* DESKTOP COMMENTS SECTION */}
             <div className="hidden lg:block mt-5">
                <EmbeddedComments
-                 entityId={currentVideoId}
-                 entityType="VIDEO"
+                 videoId={selectedVideo.id}
                  userProfile={userProfile}
-                 showMocks={project.slug !== 'secret-project'}
                />
             </div>
           </div>
 
-          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST (DESKTOP ONLY) */}
+          {/* RIGHT COLUMN (SIDEBAR PLAYLIST) */}
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
             {playlistItems}
           </aside>
-
         </div>
-
       </div>
     </main>
   );

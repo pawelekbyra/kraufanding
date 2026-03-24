@@ -1,69 +1,43 @@
 "use client";
 
 import React, { useOptimistic } from 'react';
-import { Project } from '../types/project';
+import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { toggleProjectLike, toggleSubscription } from '@/lib/actions/interactions';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 
 interface HeroProps {
-  project: Project & {
-    views?: number;
-    initialIsLiked?: boolean;
-    initialIsSubscribed?: boolean;
-    likesCount?: number;
-    minTier?: number;
-  };
+  video: Video;
 }
 
-const Hero: React.FC<HeroProps> = ({ project }) => {
+const Hero: React.FC<HeroProps> = ({ video }) => {
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
 
   const [optimisticLike, addOptimisticLike] = useOptimistic(
-    { isLiked: project.initialIsLiked, count: project.likesCount || 0 },
+    { isLiked: false, count: video.likesCount || 0 },
     (state, newLiked: boolean) => ({
       isLiked: newLiked,
       count: newLiked ? state.count + 1 : Math.max(0, state.count - 1)
     })
   );
 
-  const [optimisticSub, addOptimisticSub] = useOptimistic(
-    project.initialIsSubscribed || false,
-    (state, newSub: boolean) => newSub
-  );
-
   const handleLike = async () => {
     if (!userId) return openSignIn();
     addOptimisticLike(!optimisticLike.isLiked);
-    try {
-      await toggleProjectLike(project.id);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleSubscribe = async () => {
-    if (!userId) return openSignIn();
-    addOptimisticSub(!optimisticSub);
-    try {
-      await toggleSubscription();
-    } catch (err) {
-      console.error(err);
-    }
+    // TODO: Implement toggleVideoLike
   };
 
   return (
     <section className="bg-[#FDFBF7]">
       <div className="w-full">
-        {/* FEATURED MEDIA (VIDEO PLAYER) - SHARPER CORNERS */}
+        {/* FEATURED MEDIA (VIDEO PLAYER) */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
-          <PremiumWrapper projectId={project.id} minTier={project.minTier || 0}>
+          <PremiumWrapper videoId={video.id}>
             <img
-                src={project.thumbnail}
-                alt={project.title}
+                src={video.thumbnailUrl}
+                alt={video.title}
                 className="w-full h-full object-cover opacity-90 transition duration-1000"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -76,31 +50,25 @@ const Hero: React.FC<HeroProps> = ({ project }) => {
           </PremiumWrapper>
         </div>
 
-        {/* YOUTUBE-STYLE INFO - EXACT SCALE */}
+        {/* INFO SECTION */}
         <div className="space-y-3 pt-3">
           <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
-            {project.title}
+            {video.title}
           </h2>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
             <div className="flex items-center gap-3 min-w-0">
                <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${project.author}`} alt={project.author} className="w-full h-full object-cover" />
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'Polutek'}`} alt={video.creator?.name} className="w-full h-full object-cover" />
                </div>
                <div className="min-w-0 pr-1">
-                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{project.author}</p>
-                  <p className="text-[12px] text-[#606060] whitespace-nowrap">1.2 M subskrajberów</p>
+                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{video.creator?.name || 'Polutek Archive'}</p>
+                  <p className="text-[12px] text-[#606060] whitespace-nowrap">{(video.creator?.subscribersCount || 1200000).toLocaleString('pl-PL')} subskrajberów</p>
                </div>
                <button
-                 onClick={handleSubscribe}
-                 className={cn(
-                    "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
-                    optimisticSub
-                        ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                        : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
-                 )}
+                 className="text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0 bg-[#0f0f0f] text-white hover:bg-[#272727]"
                >
-                 {optimisticSub ? 'Subskrajbujesz' : 'Subskrajb'}
+                 Subskrajb
                </button>
             </div>
 

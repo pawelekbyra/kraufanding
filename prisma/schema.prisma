@@ -50,7 +50,7 @@ model Video {
   tier          AccessTier @default(PUBLIC)
   views         Int       @default(0)
   likesCount    Int       @default(0)
-  isMain        Boolean   @default(false) // Whether this is the featured video
+  isMain        Boolean   @default(false) // Whether this is the featured video on home page
   publishedAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -109,10 +109,10 @@ model CommentLike {
 }
 
 enum AccessTier {
-  PUBLIC
-  LOGGED_IN
-  VIP1 // totalPaid >= 3
-  VIP2 // totalPaid >= 10
+  PUBLIC    // Everyone
+  LOGGED_IN // Minimum: Logged in (Clerk mail)
+  VIP1      // Minimum: totalPaid >= 3 EUR
+  VIP2      // Minimum: totalPaid >= 10 EUR
 }
 
 enum SystemRole {
