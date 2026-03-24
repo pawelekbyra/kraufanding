@@ -37,6 +37,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
 
       if (data?.url) {
         window.location.assign(data.url);
+      } else if (data?.error) {
+        alert("Błąd: " + data.error);
       } else {
         alert("Błąd: Nie udało się utworzyć sesji płatności.");
       }
