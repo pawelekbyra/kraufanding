@@ -1,63 +1,57 @@
 import { prisma } from './prisma';
+import { AccessTier } from '@prisma/client';
 
 /**
- * Checks if a user has access to a specific project tier.
- * Higher levels have cumulative access to all lower levels.
+ * Checks the user's access level for a specific video based on their total amount paid.
  *
  * @param clerkUserId The Clerk user ID
- * @param projectId The project ID to check access for
- * @returns The user's highest tier level for the project (0 if no access/guest)
+ * @param videoId The video ID to check access for
+ * @returns Object containing the user's total paid and their access status
  */
-export async function getProjectAccess(clerkUserId: string | null, projectId: string) {
+export async function getVideoAccess(clerkUserId: string | null, videoId: string) {
+  const video = await prisma.video.findUnique({
+    where: { id: videoId },
+    select: { tier: true, creatorId: true }
+  });
+
+  if (!video) return { hasAccess: false, userTotalPaid: 0, requiredTier: AccessTier.PUBLIC };
+
+  // Public tier - everyone has access
+  if (video.tier === AccessTier.PUBLIC) {
+    return { hasAccess: true, userTotalPaid: 0, requiredTier: video.tier };
+  }
+
+  // Not logged in - only public tier available
   if (!clerkUserId) {
-    return 0; // Guest / Unauthenticated
+    return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
   }
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { clerkUserId },
-      select: { id: true }
-    });
+  const user = await prisma.user.findUnique({
+    where: { clerkUserId },
+    select: { totalPaid: true, role: true, email: true }
+  });
 
-    if (!user) {
-      return 1; // Logged in via Clerk but not yet synced to Prisma -> FREE level
-    }
+  if (!user) return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
 
-    // Admins have full access (Level 5) to all projects
-    const userData = await prisma.user.findUnique({
-      where: { clerkUserId },
-      select: { role: true, email: true }
-    });
-
-    if (userData?.role === 'ADMIN' || userData?.role === 'CREATOR' || userData?.email === 'pawel.perfect@protonmail.com' || userData?.email === 'pawel.perfect@gmail.com') {
-      return 5;
-    }
-
-    const access = await prisma.userProjectAccess.findUnique({
-      where: {
-        userId_projectId: {
-          userId: user.id,
-          projectId: projectId,
-        },
-      },
-      select: {
-        tierLevel: true,
-        expiresAt: true,
-      },
-    });
-
-    if (!access) {
-      return 1; // Registered but no paid tier (FREE)
-    }
-
-    // Check if access has expired (only for subscriptions)
-    if (access.expiresAt && access.expiresAt < new Date()) {
-      return 1; // Expired sub, back to FREE level
-    }
-
-    return access.tierLevel;
-  } catch (error) {
-    console.error('Error checking project access:', error);
-    return 0;
+  // Admin access
+  if (user.role === 'ADMIN' || user.email === 'pawel.perfect@gmail.com') {
+    return { hasAccess: true, userTotalPaid: user.totalPaid, requiredTier: video.tier };
   }
+
+  // LOGGED_IN tier - any registered user has access
+  if (video.tier === AccessTier.LOGGED_IN) {
+    return { hasAccess: true, userTotalPaid: user.totalPaid, requiredTier: video.tier };
+  }
+
+  // VIP1 tier - required totalPaid >= 3 EUR
+  if (video.tier === AccessTier.VIP1) {
+    return { hasAccess: user.totalPaid >= 3, userTotalPaid: user.totalPaid, requiredTier: video.tier };
+  }
+
+  // VIP2 tier - required totalPaid >= 10 EUR
+  if (video.tier === AccessTier.VIP2) {
+    return { hasAccess: user.totalPaid >= 10, userTotalPaid: user.totalPaid, requiredTier: video.tier };
+  }
+
+  return { hasAccess: false, userTotalPaid: user.totalPaid, requiredTier: video.tier };
 }

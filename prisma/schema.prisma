@@ -11,156 +11,65 @@ model User {
   id               String              @id @default(uuid())
   clerkUserId      String              @unique
   email            String              @unique
-  tier             UserTier            @default(FREE)
   role             SystemRole          @default(USER)
-  isSubscribed     Boolean             @default(false)
-  isPatron         Boolean             @default(false)
+  totalPaid        Float               @default(0) // Lifetime sum of all payments
   stripeCustomerId String?             @unique
   imageUrl         String?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
+
   creators         Creator[]
-  donations        Donation[]
-  payments         Payment[]
-  tips             Tip[]
-  subscriptions    Subscription[]
-  projectAccess    UserProjectAccess[]
-  projectLikes     ProjectLike[]
   comments         Comment[]
   commentLikes     CommentLike[]
+  videoLikes       VideoLike[]
 }
 
 model Creator {
-  id              String    @id @default(uuid())
-  userId          String
-  slug            String    @unique
-  name            String
-  bio             String?
-  isApproved      Boolean   @default(false)
-  stripeConnectId String?   @unique
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  user            User      @relation(fields: [userId], references: [id])
-  projects        Project[]
+  id               String    @id @default(uuid())
+  userId           String
+  slug             String    @unique
+  name             String
+  bio              String?
+  subscribersCount Int       @default(0)
+  isApproved       Boolean   @default(false)
+  stripeConnectId  String?   @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id])
+  videos           Video[]
 }
 
-model Project {
-  id              String              @id @default(uuid())
-  creatorId       String
-  title           String
-  slug            String              @unique
-  views           Int                 @default(0)
-  status          String              @default("draft")
-  publishedAt     DateTime?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  payments        Payment[]
-  posts           Post[]
-  creator         Creator             @relation(fields: [creatorId], references: [id])
-  projectAccess   UserProjectAccess[]
-  projectLikes    ProjectLike[]
-  files           ProjectFile[]
+model Video {
+  id            String    @id @default(uuid())
+  creatorId     String
+  title         String
+  slug          String    @unique
+  description   String?
+  videoUrl      String
+  thumbnailUrl  String
+  tier          AccessTier @default(PUBLIC)
+  views         Int       @default(0)
+  likesCount    Int       @default(0)
+  isMain        Boolean   @default(false) // Whether this is the featured video
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  creator       Creator   @relation(fields: [creatorId], references: [id])
+  comments      Comment[]
+  videoLikes    VideoLike[]
 }
 
-model ProjectLike {
+model VideoLike {
   id        String   @id @default(uuid())
   userId    String
-  projectId String
+  videoId   String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([userId, projectId])
-  @@index([projectId])
-}
-
-model ProjectFile {
-  id        String   @id @default(uuid())
-  projectId String
-  path      String   @unique
-  url       String
-  minTier   Int      @default(1)
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([projectId])
-}
-
-model Post {
-  id             String   @id @default(uuid())
-  projectId      String
-  title          String
-  slug           String   @unique
-  contentPublic  String?
-  contentTeaser  String?
-  contentLevel1  String?
-  contentPremium String?
-  minTierLevel   Int      @default(2)
-  isEarlyAccess  Boolean  @default(false)
-  publishedAt    DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  project        Project  @relation(fields: [projectId], references: [id])
-}
-
-model Subscription {
-  id                   String   @id @default(uuid())
-  userId               String
-  stripeSubscriptionId String   @unique
-  status               String
-  currentPeriodEnd     DateTime
-  createdAt            DateTime @default(now())
-  user                 User     @relation(fields: [userId], references: [id])
-}
-
-model Donation {
-  id              String   @id @default(uuid())
-  userId          String
-  amount          Int
-  currency        String   @default("EUR")
-  stripePaymentId String   @unique
-  createdAt       DateTime @default(now())
-  user            User     @relation(fields: [userId], references: [id])
-}
-
-model UserProjectAccess {
-  id         String    @id @default(uuid())
-  userId     String
-  projectId  String
-  tierLevel  Int
-  accessType String
-  grantedAt  DateTime  @default(now())
-  expiresAt  DateTime?
-  project    Project   @relation(fields: [projectId], references: [id])
-  user       User      @relation(fields: [userId], references: [id])
-
-  @@unique([userId, projectId])
-}
-
-model Payment {
-  id              String   @id @default(uuid())
-  userId          String
-  projectId       String
-  amount          Int
-  currency        String   @default("EUR")
-  type            String
-  stripePaymentId String   @unique
-  status          String
-  createdAt       DateTime @default(now())
-  project         Project  @relation(fields: [projectId], references: [id])
-  user            User     @relation(fields: [userId], references: [id])
-}
-
-model Tip {
-  id              String   @id @default(uuid())
-  userId          String
-  amount          Int      // Amount in cents
-  currency        String   @default("EUR")
-  createdAt       DateTime @default(now())
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+  @@unique([userId, videoId])
+  @@index([videoId])
 }
 
 model Comment {
@@ -170,9 +79,8 @@ model Comment {
   authorId   String
   author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  // Polymorphic fields
-  entityId   String   // The ID of the thing being commented on (Project, Post, etc.)
-  entityType String   // The type of the thing (e.g., 'PROJECT', 'POST')
+  videoId    String
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   // Self-relation for replies
   parentId   String?
@@ -184,8 +92,7 @@ model Comment {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@index([entityId])
-  @@index([entityType])
+  @@index([videoId])
   @@index([parentId])
 }
 
@@ -201,18 +108,14 @@ model CommentLike {
   @@index([commentId])
 }
 
-enum UserTier {
-  GUEST
-  FREE
-  OBSERVER
-  WITNESS
-  INSIDER
-  ARCHITECT
+enum AccessTier {
+  PUBLIC
+  LOGGED_IN
+  VIP1 // totalPaid >= 3
+  VIP2 // totalPaid >= 10
 }
 
 enum SystemRole {
   ADMIN
-  MODERATOR
-  CREATOR
   USER
 }
