@@ -1,5 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
@@ -11,7 +11,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   if (!stripe) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
@@ -41,21 +41,24 @@ export async function POST(req: NextRequest) {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
-    const { amount, projectId, tierLevel, title } = await req.json();
+    const { amount, projectId, projectSlug, tierLevel, title } = await req.json();
 
     if (!amount || !projectId || !tierLevel) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'blik'],
       line_items: [
         {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Support Project: ${title || "Nowoczesny plecak smart"}`,
-              description: `Access Level ${tierLevel}`,
+              name: `Support Project: ${title || "Project Support"}`,
+              description: `Lifetime Patron Access`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
           },
@@ -63,8 +66,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/?canceled=true`,
+      success_url: `${appUrl}${redirectPath}?success=true`,
+      cancel_url: `${appUrl}${redirectPath}?canceled=true`,
       metadata: {
         clerkUserId,
         projectId,
