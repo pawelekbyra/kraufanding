@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const redirectPath = projectSlug ? `/projects/${projectSlug}` : '';
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'blik'],
       line_items: [
         {
           price_data: {
