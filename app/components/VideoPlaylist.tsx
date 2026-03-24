@@ -32,7 +32,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
         amount: amount,
         projectId: projectId,
         tierLevel: 2, // Patron level
-        title: "Zostaw Napiwek / Patron"
+        title: "Tip The Guy / Patron"
       });
 
       if (data?.url) {
@@ -58,16 +58,16 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
           <div className="space-y-4 relative z-10">
             <div className="space-y-1">
               <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                Zostaw Napiwek
+                Tip The Guy
               </h3>
               <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
-                Wpłać dowolną kwotę i uzyskaj dożywotni dostęp do treści dla Patronów.
+                Donate any amount and get lifetime access to Patron-only content.
               </p>
             </div>
 
             <div className="space-y-2 pt-2">
               <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
-                Kwota wsparcia (min. 10 €)
+                Support amount (minimum €10)
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -92,7 +92,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
               disabled={isLoading || amount < 10}
               className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {isLoading ? 'ŁADOWANIE...' : 'WESPRZYJ'}
+              {isLoading ? 'LOADING...' : 'SUPPORT'}
             </button>
           </div>
         </div>
