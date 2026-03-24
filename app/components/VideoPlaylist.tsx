@@ -10,7 +10,7 @@ interface VideoPlaylistProps {
   videoTitle?: string;
 }
 
-const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoId, videoSlug, videoTitle }) => {
+const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState<number | ''>(10);
   const { userId } = useAuth();
@@ -32,8 +32,6 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoId, videoSlug, video
 
       const data = await createCheckoutSession({
         amount: Number(amount),
-        videoId: videoId,
-        videoSlug: videoSlug,
         title: videoTitle || "Tip The Guy / Patron"
       });
 
@@ -41,17 +39,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoId, videoSlug, video
         window.location.assign(data.url);
       } else if (data?.error) {
         if (data.error.includes("zaloguj się") || data.error.includes("AUTH_REQUIRED")) {
-          alert("Twoja sesja na serwerze wygasła lub wystąpił błąd autoryzacji. Spróbuj zalogować się ponownie.");
+          alert("Twoja sesja wygasła. Zaloguj się ponownie.");
           openSignIn();
         } else {
-          alert("Błąd serwera podczas tworzenia płatności: " + data.error);
+          alert("Błąd: " + data.error);
         }
-      } else {
-        alert("Błąd: Nie udało się utworzyć sesji płatności.");
       }
     } catch (error: any) {
       console.error("Payment error", error);
-      alert("Wystąpił błąd podczas procesowania płatności: " + error.message);
+      alert("Wystąpił błąd: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -59,16 +55,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoId, videoSlug, video
 
   return (
     <div className="space-y-4 font-serif px-2" id="donations">
-        <div
-          className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-6 shadow-lg transition-all duration-500 group relative overflow-hidden"
-        >
+        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-6 shadow-lg group relative overflow-hidden transition-all duration-500">
           <div className="space-y-4 relative z-10">
             <div className="space-y-1">
               <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                BECOME A PATRON
+                Become a Patron
               </h3>
               <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
-                Tip any amount and get lifetime access to Paweł Polutek’s patron-only content.
+                Tip any amount to unlock permanent VIP access levels. All contributions directly support the channel.
               </p>
             </div>
 

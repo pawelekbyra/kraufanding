@@ -3,7 +3,7 @@
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2 } from "lucide-react";
+import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star } from "lucide-react";
 
 export default function AdminPanel() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -12,6 +12,19 @@ export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    id: "",
+    title: "",
+    slug: "",
+    description: "",
+    videoUrl: "",
+    thumbnailUrl: "",
+    tier: "PUBLIC",
+    likesCount: 0,
+    views: 0,
+    isMain: false
+  });
 
   const adminEmail = "pawel.perfect@gmail.com";
 
@@ -38,6 +51,58 @@ export default function AdminPanel() {
     }
   };
 
+  const handleEdit = (vid: any) => {
+    setIsEditing(true);
+    setFormData({
+      id: vid.id,
+      title: vid.title,
+      slug: vid.slug,
+      description: vid.description || "",
+      videoUrl: vid.videoUrl,
+      thumbnailUrl: vid.thumbnailUrl,
+      tier: vid.tier,
+      likesCount: vid.likesCount,
+      views: vid.views,
+      isMain: vid.isMain
+    });
+  };
+
+  const handleCreateNew = () => {
+    setIsEditing(true);
+    setFormData({
+      id: "",
+      title: "",
+      slug: "",
+      description: "",
+      videoUrl: "",
+      thumbnailUrl: "",
+      tier: "PUBLIC",
+      likesCount: 0,
+      views: 0,
+      isMain: false
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/admin/videos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setIsEditing(false);
+        fetchVideos();
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.error);
+      }
+    } catch (err) {
+      console.error("Submit failed", err);
+    }
+  };
+
   if (!isAdmin || isLoading) {
     return <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center font-serif">Verifying Access...</div>;
   }
@@ -48,19 +113,95 @@ export default function AdminPanel() {
         <header className="flex justify-between items-end border-b-2 border-[#1a1a1a] pb-6">
           <div className="space-y-1">
             <h1 className="text-4xl font-black uppercase tracking-tighter italic">Control Center</h1>
-            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Restricted Access // Administrator Only</p>
+            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Administrator Access // Verified: {adminEmail}</p>
           </div>
           <div className="flex gap-4">
-            <button className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest px-6 shadow-brutalist-sm">
+            <button
+              onClick={handleCreateNew}
+              className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest px-6 shadow-brutalist-sm"
+            >
               <Plus size={16} className="mr-2" /> New Upload
             </button>
           </div>
         </header>
 
+        {isEditing && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white border-2 border-[#1a1a1a] p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+              <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 p-2 hover:bg-[#1a1a1a]/5 rounded-full">
+                <X size={24} />
+              </button>
+              <h3 className="text-2xl font-black uppercase tracking-tight italic mb-8">{formData.id ? "Edit Video" : "Add New Video"}</h3>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Title</label>
+                    <input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-bold uppercase text-sm transition-all" required />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Slug</label>
+                    <input value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Description</label>
+                  <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-serif text-sm transition-all h-24" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Video URL (Vimeo/YouTube)</label>
+                    <input value={formData.videoUrl} onChange={e => setFormData({...formData, videoUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Thumbnail URL</label>
+                    <input value={formData.thumbnailUrl} onChange={e => setFormData({...formData, thumbnailUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                   <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Access Tier</label>
+                    <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-black uppercase text-xs transition-all">
+                      <option value="PUBLIC">Public</option>
+                      <option value="LOGGED_IN">Logged In</option>
+                      <option value="VIP1">VIP 1 (€3+)</option>
+                      <option value="VIP2">VIP 2 (€10+)</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Initial Likes</label>
+                    <input type="number" value={formData.likesCount} onChange={e => setFormData({...formData, likesCount: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Initial Views</label>
+                    <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 bg-[#1a1a1a]/5 p-4 border-2 border-dashed border-[#1a1a1a]/10">
+                   <input
+                    type="checkbox"
+                    checked={formData.isMain}
+                    onChange={e => setFormData({...formData, isMain: e.target.checked})}
+                    className="w-5 h-5 accent-[#1a1a1a]"
+                   />
+                   <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Set as Featured Material (Main Page)</label>
+                </div>
+
+                <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist">
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard title="Total Videos" value={videos.length.toString()} icon={<Video size={20} />} />
-          <StatCard title="Active Patrons" value="124" icon={<BarChart3 size={20} />} />
-          <StatCard title="Total Revenue" value="€4,562" icon={<Settings size={20} />} />
+          <StatCard title="Featured" value={videos.find(v => v.isMain)?.title.split(' ')[0] || "None"} icon={<Star size={20} />} />
+          <StatCard title="Total Revenue" value="LIVE" icon={<BarChart3 size={20} />} />
         </section>
 
         <section className="space-y-6">
@@ -72,8 +213,7 @@ export default function AdminPanel() {
                   <th className="p-4">Status</th>
                   <th className="p-4">Title</th>
                   <th className="p-4">Tier</th>
-                  <th className="p-4">Likes</th>
-                  <th className="p-4">Views</th>
+                  <th className="p-4">Stats</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -92,17 +232,20 @@ export default function AdminPanel() {
                       <div className="text-[10px] text-[#1a1a1a]/40 font-mono">/{vid.slug}</div>
                     </td>
                     <td className="p-4">
-                       <span className={`text-[10px] font-black uppercase px-2 py-0.5 border-2 ${
+                       <span className={`text-[10px] font-black uppercase px-2 py-0.5 border-2 flex items-center gap-1 w-fit ${
                          vid.tier === 'VIP2' ? 'border-yellow-500 text-yellow-600' :
                          vid.tier === 'VIP1' ? 'border-blue-500 text-blue-600' : 'border-[#1a1a1a]/20 text-[#1a1a1a]/40'
                        }`}>
+                         {vid.tier === 'PUBLIC' ? <Globe size={10} /> : vid.tier === 'LOGGED_IN' ? <Lock size={10} /> : <ShieldCheck size={10} />}
                          {vid.tier}
                        </span>
                     </td>
-                    <td className="p-4 font-mono text-sm">{vid.likesCount}</td>
-                    <td className="p-4 font-mono text-sm">{vid.views}</td>
+                    <td className="p-4 font-mono text-[10px] space-x-3">
+                       <span className="text-[#1a1a1a]/60">L: {vid.likesCount}</span>
+                       <span className="text-[#1a1a1a]/60">V: {vid.views}</span>
+                    </td>
                     <td className="p-4 text-right space-x-2">
-                       <button className="p-2 hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent hover:border-[#1a1a1a]"><Edit size={16} /></button>
+                       <button onClick={() => handleEdit(vid)} className="p-2 hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent hover:border-[#1a1a1a]"><Edit size={16} /></button>
                        <button className="p-2 hover:bg-error hover:text-white transition-colors border border-transparent hover:border-error"><Trash2 size={16} /></button>
                     </td>
                   </tr>

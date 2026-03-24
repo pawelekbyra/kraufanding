@@ -42,14 +42,13 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { amount, videoId, videoSlug, title } = body;
+    const { amount, title } = body;
 
-    if (!amount) {
-      return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+    if (!amount || amount < 3) {
+      return NextResponse.json({ error: "Minimum parameters" }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
-    const redirectPath = videoSlug ? `/videos/${videoSlug}` : '';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
             currency: 'eur',
             product_data: {
               name: `Support: ${title || "Creator Support"}`,
-              description: `Lifetime Patron Access`,
+              description: `Lifetime VIP Access`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
           },
@@ -67,11 +66,11 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${appUrl}${redirectPath}?success=true`,
-      cancel_url: `${appUrl}${redirectPath}?canceled=true`,
+      success_url: `${appUrl}/?success=true`,
+      cancel_url: `${appUrl}/?canceled=true`,
       metadata: {
         clerkUserId,
-        videoId: videoId || "",
+        type: 'TIP_DONATION'
       },
     });
 
