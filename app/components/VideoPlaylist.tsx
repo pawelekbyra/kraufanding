@@ -57,11 +57,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
         >
           <div className="space-y-4 relative z-10">
             <div className="space-y-1">
-              <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                Tip The Guy
+              <h3 className="text-sm font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
+                I rise money for my secret project
               </h3>
               <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
-                Donate any amount and get lifetime access to Patron-only content.
+                Donate any amount and get lifetime access to Paweł Polutek’s patron-only content.
               </p>
             </div>
 
@@ -92,7 +92,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
               disabled={isLoading || amount < 10}
               className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {isLoading ? 'LOADING...' : 'SUPPORT'}
+              {isLoading ? 'LOADING...' : 'TIP THE GUY'}
             </button>
           </div>
         </div>
