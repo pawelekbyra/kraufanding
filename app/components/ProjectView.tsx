@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Hero from './Hero';
 import VideoPlaylist from './VideoPlaylist';
 import PremiumWrapper from './PremiumWrapper';
@@ -23,6 +23,11 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
   const currentVideo = project.materials?.find(v => v.id === currentVideoId) || project.materials?.[0];
 
   const queryClient = useQueryClient();
+
+  // Scroll to top when video changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentVideoId]);
 
   // Simple prefetch function for comments
   const prefetchVideo = (vidId: string) => {
