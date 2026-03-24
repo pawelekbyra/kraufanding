@@ -24,7 +24,7 @@ export async function createCheckoutSession(params: {
 
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
+      return { error: "Proszę zaloguj się ponownie, aby dokonać wpłaty." };
     }
 
     // Sync user to DB if not exists
@@ -49,7 +49,7 @@ export async function createCheckoutSession(params: {
     const { amount, projectId, projectSlug, tierLevel, title } = params;
 
     if (!amount || !projectId || !tierLevel) {
-      return { error: "Missing parameters: amount, projectId, and tierLevel are required." };
+      return { error: "Missing parameters" };
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

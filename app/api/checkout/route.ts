@@ -1,5 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
@@ -11,20 +11,20 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   if (!stripe) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
+
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      console.error("[STRIPE_CHECKOUT] No clerkUserId found in auth().");
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 
-    // Sync user to DB if not exists
+    // Sync user to DB if not exists (don't block if fails)
     try {
-        let user = await prisma.user.findUnique({ where: { clerkUserId } });
+        const user = await prisma.user.findUnique({ where: { clerkUserId } });
         if (!user) {
             const clerkUser = await currentUser();
             if (clerkUser) {
@@ -41,14 +41,15 @@ export async function POST(req: Request) {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
-    const { amount, projectId, projectSlug, tierLevel, title } = await req.json();
+    const body = await req.json();
+    const { amount, projectId, projectSlug, tierLevel, title } = body;
 
-    if (!amount || !projectId || !tierLevel) {
+    if (!amount || !projectId) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+    const redirectPath = projectSlug ? `/projects/${projectSlug}` : '';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'blik'],
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Support Project: ${title || "Project Support"}`,
+              name: `Support: ${title || "Project"}`,
               description: `Lifetime Patron Access`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
@@ -71,16 +72,16 @@ export async function POST(req: Request) {
       metadata: {
         clerkUserId,
         projectId,
-        tierLevel: tierLevel.toString(),
+        tierLevel: (tierLevel || 2).toString(),
       },
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[STRIPE_CHECKOUT_ERROR]", error);
     return NextResponse.json({
       error: "Internal Error",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: error.message || "Unknown error"
     }, { status: 500 });
   }
 }
