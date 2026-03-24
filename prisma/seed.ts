@@ -1,4 +1,4 @@
-import { PrismaClient, UserTier, SystemRole } from '@prisma/client';
+import { PrismaClient, AccessTier, SystemRole } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -11,59 +11,40 @@ async function main() {
     update: {},
     create: {
       clerkUserId: 'user_2tW7q1Z5vW3N8mR0pL4K6j9H1D2',
-      email: 'creator@polutek.pl',
-      tier: UserTier.FREE,
-      role: SystemRole.CREATOR,
+      email: 'pawel.perfect@gmail.com',
+      role: SystemRole.ADMIN,
     },
   });
 
   // Create the creator
   const creator = await prisma.creator.upsert({
-    where: { slug: 'jan-kowalski' },
+    where: { slug: 'polutek' },
     update: {},
     create: {
       userId: user.id,
-      slug: 'jan-kowalski',
-      name: 'Jan Kowalski',
-      bio: 'Pasjonat technologii i innowacji z Warszawy.',
+      slug: 'polutek',
+      name: 'Paweł Polutek',
+      bio: 'Twórca platformy polutek.pl.',
       isApproved: true,
+      subscribersCount: 1240562
     },
   });
 
-  // Create the "Nowoczesny plecak smart" campaign
-  const smartPack = await prisma.project.upsert({
-    where: { slug: 'smart-backpack' },
-    update: {},
-    create: {
-      creatorId: creator.id,
-      title: 'Nowoczesny plecak smart',
-      slug: 'smart-backpack',
-      status: 'active',
-      publishedAt: new Date(),
-      posts: {
-        create: [
-          {
-            title: 'Pierwsza aktualizacja',
-            slug: 'first-update',
-            contentPublic: 'Zakończyliśmy fazę prototypowania!',
-            publishedAt: new Date(),
-          },
-        ],
-      },
-    },
-  });
-
-  // Create the original "Secret Project"
-  await prisma.project.upsert({
+  // Create the main featured video
+  await prisma.video.upsert({
     where: { slug: 'secret-project' },
     update: {
-      title: 'I raise money for my Secret Project',
+      isMain: true,
     },
     create: {
       creatorId: creator.id,
       title: 'I raise money for my Secret Project',
       slug: 'secret-project',
-      status: 'active',
+      videoUrl: 'https://vimeo.com/placeholder',
+      thumbnailUrl: 'https://picsum.photos/seed/secret/1200/675',
+      description: 'To jest mój sekretny projekt, który zmieni wszystko.',
+      tier: AccessTier.PUBLIC,
+      isMain: true,
       publishedAt: new Date(),
     },
   });

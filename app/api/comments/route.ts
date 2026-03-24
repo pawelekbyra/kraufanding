@@ -6,13 +6,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const entityId = searchParams.get('entityId');
-  const entityType = searchParams.get('entityType') || 'PROJECT';
+  const videoId = searchParams.get('videoId');
   const cursor = searchParams.get('cursor') || undefined;
   const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-  if (!entityId) {
-    return NextResponse.json({ success: false, message: 'entityId is required' }, { status: 400 });
+  if (!videoId) {
+    return NextResponse.json({ success: false, message: 'videoId is required' }, { status: 400 });
   }
 
   const { userId: clerkUserId } = auth();
@@ -27,7 +26,6 @@ export async function GET(request: NextRequest) {
             });
 
             if (!user) {
-                // If user is authenticated but not in our DB, sync them now
                 const clerkUser = await currentUser();
                 if (clerkUser) {
                     const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
@@ -48,7 +46,7 @@ export async function GET(request: NextRequest) {
     let comments: any[] = [];
     try {
         comments = await prisma.comment.findMany({
-            where: { entityId, entityType, parentId: null },
+            where: { videoId, parentId: null },
             take: limit,
             skip: cursor ? 1 : 0,
             cursor: cursor ? { id: cursor } : undefined,
@@ -153,7 +151,6 @@ export async function POST(request: NextRequest) {
             });
         } catch (e: any) {
             console.error("[COMMENT_POST_USER_SYNC_ERROR]", e);
-            // Try to find the user again, maybe it was created by another concurrent request
             user = await prisma.user.findUnique({ where: { clerkUserId } });
             if (!user) return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
         }
@@ -166,24 +163,20 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { entityId, entityType, text, parentId, imageUrl } = body;
+    const { videoId, text, parentId, imageUrl } = body;
 
-    if (!entityId || (!text && !imageUrl)) {
-      return NextResponse.json({ success: false, message: 'Missing content: entityId and (text or imageUrl) required.' }, { status: 400 });
+    if (!videoId || (!text && !imageUrl)) {
+      return NextResponse.json({ success: false, message: 'Missing content: videoId and (text or imageUrl) required.' }, { status: 400 });
     }
-
-    // Sanitize parentId - we cannot reply to mock comments in the database
-    const sanitizedParentId = (parentId && parentId.toString().startsWith('mock')) ? null : parentId;
 
     let newComment;
     try {
         newComment = await prisma.comment.create({
             data: {
-                entityId,
-                entityType: entityType || 'PROJECT',
+                videoId,
                 text: text?.trim() || '',
                 authorId: user.id,
-                parentId: sanitizedParentId || null,
+                parentId: parentId || null,
                 imageUrl: imageUrl || null,
             },
             include: {

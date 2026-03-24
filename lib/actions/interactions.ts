@@ -2,12 +2,11 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
-export async function incrementProjectViews(projectId: string) {
+export async function incrementVideoViews(videoId: string) {
   try {
-    await prisma.project.update({
-      where: { id: projectId },
+    await prisma.video.update({
+      where: { id: videoId },
       data: {
         views: {
           increment: 1
@@ -19,7 +18,7 @@ export async function incrementProjectViews(projectId: string) {
   }
 }
 
-export async function toggleProjectLike(projectId: string) {
+export async function toggleVideoLike(videoId: string) {
   const { userId: clerkUserId } = auth();
   if (!clerkUserId) throw new Error("Unauthorized");
 
@@ -40,58 +39,37 @@ export async function toggleProjectLike(projectId: string) {
     });
   }
 
-  const existingLike = await prisma.projectLike.findUnique({
+  const existingLike = await prisma.videoLike.findUnique({
     where: {
-      userId_projectId: {
+      userId_videoId: {
         userId: user.id,
-        projectId
+        videoId
       }
     }
   });
 
   if (existingLike) {
-    await prisma.projectLike.delete({
+    await prisma.videoLike.delete({
       where: { id: existingLike.id }
+    });
+    // Decrement video.likesCount
+    await prisma.video.update({
+        where: { id: videoId },
+        data: { likesCount: { decrement: 1 } }
     });
     return { liked: false };
   } else {
-    await prisma.projectLike.create({
+    await prisma.videoLike.create({
       data: {
         userId: user.id,
-        projectId
+        videoId
       }
+    });
+    // Increment video.likesCount
+    await prisma.video.update({
+        where: { id: videoId },
+        data: { likesCount: { increment: 1 } }
     });
     return { liked: true };
   }
-}
-
-export async function toggleSubscription() {
-  const { userId: clerkUserId } = auth();
-  if (!clerkUserId) throw new Error("Unauthorized");
-
-  let user = await prisma.user.findUnique({
-    where: { clerkUserId },
-    select: { id: true, isSubscribed: true }
-  });
-
-  if (!user) {
-    const clerkUser = await currentUser();
-    if (!clerkUser) throw new Error("Clerk User not found");
-    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-    const imageUrl = clerkUser.imageUrl || null;
-    user = await prisma.user.upsert({
-      where: { clerkUserId },
-      update: { email, imageUrl },
-      create: { clerkUserId, email, imageUrl }
-    });
-  }
-
-  const updatedUser = await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      isSubscribed: !user.isSubscribed
-    }
-  });
-
-  return { isSubscribed: updatedUser.isSubscribed };
 }

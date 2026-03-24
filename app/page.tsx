@@ -1,101 +1,90 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ProjectView from './components/ProjectView';
+import ChannelHome from './components/ChannelHome';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { Project } from './types/project';
-import { incrementProjectViews } from '@/lib/actions/interactions';
-import { mockProjects } from './data/mock-projects';
+import { Video } from './types/video';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home({ searchParams }: { searchParams: { v?: string } }) {
-  // 1. Try to fetch from DB
-  const secretProjectDb = await prisma.project.findUnique({
-    where: { slug: 'secret-project' },
-    include: {
-      creator: true,
-      posts: true,
-      files: true,
-    },
-  }).catch(() => null);
-
-  if (secretProjectDb) {
-    incrementProjectViews(secretProjectDb.id).catch(() => {});
-    const project = mapDbToProject(secretProjectDb);
-    return <FeaturedHome project={project} searchParams={searchParams} />;
-  }
-
-  // 2. Try latest from DB
-  const latestDb = await prisma.project.findFirst({
-    include: { creator: true, posts: true, files: true },
+  // 1. Fetch all videos for the playlist/sidebar
+  const allVideosDb = await prisma.video.findMany({
+    include: { creator: true },
     orderBy: { createdAt: 'desc' }
-  }).catch(() => null);
+  }).catch(() => []);
 
-  if (latestDb) {
-    incrementProjectViews(latestDb.id).catch(() => {});
-    const project = mapDbToProject(latestDb);
-    return <FeaturedHome project={project} searchParams={searchParams} />;
+  // 2. Identify the main featured video
+  const mainVideoDb = allVideosDb.find(v => v.isMain) || allVideosDb[0];
+
+  if (!mainVideoDb) {
+    // If no videos in DB at all, show a placeholder/empty state
+    return <EmptyHome />;
   }
 
-  // 3. Fallback to Mock Data
-  const mock = mockProjects.find(c => c.slug === 'secret-project') || mockProjects[0];
-  return <FeaturedHome project={mock} searchParams={searchParams} />;
+  const { userId } = auth();
+  const user = await currentUser();
+
+  const userProfile = userId ? {
+      id: userId,
+      email: user?.primaryEmailAddress?.emailAddress || '',
+      imageUrl: user?.imageUrl || null
+  } : null;
+
+  // Map to the Video type
+  const mainVideo: Video = mapDbToVideo(mainVideoDb);
+  const allVideos: Video[] = allVideosDb.map(mapDbToVideo);
+
+  return (
+      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
+          <Navbar />
+          <ChannelHome
+            mainVideo={mainVideo}
+            allVideos={allVideos}
+            currentVideoId={searchParams.v}
+            userProfile={userProfile}
+          />
+          <Footer />
+      </div>
+  );
 }
 
-function mapDbToProject(project: any): Project {
-    return {
-        id: project.id,
-        slug: project.slug,
-        title: project.title,
-        description: project.title,
-        category: "Technology",
-        author: project.creator.name,
-        views: (project as any).views || 0,
-        thumbnail: "https://picsum.photos/seed/" + project.slug + "/1200/500",
-        publishedAt: project.publishedAt?.toISOString() || "",
-        story: [
-          project.title + " aims to change something big.",
-          "Support this project to help bring this idea to life."
-        ],
-        updates: project.posts.map((p: any) => ({
-          id: p.id,
-          date: p.publishedAt.toISOString().split('T')[0],
-          title: p.title,
-          content: p.contentPublic || ""
-        })),
-        materials: project.files.map((f: any) => ({
-          id: f.id,
-          title: f.path.split('/').pop() || "Material",
-          thumbnail: "https://picsum.photos/seed/" + f.id + "/400/225",
-          description: "Materiał wideo z archiwum Polutka.",
-          minTier: f.minTier,
-          publishedAt: f.createdAt.toISOString().split('T')[0]
-        })),
-        comments: []
-    };
+function mapDbToVideo(v: any): Video {
+  return {
+    id: v.id,
+    creatorId: v.creatorId,
+    title: v.title,
+    slug: v.slug,
+    description: v.description,
+    videoUrl: v.videoUrl,
+    thumbnailUrl: v.thumbnailUrl,
+    tier: v.tier,
+    views: v.views,
+    likesCount: v.likesCount,
+    isMain: v.isMain,
+    publishedAt: v.publishedAt,
+    creator: v.creator ? {
+      id: v.creator.id,
+      name: v.creator.name,
+      slug: v.creator.slug,
+      bio: v.creator.bio,
+      subscribersCount: v.creator.subscribersCount
+    } : undefined
+  };
 }
 
-async function FeaturedHome({ project, searchParams }: { project: Project, searchParams: { v?: string } }) {
-    const { userId } = auth();
-    const user = await currentUser();
-
-    const userProfile = userId ? {
-        id: userId,
-        email: user?.primaryEmailAddress?.emailAddress || '',
-        imageUrl: user?.imageUrl || null
-    } : null;
-
-    return (
-        <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
-            <Navbar />
-            <ProjectView
-              project={project}
-              videoId={searchParams.v}
-              userProfile={userProfile}
-            />
-            <Footer />
-        </div>
-    );
+function EmptyHome() {
+  return (
+    <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif flex flex-col">
+      <Navbar />
+      <main className="flex-1 flex items-center justify-center p-8">
+         <div className="text-center space-y-4 max-w-md">
+            <h1 className="text-4xl font-black uppercase tracking-tighter italic">Polutek Archive</h1>
+            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Waiting for content to be unlocked...</p>
+         </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

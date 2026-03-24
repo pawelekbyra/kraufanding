@@ -6,19 +6,24 @@ import { Resend } from 'resend';
 
 export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia' as any,
-});
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  if (!stripeKey || !webhookSecret) {
+    return NextResponse.json({ error: 'Missing stripe secret or webhook secret' }, { status: 400 });
+  }
+
+  const stripe = new Stripe(stripeKey, {
+    apiVersion: '2024-12-18.acacia' as any,
+  });
+
   const body = await req.text();
   const sig = headers().get('stripe-signature');
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (!sig || !webhookSecret) {
-    return NextResponse.json({ error: 'Missing signature or webhook secret' }, { status: 400 });
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
   }
 
   let event: Stripe.Event;
@@ -47,8 +52,9 @@ export async function POST(req: Request) {
       });
 
       // Send thank you email via Resend
-      if (user.email && process.env.RESEND_API_KEY) {
+      if (user.email && resendApiKey) {
         try {
+          const resend = new Resend(resendApiKey);
           await resend.emails.send({
             from: 'polutek.pl <no-reply@polutek.pl>',
             to: user.email,
