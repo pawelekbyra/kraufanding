@@ -23,8 +23,10 @@ export async function createCheckoutSession(params: {
     }
 
     const { userId: clerkUserId } = auth();
+    console.log("[DEBUG_CHECKOUT] auth() userId:", clerkUserId);
+
     if (!clerkUserId) {
-      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
+      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty. (Błąd weryfikacji sesji na serwerze)" };
     }
 
     // Sync user to DB if not exists
@@ -56,7 +58,7 @@ export async function createCheckoutSession(params: {
     const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'blik'],
       line_items: [
         {
           price_data: {

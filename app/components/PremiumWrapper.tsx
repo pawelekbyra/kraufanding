@@ -108,31 +108,27 @@ function PaywallOverlay({ minTier, isLoggedIn, variant }: { minTier: number, isL
             <div className={`w-full h-full opacity-50 blur-[15px] transition-all duration-1000 group-hover:scale-110 ${isPatronGated ? 'bg-gradient-to-br from-amber-500/20 to-yellow-600/20' : 'bg-gradient-to-br from-blue-500/20 to-indigo-600/20'}`} />
          </div>
 
-         <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 bg-black/10 backdrop-blur-[2px]">
-            <div className="flex flex-col items-center text-center space-y-3">
-               <div className={`p-5 rounded-full mb-2 ${isPatronGated ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 shadow-[0_0_40px_rgba(250,204,21,0.4)]' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_40px_rgba(96,165,250,0.4)]'}`}>
-                  {isPatronGated ? <Gem size={56} strokeWidth={1.5} /> : <Lock size={56} strokeWidth={1.5} />}
+         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 bg-black/10 backdrop-blur-[2px]">
+            <div className="flex flex-col items-center text-center space-y-2">
+               <div className={`p-4 rounded-full mb-1 ${isPatronGated ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 shadow-[0_0_40px_rgba(250,204,21,0.4)]' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_40px_rgba(96,165,250,0.4)]'}`}>
+                  {isPatronGated ? <Gem size={32} strokeWidth={1.5} /> : <Lock size={32} strokeWidth={1.5} />}
                </div>
-               <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+               <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
                   {mainTitle}
                </h2>
-               <p className={`text-base md:text-xl font-black uppercase tracking-[0.6em] ${isPatronGated ? 'text-yellow-400/90' : 'text-blue-400/90'}`}>
+               <p className={`text-xs md:text-sm font-black uppercase tracking-[0.4em] ${isPatronGated ? 'text-yellow-400/90' : 'text-blue-400/90'}`}>
                   {subTitle}
                </p>
             </div>
 
-            <div className="pt-6">
-               {!isLoggedIn ? (
+            <div className="pt-2">
+               {!isLoggedIn && (
                  <SignInButton mode="modal">
-                   <button className="btn bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95">
-                     {buttonText}
+                   <button className="btn bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-10 h-12 text-sm font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95">
+                     Sign In
                    </button>
                  </SignInButton>
-               ) : isPatronGated ? (
-                 <a href="#donations" className="btn bg-yellow-500 hover:bg-yellow-400 text-black border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(234,179,8,0.4)] transition-all hover:scale-105 active:scale-95">
-                   {buttonText}
-                 </a>
-               ) : null}
+               )}
             </div>
          </div>
       </div>
