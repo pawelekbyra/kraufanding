@@ -26,7 +26,7 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
 
   // Scroll to top when video changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, [currentVideoId]);
 
   // Simple prefetch function for comments
