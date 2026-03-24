@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
   projectId: string;
@@ -29,25 +28,34 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
 
     try {
       setIsLoading(true);
-      const data = await createCheckoutSession({
-        amount: amount,
-        projectId: projectId,
-        projectSlug: projectSlug,
-        tierLevel: 2, // Patron level
-        title: projectTitle || "Tip The Guy / Patron"
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        body: JSON.stringify({
+          amount: amount,
+          projectId: projectId,
+          projectSlug: projectSlug,
+          tierLevel: 2, // Patron level
+          title: projectTitle || "Support"
+        }),
+        headers: { 'Content-Type': 'application/json' },
       });
 
-      if (data?.url) {
-        window.location.href = data.url;
-      } else if (data?.error) {
-        // Handle specific auth error
-        if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 401) {
           openSignIn();
-        } else {
-          alert("Payment setup error: " + data.error);
+          return;
         }
+        throw new Error(errorData.message || errorData.error || "Nie udało się utworzyć sesji płatności.");
+      }
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.assign(data.url);
       } else {
-        alert("Błąd: Nie udało się utworzyć sesji płatności.");
+        throw new Error("Błąd: Nie otrzymano adresu URL płatności.");
       }
     } catch (error: any) {
       console.error("Payment error", error);
