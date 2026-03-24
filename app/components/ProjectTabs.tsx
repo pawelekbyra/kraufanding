@@ -45,7 +45,11 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
 
         {activeTab === 'donations' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <VideoPlaylist projectId={project.id} />
+            <VideoPlaylist
+              projectId={project.id}
+              projectSlug={project.slug}
+              projectTitle={project.title}
+            />
           </div>
         )}
 
