@@ -6,9 +6,11 @@ import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
   projectId: string;
+  projectSlug?: string;
+  projectTitle?: string;
 }
 
-const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
+const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, projectTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(10);
   const { userId } = useAuth();
@@ -31,14 +33,20 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
       const data = await createCheckoutSession({
         amount: amount,
         projectId: projectId,
+        projectSlug: projectSlug,
         tierLevel: 2, // Patron level
-        title: "Tip The Guy / Patron"
+        title: projectTitle || "Tip The Guy / Patron"
       });
 
       if (data?.url) {
         window.location.assign(data.url);
       } else if (data?.error) {
-        alert("Błąd: " + data.error);
+        // Handle specific auth error
+        if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
+          openSignIn();
+        } else {
+          alert("Payment setup error: " + data.error);
+        }
       } else {
         alert("Błąd: Nie udało się utworzyć sesji płatności.");
       }

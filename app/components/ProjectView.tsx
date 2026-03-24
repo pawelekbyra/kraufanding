@@ -148,7 +148,11 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                   acc.push(
                     <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
                         <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
-                        <VideoPlaylist projectId={projectId} />
+                        <VideoPlaylist
+                           projectId={projectId}
+                           projectSlug={project.slug}
+                           projectTitle={project.title}
+                        />
                     </div>
                   );
                 }
