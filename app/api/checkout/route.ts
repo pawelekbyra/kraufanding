@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const { userId: clerkUserId } = auth();
+    console.log("[STRIPE_CHECKOUT] clerkUserId:", clerkUserId);
     if (!clerkUserId) {
+      console.error("[STRIPE_CHECKOUT] No clerkUserId found in auth().");
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 

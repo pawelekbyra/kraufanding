@@ -24,7 +24,7 @@ export async function createCheckoutSession(params: {
 
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return { error: "Proszę zaloguj się ponownie, aby dokonać wpłaty." };
+      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
     }
 
     // Sync user to DB if not exists
@@ -52,7 +52,7 @@ export async function createCheckoutSession(params: {
       return { error: "Missing parameters" };
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
     const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
 
     const session = await stripe.checkout.sessions.create({
