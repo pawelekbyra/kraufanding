@@ -12,7 +12,7 @@ interface VideoPlaylistProps {
 
 const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, projectTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState(10);
+  const [amount, setAmount] = useState<number | ''>(10);
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
 
@@ -22,8 +22,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
       return;
     }
 
-    if (amount < 10) {
-      alert("Minimalna kwota wsparcia to 10 €");
+    if (!amount || amount < 3) {
+      alert("Minimalna kwota wsparcia to 3 €");
       return;
     }
 
@@ -31,7 +31,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
       setIsLoading(true);
 
       const data = await createCheckoutSession({
-        amount: amount,
+        amount: Number(amount),
         projectId: projectId,
         projectSlug: projectSlug,
         tierLevel: 2, // Patron level
@@ -75,7 +75,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
 
             <div className="space-y-2 pt-2">
               <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
-                Type your support amount (minimum €10)
+                Your support amount (min. €3)
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -83,23 +83,26 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
                 </div>
                 <input
                   type="number"
-                  min="10"
+                  min="3"
                   step="1"
                   value={amount}
-                  onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAmount(val === '' ? '' : parseInt(val));
+                  }}
                   className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                 />
               </div>
-              {amount < 10 && (
-                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 10 €</p>
+              {typeof amount === 'number' && amount < 3 && (
+                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 3 €</p>
               )}
             </div>
 
             <button
               type="button"
               onClick={onSupport}
-              disabled={isLoading || amount < 10}
-              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isLoading || amount === '' || amount < 3}
+              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount === '' || amount < 3 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isLoading ? 'LOADING...' : 'TIP THE GUY'}
             </button>
