@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Hero from './Hero';
 import VideoPlaylist from './VideoPlaylist';
 import PremiumWrapper from './PremiumWrapper';
@@ -21,6 +21,7 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
   const projectId = project.id;
   const currentVideoId = videoId || (project.materials?.[0]?.id || 'promo');
   const currentVideo = project.materials?.find(v => v.id === currentVideoId) || project.materials?.[0];
+  const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
 
   const queryClient = useQueryClient();
 
@@ -43,6 +44,75 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
         initialPageParam: '',
     });
   };
+
+  const playlistItems = (project.materials || []).sort((a, b) => {
+      // Sort current video first
+      if (a.id === currentVideoId) return -1;
+      if (b.id === currentVideoId) return 1;
+      // Then by minTier
+      return a.minTier - b.minTier;
+  }).reduce((acc: any[], video, i) => {
+      const isLocked = video.minTier > 0;
+      const isCurrent = video.id === currentVideoId;
+
+      acc.push(
+          <Link
+            key={video.id}
+            href={`/projects/${project.slug}?v=${video.id}`}
+            scroll={false}
+            onMouseEnter={() => prefetchVideo(video.id)}
+            className={cn(
+              "group flex gap-2 p-0.5 rounded-lg transition-colors",
+              isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+            )}
+          >
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
+              <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
+                 <img
+                   src={video.thumbnail}
+                   alt={video.title}
+                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                 />
+              </PremiumWrapper>
+              <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+              <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
+                 {video.title}
+              </h4>
+              <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
+                 <span>Polutek Archive</span>
+                 <div className="flex items-center gap-1">
+                    <span>12K wyświetleń</span>
+                    <span>•</span>
+                    <span>1 rok temu</span>
+                 </div>
+              </div>
+              {isLocked ? (
+                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
+              ) : (
+                 <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
+              )}
+            </div>
+          </Link>
+      );
+
+      // Add donation button after 2 items
+      if (i === 1) {
+        acc.push(
+          <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
+              <VideoPlaylist
+                 projectId={projectId}
+                 projectSlug={project.slug}
+                 projectTitle={project.title}
+              />
+          </div>
+        );
+      }
+
+      return acc;
+  }, []);
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
@@ -80,8 +150,46 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
             </div>
 
-            {/* COMMENTS SECTION */}
-            <div className="mt-5">
+            {/* MOBILE TABS SWITCHER */}
+            <div className="lg:hidden flex border-b border-[#1a1a1a]/5 mt-4">
+               <button
+                 onClick={() => setActiveTab('comments')}
+                 className={cn(
+                   "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
+                   activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                 )}
+               >
+                 Komentarze
+               </button>
+               <button
+                 onClick={() => setActiveTab('videos')}
+                 className={cn(
+                   "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
+                   activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                 )}
+               >
+                 Filmy
+               </button>
+            </div>
+
+            {/* MOBILE TAB CONTENT */}
+            <div className="lg:hidden mt-5">
+               {activeTab === 'comments' ? (
+                 <EmbeddedComments
+                   entityId={currentVideoId}
+                   entityType="VIDEO"
+                   userProfile={userProfile}
+                   showMocks={project.slug !== 'secret-project'}
+                 />
+               ) : (
+                 <div className="space-y-3">
+                    {playlistItems}
+                 </div>
+               )}
+            </div>
+
+            {/* DESKTOP COMMENTS SECTION */}
+            <div className="hidden lg:block mt-5">
                <EmbeddedComments
                  entityId={currentVideoId}
                  entityType="VIDEO"
@@ -91,80 +199,10 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
             </div>
           </div>
 
-          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST */}
-          <aside className="col-span-12 lg:col-span-4 space-y-3">
+          {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST (DESKTOP ONLY) */}
+          <aside className="hidden lg:block lg:col-span-4 space-y-3">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
-
-            {/* PLAYLIST ITEMS */}
-            {(project.materials || []).sort((a, b) => {
-                // Sort current video first
-                if (a.id === currentVideoId) return -1;
-                if (b.id === currentVideoId) return 1;
-                // Then by minTier
-                return a.minTier - b.minTier;
-            }).reduce((acc: any[], video, i) => {
-                const isLocked = video.minTier > 0;
-                const isCurrent = video.id === currentVideoId;
-
-                acc.push(
-                    <Link
-                      key={video.id}
-                      href={`/projects/${project.slug}?v=${video.id}`}
-                      scroll={false}
-                      onMouseEnter={() => prefetchVideo(video.id)}
-                      className={cn(
-                        "group flex gap-2 p-0.5 rounded-lg transition-colors",
-                        isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
-                      )}
-                    >
-                      <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
-                        <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
-                           <img
-                             src={video.thumbnail}
-                             alt={video.title}
-                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                           />
-                        </PremiumWrapper>
-                        <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
-                      </div>
-                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                        <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
-                           {video.title}
-                        </h4>
-                        <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
-                           <span>Polutek Archive</span>
-                           <div className="flex items-center gap-1">
-                              <span>12K wyświetleń</span>
-                              <span>•</span>
-                              <span>1 rok temu</span>
-                           </div>
-                        </div>
-                        {isLocked ? (
-                           <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
-                        ) : (
-                           <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
-                        )}
-                      </div>
-                    </Link>
-                );
-
-                // Add donation button after 2 items
-                if (i === 1) {
-                  acc.push(
-                    <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
-                        <VideoPlaylist
-                           projectId={projectId}
-                           projectSlug={project.slug}
-                           projectTitle={project.title}
-                        />
-                    </div>
-                  );
-                }
-
-                return acc;
-            }, [])}
-
+            {playlistItems}
           </aside>
 
         </div>
