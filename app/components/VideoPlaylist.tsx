@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
+import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
   projectId: string;
@@ -27,23 +28,17 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
     try {
       setIsLoading(true);
 
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        body: JSON.stringify({
-          amount: amount,
-          projectId: projectId,
-          tierLevel: 2, // Patron level
-          title: "Zostaw Napiwek / Patron"
-        }),
-        headers: { 'Content-Type': 'application/json' },
+      const data = await createCheckoutSession({
+        amount: amount,
+        projectId: projectId,
+        tierLevel: 2, // Patron level
+        title: "Zostaw Napiwek / Patron"
       });
 
-      const data = await response.json();
-
-      if (data.url) {
+      if (data?.url) {
         window.location.assign(data.url);
       } else {
-        alert("Błąd: " + (data.message || data.error || "Nie udało się utworzyć sesji płatności."));
+        alert("Błąd: Nie udało się utworzyć sesji płatności.");
       }
     } catch (error: any) {
       console.error("Payment error", error);
