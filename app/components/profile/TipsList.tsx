@@ -26,45 +26,45 @@ export default function TipsList() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-4">
+      <div className="flex flex-col items-center justify-center p-12 space-y-4 font-mono">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm font-black uppercase tracking-widest opacity-30 italic">Ładowanie historii wpłat...</p>
+        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">READING_LEDGER...</p>
       </div>
     );
   }
 
   if (tips.length === 0) {
     return (
-      <div className="p-12 text-center space-y-6 bg-[#1a1a1a]/5 rounded-[2.5rem] border-2 border-dashed border-[#1a1a1a]/10">
+      <div className="p-12 text-center space-y-6 bg-white rounded-none border-2 border-black shadow-brutalist font-mono">
         <div className="flex justify-center">
-           <Coins size={48} className="text-[#1a1a1a]/20" />
+           <Coins size={48} className="text-black/10" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-2xl font-black uppercase tracking-tight text-[#1a1a1a]">Brak wpłat</h3>
-          <p className="text-[#1a1a1a]/50 font-serif italic text-lg leading-relaxed">Nie masz jeszcze żadnych zarejestrowanych wpłat w naszym serwisie.</p>
+          <h3 className="text-xl font-black uppercase tracking-tight text-black">NO_DATA_FOUND</h3>
+          <p className="text-black/40 font-bold text-xs uppercase">No recorded contributions detected in the local ledger.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 font-serif">
+    <div className="space-y-6 font-mono">
       <div className="grid grid-cols-1 gap-4">
         {tips.map((tip) => (
-          <div key={tip.id} className="bg-white border-2 border-[#1a1a1a]/5 rounded-3xl p-6 flex justify-between items-center shadow-sm hover:shadow-md transition-all group">
+          <div key={tip.id} className="bg-white border-2 border-black rounded-none p-6 flex justify-between items-center shadow-brutalist-sm hover:shadow-brutalist hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all group">
             <div className="flex items-center gap-6">
-               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+               <div className="w-12 h-12 rounded-none border-2 border-black bg-primary/10 flex items-center justify-center text-black group-hover:bg-primary transition-colors">
                   <Coins size={24} />
                </div>
                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mb-1 italic">
-                    {format(new Date(tip.createdAt), 'd MMMM yyyy, HH:mm', { locale: pl })}
+                  <p className="text-[9px] font-black uppercase tracking-widest text-black/30 mb-1">
+                    TS: {format(new Date(tip.createdAt), 'yyyy-MM-dd HH:mm', { locale: pl })}
                   </p>
-                  <h4 className="text-xl font-black text-[#1a1a1a] uppercase tracking-tight">Wsparcie Projektu</h4>
+                  <h4 className="text-base font-black text-black uppercase tracking-tight">PROTOCOL_UPLINK_CREDIT</h4>
                </div>
             </div>
             <div className="text-right">
-               <span className="text-2xl font-black text-primary">
+               <span className="text-xl font-black text-black bg-primary/20 px-2 py-0.5 border-2 border-black">
                   {(tip.amount / 100).toLocaleString('pl-PL', { style: 'currency', currency: tip.currency })}
                </span>
             </div>

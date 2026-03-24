@@ -17,22 +17,22 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project }) => {
   const { user } = useUser();
 
   const tabs = [
-    { id: 'story', label: 'O Projekcie' },
-    { id: 'donations', label: 'Wesprzyj' },
-    { id: 'updates', label: 'Aktualizacje' },
-    { id: 'comments', label: 'Komentarze' },
+    { id: 'story', label: 'PROJECT_STORY' },
+    { id: 'donations', label: 'SUPPORT_NODE' },
+    { id: 'updates', label: 'LOG_ENTRIES' },
+    { id: 'comments', label: 'COMMS_CHANNEL' },
   ];
 
   return (
-    <div className="w-full">
-      <div role="tablist" className="tabs tabs-bordered mb-10 overflow-x-auto no-scrollbar">
+    <div className="w-full font-mono">
+      <div role="tablist" className="tabs border-b-2 border-black mb-10 overflow-x-auto no-scrollbar gap-4">
         {tabs.map((tab) => (
           <a
             key={tab.id}
             role="tab"
             onClick={() => setActiveTab(tab.id)}
-            className={`tab h-14 text-sm font-black transition-all ${
-              activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-base-content/50 hover:text-base-content'
+            className={`tab h-12 text-[11px] font-black transition-all uppercase tracking-widest border-2 border-black mb-[-2px] ${
+              activeTab === tab.id ? 'bg-black text-white' : 'bg-white text-black hover:bg-primary/10'
             }`}
           >
             {tab.label}

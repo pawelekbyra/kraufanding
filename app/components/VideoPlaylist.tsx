@@ -51,27 +51,38 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
   };
 
   return (
-    <div className="space-y-4 font-serif px-2" id="donations">
+    <div className="space-y-4 font-mono px-2" id="donations">
         <div
-          className="bg-white border-2 border-black rounded-sm p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-500 group relative overflow-hidden"
+          className="bg-white border-2 border-black rounded-none p-6 shadow-brutalist transition-all duration-500 group relative overflow-hidden"
         >
+          {/* STAMP EFFECT BACKGROUND */}
+          <div className="absolute -top-4 -right-4 w-24 h-24 border-4 border-primary/20 rounded-full flex items-center justify-center rotate-12 pointer-events-none group-hover:scale-110 transition-transform">
+             <span className="text-[10px] font-black text-primary/30 text-center leading-none uppercase">AUTHENTIC<br/>PROTOCOL</span>
+          </div>
+
           <div className="space-y-4 relative z-10">
-            <div className="space-y-1">
-              <h3 className="text-xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors font-mono">
-                Tip The Guy
-              </h3>
-              <p className="text-[#1a1a1a]/60 text-xs leading-relaxed font-mono italic">
-                Donate any amount and get lifetime access to Patron-only content.
+            <div className="space-y-2 border-b-2 border-black border-dashed pb-3">
+              <div className="flex items-center gap-2">
+                 <div className="w-2 h-2 bg-primary animate-pulse"></div>
+                 <h3 className="text-lg font-black text-black tracking-tighter uppercase">
+                   AUTH_TRANSFER_REQUEST
+                 </h3>
+              </div>
+              <p className="text-black/60 text-[10px] leading-tight font-bold uppercase">
+                Submit optional credit to establish permanent uplink and archive access.
               </p>
             </div>
 
-            <div className="space-y-2 pt-2">
-              <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 font-mono">
-                Support amount (minimum €10)
-              </label>
+            <div className="space-y-3 pt-2">
+              <div className="flex justify-between items-end">
+                <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-black/40">
+                  CREDIT_AMOUNT (MIN_10_EUR)
+                </label>
+                <span className="text-[8px] font-mono text-black/20">VERIFIED_SECURE</span>
+              </div>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="text-xl font-black text-[#1a1a1a]/20 group-focus-within/input:text-primary transition-colors font-mono">€</span>
+                  <span className="text-xl font-black text-black/20 group-focus-within/input:text-primary transition-colors">€</span>
                 </div>
                 <input
                   type="number"
@@ -79,21 +90,26 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
                   step="1"
                   value={amount}
                   onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
-                  className="w-full bg-[#FDFBF7] border-2 border-black rounded-none py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:bg-primary/10 outline-none transition-all font-mono"
+                  className="w-full bg-[#FDFBF7] border-2 border-black rounded-none py-4 pl-12 pr-4 font-black text-3xl text-black focus:bg-primary/5 outline-none transition-all placeholder:text-black/5"
                 />
               </div>
               {amount < 10 && (
-                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse font-mono">Minimal amount is 10 €</p>
+                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">ERR: MIN_REQ_NOT_MET</p>
               )}
             </div>
 
-            <button
-              onClick={onSupport}
-              disabled={isLoading || amount < 10}
-              className={`btn bg-black text-white hover:bg-primary border-2 border-black rounded-none btn-block font-black tracking-widest transition-all duration-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {isLoading ? 'LOADING...' : 'SUPPORT'}
-            </button>
+            <div className="pt-2">
+                <button
+                onClick={onSupport}
+                disabled={isLoading || amount < 10}
+                className={`w-full py-4 border-2 border-black font-black tracking-[0.2em] uppercase transition-all duration-300 shadow-brutalist hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] ${isLoading ? 'bg-primary/50 cursor-wait' : 'bg-black text-white hover:bg-primary hover:text-black'} ${amount < 10 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+                >
+                {isLoading ? 'INITIATING...' : 'EXECUTE_TRANSFER'}
+                </button>
+                <p className="text-center text-[7px] font-bold text-black/30 mt-3 uppercase tracking-widest">
+                    BY EXECUTING YOU AGREE TO OPS_TERMS_AND_PROTOCOLS
+                </p>
+            </div>
           </div>
         </div>
     </div>

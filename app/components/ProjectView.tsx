@@ -61,18 +61,18 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                 likesCount: currentVideo?.likesCount ?? 0
             }} />
 
-            {/* DESCRIPTION BOX (YOUTUBE STYLE) */}
-            <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold">
-                  <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} wyświetleń</span>
-                  <span>{currentVideo?.publishedAt || '21 mar 2025'}</span>
+            {/* DESCRIPTION BOX (BRUTALIST STYLE) */}
+            <div className="mt-4 bg-white border-2 border-black p-4 shadow-brutalist cursor-pointer group font-mono">
+               <div className="flex gap-4 text-[11px] font-black uppercase tracking-widest border-b-2 border-black border-dashed pb-2 mb-3">
+                  <span>{(project as any).views?.toLocaleString('pl-PL') || '124 562'} VIEWS_ACCESS</span>
+                  <span>DATE: {currentVideo?.publishedAt || '21 MAR 2025'}</span>
                </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
+               <div className="text-[13px] leading-relaxed whitespace-pre-wrap text-black/80 font-bold antialiased">
                   {currentVideo?.description || project.description}
                   <br />
-                  Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
+                  [OPS_MESSAGE]: Accessing restricted archives. Unauthorized distribution is prohibited by protocol.
                </div>
-               <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
+               <button className="text-[10px] font-black uppercase mt-4 bg-black text-white px-2 py-0.5 hover:bg-primary transition-colors">DECRYPT_MORE</button>
             </div>
 
             {/* COMMENTS SECTION */}
@@ -87,8 +87,8 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
           </div>
 
           {/* RIGHT COLUMN (approx 32%): SIDEBAR PLAYLIST */}
-          <aside className="col-span-12 lg:col-span-4 space-y-3">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
+          <aside className="col-span-12 lg:col-span-4 space-y-4 font-mono">
+            <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-white bg-black px-2 py-1 mb-2">RESTRICTED_MATERIALS</h3>
 
             {/* PLAYLIST ITEMS */}
             {(project.materials || []).sort((a, b) => {
@@ -112,15 +112,15 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                         isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
                       )}
                     >
-                      <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
+                      <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-none border-2 border-black bg-black relative group-hover:shadow-brutalist-sm transition-all">
                         <PremiumWrapper projectId={projectId} minTier={video.minTier} variant="thumbnail">
                            <img
                              src={video.thumbnail}
                              alt={video.title}
-                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-80"
                            />
                         </PremiumWrapper>
-                        <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
+                        <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1">12:45</div>
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
                         <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
@@ -146,8 +146,8 @@ export default function ProjectView({ project, videoId, userProfile, initialLike
                 // Add donation button after 2 items
                 if (i === 1) {
                   acc.push(
-                    <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-                        <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
+                    <div key="donate" className="py-4 border-y-2 border-black border-dashed">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 mb-3 px-2">AUTH_REQUIRED: Support Protocol</h3>
                         <VideoPlaylist projectId={projectId} />
                     </div>
                   );
