@@ -79,9 +79,14 @@ function EmptyHome() {
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center p-8">
-         <div className="text-center space-y-4 max-w-md">
-            <h1 className="text-4xl font-black uppercase tracking-tighter italic">Polutek Archive</h1>
-            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Waiting for content to be unlocked...</p>
+         <div className="text-center space-y-6 max-w-xl border-2 border-dashed border-[#1a1a1a]/10 p-12 rounded-[3rem]">
+            <div className="space-y-2">
+               <h1 className="text-5xl font-black uppercase tracking-tighter italic">Polutek Archive</h1>
+               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#1a1a1a]/40 italic">Waiting for content to be unlocked...</p>
+            </div>
+            <p className="text-[#1a1a1a]/60 leading-relaxed text-lg italic">
+               Ten system jest obecnie pusty. Administrator nie opublikował jeszcze żadnych materiałów operacyjnych.
+            </p>
          </div>
       </main>
       <Footer />

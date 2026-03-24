@@ -12,8 +12,6 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 export async function createCheckoutSession(params: {
   amount: number;
-  videoId?: string;
-  videoSlug?: string;
   title: string;
 }) {
   try {
@@ -22,10 +20,8 @@ export async function createCheckoutSession(params: {
     }
 
     const { userId: clerkUserId } = auth();
-    console.log("[DEBUG_CHECKOUT] auth() userId:", clerkUserId);
-
     if (!clerkUserId) {
-      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty. (Błąd weryfikacji sesji na serwerze)" };
+      return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
     }
 
     // Sync user to DB if not exists
@@ -47,15 +43,13 @@ export async function createCheckoutSession(params: {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
-    const { amount, videoId, videoSlug, title } = params;
+    const { amount, title } = params;
 
-    if (!amount) {
-      return { error: "Missing amount" };
+    if (!amount || amount < 3) {
+      return { error: "Minimum support amount is 3 EUR" };
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
-    // Redirect back to video or home
-    const redirectPath = videoSlug ? `/videos/${videoSlug}` : '/';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -64,8 +58,8 @@ export async function createCheckoutSession(params: {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Support: ${title || "Creator Support"}`,
-              description: `Lifetime Patron Access`,
+              name: `Patronage: ${title || "Creator Support"}`,
+              description: `Lifetime VIP Access based on total support`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
           },
@@ -73,11 +67,11 @@ export async function createCheckoutSession(params: {
         },
       ],
       mode: 'payment',
-      success_url: `${appUrl}${redirectPath}?success=true`,
-      cancel_url: `${appUrl}${redirectPath}?canceled=true`,
+      success_url: `${appUrl}/?success=true`,
+      cancel_url: `${appUrl}/?canceled=true`,
       metadata: {
         clerkUserId,
-        videoId: videoId || "",
+        type: 'TIP_DONATION'
       },
     });
 
