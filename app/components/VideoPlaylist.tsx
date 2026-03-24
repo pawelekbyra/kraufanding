@@ -29,7 +29,6 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
 
     try {
       setIsLoading(true);
-
       const data = await createCheckoutSession({
         amount: amount,
         projectId: projectId,
@@ -39,7 +38,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
       });
 
       if (data?.url) {
-        window.location.assign(data.url);
+        window.location.href = data.url;
       } else if (data?.error) {
         // Handle specific auth error
         if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
@@ -96,6 +95,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
             </div>
 
             <button
+              type="button"
               onClick={onSupport}
               disabled={isLoading || amount < 10}
               className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount < 10 ? 'opacity-50 cursor-not-allowed' : ''}`}

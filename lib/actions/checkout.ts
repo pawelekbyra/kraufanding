@@ -52,7 +52,7 @@ export async function createCheckoutSession(params: {
       return { error: "Missing parameters: amount, projectId, and tierLevel are required." };
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
     const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
 
     const session = await stripe.checkout.sessions.create({
