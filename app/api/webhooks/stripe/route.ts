@@ -1,29 +1,24 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
-import { UserTier } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { Resend } from 'resend';
 
 export const dynamic = 'force-dynamic';
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-12-18.acacia' as any,
+});
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function POST(req: Request) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  if (!stripeKey || !webhookSecret) {
-    console.error('Stripe keys not configured');
-    return NextResponse.json({ error: 'Stripe keys not configured' }, { status: 500 });
-  }
-
-  const stripe = new Stripe(stripeKey, {
-    apiVersion: '2024-12-18.acacia' as any,
-  });
-
   const body = await req.text();
   const sig = headers().get('stripe-signature');
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (!sig) {
-    return NextResponse.json({ error: 'No signature' }, { status: 400 });
+  if (!sig || !webhookSecret) {
+    return NextResponse.json({ error: 'Missing signature or webhook secret' }, { status: 400 });
   }
 
   let event: Stripe.Event;
@@ -35,108 +30,47 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  console.log(`Processing event: ${event.type}`);
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const clerkUserId = session.metadata?.clerkUserId;
+    const amountPaid = (session.amount_total || 0) / 100; // in EUR
 
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const clerkUserId = session.metadata?.clerkUserId;
-      const projectId = session.metadata?.projectId;
-      // Stripe metadata is always strings; ensure robust parsing
-      const tierLevelStr = session.metadata?.tierLevel || "0";
-      const tierLevel = parseInt(tierLevelStr, 10);
-      const mode = session.mode;
-
-      if (clerkUserId && projectId) {
-        console.log(`Updating access for user ${clerkUserId} in project ${projectId} to tier ${tierLevel}`);
-
-        // Map tierLevel to UserTier enum
-        let userTier: UserTier = UserTier.FREE;
-        if (tierLevel === 2) userTier = UserTier.OBSERVER;
-        else if (tierLevel === 3) userTier = UserTier.WITNESS;
-        else if (tierLevel === 4) userTier = UserTier.INSIDER;
-        else if (tierLevel === 5) userTier = UserTier.ARCHITECT;
-
-        const user = await prisma.user.upsert({
-          where: { clerkUserId },
-          update: {
-            stripeCustomerId: session.customer as string,
-            tier: userTier
+    if (clerkUserId) {
+      const user = await prisma.user.update({
+        where: { clerkUserId },
+        data: {
+          totalPaid: {
+            increment: amountPaid,
           },
-          create: {
-            clerkUserId,
-            email: session.customer_details?.email || "",
-            stripeCustomerId: session.customer as string,
-            tier: userTier
-          }
-        });
+          stripeCustomerId: session.customer as string,
+        },
+      });
 
-        await prisma.userProjectAccess.upsert({
-          where: { userId_projectId: { userId: user.id, projectId } },
-          update: {
-            tierLevel: tierLevel,
-            accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
-            grantedAt: new Date(),
-            expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
-          },
-          create: {
-            userId: user.id,
-            projectId,
-            tierLevel: tierLevel,
-            accessType: mode === 'subscription' ? 'subscription' : 'one_time_payment',
-            expiresAt: mode === 'subscription' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null
-          }
-        });
-
-        if (mode === 'payment') {
-          await prisma.donation.create({
-            data: {
-              userId: user.id,
-              amount: session.amount_total || 0,
-              currency: session.currency?.toUpperCase() || "EUR",
-              stripePaymentId: session.payment_intent as string || session.id
-            }
+      // Send thank you email via Resend
+      if (user.email && process.env.RESEND_API_KEY) {
+        try {
+          await resend.emails.send({
+            from: 'polutek.pl <no-reply@polutek.pl>',
+            to: user.email,
+            subject: 'Thank you for your support!',
+            html: `
+              <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6;">
+                <h1 style="text-transform: uppercase; letter-spacing: -0.05em;">Thank you for your patronage</h1>
+                <p>Hello,</p>
+                <p>We've successfully processed your contribution of <strong>€${amountPaid.toFixed(2)}</strong>.</p>
+                <p>Your total support is now <strong>€${user.totalPaid.toFixed(2)}</strong>.</p>
+                <p>Depending on your total support level, you've unlocked permanent access to our premium materials.</p>
+                <p>Visit <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a> to see your unlocked content.</p>
+                <br />
+                <p style="font-style: italic;">Best regards,<br />Paweł Polutek</p>
+              </div>
+            `,
           });
+        } catch (emailErr) {
+          console.error('[WEBHOOK_EMAIL_ERROR]', emailErr);
         }
       }
-      break;
     }
-
-    case 'customer.subscription.deleted': {
-      const subscription = event.data.object as Stripe.Subscription;
-
-      const sub = await prisma.subscription.update({
-        where: { stripeSubscriptionId: subscription.id },
-        data: { status: 'canceled' },
-        include: { user: true }
-      }).catch(() => null);
-
-      if (sub && sub.user) {
-        // Find if this user had active project access via subscription
-        // and downgrade them to FREE tier for that project.
-        await prisma.userProjectAccess.updateMany({
-          where: {
-            userId: sub.user.id,
-            accessType: 'subscription'
-          },
-          data: {
-            tierLevel: 1, // Reset to FREE
-            expiresAt: new Date() // Expire now
-          }
-        });
-
-        // Also reset user global tier if it was tied to this sub
-        await prisma.user.update({
-          where: { id: sub.user.id },
-          data: { tier: UserTier.FREE }
-        });
-      }
-      break;
-    }
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
   }
 
   return NextResponse.json({ received: true });

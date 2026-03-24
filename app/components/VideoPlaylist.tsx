@@ -5,12 +5,12 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
-  projectId: string;
-  projectSlug?: string;
-  projectTitle?: string;
+  videoId?: string;
+  videoSlug?: string;
+  videoTitle?: string;
 }
 
-const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, projectTitle }) => {
+const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoId, videoSlug, videoTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState<number | ''>(10);
   const { userId } = useAuth();
@@ -32,10 +32,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId, projectSlug, p
 
       const data = await createCheckoutSession({
         amount: Number(amount),
-        projectId: projectId,
-        projectSlug: projectSlug,
-        tierLevel: 2, // Patron level
-        title: projectTitle || "Tip The Guy / Patron"
+        videoId: videoId,
+        videoSlug: videoSlug,
+        title: videoTitle || "Tip The Guy / Patron"
       });
 
       if (data?.url) {

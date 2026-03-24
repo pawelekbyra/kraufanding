@@ -12,9 +12,8 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 export async function createCheckoutSession(params: {
   amount: number;
-  projectId: string;
-  projectSlug?: string;
-  tierLevel: number;
+  videoId?: string;
+  videoSlug?: string;
   title: string;
 }) {
   try {
@@ -48,14 +47,15 @@ export async function createCheckoutSession(params: {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
-    const { amount, projectId, projectSlug, tierLevel, title } = params;
+    const { amount, videoId, videoSlug, title } = params;
 
-    if (!amount || !projectId || !tierLevel) {
-      return { error: "Missing parameters" };
+    if (!amount) {
+      return { error: "Missing amount" };
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
-    const redirectPath = projectSlug ? `/projects/${projectSlug}` : '/';
+    // Redirect back to video or home
+    const redirectPath = videoSlug ? `/videos/${videoSlug}` : '/';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -64,7 +64,7 @@ export async function createCheckoutSession(params: {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Support Project: ${title || "Project Support"}`,
+              name: `Support: ${title || "Creator Support"}`,
               description: `Lifetime Patron Access`,
             },
             unit_amount: Math.round(amount * 100), // convert to cents
@@ -77,8 +77,7 @@ export async function createCheckoutSession(params: {
       cancel_url: `${appUrl}${redirectPath}?canceled=true`,
       metadata: {
         clerkUserId,
-        projectId,
-        tierLevel: tierLevel.toString(),
+        videoId: videoId || "",
       },
     });
 
