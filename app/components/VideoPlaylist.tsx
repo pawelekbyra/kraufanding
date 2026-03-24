@@ -57,8 +57,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
         >
           <div className="space-y-4 relative z-10">
             <div className="space-y-1">
-              <h3 className="text-sm font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                I rise money for my secret project
+              <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
+                SUPPORT
               </h3>
               <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
                 Donate any amount and get lifetime access to Paweł Polutek’s patron-only content.
@@ -67,7 +67,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ projectId }) => {
 
             <div className="space-y-2 pt-2">
               <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
-                Support amount (minimum €10)
+                Type your support amount (minimum €10)
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
