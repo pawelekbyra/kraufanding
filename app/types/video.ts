@@ -19,7 +19,7 @@ export interface Video {
   tier: AccessTier;
   views: number;
   likesCount: number;
-  isMain: boolean;
+  isMainFeatured: boolean;
   publishedAt?: Date | string | null;
   creator?: Creator;
 }
