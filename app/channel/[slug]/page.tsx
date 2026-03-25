@@ -5,10 +5,9 @@ import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from '@/app/types/video';
 import Link from 'next/link';
-import PremiumWrapper from '@/app/components/PremiumWrapper';
-import { cn } from '@/lib/utils';
-import { Search, MoreVertical } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { ContentService } from '@/lib/services/content.service';
+import ChannelVideoCard from '@/app/components/ChannelVideoCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -104,69 +103,14 @@ export default async function ChannelPage({ params }: { params: { slug: string }
 
         {/* VIDEOS GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 py-6">
-          {allVideos.map((video) => {
-            const isLoggedIn = !!userId;
-            const hasVIP1 = (userProfile?.totalPaid || 0) >= 5;
-            const hasVIP2 = (userProfile?.totalPaid || 0) >= 10;
-
-            const hasAccess = video.tier === 'PUBLIC' ||
-                              (video.tier === 'LOGGED_IN' && isLoggedIn) ||
-                              (video.tier === 'VIP1' && hasVIP1) ||
-                              (video.tier === 'VIP2' && hasVIP2) ||
-                              video.isMainFeatured;
-
-            return (
-              <div key={video.id} className="group cursor-pointer">
-                <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="block">
-                  <div className="relative aspect-video rounded-xl overflow-hidden bg-black mb-3">
-                    <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
-                      {() => (
-                         <img src={video.thumbnailUrl} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      )}
-                    </PremiumWrapper>
-                    <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
-                       12:45
-                    </div>
-                    {/* Access Indicator Badge on Thumbnail */}
-                    {!hasAccess && (
-                       <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
-                          {video.tier === 'LOGGED_IN' ? 'Login Req' : 'Patron Only'}
-                       </div>
-                    )}
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-[#0f0f0f] leading-snug line-clamp-2 uppercase tracking-tight mb-1">
-                        {video.title}
-                      </h3>
-                      <div className="text-[14px] text-[#606060] font-sans">
-                        <div className="flex items-center gap-1">
-                           <span>{video.views.toLocaleString('pl-PL')} wyświetleń</span>
-                           <span>•</span>
-                           <span>2 tyg. temu</span>
-                        </div>
-                        <div className="mt-1">
-                           {hasAccess ? (
-                             <span className="text-[11px] font-black uppercase tracking-widest text-primary">Dostępne</span>
-                           ) : (
-                             <span className={cn(
-                               "text-[11px] font-black uppercase tracking-widest",
-                               video.tier === 'LOGGED_IN' ? "text-blue-600" : "text-[#1a1a1a]/40"
-                             )}>
-                               {video.tier === 'LOGGED_IN' ? 'Zaloguj się' : 'Dla Patronów'}
-                             </span>
-                           )}
-                        </div>
-                      </div>
-                    </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
-                       <MoreVertical size={20} />
-                    </button>
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
+          {allVideos.map((video) => (
+            <ChannelVideoCard
+              key={video.id}
+              video={video}
+              isLoggedIn={!!userId}
+              userTotalPaid={userProfile?.totalPaid || 0}
+            />
+          ))}
         </div>
       </div>
       <Footer />
