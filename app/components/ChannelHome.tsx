@@ -46,7 +46,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       return 0;
   }).reduce((acc: any[], video, i) => {
       const isCurrent = video.id === selectedVideo.id;
-      const isLocked = video.tier !== 'PUBLIC' && video.tier !== 'LOGGED_IN';
+      const isLoggedIn = !!userProfile;
+      const isLocked = video.tier !== 'PUBLIC' && (!isLoggedIn || (video.tier !== 'LOGGED_IN'));
 
       acc.push(
           <Link
@@ -81,10 +82,12 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     <span>1 rok temu</span>
                  </div>
               </div>
-              {isLocked ? (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
-              ) : (
+              {video.tier === 'PUBLIC' ? (
                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
+              ) : video.tier === 'LOGGED_IN' ? (
+                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 italic mt-0.5">Zaloguj się</span>
+              ) : (
+                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
               )}
             </div>
           </Link>
