@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
+// BEZWZGLĘDNE WYTYCZNE: TWARDE ZABICIE CACHE NA POZIOMIE SERWERA
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -12,15 +13,20 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
+// KATEGORYCZNIE TYLKO METODA POST - ŻADNEGO GET, KTÓRY MÓGŁBY ZOSTAĆ ZBUFOROWANY
 export async function POST(req: NextRequest) {
   if (!stripe) {
+    console.error("[STRIPE_ERROR] Stripe Secret Key is missing.");
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
+      return NextResponse.json({
+        error: "Unauthorized",
+        message: "Twoja sesja wygasła. Zaloguj się ponownie, aby dokonać wpłaty."
+      }, { status: 401 });
     }
 
     // Ultra-Robust Lazy Sync Fallback - Ensure DB user exists before Stripe call
@@ -29,14 +35,16 @@ export async function POST(req: NextRequest) {
 
         if (!localUser) {
             const clerkUser = await currentUser();
-            const email = clerkUser?.primaryEmailAddress?.emailAddress || clerkUser?.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-            const imageUrl = clerkUser?.imageUrl || null;
+            if (clerkUser) {
+              const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+              const imageUrl = clerkUser.imageUrl || null;
 
-            await prisma.user.upsert({
-                where: { clerkUserId },
-                update: { email, imageUrl },
-                create: { clerkUserId, email, imageUrl }
-            });
+              await prisma.user.upsert({
+                  where: { clerkUserId },
+                  update: { email, imageUrl },
+                  create: { clerkUserId, email, imageUrl }
+              });
+            }
         }
     } catch (e) {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
@@ -45,12 +53,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { amount, title } = body;
 
+    // Walidacja parametrów - min 5 EUR
     if (!amount || amount < 5) {
       return NextResponse.json({ error: "Minimum parameters (min. 5 EUR)" }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
 
+    // Generowanie świeżej sesji ON-DEMAND
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -75,12 +85,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    if (!session.url) {
+        throw new Error("Stripe failed to generate a session URL.");
+    }
+
+    // Zwracamy nowiutki URL do frontendu
     return NextResponse.json({ url: session.url });
   } catch (error: any) {
     console.error("[STRIPE_CHECKOUT_ERROR]", error);
     return NextResponse.json({
       error: "Internal Error",
-      message: error.message || "Unknown error"
+      message: error.message || "Wystąpił nieoczekiwany błąd podczas generowania płatności."
     }, { status: 500 });
   }
 }
