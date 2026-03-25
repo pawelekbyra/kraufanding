@@ -42,8 +42,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       const data = await response.json();
 
       if (data?.url) {
-        // Natychmiastowe przekierowanie po otrzymaniu świeżego URL
-        window.location.assign(data.url);
+        // Twarde i natychmiastowe przekierowanie na świeży URL ze Stripe
+        window.location.href = data.url;
       } else if (data?.error) {
         if (response.status === 401 || data.error.includes("AUTH_REQUIRED")) {
           alert("Twoja sesja wygasła. Zaloguj się ponownie.");
