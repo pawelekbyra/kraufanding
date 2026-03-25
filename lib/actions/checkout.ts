@@ -24,29 +24,20 @@ export async function createCheckoutSession(params: {
       return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
     }
 
-    // Sync user to DB if not exists
-    try {
-        let user = await prisma.user.findUnique({ where: { clerkUserId } });
-        if (!user) {
-            const clerkUser = await currentUser();
-            if (clerkUser) {
-                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-                const imageUrl = clerkUser.imageUrl || null;
-                await prisma.user.upsert({
-                    where: { clerkUserId },
-                    update: { email, imageUrl },
-                    create: { clerkUserId, email, imageUrl }
-                });
-            }
-        }
-    } catch (e) {
-        console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
+    // Ensure user exists in local database
+    const localUser = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true }
+    });
+
+    if (!localUser) {
+      return { error: "Proszę chwilę odczekać na synchronizację konta lub spróbować ponownie po odświeżeniu strony." };
     }
 
     const { amount, title } = params;
 
-    if (!amount || amount < 3) {
-      return { error: "Minimum support amount is 3 EUR" };
+    if (!amount || amount < 5) {
+      return { error: "Minimum support amount is 5 EUR" };
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');

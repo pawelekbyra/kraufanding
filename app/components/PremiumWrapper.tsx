@@ -6,7 +6,7 @@ import { Lock, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 
 interface PremiumWrapperProps {
-  children: React.ReactNode;
+  children: (videoUrl: string | null) => React.ReactNode;
   videoId: string;
   requiredTier?: AccessTier;
   isMainFeatured?: boolean;
@@ -26,6 +26,7 @@ export default function PremiumWrapper({
 }: PremiumWrapperProps) {
   const { userId, isLoaded } = useAuth();
   const [hasAccess, setHasAccess] = useState<boolean>(false);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [dbTier, setDbTier] = useState<AccessTier | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,6 +58,7 @@ export default function PremiumWrapper({
         const response = await fetch(`/api/access?videoId=${videoId}`);
         const data = await response.json();
         setHasAccess(data.hasAccess);
+        setVideoUrl(data.videoUrl);
         if (data.requiredTier) setDbTier(data.requiredTier);
       } catch (error) {
         console.error("Error checking video access:", error);
@@ -73,7 +75,7 @@ export default function PremiumWrapper({
   if (isPublic || isUnlockedByAuth || hasAccess) {
     return (
       <div className="animate-in fade-in duration-500 h-full w-full">
-        {children}
+        {children(videoUrl)}
       </div>
     );
   }

@@ -22,8 +22,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       return;
     }
 
-    if (!amount || amount < 3) {
-      alert("Minimalna kwota wsparcia to 3 €");
+    if (!amount || amount < 5) {
+      alert("Minimalna kwota wsparcia to 5 €");
       return;
     }
 
@@ -68,7 +68,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
             <div className="space-y-2 pt-2">
               <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
-                Your support amount (min. €3)
+                Your support amount (min. €5)
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -76,7 +76,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
                 <input
                   type="number"
-                  min="3"
+                  min="5"
                   step="1"
                   value={amount}
                   onChange={(e) => {
@@ -86,15 +86,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                 />
               </div>
-              {typeof amount === 'number' && amount < 3 && (
-                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 3 €</p>
+              {typeof amount === 'number' && amount < 5 && (
+                <p className="text-error text-[8px] font-black uppercase tracking-widest animate-pulse">Minimalna kwota to 5 €</p>
               )}
             </div>
 
             <button
               type="button"
               onClick={onSupport}
-              disabled={isLoading || amount === '' || amount < 3}
+              disabled={isLoading || amount === '' || amount < 5}
               className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount === '' || amount < 3 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isLoading ? 'LOADING...' : 'TIP THE GUY'}

@@ -39,16 +39,52 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const clerkUserId = session.metadata?.clerkUserId;
     const amountPaid = (session.amount_total || 0) / 100; // in EUR
+    const currency = session.currency?.toUpperCase() || 'EUR';
 
     if (clerkUserId) {
-      const user = await prisma.user.update({
-        where: { clerkUserId },
-        data: {
-          totalPaid: {
-            increment: amountPaid,
+      // Use a transaction for both creating the Transaction record and updating User.totalPaid
+      const user = await prisma.$transaction(async (tx) => {
+        // Find local user by clerkUserId
+        const localUser = await tx.user.findUnique({
+          where: { clerkUserId },
+          select: { id: true, email: true, totalPaid: true }
+        });
+
+        if (!localUser) {
+          throw new Error(`User with clerkUserId ${clerkUserId} not found in database during webhook.`);
+        }
+
+        // Check if transaction already exists (idempotency)
+        const existingTx = await tx.transaction.findUnique({
+          where: { stripeSessionId: session.id }
+        });
+
+        if (existingTx) {
+          console.log(`[STRIPE_WEBHOOK] Transaction ${session.id} already processed.`);
+          return localUser;
+        }
+
+        // Create transaction record
+        await tx.transaction.create({
+          data: {
+            userId: localUser.id,
+            amount: amountPaid,
+            currency: currency,
+            stripeSessionId: session.id,
+            status: 'COMPLETED'
+          }
+        });
+
+        // Update user totalPaid
+        return await tx.user.update({
+          where: { id: localUser.id },
+          data: {
+            totalPaid: {
+              increment: amountPaid,
+            },
+            stripeCustomerId: session.customer as string,
           },
-          stripeCustomerId: session.customer as string,
-        },
+        });
       });
 
       // Send thank you email via Resend

@@ -22,6 +22,22 @@ model User {
   comments         Comment[]
   commentLikes     CommentLike[]
   videoLikes       VideoLike[]
+  transactions     Transaction[]
+}
+
+model Transaction {
+  id               String   @id @default(uuid())
+  userId           String
+  amount           Float
+  currency         String   @default("EUR")
+  stripeSessionId  String   @unique
+  status           String   @default("PENDING") // PENDING, COMPLETED, FAILED
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Creator {
@@ -111,7 +127,7 @@ model CommentLike {
 enum AccessTier {
   PUBLIC    // Everyone
   LOGGED_IN // Minimum: Logged in (Clerk mail)
-  VIP1      // Minimum: totalPaid >= 3 EUR
+  VIP1      // Minimum: totalPaid >= 5 EUR
   VIP2      // Minimum: totalPaid >= 10 EUR
 }
 
