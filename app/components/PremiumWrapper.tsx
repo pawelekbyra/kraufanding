@@ -56,6 +56,11 @@ export default function PremiumWrapper({
 
       try {
         const response = await fetch(`/api/access?videoId=${videoId}`);
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}`);
+        }
+
         const data = await response.json();
         setHasAccess(data.hasAccess);
         setVideoUrl(data.videoUrl);

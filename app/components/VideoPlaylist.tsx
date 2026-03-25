@@ -74,11 +74,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             {/* Header section */}
             <div className="border-b-2 border-dashed border-black pb-4">
               <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-                Payment Authorization Request
+                BRAMKA NAPIWKOWA
               </h3>
-              <p className="font-mono text-[10px] text-[#1a1a1a]/60 mt-1 uppercase leading-tight">
-                Ref: PATRON-SUPPORT-{new Date().getFullYear()}-X
-              </p>
             </div>
 
             <div className="space-y-4">
@@ -130,12 +127,6 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               )}
             </button>
 
-            <div className="pt-2">
-              <p className="font-mono text-[8px] text-black/40 leading-tight uppercase text-center">
-                This action will redirect you to secure Stripe Checkout.<br/>
-                No recurring charges. Lifetime access granted upon success.
-              </p>
-            </div>
           </div>
         </div>
     </div>
