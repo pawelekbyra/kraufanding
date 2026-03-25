@@ -94,9 +94,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               {hasAccess ? (
                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
               ) : video.tier === 'LOGGED_IN' ? (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 italic mt-0.5">Log in to watch</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">Log in to watch</span>
               ) : (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Become a Patron</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">Become a Patron</span>
               )}
             </div>
           </Link>
@@ -105,7 +105,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       if (i === 1) {
         acc.push(
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">Wesprzyj Twórcę</h3>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
               />
@@ -124,9 +124,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             <Hero video={selectedVideo} />
 
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold">
-                  <span>{selectedVideo.views?.toLocaleString('pl-PL')} wyświetleń</span>
-                  <span>21 mar 2024</span>
+               <div className="flex gap-4 text-[13px] font-bold not-italic">
+                  <span className="not-italic">{selectedVideo.views?.toLocaleString('pl-PL')} wyświetleń</span>
+                  <span className="not-italic">21 mar 2024</span>
                </div>
                <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
                   {selectedVideo.description}

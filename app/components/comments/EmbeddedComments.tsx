@@ -149,7 +149,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   return (
     <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-serif">
       <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter italic">{comments.length} Komentarzy</h3>
+         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} Komentarzy</h3>
       </div>
 
       {/* Input Area */}
@@ -211,7 +211,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <Lock size={24} className="text-[#1a1a1a]/40" />
            </div>
            <div className="space-y-1">
-              <h4 className="text-[16px] font-black uppercase tracking-tight italic">Chcesz dołączyć do dyskusji?</h4>
+              <h4 className="text-[16px] font-black uppercase tracking-tight">Chcesz dołączyć do dyskusji?</h4>
               <p className="text-[12px] text-[#1a1a1a]/60 font-bold uppercase tracking-widest">Zaloguj się, aby dodawać komentarze i lajkować.</p>
            </div>
            <SignInButton mode="modal">

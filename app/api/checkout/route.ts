@@ -13,10 +13,16 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
-/**
  * ARCHITEKTURA ON-DEMAND: Sesja Checkout generowana WYŁĄCZNIE przez POST.
- * Zapobiega to cachowaniu linków przez Next.js / Vercel.
+ * Żądania GET są blokowane, aby zapobiec agresywnemu cachowaniu linków przez Next.js / Vercel.
  */
+export async function GET() {
+  return NextResponse.json({
+    error: "Method Not Allowed",
+    message: "Proszę użyć metody POST, aby wygenerować nową sesję płatności. Żądania GET są blokowane ze względu na cache."
+  }, { status: 405 });
+}
+
 export async function POST(req: NextRequest) {
   if (!stripe) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
