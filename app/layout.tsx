@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="polutek" suppressHydrationWarning>
-      <body className="font-serif bg-base-100 text-neutral min-h-screen">
+      <body className="font-serif bg-base-100 text-neutral min-h-screen" suppressHydrationWarning>
         <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
           <Providers>
             {children}

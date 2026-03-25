@@ -9,7 +9,7 @@ export const mockVideos: Video[] = [
     slug: "secret-project",
     description: "Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.",
     videoUrl: "https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4",
-    thumbnailUrl: "https://picsum.photos/seed/secret/1200/675",
+    thumbnailUrl: "https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.jpg",
     tier: "PUBLIC" as AccessTier,
     views: 124562,
     likesCount: 12400,
