@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
+// BEZWZGLEDNE ZABICIE CACHE - RYGORYSTYCZNE WYTYCZNE
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -12,6 +13,10 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
+/**
+ * ARCHITEKTURA ON-DEMAND: Sesja Checkout generowana WYŁĄCZNIE przez POST.
+ * Zapobiega to cachowaniu linków przez Next.js / Vercel.
+ */
 export async function POST(req: NextRequest) {
   if (!stripe) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
@@ -20,10 +25,13 @@ export async function POST(req: NextRequest) {
   try {
     const { userId: clerkUserId } = auth();
     if (!clerkUserId) {
-      return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
+      return NextResponse.json({
+        error: "Unauthorized",
+        message: "Twoja sesja wygasła. Zaloguj się ponownie, aby dokonać wpłaty."
+      }, { status: 401 });
     }
 
-    // Ultra-Robust Lazy Sync Fallback - Ensure DB user exists before Stripe call
+    // Ultra-Robust Lazy Sync Fallback
     try {
         let localUser = await prisma.user.findUnique({ where: { clerkUserId } });
 
@@ -51,6 +59,7 @@ export async function POST(req: NextRequest) {
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
 
+    // Inicjalizacja sesji Stripe Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
