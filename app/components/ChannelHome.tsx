@@ -14,7 +14,7 @@ interface ChannelHomeProps {
   mainVideo: Video;
   allVideos: Video[];
   currentVideoId?: string;
-  userProfile?: { id: string; email: string; imageUrl?: string | null } | null;
+  userProfile?: { id: string; email: string; imageUrl?: string | null; totalPaid: number } | null;
 }
 
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
@@ -47,7 +47,14 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   }).reduce((acc: any[], video, i) => {
       const isCurrent = video.id === selectedVideo.id;
       const isLoggedIn = !!userProfile;
-      const isLocked = video.tier !== 'PUBLIC' && (!isLoggedIn || (video.tier !== 'LOGGED_IN'));
+      const hasVIP1 = (userProfile?.totalPaid || 0) >= 3;
+      const hasVIP2 = (userProfile?.totalPaid || 0) >= 10;
+
+      const hasAccess = video.tier === 'PUBLIC' ||
+                        (video.tier === 'LOGGED_IN' && isLoggedIn) ||
+                        (video.tier === 'VIP1' && hasVIP1) ||
+                        (video.tier === 'VIP2' && hasVIP2) ||
+                        video.isMainFeatured;
 
       acc.push(
           <Link
@@ -82,12 +89,12 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     <span>1 rok temu</span>
                  </div>
               </div>
-              {video.tier === 'PUBLIC' ? (
+              {hasAccess ? (
                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
               ) : video.tier === 'LOGGED_IN' ? (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 italic mt-0.5">Zaloguj się</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 italic mt-0.5">Log in to watch</span>
               ) : (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Dla Patronów</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 italic mt-0.5">Become a Patron</span>
               )}
             </div>
           </Link>

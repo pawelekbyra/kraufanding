@@ -15,7 +15,7 @@ interface PremiumWrapperProps {
 
 /**
  * Client-side PremiumWrapper that gates content based on user access.
- * Standardizes the 'TOP SECRET' technical look.
+ * Optimistically unlocks LOGGED_IN content if a userId is present.
  */
 export default function PremiumWrapper({
   children,
@@ -32,16 +32,19 @@ export default function PremiumWrapper({
   const effectiveTier = initialTier || dbTier || "PUBLIC";
   const isPublic = isMainFeatured || effectiveTier === "PUBLIC";
 
+  // Optimistic unlock for LOGGED_IN tier if client-side auth is present
+  const isUnlockedByAuth = !!userId && effectiveTier === "LOGGED_IN";
+
   useEffect(() => {
     async function checkAccess() {
-      // 1. If public or main featured, no need to fetch
+      // 1. Immediate resolution for public content
       if (isPublic) {
         setHasAccess(true);
         setIsLoading(false);
         return;
       }
 
-      // 2. If guest and not public, it's locked
+      // 2. Guest gating
       if (isLoaded && !userId) {
         setHasAccess(false);
         setIsLoading(false);
@@ -66,20 +69,21 @@ export default function PremiumWrapper({
     checkAccess();
   }, [userId, isLoaded, videoId, isPublic]);
 
-  if (isLoading) {
-    // Immediate gating for guests to prevent flicker
-    if (!userId && isLoaded && !isPublic) {
-        return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={false} variant={variant} />;
-    }
-    return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
-  }
-
-  if (hasAccess || isPublic) {
+  // Priority: 1. Main Featured, 2. Public, 3. Account Gated + Signed In
+  if (isPublic || isUnlockedByAuth || hasAccess) {
     return (
       <div className="animate-in fade-in duration-500 h-full w-full">
         {children}
       </div>
     );
+  }
+
+  if (isLoading) {
+    // If we're a guest and it's not public, show overlay immediately
+    if (isLoaded && !userId && !isPublic) {
+        return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={false} variant={variant} />;
+    }
+    return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
   }
 
   return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={!!userId} variant={variant} />;
@@ -125,7 +129,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
 
          <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 bg-black/40 backdrop-blur-[6px]">
             <div className="flex flex-col items-center text-center space-y-3">
-               <div className={`p-5 rounded-full mb-2 ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_60px_rgba(59,130,246,0.3)]'}`}>
+               <div className={`p-5 rounded-full mb-2 ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.3)]'}`}>
                   {isVIPGated ? <Gem size={56} strokeWidth={2} /> : <Lock size={56} strokeWidth={2} />}
                </div>
                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]">
