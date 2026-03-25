@@ -15,12 +15,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
 
+  // BEZWZGLĘDNE WYTYCZNE: ASYNCHRONICZNA FUNKCJA POD ZDARZENIE onClick
   const onSupport = async () => {
+    // 1. Sprawdzenie autoryzacji
     if (!userId) {
       openSignIn();
       return;
     }
 
+    // 2. Minimalna kwota wsparcia to 5 €
     if (!amount || amount < 5) {
       alert("Minimalna kwota wsparcia to 5 €");
       return;
@@ -29,6 +32,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     try {
       setIsLoading(true);
 
+      // BEZWZGLĘDNE WYTYCZNE: TYLKO METODA POST, CACHE 'NO-STORE'
       const response = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -36,24 +40,27 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             amount: Number(amount),
             title: videoTitle || "Tip The Guy / Patron"
           }),
-          cache: 'no-store'
+          cache: 'no-store' // Bezwzględnie odcinamy cache przeglądarki i serwera
       });
 
       const data = await response.json();
 
       if (data?.url) {
-        // Twarde i natychmiastowe przekierowanie na świeży URL ze Stripe
+        // BEZWZGLĘDNE WYTYCZNE: TWARDE I NATYCHMIASTOWE PRZEKIEROWANIE
+        // Wykorzystujemy window.location.href, żadnego router.push()
         window.location.href = data.url;
       } else if (data?.error) {
-        if (response.status === 401 || data.error.includes("AUTH_REQUIRED")) {
+        if (response.status === 401 || data.error === "Unauthorized" || data.message?.includes("sesja wygasła")) {
           alert("Twoja sesja wygasła. Zaloguj się ponownie.");
           openSignIn();
         } else {
-          alert("Błąd: " + (data.message || data.error));
+          alert("Błąd płatności: " + (data.message || data.error));
         }
+      } else {
+          throw new Error("Pusty URL w odpowiedzi serwera.");
       }
     } catch (error: any) {
-      console.error("Payment error", error);
+      console.error("[PAYMENT_ERROR_FRONTEND]", error);
       alert("Błąd połączenia z systemem płatności. Spróbuj odświeżyć stronę.");
     } finally {
       setIsLoading(false);
@@ -98,13 +105,19 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               )}
             </div>
 
+            {/*
+              BEZWZGLĘDNE WYTYCZNE:
+              - ŻADNYCH TAGÓW LINK
+              - TYLKO HTML ELEMENT button
+              - ŻADNEGO href
+            */}
             <button
               type="button"
               onClick={onSupport}
-              disabled={isLoading || amount === '' || amount < 5}
-              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount === '' || amount < 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isLoading || amount === '' || (typeof amount === 'number' && amount < 5)}
+              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${(amount === '' || (typeof amount === 'number' && amount < 5)) ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {isLoading ? 'LOADING...' : 'TIP THE GUY'}
+              {isLoading ? 'TRWA GENEROWANIE...' : 'TIP THE GUY'}
             </button>
           </div>
         </div>
