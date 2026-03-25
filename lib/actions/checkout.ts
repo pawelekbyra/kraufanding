@@ -24,23 +24,24 @@ export async function createCheckoutSession(params: {
       return { error: "AUTH_REQUIRED: Proszę zaloguj się ponownie, aby dokonać wpłaty." };
     }
 
-    // Sync user to DB if not exists (Lazy Sync Fallback)
+    // Sync user to DB if not exists (Ultra-Robust Lazy Sync Fallback)
     try {
-        let user = await prisma.user.findUnique({ where: { clerkUserId } });
-        if (!user) {
+        let localUser = await prisma.user.findUnique({ where: { clerkUserId } });
+
+        if (!localUser) {
             const clerkUser = await currentUser();
-            if (clerkUser) {
-                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-                const imageUrl = clerkUser.imageUrl || null;
-                await prisma.user.upsert({
-                    where: { clerkUserId },
-                    update: { email, imageUrl },
-                    create: { clerkUserId, email, imageUrl }
-                });
-            }
+            const email = clerkUser?.primaryEmailAddress?.emailAddress || clerkUser?.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+            const imageUrl = clerkUser?.imageUrl || null;
+
+            await prisma.user.upsert({
+                where: { clerkUserId },
+                update: { email, imageUrl },
+                create: { clerkUserId, email, imageUrl }
+            });
         }
     } catch (e) {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
+        // We continue anyway, the webhook might catch it later or Stripe metadata will have the ID
     }
 
     const { amount, title } = params;

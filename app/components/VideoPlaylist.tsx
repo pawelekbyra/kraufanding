@@ -38,7 +38,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       if (data?.url) {
         window.location.assign(data.url);
       } else if (data?.error) {
-        if (data.error.includes("zaloguj się") || data.error.includes("AUTH_REQUIRED")) {
+        if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
           alert("Twoja sesja wygasła. Zaloguj się ponownie.");
           openSignIn();
         } else {
@@ -47,7 +47,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       }
     } catch (error: any) {
       console.error("Payment error", error);
-      alert("Wystąpił błąd: " + error.message);
+      alert("Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę.");
     } finally {
       setIsLoading(false);
     }
