@@ -22,30 +22,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 
-    // Sync user to DB if not exists
-    try {
-        const user = await prisma.user.findUnique({ where: { clerkUserId } });
-        if (!user) {
-            const clerkUser = await currentUser();
-            if (clerkUser) {
-                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-                const imageUrl = clerkUser.imageUrl || null;
-                await prisma.user.upsert({
-                    where: { clerkUserId },
-                    update: { email, imageUrl },
-                    create: { clerkUserId, email, imageUrl }
-                });
-            }
-        }
-    } catch (e) {
-        console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
+    // Ensure user exists in local database
+    const localUser = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true }
+    });
+
+    if (!localUser) {
+      return NextResponse.json({ error: "Sync in progress", message: "Proszę chwilę odczekać na synchronizację konta." }, { status: 403 });
     }
 
     const body = await req.json();
     const { amount, title } = body;
 
-    if (!amount || amount < 3) {
-      return NextResponse.json({ error: "Minimum parameters" }, { status: 400 });
+    if (!amount || amount < 5) {
+      return NextResponse.json({ error: "Minimum parameters (min. 5 EUR)" }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');

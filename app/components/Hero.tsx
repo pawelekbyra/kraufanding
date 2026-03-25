@@ -35,18 +35,33 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
         {/* FEATURED MEDIA (VIDEO PLAYER) */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
           <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
-            <img
-                src={video.thumbnailUrl}
-                alt={video.title}
-                className="w-full h-full object-cover opacity-90 transition duration-1000"
-            />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
-                    <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                    </svg>
-                </div>
-            </div>
+            {(videoUrl) => (
+              <>
+                {videoUrl ? (
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <>
+                    <img
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        className="w-full h-full object-cover opacity-90 transition duration-1000"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-16 h-16 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform border border-white/10 pointer-events-auto">
+                            <svg className="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </PremiumWrapper>
         </div>
 

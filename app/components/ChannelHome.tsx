@@ -47,7 +47,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   }).reduce((acc: any[], video, i) => {
       const isCurrent = video.id === selectedVideo.id;
       const isLoggedIn = !!userProfile;
-      const hasVIP1 = (userProfile?.totalPaid || 0) >= 3;
+      const hasVIP1 = (userProfile?.totalPaid || 0) >= 5;
       const hasVIP2 = (userProfile?.totalPaid || 0) >= 10;
 
       const hasAccess = video.tier === 'PUBLIC' ||
@@ -69,11 +69,13 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           >
             <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
               <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
-                 <img
-                   src={video.thumbnailUrl}
-                   alt={video.title}
-                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                 />
+                 {() => (
+                   <img
+                     src={video.thumbnailUrl}
+                     alt={video.title}
+                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                   />
+                 )}
               </PremiumWrapper>
               <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
             </div>
