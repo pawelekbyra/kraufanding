@@ -4,10 +4,6 @@ import { mockVideos } from '@/app/data/mock-videos';
 
 /**
  * Checks the user's access level for a specific video based on their total amount paid.
- *
- * @param clerkUserId The Clerk user ID
- * @param videoId The video ID to check access for
- * @returns Object containing the user's total paid and their access status
  */
 export async function getVideoAccess(clerkUserId: string | null, videoId: string) {
   let video = await prisma.video.findUnique({
@@ -15,7 +11,6 @@ export async function getVideoAccess(clerkUserId: string | null, videoId: string
     select: { tier: true, isMainFeatured: true }
   });
 
-  // Fallback to mock data if not in DB
   if (!video) {
     const mock = mockVideos.find(v => v.id === videoId);
     if (mock) {
@@ -40,20 +35,22 @@ export async function getVideoAccess(clerkUserId: string | null, videoId: string
     return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
   }
 
+  // 4. LOGGED_IN tier - any registered user has access immediately
+  if (video.tier === AccessTier.LOGGED_IN) {
+    return { hasAccess: true, userTotalPaid: 0, requiredTier: video.tier };
+  }
+
   const user = await prisma.user.findUnique({
     where: { clerkUserId },
     select: { totalPaid: true, role: true, email: true }
   });
 
+  // If logged in but not in DB yet (sync lag), they still have LOGGED_IN access (handled above)
+  // but for VIP tiers we need the DB record.
   if (!user) return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
 
-  // 4. Admin access
+  // 5. Admin access
   if (user.role === 'ADMIN' || user.email === 'pawel.perfect@gmail.com') {
-    return { hasAccess: true, userTotalPaid: user.totalPaid, requiredTier: video.tier };
-  }
-
-  // 5. LOGGED_IN tier - any registered user has access
-  if (video.tier === AccessTier.LOGGED_IN) {
     return { hasAccess: true, userTotalPaid: user.totalPaid, requiredTier: video.tier };
   }
 

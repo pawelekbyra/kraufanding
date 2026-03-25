@@ -32,11 +32,13 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
   const { userId } = auth();
   const user = await currentUser();
+  const userDb = userId ? await prisma.user.findUnique({ where: { clerkUserId: userId } }) : null;
 
   const userProfile = userId ? {
       id: userId,
       email: user?.primaryEmailAddress?.emailAddress || '',
-      imageUrl: user?.imageUrl || null
+      imageUrl: user?.imageUrl || null,
+      totalPaid: userDb?.totalPaid || 0
   } : null;
 
   return (
