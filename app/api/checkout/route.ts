@@ -23,7 +23,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { userId: clerkUserId } = auth();
+    let { userId: clerkUserId } = auth();
+    console.log("[CHECKOUT_AUTH_DEBUG]", { clerkUserId });
+
+    if (!clerkUserId) {
+      // Fallback to currentUser() which is sometimes more reliable in dynamic routes
+      const user = await currentUser();
+      clerkUserId = user?.id || null;
+      console.log("[CHECKOUT_AUTH_FALLBACK]", { clerkUserId });
+    }
+
     if (!clerkUserId) {
       return NextResponse.json({
         error: "Unauthorized",
