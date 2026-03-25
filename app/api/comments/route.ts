@@ -67,8 +67,12 @@ export async function GET(request: NextRequest) {
                 }
             }
         });
-    } catch (e) {
+    } catch (e: any) {
         console.error("Database error fetching comments:", e);
+        // P2021: Table does not exist (database not migrated yet)
+        if (e.code === 'P2021') {
+           return NextResponse.json({ success: true, comments: [], nextCursor: null, dbMissing: true });
+        }
         return NextResponse.json({ success: true, comments: [], nextCursor: null });
     }
 
@@ -115,7 +119,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: true, comments: commentsWithLiked, nextCursor });
   } catch (error: any) {
     console.error('General error fetching comments:', error);
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    return NextResponse.json({ success: true, comments: [], nextCursor: null });
   }
 }
 

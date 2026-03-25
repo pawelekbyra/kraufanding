@@ -7,46 +7,53 @@ import { Video } from '@/app/types/video';
 import Link from 'next/link';
 import PremiumWrapper from '@/app/components/PremiumWrapper';
 import { cn } from '@/lib/utils';
-import { Search, Play, Filter, MoreVertical } from 'lucide-react';
+import { Search, MoreVertical } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ChannelPage({ params }: { params: { slug: string } }) {
-  const creator = await prisma.creator.findUnique({
-    where: { slug: params.slug },
-    include: {
-      videos: {
-        orderBy: { createdAt: 'desc' }
+  let creator = null;
+  try {
+    creator = await prisma.creator.findUnique({
+      where: { slug: params.slug },
+      include: {
+        videos: {
+          orderBy: { createdAt: 'desc' }
+        }
       }
-    }
-  });
+    });
+  } catch (e) {
+    console.error("[CHANNEL_PAGE_DB_ERROR]", e);
+  }
 
   if (!creator) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center font-serif">
         <Navbar />
-        <h1 className="text-4xl font-black uppercase">Kanał nie znaleziony</h1>
-        <Link href="/" className="mt-4 text-primary hover:underline uppercase font-bold tracking-widest">Wróć na stronę główną</Link>
+        <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+            <h1 className="text-4xl font-black uppercase">Kanał nie znaleziony</h1>
+            <p className="text-[#606060] mt-2 mb-6">Ten kanał może nie istnieć lub baza danych jest w trakcie konfiguracji.</p>
+            <Link href="/" className="bg-[#0f0f0f] text-white px-8 py-3 rounded-full uppercase font-bold tracking-widest hover:bg-[#272727] transition-all">Wróć na stronę główną</Link>
+        </div>
         <Footer />
       </div>
     );
   }
 
   const { userId } = auth();
-  const user = await currentUser();
-  const userDb = userId ? await prisma.user.findUnique({ where: { clerkUserId: userId } }) : null;
+  const userDb = userId ? await prisma.user.findUnique({ where: { clerkUserId: userId } }).catch(() => null) : null;
 
   const userProfile = userId ? {
       totalPaid: userDb?.totalPaid || 0
   } : null;
 
-  const allVideos = creator.videos.map(v => ({
+  const allVideos = (creator.videos || []).map(v => ({
     ...v,
     creator: {
       id: creator.id,
       name: creator.name,
       slug: creator.slug,
-      subscribersCount: creator.subscribersCount
+      subscribersCount: creator.subscribersCount || 0
     }
   })) as any as Video[];
 
@@ -74,7 +81,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
             <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-2 gap-y-1 font-sans">
                <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
                <span>•</span>
-               <span>{creator.subscribersCount.toLocaleString('pl-PL')} subskrajberów</span>
+               <span>{(creator.subscribersCount || 0).toLocaleString('pl-PL')} subskrajberów</span>
                <span>•</span>
                <span>{allVideos.length} filmów</span>
             </div>
