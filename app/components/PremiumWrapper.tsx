@@ -1,12 +1,28 @@
 "use client";
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Lock, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 
+interface VideoAccessContextType {
+  hasAccess: boolean;
+  videoUrl: string | null;
+  isLoading: boolean;
+  effectiveTier: AccessTier;
+}
+
+const VideoAccessContext = createContext<VideoAccessContextType>({
+  hasAccess: false,
+  videoUrl: null,
+  isLoading: true,
+  effectiveTier: "PUBLIC" as AccessTier,
+});
+
+export const useVideoAccess = () => useContext(VideoAccessContext);
+
 interface PremiumWrapperProps {
-  children: (videoUrl: string | null) => React.ReactNode;
+  children: React.ReactNode;
   videoId: string;
   videoUrl?: string;
   requiredTier?: AccessTier;
@@ -14,10 +30,6 @@ interface PremiumWrapperProps {
   variant?: 'default' | 'thumbnail';
 }
 
-/**
- * Client-side PremiumWrapper that gates content based on user access.
- * Optimistically unlocks LOGGED_IN content if a userId is present.
- */
 export default function PremiumWrapper({
   children,
   videoId,
@@ -37,15 +49,12 @@ export default function PremiumWrapper({
     setMounted(true);
   }, []);
 
-  const effectiveTier = initialTier || dbTier || "PUBLIC";
+  const effectiveTier = initialTier || dbTier || ("PUBLIC" as AccessTier);
   const isPublic = isMainFeatured || effectiveTier === "PUBLIC";
-
-  // Optimistic unlock for LOGGED_IN tier if client-side auth is present
   const isUnlockedByAuth = !!userId && effectiveTier === "LOGGED_IN";
 
   useEffect(() => {
     async function checkAccess() {
-      // 1. Immediate resolution for public content
       if (isPublic) {
         setHasAccess(true);
         if (directUrl) setVideoUrl(directUrl);
@@ -53,7 +62,6 @@ export default function PremiumWrapper({
         return;
       }
 
-      // 2. Guest gating
       if (isLoaded && !userId) {
         setHasAccess(false);
         setIsLoading(false);
@@ -64,11 +72,7 @@ export default function PremiumWrapper({
 
       try {
         const response = await fetch(`/api/access?videoId=${videoId}`);
-
-        if (!response.ok) {
-          throw new Error(`Server returned ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
         const data = await response.json();
         setHasAccess(data.hasAccess);
         setVideoUrl(data.videoUrl);
@@ -82,35 +86,40 @@ export default function PremiumWrapper({
     }
 
     checkAccess();
-  }, [userId, isLoaded, videoId, isPublic]);
+  }, [userId, isLoaded, videoId, isPublic, directUrl]);
 
   if (!mounted) {
     return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
   }
 
-  // Priority: 1. Main Featured, 2. Public, 3. Account Gated + Signed In
-  if (isPublic || isUnlockedByAuth || hasAccess) {
+  const contextValue = { hasAccess: isPublic || isUnlockedByAuth || hasAccess, videoUrl, isLoading, effectiveTier };
+
+  if (contextValue.hasAccess) {
     return (
-      <div className="animate-in fade-in duration-500 h-full w-full">
-        {children(videoUrl)}
-      </div>
+      <VideoAccessContext.Provider value={contextValue}>
+        <div className="animate-in fade-in duration-500 h-full w-full">
+          {children}
+        </div>
+      </VideoAccessContext.Provider>
     );
   }
 
   if (isLoading) {
-    // If we're a guest and it's not public, show overlay immediately
     if (isLoaded && !userId && !isPublic) {
-        return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={false} variant={variant} />;
+        return <PaywallOverlay requiredTier={effectiveTier} isLoggedIn={false} variant={variant} />;
     }
     return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
   }
 
-  return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={!!userId} variant={variant} />;
+  return (
+    <VideoAccessContext.Provider value={contextValue}>
+      <PaywallOverlay requiredTier={effectiveTier} isLoggedIn={!!userId} variant={variant} />
+    </VideoAccessContext.Provider>
+  );
 }
 
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
-
   const mainTitle = "TOP SECRET";
   const subTitle = (requiredTier === "LOGGED_IN" && !isLoggedIn)
     ? "Log in to watch"

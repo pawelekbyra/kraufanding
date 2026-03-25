@@ -5,12 +5,44 @@ import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
-import PremiumWrapper from './PremiumWrapper';
+import PremiumWrapper, { useVideoAccess } from './PremiumWrapper';
 import Link from 'next/link';
 
 interface HeroProps {
   video: Video;
 }
+
+const HeroPlayer = ({ video }: { video: Video }) => {
+  const { videoUrl } = useVideoAccess();
+
+  if (videoUrl) {
+    return (
+      <video
+        src={videoUrl}
+        controls
+        autoPlay
+        className="w-full h-full object-contain"
+      />
+    );
+  }
+
+  return (
+    <div className="relative w-full h-full cursor-pointer group/player">
+      <img
+          src={video.thumbnailUrl}
+          alt={video.title}
+          className="w-full h-full object-cover opacity-90 transition duration-1000 group-hover/player:scale-105"
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-20 h-20 bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(var(--p),0.5)] border-2 border-white/20 transition-all duration-300 group-hover/player:scale-110 group-hover/player:bg-primary">
+              <svg className="w-10 h-10 text-white fill-current ml-1" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+              </svg>
+          </div>
+      </div>
+    </div>
+  );
+};
 
 const Hero: React.FC<HeroProps> = ({ video }) => {
   const { userId } = useAuth();
@@ -95,33 +127,7 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
         {/* FEATURED MEDIA (VIDEO PLAYER) */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
           <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
-            {(videoUrl) => (
-              <>
-                {videoUrl ? (
-                  <video
-                    src={videoUrl}
-                    controls
-                    autoPlay
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="relative w-full h-full cursor-pointer group/player">
-                    <img
-                        src={video.thumbnailUrl}
-                        alt={video.title}
-                        className="w-full h-full object-cover opacity-90 transition duration-1000 group-hover/player:scale-105"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-20 h-20 bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(var(--p),0.5)] border-2 border-white/20 transition-all duration-300 group-hover/player:scale-110 group-hover/player:bg-primary">
-                            <svg className="w-10 h-10 text-white fill-current ml-1" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                            </svg>
-                        </div>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
+            <HeroPlayer video={video} />
           </PremiumWrapper>
         </div>
 
