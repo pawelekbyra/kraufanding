@@ -23,12 +23,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
   const queryClient = useQueryClient();
 
-  // Scroll to top when video changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [selectedVideo.id]);
 
-  // Simple prefetch function for comments
   const prefetchVideoComments = (vidId: string) => {
     queryClient.prefetchInfiniteQuery({
         queryKey: ['comments', vidId],
@@ -42,8 +40,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
     });
   };
 
-  const playlistItems = allVideos.sort((a, b) => {
-      // Sort current video first
+  const playlistItems = [...allVideos].sort((a, b) => {
       if (a.id === selectedVideo.id) return -1;
       if (b.id === selectedVideo.id) return 1;
       return 0;
@@ -54,7 +51,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       acc.push(
           <Link
             key={video.id}
-            href={`/?v=${video.id}`}
+            href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
             scroll={false}
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
@@ -81,7 +78,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  <div className="flex items-center gap-1">
                     <span>{video.views?.toLocaleString('pl-PL')} wyświetleń</span>
                     <span>•</span>
-                    <span>{video.publishedAt?.toString().split('T')[0] || 'Recently'}</span>
+                    <span>1 rok temu</span>
                  </div>
               </div>
               {isLocked ? (
@@ -93,14 +90,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </Link>
       );
 
-      // Add donation button after 2 items
       if (i === 1) {
         acc.push(
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
               <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic mb-1.5 px-2">Wesprzyj Twórcę</h3>
               <VideoPlaylist
-                 videoId={selectedVideo.id}
-                 videoSlug={selectedVideo.slug}
                  videoTitle={selectedVideo.title}
               />
           </div>
@@ -120,17 +114,14 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[13px] font-bold">
                   <span>{selectedVideo.views?.toLocaleString('pl-PL')} wyświetleń</span>
-                  <span>{selectedVideo.publishedAt?.toString().split('T')[0] || 'Recently'}</span>
+                  <span>21 mar 2024</span>
                </div>
                <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
                   {selectedVideo.description}
-                  <br />
-                  Zapraszam do obczajenia moich nowych materiałów wideo. Zostając Patronem, zyskujesz stały dostęp do tajnych materiałów operacyjnych.
                </div>
                <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
             </div>
 
-            {/* MOBILE TABS SWITCHER */}
             <div className="lg:hidden flex border-b border-[#1a1a1a]/5 mt-4">
                <button
                  onClick={() => setActiveTab('comments')}
@@ -152,7 +143,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                </button>
             </div>
 
-            {/* MOBILE TAB CONTENT */}
             <div className="lg:hidden mt-5">
                {activeTab === 'comments' ? (
                  <EmbeddedComments
@@ -166,7 +156,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                )}
             </div>
 
-            {/* DESKTOP COMMENTS SECTION */}
             <div className="hidden lg:block mt-5">
                <EmbeddedComments
                  videoId={selectedVideo.id}
@@ -175,7 +164,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             </div>
           </div>
 
-          {/* RIGHT COLUMN (SIDEBAR PLAYLIST) */}
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
             {playlistItems}
