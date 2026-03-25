@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -30,24 +29,32 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     try {
       setIsLoading(true);
 
-      const data = await createCheckoutSession({
-        amount: Number(amount),
-        title: videoTitle || "Tip The Guy / Patron"
+      const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: Number(amount),
+            title: videoTitle || "Tip The Guy / Patron"
+          }),
+          cache: 'no-store'
       });
 
+      const data = await response.json();
+
       if (data?.url) {
+        // Natychmiastowe przekierowanie po otrzymaniu świeżego URL
         window.location.assign(data.url);
       } else if (data?.error) {
-        if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
+        if (response.status === 401 || data.error.includes("AUTH_REQUIRED")) {
           alert("Twoja sesja wygasła. Zaloguj się ponownie.");
           openSignIn();
         } else {
-          alert("Błąd: " + data.error);
+          alert("Błąd: " + (data.message || data.error));
         }
       }
     } catch (error: any) {
       console.error("Payment error", error);
-      alert("Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę.");
+      alert("Błąd połączenia z systemem płatności. Spróbuj odświeżyć stronę.");
     } finally {
       setIsLoading(false);
     }
