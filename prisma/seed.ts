@@ -34,7 +34,7 @@ async function main() {
   await prisma.video.upsert({
     where: { slug: 'secret-project' },
     update: {
-      isMain: true,
+      isMainFeatured: true,
     },
     create: {
       creatorId: creator.id,
@@ -44,7 +44,7 @@ async function main() {
       thumbnailUrl: 'https://picsum.photos/seed/secret/1200/675',
       description: 'To jest mój sekretny projekt, który zmieni wszystko.',
       tier: AccessTier.PUBLIC,
-      isMain: true,
+      isMainFeatured: true,
       publishedAt: new Date(),
     },
   });

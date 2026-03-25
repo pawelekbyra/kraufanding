@@ -33,10 +33,9 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { id, title, slug, description, videoUrl, thumbnailUrl, tier, likesCount, views, isMain } = body;
+  const { id, title, slug, description, videoUrl, thumbnailUrl, tier, likesCount, views, isMainFeatured } = body;
 
   try {
-    // If we have an ID, we update. If not, we create.
     if (id) {
       const updated = await prisma.video.update({
         where: { id },
@@ -49,26 +48,23 @@ export async function POST(req: Request) {
           tier,
           likesCount: parseInt(likesCount) || 0,
           views: parseInt(views) || 0,
-          isMain: !!isMain
+          isMainFeatured: !!isMainFeatured
         }
       });
 
-      // If this video is marked as main, unset isMain for all other videos
-      if (isMain) {
+      if (isMainFeatured) {
         await prisma.video.updateMany({
           where: { id: { not: id } },
-          data: { isMain: false }
+          data: { isMainFeatured: false }
         });
       }
 
       return NextResponse.json(updated);
     } else {
-      // Create logic requires a creator. Ensure at least one creator exists.
       let creator = await prisma.creator.findFirst();
       if (!creator) {
-        // Create a default creator for Paweł if none exists
         const user = await prisma.user.findFirst({ where: { email: ADMIN_EMAIL } });
-        if (!user) return NextResponse.json({ error: 'Admin user not found in DB. Please log in first.' }, { status: 400 });
+        if (!user) return NextResponse.json({ error: 'Admin user not found in DB.' }, { status: 400 });
 
         creator = await prisma.creator.create({
           data: {
@@ -90,14 +86,14 @@ export async function POST(req: Request) {
           tier: tier || 'PUBLIC',
           likesCount: parseInt(likesCount) || 0,
           views: parseInt(views) || 0,
-          isMain: !!isMain
+          isMainFeatured: !!isMainFeatured
         }
       });
 
-      if (isMain) {
+      if (isMainFeatured) {
         await prisma.video.updateMany({
           where: { id: { not: created.id } },
-          data: { isMain: false }
+          data: { isMainFeatured: false }
         });
       }
 
