@@ -52,13 +52,63 @@ export class UserService {
     return user?.totalPaid || 0;
   }
 
-  static async subscribeToCreator(userId: string, creatorId: string) {
-    return await prisma.subscription.upsert({
+  static async isSubscribed(clerkUserId: string, creatorId: string) {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true }
+    });
+    if (!user) return false;
+
+    const sub = await prisma.subscription.findUnique({
       where: {
-        userId_creatorId: { userId, creatorId }
-      },
-      update: {},
-      create: { userId, creatorId }
+        userId_creatorId: {
+          userId: user.id,
+          creatorId
+        }
+      }
+    });
+    return !!sub;
+  }
+
+  static async toggleSubscription(clerkUserId: string, creatorId: string) {
+    const user = await this.getOrCreateUser(clerkUserId);
+
+    return await prisma.$transaction(async (tx) => {
+      const existing = await tx.subscription.findUnique({
+        where: {
+          userId_creatorId: {
+            userId: user.id,
+            creatorId
+          }
+        }
+      });
+
+      if (existing) {
+        await tx.subscription.delete({
+          where: { id: existing.id }
+        });
+
+        await tx.creator.update({
+          where: { id: creatorId },
+          data: { subscribersCount: { decrement: 1 } }
+        });
+
+        return { isSubscribed: false };
+      } else {
+        await tx.subscription.create({
+          data: {
+            userId: user.id,
+            creatorId: creatorId
+          }
+        });
+
+        await tx.creator.update({
+          where: { id: creatorId },
+          data: { subscribersCount: { increment: 1 } }
+        });
+
+        return { isSubscribed: true };
+      }
     });
   }
 }

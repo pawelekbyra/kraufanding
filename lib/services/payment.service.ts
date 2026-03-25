@@ -68,7 +68,8 @@ export class PaymentService {
 
   private static async processCompletedSession(session: Stripe.Checkout.Session) {
     const clerkUserId = session.metadata?.clerkUserId;
-    const creatorId = session.metadata?.creatorId || null;
+    const creatorIdRaw = session.metadata?.creatorId;
+    const creatorId = (creatorIdRaw && creatorIdRaw !== "") ? creatorIdRaw : null;
     const amountPaid = (session.amount_total || 0) / 100;
     const currency = session.currency?.toUpperCase() || 'EUR';
 
