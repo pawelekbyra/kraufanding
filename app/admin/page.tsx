@@ -12,8 +12,9 @@ export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
   const [creator, setCreator] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'videos' | 'channel'>('videos');
+  const [activeTab, setActiveTab] = useState<'videos' | 'channel' | 'stats'>('videos');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -53,7 +54,7 @@ export default function AdminPanel() {
   const fetchAll = async () => {
     setIsLoading(true);
     try {
-        await Promise.all([fetchVideos(), fetchCreator()]);
+        await Promise.all([fetchVideos(), fetchCreator(), fetchStats()]);
     } finally {
         setIsLoading(false);
     }
@@ -85,6 +86,16 @@ export default function AdminPanel() {
     } catch (err) {
         console.error("Failed to fetch creator", err);
     }
+  }
+
+  const fetchStats = async () => {
+      try {
+          const res = await fetch("/api/admin/stats");
+          const data = await res.json();
+          setStats(data);
+      } catch (err) {
+          console.error("Failed to fetch stats", err);
+      }
   }
 
   const handleEdit = (vid: any) => {
@@ -167,7 +178,7 @@ export default function AdminPanel() {
   }
 
   if (!isAdmin || isLoading) {
-    return <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center font-serif">Verifying Access...</div>;
+    return <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center font-serif">Weryfikacja dostępu...</div>;
   }
 
   return (
@@ -175,15 +186,15 @@ export default function AdminPanel() {
       <div className="max-w-6xl mx-auto space-y-12">
         <header className="flex justify-between items-end border-b-2 border-[#1a1a1a] pb-6">
           <div className="space-y-1">
-            <h1 className="text-4xl font-black uppercase tracking-tighter italic">Control Center</h1>
-            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Administrator Access // Verified: {adminEmail}</p>
+            <h1 className="text-4xl font-black uppercase tracking-tighter italic">Panel Twórcy</h1>
+            <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Dostęp Administratora // Zweryfikowano: {adminEmail}</p>
           </div>
           <div className="flex gap-4">
             <button
               onClick={handleCreateNew}
               className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest px-6 shadow-brutalist-sm"
             >
-              <Plus size={16} className="mr-2" /> New Upload
+              <Plus size={16} className="mr-2" /> Nowy Film
             </button>
           </div>
         </header>
@@ -194,51 +205,51 @@ export default function AdminPanel() {
               <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 p-2 hover:bg-[#1a1a1a]/5 rounded-full">
                 <X size={24} />
               </button>
-              <h3 className="text-2xl font-black uppercase tracking-tight italic mb-8">{formData.id ? "Edit Video" : "Add New Video"}</h3>
+              <h3 className="text-2xl font-black uppercase tracking-tight italic mb-8">{formData.id ? "Edytuj Film" : "Dodaj Nowy Film"}</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Tytuł</label>
                     <input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-bold uppercase text-sm transition-all" required />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Slug</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Slug (URL)</label>
                     <input value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Description</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Opis</label>
                   <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-serif text-sm transition-all h-24" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Video URL (Vimeo/YouTube)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Wideo (Vimeo/YouTube)</label>
                     <input value={formData.videoUrl} onChange={e => setFormData({...formData, videoUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Thumbnail URL</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Miniaturki</label>
                     <input value={formData.thumbnailUrl} onChange={e => setFormData({...formData, thumbnailUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                    <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Access Tier</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Poziom Dostępu</label>
                     <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-black uppercase text-xs transition-all">
-                      <option value="PUBLIC">Public</option>
-                      <option value="LOGGED_IN">Logged In</option>
-                      <option value="VIP1">VIP 1 (€5+)</option>
-                      <option value="VIP2">VIP 2 (€10+)</option>
+                      <option value="PUBLIC">Publiczny</option>
+                      <option value="LOGGED_IN">Zalogowani</option>
+                      <option value="VIP1">Patron (5€+)</option>
+                      <option value="VIP2">Sponsor (10€+)</option>
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Initial Likes</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Liczba Polubień</label>
                     <input type="number" value={formData.likesCount} onChange={e => setFormData({...formData, likesCount: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Initial Views</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Liczba Wyświetleń</label>
                     <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
                   </div>
                 </div>
@@ -250,11 +261,11 @@ export default function AdminPanel() {
                     onChange={e => setFormData({...formData, isMainFeatured: e.target.checked})}
                     className="w-5 h-5 accent-[#1a1a1a]"
                    />
-                   <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Set as Featured Material (Main Page)</label>
+                   <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Ustaw jako główny materiał (Hero)</label>
                 </div>
 
                 <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist">
-                  Save Changes
+                  Zapisz Zmiany
                 </button>
               </form>
             </div>
@@ -262,10 +273,10 @@ export default function AdminPanel() {
         )}
 
         <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <StatCard title="Total Videos" value={videos.length.toString()} icon={<Video size={20} />} />
-          <StatCard title="Subscribers" value={creator?.subscribersCount?.toLocaleString() || "0"} icon={<Plus size={20} />} />
-          <StatCard title="Channel Name" value={creator?.name || "Not set"} icon={<Star size={20} />} />
-          <StatCard title="Total Revenue" value="LIVE" icon={<BarChart3 size={20} />} />
+          <StatCard title="Wszystkie Filmy" value={stats?.totalVideos?.toString() || videos.length.toString()} icon={<Video size={20} />} />
+          <StatCard title="Użytkownicy" value={stats?.totalUsers?.toString() || "0"} icon={<Plus size={20} />} />
+          <StatCard title="Przychód" value={`€${stats?.totalRevenue?.toFixed(2) || "0.00"}`} icon={<BarChart3 size={20} />} />
+          <StatCard title="Subskrypcje" value={creator?.subscribersCount?.toLocaleString() || "0"} icon={<Star size={20} />} />
         </section>
 
         <div className="flex border-b-2 border-[#1a1a1a]/10">
@@ -273,30 +284,36 @@ export default function AdminPanel() {
                 onClick={() => setActiveTab('videos')}
                 className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'videos' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
             >
-                Materials
+                Materiały
+            </button>
+            <button
+                onClick={() => setActiveTab('stats')}
+                className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'stats' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
+            >
+                Finanse
             </button>
             <button
                 onClick={() => setActiveTab('channel')}
                 className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'channel' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
             >
-                Channel Settings
+                Ustawienia Kanału
             </button>
         </div>
 
         {activeTab === 'videos' ? (
           <section className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-black uppercase tracking-tight italic">Manage Materials</h2>
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">Zarządzaj Materiałami</h2>
             </div>
             <div className="bg-white border-2 border-[#1a1a1a] shadow-brutalist overflow-hidden">
               <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#1a1a1a] text-white uppercase text-[10px] font-black tracking-widest">
                   <th className="p-4">Status</th>
-                  <th className="p-4">Title</th>
-                  <th className="p-4">Tier</th>
-                  <th className="p-4">Stats</th>
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="p-4">Tytuł</th>
+                  <th className="p-4">Dostęp</th>
+                  <th className="p-4">Statystyki</th>
+                  <th className="p-4 text-right">Akcje</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1a1a1a]/10">
@@ -304,9 +321,9 @@ export default function AdminPanel() {
                   <tr key={vid.id} className="hover:bg-[#1a1a1a]/5 transition-colors group">
                     <td className="p-4">
                        {vid.isMainFeatured ? (
-                         <span className="bg-primary text-white text-[8px] font-black uppercase px-2 py-1 rounded">Main</span>
+                         <span className="bg-primary text-white text-[8px] font-black uppercase px-2 py-1 rounded">Hero</span>
                        ) : (
-                         <span className="bg-[#1a1a1a]/10 text-[#1a1a1a]/40 text-[8px] font-black uppercase px-2 py-1 rounded">Archived</span>
+                         <span className="bg-[#1a1a1a]/10 text-[#1a1a1a]/40 text-[8px] font-black uppercase px-2 py-1 rounded">Lista</span>
                        )}
                     </td>
                     <td className="p-4">
@@ -325,6 +342,7 @@ export default function AdminPanel() {
                     <td className="p-4 font-mono text-[10px] space-x-3">
                        <span className="text-[#1a1a1a]/60">L: {vid.likesCount}</span>
                        <span className="text-[#1a1a1a]/60">V: {vid.views}</span>
+                       <span className="text-[#1a1a1a]/60">C: {vid._count?.comments || 0}</span>
                     </td>
                     <td className="p-4 text-right space-x-2">
                        <button onClick={() => handleEdit(vid)} className="p-2 hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent hover:border-[#1a1a1a]"><Edit size={16} /></button>
@@ -336,48 +354,87 @@ export default function AdminPanel() {
             </table>
           </div>
         </section>
+        ) : activeTab === 'stats' ? (
+            <section className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="space-y-1">
+                    <h2 className="text-2xl font-black uppercase tracking-tight italic">Historia Wpłat</h2>
+                    <p className="text-xs text-[#1a1a1a]/40 font-bold uppercase">Ostatnie 10 udanych transakcji w systemie Stripe.</p>
+                </div>
+
+                <div className="bg-white border-2 border-[#1a1a1a] shadow-brutalist overflow-hidden">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-[#1a1a1a] text-white uppercase text-[10px] font-black tracking-widest">
+                                <th className="p-4">Użytkownik</th>
+                                <th className="p-4">Kwota</th>
+                                <th className="p-4">Status</th>
+                                <th className="p-4 text-right">Data</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#1a1a1a]/10">
+                            {stats?.recentTransactions?.map((tx: any) => (
+                                <tr key={tx.id} className="hover:bg-[#1a1a1a]/5 transition-colors">
+                                    <td className="p-4 font-mono text-xs">{tx.user?.email}</td>
+                                    <td className="p-4 font-black">€{tx.amount.toFixed(2)}</td>
+                                    <td className="p-4">
+                                        <span className="bg-success/10 text-success text-[8px] font-black uppercase px-2 py-1 rounded">Zakończono</span>
+                                    </td>
+                                    <td className="p-4 text-right font-mono text-[10px] text-[#1a1a1a]/40">
+                                        {new Date(tx.createdAt).toLocaleString('pl-PL')}
+                                    </td>
+                                </tr>
+                            ))}
+                            {(!stats?.recentTransactions || stats.recentTransactions.length === 0) && (
+                                <tr>
+                                    <td colSpan={4} className="p-12 text-center text-[#1a1a1a]/20 font-black uppercase italic">Brak zarejestrowanych wpłat</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         ) : (
           <section className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
              <div className="space-y-1">
-                <h2 className="text-2xl font-black uppercase tracking-tight italic">Channel Identity</h2>
-                <p className="text-xs text-[#1a1a1a]/40 font-bold uppercase">Update how your channel appears to visitors.</p>
+                <h2 className="text-2xl font-black uppercase tracking-tight italic">Tożsamość Kanału</h2>
+                <p className="text-xs text-[#1a1a1a]/40 font-bold uppercase">Aktualizuj dane widoczne dla Twoich widzów.</p>
              </div>
 
              <form onSubmit={handleCreatorSubmit} className="space-y-6 bg-white border-2 border-[#1a1a1a] p-8 shadow-brutalist">
                 <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Creator Display Name</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Nazwa Twórcy</label>
                     <input
                         value={creatorForm.name}
                         onChange={e => setCreatorForm({...creatorForm, name: e.target.value})}
-                        placeholder="e.g. Paweł Polutek"
+                        placeholder="np. Paweł Polutek"
                         className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-black uppercase text-lg transition-all"
                         required
                     />
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Channel Slug (polutek.pl/@slug)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Slug Kanału (polutek.pl/@slug)</label>
                     <input
                         value={creatorForm.slug}
                         onChange={e => setCreatorForm({...creatorForm, slug: e.target.value})}
-                        placeholder="e.g. polutek"
+                        placeholder="np. polutek"
                         className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-mono text-sm transition-all"
                         required
                     />
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Channel Biography</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Biografia Kanału</label>
                     <textarea
                         value={creatorForm.bio}
                         onChange={e => setCreatorForm({...creatorForm, bio: e.target.value})}
-                        placeholder="Write something about yourself..."
+                        placeholder="Napisz coś o swoim kanale..."
                         className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-serif text-base transition-all h-32 leading-relaxed"
                     />
                 </div>
 
                 <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist transition-all active:translate-x-1 active:translate-y-1 active:shadow-none">
-                    Update Channel Settings
+                    Aktualizuj Ustawienia Kanału
                 </button>
              </form>
           </section>

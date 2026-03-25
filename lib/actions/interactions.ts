@@ -22,13 +22,21 @@ export async function toggleVideoLike(videoId: string) {
   const { userId: clerkUserId } = auth();
   if (!clerkUserId) throw new Error("Unauthorized");
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { clerkUserId },
     select: { id: true }
   });
 
   if (!user) {
-    throw new Error("User not found in database. Please wait for synchronization or try again later.");
+    const clerkUser = await currentUser();
+    if (!clerkUser) throw new Error("Clerk User not found");
+    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+    const imageUrl = clerkUser.imageUrl || null;
+    user = await prisma.user.upsert({
+      where: { clerkUserId },
+      update: { email, imageUrl },
+      create: { clerkUserId, email, imageUrl }
+    });
   }
 
   return await prisma.$transaction(async (tx) => {
