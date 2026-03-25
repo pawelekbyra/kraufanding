@@ -63,11 +63,16 @@ export default function PremiumWrapper({
 
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isVIPGated = requiredTier === AccessTier.VIP1 || requiredTier === AccessTier.VIP2;
-  const minAmount = requiredTier === AccessTier.VIP1 ? 3 : 10;
 
-  // English/Technical labels for the "Brutalist" style
+  // Technical labels matching the requested "identical" thumbnail style
   const mainTitle = "TOP SECRET";
-  const subTitle = !isLoggedIn ? "Sign in to unlock" : `Become a Patron (€${minAmount}+)`;
+
+  // LOGIC:
+  // 1. If not logged in and tier is LOGGED_IN -> "Sign in to unlock"
+  // 2. If tier is VIP1/VIP2 -> "Become a Patron" (regardless of login state, but buttons differ)
+  const subTitle = (requiredTier === AccessTier.LOGGED_IN && !isLoggedIn)
+    ? "Sign in to unlock"
+    : "Become a Patron";
 
   if (variant === 'thumbnail') {
     return (
@@ -95,7 +100,6 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
   return (
     <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative">
       <div className="aspect-video bg-[#1a1a1a] rounded-2xl overflow-hidden relative group border-2 border-white/5 h-full w-full shadow-2xl">
-         {/* Background with subtle color tint */}
          <div className="absolute inset-0 z-0">
             <div className={`w-full h-full opacity-50 blur-[15px] transition-all duration-1000 group-hover:scale-110 ${isVIPGated ? 'bg-gradient-to-br from-amber-500/20 to-yellow-600/20' : 'bg-gradient-to-br from-blue-500/20 to-indigo-600/20'}`} />
          </div>

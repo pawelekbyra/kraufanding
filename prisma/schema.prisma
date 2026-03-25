@@ -50,7 +50,7 @@ model Video {
   tier          AccessTier @default(PUBLIC)
   views         Int       @default(0)
   likesCount    Int       @default(0)
-  isMain        Boolean   @default(false) // Whether this is the featured video on home page
+  isMainFeatured Boolean  @default(false) // This video is the "One Hero Video" on homepage
   publishedAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

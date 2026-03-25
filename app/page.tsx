@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
   if (allVideosDb.length > 0) {
     // DB Content exists
-    const mainVideoDb = allVideosDb.find(v => v.isMain) || allVideosDb[0];
+    const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
     mainVideo = mapDbToVideo(mainVideoDb);
     allVideos = allVideosDb.map(mapDbToVideo);
   } else {
@@ -65,7 +65,7 @@ function mapDbToVideo(v: any): Video {
     tier: v.tier,
     views: v.views,
     likesCount: v.likesCount,
-    isMain: v.isMain,
+    isMain: v.isMainFeatured,
     publishedAt: v.publishedAt,
     creator: v.creator ? {
       id: v.creator.id,

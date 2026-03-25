@@ -12,7 +12,7 @@ export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -23,7 +23,7 @@ export default function AdminPanel() {
     tier: "PUBLIC",
     likesCount: 0,
     views: 0,
-    isMain: false
+    isMainFeatured: false
   });
 
   const adminEmail = "pawel.perfect@gmail.com";
@@ -63,7 +63,7 @@ export default function AdminPanel() {
       tier: vid.tier,
       likesCount: vid.likesCount,
       views: vid.views,
-      isMain: vid.isMain
+      isMainFeatured: vid.isMainFeatured
     });
   };
 
@@ -79,7 +79,7 @@ export default function AdminPanel() {
       tier: "PUBLIC",
       likesCount: 0,
       views: 0,
-      isMain: false
+      isMainFeatured: false
     });
   };
 
@@ -183,8 +183,8 @@ export default function AdminPanel() {
                 <div className="flex items-center gap-3 bg-[#1a1a1a]/5 p-4 border-2 border-dashed border-[#1a1a1a]/10">
                    <input
                     type="checkbox"
-                    checked={formData.isMain}
-                    onChange={e => setFormData({...formData, isMain: e.target.checked})}
+                    checked={formData.isMainFeatured}
+                    onChange={e => setFormData({...formData, isMainFeatured: e.target.checked})}
                     className="w-5 h-5 accent-[#1a1a1a]"
                    />
                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Set as Featured Material (Main Page)</label>
@@ -200,7 +200,7 @@ export default function AdminPanel() {
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard title="Total Videos" value={videos.length.toString()} icon={<Video size={20} />} />
-          <StatCard title="Featured" value={videos.find(v => v.isMain)?.title.split(' ')[0] || "None"} icon={<Star size={20} />} />
+          <StatCard title="Featured" value={videos.find(v => v.isMainFeatured)?.title.split(' ')[0] || "None"} icon={<Star size={20} />} />
           <StatCard title="Total Revenue" value="LIVE" icon={<BarChart3 size={20} />} />
         </section>
 
@@ -221,7 +221,7 @@ export default function AdminPanel() {
                 {videos.map((vid) => (
                   <tr key={vid.id} className="hover:bg-[#1a1a1a]/5 transition-colors group">
                     <td className="p-4">
-                       {vid.isMain ? (
+                       {vid.isMainFeatured ? (
                          <span className="bg-primary text-white text-[8px] font-black uppercase px-2 py-1 rounded">Main</span>
                        ) : (
                          <span className="bg-[#1a1a1a]/10 text-[#1a1a1a]/40 text-[8px] font-black uppercase px-2 py-1 rounded">Archived</span>
