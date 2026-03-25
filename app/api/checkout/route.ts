@@ -22,14 +22,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 
-    // Ensure user exists in local database
-    const localUser = await prisma.user.findUnique({
-      where: { clerkUserId },
-      select: { id: true }
-    });
-
-    if (!localUser) {
-      return NextResponse.json({ error: "Sync in progress", message: "Proszę chwilę odczekać na synchronizację konta." }, { status: 403 });
+    // Sync user to DB if not exists (Lazy Sync Fallback)
+    try {
+        const user = await prisma.user.findUnique({ where: { clerkUserId } });
+        if (!user) {
+            const clerkUser = await currentUser();
+            if (clerkUser) {
+                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+                const imageUrl = clerkUser.imageUrl || null;
+                await prisma.user.upsert({
+                    where: { clerkUserId },
+                    update: { email, imageUrl },
+                    create: { clerkUserId, email, imageUrl }
+                });
+            }
+        }
+    } catch (e) {
+        console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
     }
 
     const body = await req.json();
