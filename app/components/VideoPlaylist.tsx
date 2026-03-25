@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { createCheckoutSession } from '@/lib/actions/checkout';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -30,19 +29,29 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     try {
       setIsLoading(true);
 
-      const data = await createCheckoutSession({
-        amount: Number(amount),
-        title: videoTitle || "Tip The Guy / Patron"
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: Number(amount),
+          title: videoTitle || "Tip The Guy / Patron"
+        }),
+        cache: 'no-store',
       });
+
+      const data = await response.json();
 
       if (data?.url) {
         window.location.assign(data.url);
-      } else if (data?.error) {
-        if (data.error.includes("AUTH_REQUIRED") || data.error.includes("zaloguj się")) {
+      } else if (data?.error || !response.ok) {
+        const errorMsg = data?.message || data?.error || "Wystąpił błąd podczas tworzenia sesji płatności.";
+        if (errorMsg.includes("Unauthorized") || errorMsg.includes("AUTH_REQUIRED") || errorMsg.includes("zaloguj się")) {
           alert("Twoja sesja wygasła. Zaloguj się ponownie.");
           openSignIn();
         } else {
-          alert("Błąd: " + data.error);
+          alert("Błąd: " + errorMsg);
         }
       }
     } catch (error: any) {
