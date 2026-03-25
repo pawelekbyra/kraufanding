@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -22,20 +23,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized", message: "Proszę zaloguj się ponownie, aby dokonać wpłaty." }, { status: 401 });
     }
 
-    // Sync user to DB if not exists (Lazy Sync Fallback)
+    // Ultra-Robust Lazy Sync Fallback - Ensure DB user exists before Stripe call
     try {
-        const user = await prisma.user.findUnique({ where: { clerkUserId } });
-        if (!user) {
+        let localUser = await prisma.user.findUnique({ where: { clerkUserId } });
+
+        if (!localUser) {
             const clerkUser = await currentUser();
-            if (clerkUser) {
-                const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-                const imageUrl = clerkUser.imageUrl || null;
-                await prisma.user.upsert({
-                    where: { clerkUserId },
-                    update: { email, imageUrl },
-                    create: { clerkUserId, email, imageUrl }
-                });
-            }
+            const email = clerkUser?.primaryEmailAddress?.emailAddress || clerkUser?.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
+            const imageUrl = clerkUser?.imageUrl || null;
+
+            await prisma.user.upsert({
+                where: { clerkUserId },
+                update: { email, imageUrl },
+                create: { clerkUserId, email, imageUrl }
+            });
         }
     } catch (e) {
         console.error("[STRIPE_CHECKOUT_USER_SYNC_ERROR]", e);
