@@ -1,5 +1,5 @@
 import { get } from "@vercel/blob";
-import { getVideoAccess } from "./access";
+import { ContentService } from "./services/content.service";
 import { NextResponse } from 'next/server';
 
 /**
@@ -11,7 +11,7 @@ export async function getGatedBlobResponse(
   videoId: string,
   blobUrl: string
 ) {
-  const { hasAccess } = await getVideoAccess(clerkUserId, videoId);
+  const { hasAccess } = await ContentService.getVideoAccess(clerkUserId, videoId);
 
   if (!hasAccess) {
     return new NextResponse('Forbidden', { status: 403 });
