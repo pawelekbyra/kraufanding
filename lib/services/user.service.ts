@@ -78,7 +78,8 @@ export class UserService {
         const user = await prisma.user.findUnique({
             where: { clerkUserId },
             select: { id: true }
-        });
+        }).catch(() => null);
+
         if (!user) return false;
 
         // Defensive check for Subscription table existence

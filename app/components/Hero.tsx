@@ -99,6 +99,7 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
 
       if (!res.ok) {
         if (res.status === 401) {
+            alert("Błąd autoryzacji. Spróbuj się wylogować i zalogować ponownie (lub wyczyść ciasteczka).");
             openSignIn();
             // Rollback on 401
             setIsSubscribed(prevSubscribed);
@@ -108,9 +109,16 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
         throw new Error("Subscription update failed");
       }
       const data = await res.json();
+      if (data.error) {
+        alert("Błąd bazy danych: " + data.error);
+        setIsSubscribed(prevSubscribed);
+        setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
+        return;
+      }
       setIsSubscribed(data.isSubscribed);
     } catch (err) {
       console.error("Error updating subscription:", err);
+      alert("Wystąpił nieoczekiwany błąd podczas subskrypcji.");
       // Rollback on error
       setIsSubscribed(prevSubscribed);
       setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
