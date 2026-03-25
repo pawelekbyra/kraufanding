@@ -61,25 +61,35 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   };
 
   return (
-    <div className="space-y-4 font-serif px-2" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-6 shadow-lg group relative overflow-hidden transition-all duration-500">
+    <div className="space-y-4 font-mono px-2" id="donations">
+        <div className="bg-white border-2 border-black border-dashed rounded-none p-6 relative overflow-hidden transition-all duration-500 shadow-brutalist">
+          {/* Stamp Effect */}
+          <div className="absolute -right-4 -top-4 w-24 h-24 border-4 border-primary/20 rounded-full flex items-center justify-center rotate-12 pointer-events-none uppercase font-black text-[10px] text-primary/20">
+            <div className="border-2 border-primary/20 rounded-full w-20 h-20 flex items-center justify-center">
+                POLUTEK.PL
+            </div>
+          </div>
+
           <div className="space-y-4 relative z-10">
             <div className="space-y-1">
-              <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase group-hover:text-primary transition-colors">
-                Become a Patron
-              </h3>
-              <p className="text-[#1a1a1a]/60 text-sm leading-relaxed">
-                Tip any amount to unlock permanent VIP access levels. All contributions directly support the channel.
+              <div className="flex justify-between items-start">
+                <h3 className="text-xl font-black text-[#1a1a1a] tracking-tighter uppercase">
+                  Payment Authorization Request
+                </h3>
+                <span className="text-[10px] opacity-30">REF: TIP-{new Date().getFullYear()}</span>
+              </div>
+              <p className="text-[#1a1a1a]/60 text-[11px] leading-relaxed uppercase">
+                Tip any amount and get lifetime access to Paweł Polutek’s patron-only content.
               </p>
             </div>
 
-            <div className="space-y-2 pt-2">
-              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 italic">
-                Your support amount (min. €5)
+            <div className="space-y-2 pt-2 border-t border-black/10 border-dashed">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40">
+                / support_amount_eur
               </label>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="text-xl font-black text-[#1a1a1a]/20 group-focus-within/input:text-primary transition-colors">€</span>
+                  <span className="text-xl font-black text-[#1a1a1a]/20 transition-colors">€</span>
                 </div>
                 <input
                   type="number"
@@ -90,7 +100,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     const val = e.target.value;
                     setAmount(val === '' ? '' : parseInt(val));
                   }}
-                  className="w-full bg-[#FDFBF7] border-2 border-[#1a1a1a]/10 rounded-2xl py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                  className="w-full bg-white border-2 border-black rounded-none py-3 pl-10 pr-4 font-black text-2xl text-[#1a1a1a] focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                 />
               </div>
               {typeof amount === 'number' && amount < 5 && (
@@ -102,10 +112,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < 5}
-              className={`btn bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none btn-block rounded-xl font-black tracking-widest transition-all duration-300 ${isLoading ? 'loading' : ''} ${amount === '' || amount < 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`w-full bg-black text-white hover:bg-primary border-none py-4 rounded-none font-black tracking-[0.3em] uppercase transition-all duration-300 shadow-brutalist-sm hover:-translate-y-1 active:translate-y-0 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 5 ? 'opacity-30 cursor-not-allowed' : ''}`}
             >
-              {isLoading ? 'LOADING...' : 'TIP THE GUY'}
+              {isLoading ? 'PROCESSING...' : 'TIP THE GUY'}
             </button>
+
+            <div className="pt-2 text-[9px] opacity-40 leading-tight">
+                * By clicking the button above you initiate an on-demand Stripe Checkout session. This action cannot be cached or pre-fetched.
+            </div>
           </div>
         </div>
     </div>
