@@ -19,7 +19,7 @@ export async function getVideoAccess(clerkUserId: string | null, videoId: string
   if (!video) {
     const mock = mockVideos.find(v => v.id === videoId);
     if (mock) {
-        video = { tier: mock.tier, isMainFeatured: mock.isMain } as any;
+        video = { tier: mock.tier, isMainFeatured: mock.isMainFeatured } as any;
     }
   }
 
