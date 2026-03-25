@@ -70,13 +70,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             <span className="font-mono text-[10px] font-bold text-center uppercase">Approved<br/>By<br/>Polutek</span>
           </div>
 
-          <div className="space-y-6 relative z-10">
+          <div className="space-y-2 relative z-10">
             {/* Header section */}
-            <div className="pb-4">
-              <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-                BECOME A PATRON
-              </h3>
-            </div>
+            <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
+              BECOME A PATRON
+            </h3>
 
             <div className="space-y-4">
               <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
