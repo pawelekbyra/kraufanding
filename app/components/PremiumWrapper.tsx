@@ -49,7 +49,8 @@ export default function PremiumWrapper({
     return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
   }
 
-  if (hasAccess) {
+  // PUBLIC videos bypass the paywall
+  if (requiredTier === AccessTier.PUBLIC || hasAccess) {
     return (
       <div className="animate-in fade-in duration-500 h-full w-full">
         {children}
@@ -64,14 +65,14 @@ export default function PremiumWrapper({
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const isVIPGated = requiredTier === AccessTier.VIP1 || requiredTier === AccessTier.VIP2;
 
-  // Technical labels matching the requested "identical" thumbnail style
+  // Technical labels as requested
   const mainTitle = "TOP SECRET";
 
-  // LOGIC:
-  // 1. If not logged in and tier is LOGGED_IN -> "Sign in to unlock"
-  // 2. If tier is VIP1/VIP2 -> "Become a Patron" (regardless of login state, but buttons differ)
+  // Logic:
+  // 1. If not logged in and tier is LOGGED_IN -> "Sign in to watch"
+  // 2. If tier is VIP1/VIP2 -> "Become a Patron"
   const subTitle = (requiredTier === AccessTier.LOGGED_IN && !isLoggedIn)
-    ? "Sign in to unlock"
+    ? "Log in to watch"
     : "Become a Patron";
 
   if (variant === 'thumbnail') {
