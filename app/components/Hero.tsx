@@ -94,7 +94,7 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
       <div className="w-full">
         {/* FEATURED MEDIA (VIDEO PLAYER) */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
-          <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
+          <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             {(videoUrl) => (
               <>
                 {videoUrl ? (

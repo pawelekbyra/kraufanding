@@ -25,6 +25,53 @@ export class ContentService {
     }
   }
 
+  static async getCreatorBySlug(slug: string) {
+    try {
+        const creator = await prisma.creator.findUnique({
+            where: { slug },
+            include: {
+                videos: {
+                    orderBy: { createdAt: 'desc' }
+                }
+            }
+        });
+
+        if (!creator && slug === 'polutek') {
+            const mainMock = mockVideos[0];
+            return {
+                id: mainMock.creator?.id || 'c1',
+                name: mainMock.creator?.name || 'Paweł Polutek',
+                slug: 'polutek',
+                bio: mainMock.creator?.bio || 'Twórca platformy polutek.pl.',
+                subscribersCount: mainMock.creator?.subscribersCount || 1200000,
+                videos: mockVideos.map(v => ({
+                    ...v,
+                    creator: undefined
+                }))
+            };
+        }
+
+        return creator;
+    } catch (e) {
+        console.error("[GET_CREATOR_BY_SLUG_ERROR]", e);
+        if (slug === 'polutek') {
+            const mainMock = mockVideos[0];
+            return {
+                id: mainMock.creator?.id || 'c1',
+                name: mainMock.creator?.name || 'Paweł Polutek',
+                slug: 'polutek',
+                bio: mainMock.creator?.bio || 'Twórca platformy polutek.pl.',
+                subscribersCount: mainMock.creator?.subscribersCount || 1200000,
+                videos: mockVideos.map(v => ({
+                    ...v,
+                    creator: undefined
+                }))
+            };
+        }
+        return null;
+    }
+  }
+
   static async getVideoAccess(clerkUserId: string | null, videoId: string) {
     try {
       const video = await this.getVideoById(videoId);
