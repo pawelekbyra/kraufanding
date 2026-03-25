@@ -72,9 +72,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
           <div className="space-y-6 relative z-10">
             {/* Header section */}
-            <div className="border-b-2 border-dashed border-black pb-4">
+            <div className="pb-4">
               <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-                BRAMKA NAPIWKOWA
+                BECOME A PATRON
               </h3>
             </div>
 

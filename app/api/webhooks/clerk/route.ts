@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -77,12 +78,24 @@ export async function POST(req: Request) {
       const { id: clerkUserId } = evt.data;
       if (clerkUserId) {
           try {
-              await prisma.user.delete({
-                  where: { clerkUserId }
+              // SOFT DELETE / ANONYMIZATION:
+              // We don't delete the record to keep Transaction history intact.
+              // We clear Clerk/Stripe IDs and personal data.
+              const anonymousId = crypto.randomUUID();
+              await prisma.user.update({
+                  where: { clerkUserId },
+                  data: {
+                      clerkUserId: `deleted_${clerkUserId}_${anonymousId}`, // Change to avoid future unique constraint conflicts
+                      email: `deleted_${anonymousId}@deleted.com`,
+                      name: "Usunięty Użytkownik",
+                      imageUrl: null,
+                      stripeCustomerId: null,
+                      isDeleted: true
+                  }
               });
-              console.log(`User ${clerkUserId} deleted via webhook.`);
+              console.log(`User ${clerkUserId} soft-deleted/anonymized via webhook.`);
           } catch (e) {
-              console.error(`Error deleting user ${clerkUserId}:`, e);
+              console.error(`Error soft-deleting user ${clerkUserId}:`, e);
           }
       }
   }
