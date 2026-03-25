@@ -84,7 +84,13 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  {video.title}
               </h4>
               <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
-                 <span>{video.creator?.name || 'Polutek Archive'}</span>
+                 <Link
+                   href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
+                   className="hover:text-[#0f0f0f] transition-colors hover:underline"
+                   onClick={(e) => e.stopPropagation()}
+                 >
+                   {video.creator?.name || 'Polutek Archive'}
+                 </Link>
                  <div className="flex items-center gap-1">
                     <span>{video.views?.toLocaleString('pl-PL')} wyświetleń</span>
                     <span>•</span>

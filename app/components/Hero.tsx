@@ -6,6 +6,7 @@ import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
+import Link from 'next/link';
 
 interface HeroProps {
   video: Video;
@@ -41,7 +42,10 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
   };
 
   const handleSubscribe = async () => {
-    if (!userId) return openSignIn();
+    if (!userId) {
+        openSignIn();
+        return;
+    }
     if (!video.creatorId) return;
 
     // Optimistic UI update
@@ -56,7 +60,13 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
         body: JSON.stringify({ creatorId: video.creatorId }),
       });
 
-      if (!res.ok) throw new Error("Subscription update failed");
+      if (!res.ok) {
+        if (res.status === 401) {
+            openSignIn();
+            throw new Error("Unauthorized");
+        }
+        throw new Error("Subscription update failed");
+      }
       const data = await res.json();
       setIsSubscribed(data.isSubscribed);
     } catch (err) {
@@ -111,11 +121,19 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
             <div className="flex items-center gap-3 min-w-0">
-               <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0">
+               <Link
+                 href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
+                 className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+               >
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'Polutek'}`} alt={video.creator?.name} className="w-full h-full object-cover" />
-               </div>
+               </Link>
                <div className="min-w-0 pr-1">
-                  <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{video.creator?.name || 'Polutek Archive'}</p>
+                  <Link
+                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
+                    className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
+                  >
+                    {video.creator?.name || 'Paweł Polutek'}
+                  </Link>
                   <p className="text-[12px] text-[#606060] whitespace-nowrap">{subscribersCount.toLocaleString('pl-PL')} subskrajberów</p>
                </div>
                <button
