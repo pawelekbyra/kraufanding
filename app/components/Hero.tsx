@@ -17,6 +17,11 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
   const { openSignIn } = useClerk();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscribersCount, setSubscribersCount] = useState(video.creator?.subscribersCount || 1200000);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [optimisticLike, addOptimisticLike] = useOptimistic(
     { isLiked: false, count: video.likesCount || 0 },
@@ -79,6 +84,10 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
       setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
     }
   };
+
+  if (!mounted) return (
+      <div className="w-full aspect-video bg-black rounded-xl animate-pulse" />
+  );
 
   return (
     <section className="bg-[#FDFBF7]">
