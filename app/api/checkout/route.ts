@@ -74,7 +74,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: session.url }, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0, must-revalidate',
+      }
+    });
   } catch (error: any) {
     console.error("[STRIPE_CHECKOUT_ERROR]", error);
     return NextResponse.json({

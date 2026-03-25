@@ -1,6 +1,7 @@
 'use server';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { unstable_noStore as noStore } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
@@ -14,6 +15,7 @@ export async function createCheckoutSession(params: {
   amount: number;
   title: string;
 }) {
+  noStore();
   try {
     if (!stripe) {
       return { error: "Stripe not configured" };
