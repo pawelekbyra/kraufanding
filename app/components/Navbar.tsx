@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
-import { User, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -66,15 +66,7 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <UserButton afterSignOutUrl="/">
-            <UserButton.MenuItems>
-              <UserButton.Link
-                label="Mój Profil"
-                href="/user-profile"
-                labelIcon={<User size={16} />}
-              />
-            </UserButton.MenuItems>
-          </UserButton>
+          <UserButton afterSignOutUrl="/" />
         </SignedIn>
       </div>
     </div>
