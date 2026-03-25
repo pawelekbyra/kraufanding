@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useOptimistic } from 'react';
+import React, { useOptimistic, useState, useEffect } from 'react';
 import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
@@ -14,6 +14,8 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ video }) => {
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscribersCount, setSubscribersCount] = useState(video.creator?.subscribersCount || 1200000);
 
   const [optimisticLike, addOptimisticLike] = useOptimistic(
     { isLiked: false, count: video.likesCount || 0 },
@@ -23,10 +25,46 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
     })
   );
 
+  useEffect(() => {
+    if (userId && video.creatorId) {
+      fetch(`/api/subscriptions?creatorId=${video.creatorId}`)
+        .then(res => res.json())
+        .then(data => setIsSubscribed(data.isSubscribed))
+        .catch(err => console.error("Error fetching subscription status:", err));
+    }
+  }, [userId, video.creatorId]);
+
   const handleLike = async () => {
     if (!userId) return openSignIn();
     addOptimisticLike(!optimisticLike.isLiked);
     // TODO: Implement toggleVideoLike
+  };
+
+  const handleSubscribe = async () => {
+    if (!userId) return openSignIn();
+    if (!video.creatorId) return;
+
+    // Optimistic UI update
+    const prevSubscribed = isSubscribed;
+    setIsSubscribed(!prevSubscribed);
+    setSubscribersCount(prev => prevSubscribed ? prev - 1 : prev + 1);
+
+    try {
+      const res = await fetch('/api/subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ creatorId: video.creatorId }),
+      });
+
+      if (!res.ok) throw new Error("Subscription update failed");
+      const data = await res.json();
+      setIsSubscribed(data.isSubscribed);
+    } catch (err) {
+      console.error("Error updating subscription:", err);
+      // Rollback on error
+      setIsSubscribed(prevSubscribed);
+      setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
+    }
   };
 
   return (
@@ -78,12 +116,18 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
                </div>
                <div className="min-w-0 pr-1">
                   <p className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate">{video.creator?.name || 'Polutek Archive'}</p>
-                  <p className="text-[12px] text-[#606060] whitespace-nowrap">{(video.creator?.subscribersCount || 1200000).toLocaleString('pl-PL')} subskrajberów</p>
+                  <p className="text-[12px] text-[#606060] whitespace-nowrap">{subscribersCount.toLocaleString('pl-PL')} subskrajberów</p>
                </div>
                <button
-                 className="text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0 bg-[#0f0f0f] text-white hover:bg-[#272727]"
+                 onClick={handleSubscribe}
+                 className={cn(
+                   "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
+                   isSubscribed
+                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
+                     : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
+                 )}
                >
-                 Subskrajb
+                 {isSubscribed ? 'Subskrybujesz' : 'Subskrajb'}
                </button>
             </div>
 
