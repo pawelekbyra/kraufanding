@@ -65,7 +65,7 @@ function mapDbToVideo(v: any): Video {
     tier: v.tier,
     views: v.views,
     likesCount: v.likesCount,
-    isMain: v.isMainFeatured,
+    isMainFeatured: v.isMainFeatured,
     publishedAt: v.publishedAt,
     creator: v.creator ? {
       id: v.creator.id,

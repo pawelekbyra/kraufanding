@@ -13,7 +13,7 @@ export const mockVideos: Video[] = [
     tier: "PUBLIC" as AccessTier,
     views: 124562,
     likesCount: 12400,
-    isMain: true,
+    isMainFeatured: true,
     publishedAt: new Date("2024-03-24"),
     creator: {
       id: "c1",
@@ -34,7 +34,7 @@ export const mockVideos: Video[] = [
     tier: "LOGGED_IN" as AccessTier,
     views: 45000,
     likesCount: 3200,
-    isMain: false,
+    isMainFeatured: false,
     publishedAt: new Date("2024-03-20"),
     creator: {
       id: "c1",
@@ -55,7 +55,7 @@ export const mockVideos: Video[] = [
     tier: "VIP1" as AccessTier,
     views: 28000,
     likesCount: 1500,
-    isMain: false,
+    isMainFeatured: false,
     publishedAt: new Date("2024-03-15"),
     creator: {
       id: "c1",
@@ -76,7 +76,7 @@ export const mockVideos: Video[] = [
     tier: "VIP2" as AccessTier,
     views: 12000,
     likesCount: 900,
-    isMain: false,
+    isMainFeatured: false,
     publishedAt: new Date("2024-03-10"),
     creator: {
       id: "c1",
