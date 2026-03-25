@@ -68,7 +68,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             )}
           >
             <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
-              <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
+              <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
                  {() => (
                    <img
                      src={video.thumbnailUrl}

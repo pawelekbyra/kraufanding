@@ -8,6 +8,7 @@ import { AccessTier } from "@prisma/client";
 interface PremiumWrapperProps {
   children: (videoUrl: string | null) => React.ReactNode;
   videoId: string;
+  videoUrl?: string;
   requiredTier?: AccessTier;
   isMainFeatured?: boolean;
   variant?: 'default' | 'thumbnail';
@@ -20,15 +21,21 @@ interface PremiumWrapperProps {
 export default function PremiumWrapper({
   children,
   videoId,
+  videoUrl: directUrl,
   requiredTier: initialTier,
   isMainFeatured,
   variant = 'default'
 }: PremiumWrapperProps) {
   const { userId, isLoaded } = useAuth();
   const [hasAccess, setHasAccess] = useState<boolean>(false);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(directUrl || null);
   const [dbTier, setDbTier] = useState<AccessTier | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const effectiveTier = initialTier || dbTier || "PUBLIC";
   const isPublic = isMainFeatured || effectiveTier === "PUBLIC";
@@ -41,6 +48,7 @@ export default function PremiumWrapper({
       // 1. Immediate resolution for public content
       if (isPublic) {
         setHasAccess(true);
+        if (directUrl) setVideoUrl(directUrl);
         setIsLoading(false);
         return;
       }
@@ -75,6 +83,10 @@ export default function PremiumWrapper({
 
     checkAccess();
   }, [userId, isLoaded, videoId, isPublic]);
+
+  if (!mounted) {
+    return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
+  }
 
   // Priority: 1. Main Featured, 2. Public, 3. Account Gated + Signed In
   if (isPublic || isUnlockedByAuth || hasAccess) {

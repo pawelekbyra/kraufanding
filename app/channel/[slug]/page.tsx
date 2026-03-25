@@ -8,23 +8,12 @@ import Link from 'next/link';
 import PremiumWrapper from '@/app/components/PremiumWrapper';
 import { cn } from '@/lib/utils';
 import { Search, MoreVertical } from 'lucide-react';
+import { ContentService } from '@/lib/services/content.service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ChannelPage({ params }: { params: { slug: string } }) {
-  let creator = null;
-  try {
-    creator = await prisma.creator.findUnique({
-      where: { slug: params.slug },
-      include: {
-        videos: {
-          orderBy: { createdAt: 'desc' }
-        }
-      }
-    });
-  } catch (e) {
-    console.error("[CHANNEL_PAGE_DB_ERROR]", e);
-  }
+  const creator = await ContentService.getCreatorBySlug(params.slug) as (any & { videos: any[] });
 
   if (!creator) {
     return (
@@ -47,7 +36,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       totalPaid: userDb?.totalPaid || 0
   } : null;
 
-  const allVideos = (creator.videos || []).map(v => ({
+  const allVideos: Video[] = (creator.videos || []).map((v: any) => ({
     ...v,
     creator: {
       id: creator.id,
@@ -55,7 +44,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       slug: creator.slug,
       subscribersCount: creator.subscribersCount || 0
     }
-  })) as any as Video[];
+  }));
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#0f0f0f] font-serif">
@@ -130,7 +119,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
               <div key={video.id} className="group cursor-pointer">
                 <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="block">
                   <div className="relative aspect-video rounded-xl overflow-hidden bg-black mb-3">
-                    <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
+                    <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
                       {() => (
                          <img src={video.thumbnailUrl} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       )}

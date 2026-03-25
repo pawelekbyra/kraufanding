@@ -99,51 +99,63 @@ export class UserService {
   }
 
   static async toggleSubscription(clerkUserId: string, creatorId: string) {
-    const user = await this.getOrCreateUser(clerkUserId);
-    if (user.id === 'temp-id') throw new Error("Database unavailable");
+    try {
+        const user = await this.getOrCreateUser(clerkUserId);
+        if (user.id === 'temp-id') throw new Error("Database unavailable");
 
-    // We do NOT use a transaction here to be more resilient to missing columns (subscribersCount)
-    // If the subscription creation fails, we throw.
-    // If the count update fails, we log and continue.
+        // We do NOT use a transaction here to be more resilient to missing columns (subscribersCount)
+        // If the subscription creation fails, we throw.
+        // If the count update fails, we log and continue.
 
-    const existing = await prisma.subscription.findUnique({
-        where: {
-            userId_creatorId: {
-                userId: user.id,
-                creatorId
+        const existing = await prisma.subscription.findUnique({
+            where: {
+                userId_creatorId: {
+                    userId: user.id,
+                    creatorId
+                }
             }
+        }).catch(e => {
+            console.error("[CHECK_EXISTING_SUB_ERROR]", e);
+            return null;
+        });
+
+        if (existing) {
+            await prisma.subscription.delete({
+                where: { id: existing.id }
+            }).catch(de => {
+                console.error("Could not delete subscription", de);
+                throw de;
+            });
+
+            // Attempt to update count, but don't fail the whole action if it crashes (e.g. missing column)
+            await prisma.creator.update({
+                where: { id: creatorId },
+                data: { subscribersCount: { decrement: 1 } }
+            }).catch(ce => console.error("Could not decrement subscribersCount", ce));
+
+            return { isSubscribed: false };
+        } else {
+            await prisma.subscription.create({
+                data: {
+                    userId: user.id,
+                    creatorId: creatorId
+                }
+            }).catch(ce => {
+                console.error("Could not create subscription", ce);
+                throw ce;
+            });
+
+            await prisma.creator.update({
+                where: { id: creatorId },
+                data: { subscribersCount: { increment: 1 } }
+            }).catch(ce => console.error("Could not increment subscribersCount", ce));
+
+            return { isSubscribed: true };
         }
-    }).catch(e => {
-        console.error("[CHECK_EXISTING_SUB_ERROR]", e);
-        return null;
-    });
-
-    if (existing) {
-        await prisma.subscription.delete({
-            where: { id: existing.id }
-        });
-
-        // Attempt to update count, but don't fail the whole action if it crashes (e.g. missing column)
-        await prisma.creator.update({
-            where: { id: creatorId },
-            data: { subscribersCount: { decrement: 1 } }
-        }).catch(ce => console.error("Could not decrement subscribersCount", ce));
-
-        return { isSubscribed: false };
-    } else {
-        await prisma.subscription.create({
-            data: {
-                userId: user.id,
-                creatorId: creatorId
-            }
-        });
-
-        await prisma.creator.update({
-            where: { id: creatorId },
-            data: { subscribersCount: { increment: 1 } }
-        }).catch(ce => console.error("Could not increment subscribersCount", ce));
-
-        return { isSubscribed: true };
+    } catch (error: any) {
+        console.error("[TOGGLE_SUBSCRIPTION_ERROR]", error);
+        // Fallback for UI if tables are missing or database is down
+        return { isSubscribed: false, error: error.message };
     }
   }
 }
