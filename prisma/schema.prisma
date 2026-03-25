@@ -11,6 +11,8 @@ model User {
   id               String              @id @default(uuid())
   clerkUserId      String              @unique
   email            String              @unique
+  name             String?
+  isDeleted        Boolean             @default(false)
   role             SystemRole          @default(USER)
   totalPaid        Float               @default(0) // Lifetime sum of all payments
   stripeCustomerId String?             @unique
