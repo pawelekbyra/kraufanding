@@ -63,7 +63,10 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
       if (!res.ok) {
         if (res.status === 401) {
             openSignIn();
-            throw new Error("Unauthorized");
+            // Rollback on 401
+            setIsSubscribed(prevSubscribed);
+            setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
+            return;
         }
         throw new Error("Subscription update failed");
       }
