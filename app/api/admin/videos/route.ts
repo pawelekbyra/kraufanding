@@ -37,70 +37,99 @@ export async function POST(req: Request) {
 
   try {
     if (id) {
-      const updated = await prisma.video.update({
-        where: { id },
-        data: {
-          title,
-          slug,
-          description,
-          videoUrl,
-          thumbnailUrl,
-          tier,
-          likesCount: parseInt(likesCount) || 0,
-          views: parseInt(views) || 0,
-          isMainFeatured: !!isMainFeatured
-        }
-      });
-
-      if (isMainFeatured) {
-        await prisma.video.updateMany({
-          where: { id: { not: id } },
-          data: { isMainFeatured: false }
+      const updated = await prisma.$transaction(async (tx) => {
+        const video = await tx.video.update({
+          where: { id },
+          data: {
+            title,
+            slug,
+            description,
+            videoUrl,
+            thumbnailUrl,
+            tier,
+            likesCount: parseInt(likesCount) || 0,
+            views: parseInt(views) || 0,
+            isMainFeatured: !!isMainFeatured
+          }
         });
-      }
+
+        if (isMainFeatured) {
+          await tx.video.updateMany({
+            where: { id: { not: id } },
+            data: { isMainFeatured: false }
+          });
+        }
+        return video;
+      });
 
       return NextResponse.json(updated);
     } else {
-      let creator = await prisma.creator.findFirst();
-      if (!creator) {
-        const user = await prisma.user.findFirst({ where: { email: ADMIN_EMAIL } });
-        if (!user) return NextResponse.json({ error: 'Admin user not found in DB.' }, { status: 400 });
+      const created = await prisma.$transaction(async (tx) => {
+        let creator = await tx.creator.findFirst();
+        if (!creator) {
+          const user = await tx.user.findFirst({ where: { email: ADMIN_EMAIL } });
+          if (!user) throw new Error('Admin user not found in DB.');
 
-        creator = await prisma.creator.create({
+          creator = await tx.creator.create({
+            data: {
+              userId: user.id,
+              name: "Paweł Polutek",
+              slug: "polutek",
+            }
+          });
+        }
+
+        const video = await tx.video.create({
           data: {
-            userId: user.id,
-            name: "Paweł Polutek",
-            slug: "polutek",
+            creatorId: creator.id,
+            title,
+            slug,
+            description,
+            videoUrl,
+            thumbnailUrl,
+            tier: tier || 'PUBLIC',
+            likesCount: parseInt(likesCount) || 0,
+            views: parseInt(views) || 0,
+            isMainFeatured: !!isMainFeatured
           }
         });
-      }
 
-      const created = await prisma.video.create({
-        data: {
-          creatorId: creator.id,
-          title,
-          slug,
-          description,
-          videoUrl,
-          thumbnailUrl,
-          tier: tier || 'PUBLIC',
-          likesCount: parseInt(likesCount) || 0,
-          views: parseInt(views) || 0,
-          isMainFeatured: !!isMainFeatured
+        if (isMainFeatured) {
+          await tx.video.updateMany({
+            where: { id: { not: video.id } },
+            data: { isMainFeatured: false }
+          });
         }
+        return video;
       });
-
-      if (isMainFeatured) {
-        await prisma.video.updateMany({
-          where: { id: { not: created.id } },
-          data: { isMainFeatured: false }
-        });
-      }
 
       return NextResponse.json(created);
     }
   } catch (error: any) {
     console.error("[ADMIN_VIDEO_POST_ERROR]", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  if (!(await verifyAdmin())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing video ID' }, { status: 400 });
+  }
+
+  try {
+    const deleted = await prisma.video.delete({
+      where: { id }
+    });
+    return NextResponse.json(deleted);
+  } catch (error: any) {
+    console.error("[ADMIN_VIDEO_DELETE_ERROR]", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

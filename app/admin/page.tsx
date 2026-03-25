@@ -11,8 +11,12 @@ export default function AdminPanel() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [videos, setVideos] = useState<any[]>([]);
+  const [creator, setCreator] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'videos' | 'channel'>('videos');
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -26,6 +30,13 @@ export default function AdminPanel() {
     isMainFeatured: false
   });
 
+  const [creatorForm, setCreatorForm] = useState({
+    id: "",
+    name: "",
+    bio: "",
+    slug: ""
+  });
+
   const adminEmail = "pawel.perfect@gmail.com";
 
   useEffect(() => {
@@ -34,10 +45,19 @@ export default function AdminPanel() {
         router.push("/");
       } else {
         setIsAdmin(true);
-        fetchVideos();
+        fetchAll();
       }
     }
   }, [user, userLoaded, authLoaded, router]);
+
+  const fetchAll = async () => {
+    setIsLoading(true);
+    try {
+        await Promise.all([fetchVideos(), fetchCreator()]);
+    } finally {
+        setIsLoading(false);
+    }
+  }
 
   const fetchVideos = async () => {
     try {
@@ -46,10 +66,26 @@ export default function AdminPanel() {
       setVideos(data);
     } catch (err) {
       console.error("Failed to fetch videos", err);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const fetchCreator = async () => {
+    try {
+        const res = await fetch("/api/admin/creator");
+        const data = await res.json();
+        setCreator(data);
+        if (data) {
+            setCreatorForm({
+                id: data.id,
+                name: data.name || "",
+                bio: data.bio || "",
+                slug: data.slug || ""
+            });
+        }
+    } catch (err) {
+        console.error("Failed to fetch creator", err);
+    }
+  }
 
   const handleEdit = (vid: any) => {
     setIsEditing(true);
@@ -102,6 +138,33 @@ export default function AdminPanel() {
       console.error("Submit failed", err);
     }
   };
+
+  const handleDelete = async (id: string) => {
+      if (!confirm("Are you sure? This cannot be undone.")) return;
+      try {
+          const res = await fetch(`/api/admin/videos?id=${id}`, { method: 'DELETE' });
+          if (res.ok) fetchVideos();
+      } catch (err) {
+          console.error("Delete failed", err);
+      }
+  }
+
+  const handleCreatorSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      try {
+          const res = await fetch("/api/admin/creator", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(creatorForm)
+          });
+          if (res.ok) {
+              alert("Channel updated successfully");
+              fetchCreator();
+          }
+      } catch (err) {
+          console.error("Creator update failed", err);
+      }
+  }
 
   if (!isAdmin || isLoading) {
     return <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center font-serif">Verifying Access...</div>;
@@ -166,7 +229,7 @@ export default function AdminPanel() {
                     <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-black uppercase text-xs transition-all">
                       <option value="PUBLIC">Public</option>
                       <option value="LOGGED_IN">Logged In</option>
-                      <option value="VIP1">VIP 1 (€3+)</option>
+                      <option value="VIP1">VIP 1 (€5+)</option>
                       <option value="VIP2">VIP 2 (€10+)</option>
                     </select>
                   </div>
@@ -198,16 +261,35 @@ export default function AdminPanel() {
           </div>
         )}
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatCard title="Total Videos" value={videos.length.toString()} icon={<Video size={20} />} />
-          <StatCard title="Featured" value={videos.find(v => v.isMainFeatured)?.title.split(' ')[0] || "None"} icon={<Star size={20} />} />
+          <StatCard title="Subscribers" value={creator?.subscribersCount?.toLocaleString() || "0"} icon={<Plus size={20} />} />
+          <StatCard title="Channel Name" value={creator?.name || "Not set"} icon={<Star size={20} />} />
           <StatCard title="Total Revenue" value="LIVE" icon={<BarChart3 size={20} />} />
         </section>
 
-        <section className="space-y-6">
-          <h2 className="text-2xl font-black uppercase tracking-tight italic">Manage Materials</h2>
-          <div className="bg-white border-2 border-[#1a1a1a] shadow-brutalist overflow-hidden">
-            <table className="w-full text-left border-collapse">
+        <div className="flex border-b-2 border-[#1a1a1a]/10">
+            <button
+                onClick={() => setActiveTab('videos')}
+                className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'videos' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
+            >
+                Materials
+            </button>
+            <button
+                onClick={() => setActiveTab('channel')}
+                className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'channel' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
+            >
+                Channel Settings
+            </button>
+        </div>
+
+        {activeTab === 'videos' ? (
+          <section className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">Manage Materials</h2>
+            </div>
+            <div className="bg-white border-2 border-[#1a1a1a] shadow-brutalist overflow-hidden">
+              <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#1a1a1a] text-white uppercase text-[10px] font-black tracking-widest">
                   <th className="p-4">Status</th>
@@ -246,7 +328,7 @@ export default function AdminPanel() {
                     </td>
                     <td className="p-4 text-right space-x-2">
                        <button onClick={() => handleEdit(vid)} className="p-2 hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent hover:border-[#1a1a1a]"><Edit size={16} /></button>
-                       <button className="p-2 hover:bg-error hover:text-white transition-colors border border-transparent hover:border-error"><Trash2 size={16} /></button>
+                       <button onClick={() => handleDelete(vid.id)} className="p-2 hover:bg-error hover:text-white transition-colors border border-transparent hover:border-error"><Trash2 size={16} /></button>
                     </td>
                   </tr>
                 ))}
@@ -254,6 +336,52 @@ export default function AdminPanel() {
             </table>
           </div>
         </section>
+        ) : (
+          <section className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+             <div className="space-y-1">
+                <h2 className="text-2xl font-black uppercase tracking-tight italic">Channel Identity</h2>
+                <p className="text-xs text-[#1a1a1a]/40 font-bold uppercase">Update how your channel appears to visitors.</p>
+             </div>
+
+             <form onSubmit={handleCreatorSubmit} className="space-y-6 bg-white border-2 border-[#1a1a1a] p-8 shadow-brutalist">
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Creator Display Name</label>
+                    <input
+                        value={creatorForm.name}
+                        onChange={e => setCreatorForm({...creatorForm, name: e.target.value})}
+                        placeholder="e.g. Paweł Polutek"
+                        className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-black uppercase text-lg transition-all"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Channel Slug (polutek.pl/@slug)</label>
+                    <input
+                        value={creatorForm.slug}
+                        onChange={e => setCreatorForm({...creatorForm, slug: e.target.value})}
+                        placeholder="e.g. polutek"
+                        className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-mono text-sm transition-all"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Channel Biography</label>
+                    <textarea
+                        value={creatorForm.bio}
+                        onChange={e => setCreatorForm({...creatorForm, bio: e.target.value})}
+                        placeholder="Write something about yourself..."
+                        className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-serif text-base transition-all h-32 leading-relaxed"
+                    />
+                </div>
+
+                <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist transition-all active:translate-x-1 active:translate-y-1 active:shadow-none">
+                    Update Channel Settings
+                </button>
+             </form>
+          </section>
+        )}
       </div>
     </div>
   );
