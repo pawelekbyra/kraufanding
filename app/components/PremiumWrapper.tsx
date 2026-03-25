@@ -38,21 +38,8 @@ export default function PremiumWrapper({
 
   useEffect(() => {
     async function checkAccess() {
-      // 1. Immediate resolution for public content
-      if (isPublic) {
-        setHasAccess(true);
-        setIsLoading(false);
-        return;
-      }
-
-      // 2. Guest gating
-      if (isLoaded && !userId) {
-        setHasAccess(false);
-        setIsLoading(false);
-        return;
-      }
-
-      if (!isLoaded || !userId) return;
+      // For all videos (including public ones), we want to fetch the URL
+      // from the access API to keep it secure/managed.
 
       try {
         const response = await fetch(`/api/access?videoId=${videoId}`);
@@ -67,13 +54,18 @@ export default function PremiumWrapper({
         if (data.requiredTier) setDbTier(data.requiredTier);
       } catch (error) {
         console.error("Error checking video access:", error);
-        setHasAccess(false);
+        // Fallback for public content if API fails
+        if (isPublic) {
+            setHasAccess(true);
+        }
       } finally {
         setIsLoading(false);
       }
     }
 
-    checkAccess();
+    if (isLoaded) {
+        checkAccess();
+    }
   }, [userId, isLoaded, videoId, isPublic]);
 
   // Priority: 1. Main Featured, 2. Public, 3. Account Gated + Signed In
@@ -86,10 +78,6 @@ export default function PremiumWrapper({
   }
 
   if (isLoading) {
-    // If we're a guest and it's not public, show overlay immediately
-    if (isLoaded && !userId && !isPublic) {
-        return <PaywallOverlay requiredTier={effectiveTier as AccessTier} isLoggedIn={false} variant={variant} />;
-    }
     return <div className="animate-pulse bg-neutral/5 rounded-xl w-full h-full" />;
   }
 
