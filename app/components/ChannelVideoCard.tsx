@@ -23,8 +23,8 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
         setMounted(true);
     }, []);
 
-    const hasVIP1 = userTotalPaid >= 5;
-    const hasVIP2 = userTotalPaid >= 10;
+    const hasVIP1 = userTotalPaid >= 500;
+    const hasVIP2 = userTotalPaid >= 1000;
 
     const hasAccess = video.tier === 'PUBLIC' ||
                       (video.tier === 'LOGGED_IN' && isLoggedIn) ||

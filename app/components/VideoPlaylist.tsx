@@ -7,9 +7,10 @@ interface VideoPlaylistProps {
   videoId?: string;
   videoSlug?: string;
   videoTitle?: string;
+  creatorId?: string;
 }
 
-const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
+const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle, creatorId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState<number | ''>(10);
   const { userId } = useAuth();
@@ -35,7 +36,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: Number(amount),
-            title: videoTitle || "Tip The Guy / Patron"
+            title: videoTitle || "Tip The Guy / Patron",
+            creatorId: creatorId
           }),
           cache: 'no-store' // BEZWZGLĘDNE ZABICIE CACHE
       });

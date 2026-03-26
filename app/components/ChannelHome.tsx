@@ -59,8 +59,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   }).reduce((acc: any[], video, i) => {
       const isCurrent = video.id === selectedVideo.id;
       const isLoggedIn = !!userProfile;
-      const hasVIP1 = (userProfile?.totalPaid || 0) >= 5;
-      const hasVIP2 = (userProfile?.totalPaid || 0) >= 10;
+      const hasVIP1 = (userProfile?.totalPaid || 0) >= 500;
+      const hasVIP2 = (userProfile?.totalPaid || 0) >= 1000;
 
       const hasAccess = video.tier === 'PUBLIC' ||
                         (video.tier === 'LOGGED_IN' && isLoggedIn) ||
@@ -138,6 +138,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">Wesprzyj Twórcę</h3>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
+                 creatorId={selectedVideo.creatorId}
               />
           </div>
         );
