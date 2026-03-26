@@ -45,8 +45,10 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
             const result = await toggleSubscriptionAction(creatorId);
 
             if (result.error) {
-                if (result.error === 'UNAUTHORIZED') {
+                if (result.error === 'UNAUTHORIZED' || result.error === 'AUTH_REQUIRED') {
                     openSignIn();
+                } else if (result.error === 'DATABASE_UNAVAILABLE') {
+                    alert("Baza danych jest niedostępna (npx prisma db push).");
                 } else if (result.error.includes("handshake") || result.error.includes("JWKS")) {
                     alert("Wystąpił problem z autoryzacją (Clerk). Spróbuj odświeżyć stronę lub zalogować się ponownie.");
                     console.error("Clerk Handshake Error:", result.error);

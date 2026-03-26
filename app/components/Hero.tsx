@@ -38,11 +38,19 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
     // Check for Clerk auth issue mentioned in logs
     try {
         addOptimisticLike(!optimisticLike.isLiked);
-        const result = await toggleVideoLike(video.id);
+        const result = await toggleVideoLike(video.id) as any;
 
-        // If the server returns a different state than our optimistic one, we might need a way to sync it,
-        // but toggleVideoLike returns { liked: boolean } which matches.
-        // We don't strictly need to do anything if it succeeds as we used useOptimistic.
+        if (result.error) {
+            if (result.error === 'AUTH_REQUIRED') {
+                openSignIn();
+            } else if (result.error === 'DATABASE_UNAVAILABLE') {
+                alert("Baza danych jest niedostępna (npx prisma db push).");
+            } else {
+                alert("Błąd: " + result.error);
+            }
+            // Add a temporary manual rollback since we're calling useOptimistic manually
+            addOptimisticLike(optimisticLike.isLiked);
+        }
     } catch (error: any) {
         console.error("Error toggling like:", error);
         if (error.message?.includes("handshake") || error.message?.includes("JWKS")) {

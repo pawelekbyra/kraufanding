@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
   try {
     let user = await UserService.getOrCreateUser(userId);
 
-    if (user.id === 'temp-id') {
+    if (user.isFallback) {
          return NextResponse.json({ success: false, message: 'Database is currently unavailable. Please try again later.' }, { status: 503 });
     }
 

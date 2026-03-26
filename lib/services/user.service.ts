@@ -5,6 +5,7 @@ import crypto from 'crypto';
 export class UserService {
   static async getOrCreateUser(id: string) {
     try {
+        console.log(`[UserService] Getting/Creating user for ID: ${id}`);
         const clerkUser = await currentUser();
 
         // If we can't get clerk user (e.g. session issue), try to find local user first
@@ -19,6 +20,7 @@ export class UserService {
         const imageUrl = clerkUser?.imageUrl || null;
         const name = clerkUser ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null : null;
 
+        console.log(`[UserService] Upserting user record in database...`);
         return await prisma.user.upsert({
             where: { id },
             update: { email, imageUrl, name },
@@ -28,10 +30,10 @@ export class UserService {
         console.error("[GET_OR_CREATE_USER_ERROR]", e);
         // Table missing fallback
         if (e.code === 'P2021') {
-            return { id, email: 'guest@polutek.pl', totalPaid: 0 } as any;
+            return { id, email: 'guest@polutek.pl', totalPaid: 0, isFallback: true } as any;
         }
         // Minimal fallback for UI not to crash
-        return { id, email: 'guest@polutek.pl', totalPaid: 0 } as any;
+        return { id, email: 'guest@polutek.pl', totalPaid: 0, isFallback: true } as any;
     }
   }
 
@@ -111,7 +113,7 @@ export class UserService {
   static async toggleSubscription(id: string, creatorId: string) {
     try {
         const user = await this.getOrCreateUser(id);
-        if (user.id === 'temp-id') throw new Error("Database unavailable");
+        if (user.isFallback) throw new Error("Database table missing or unavailable. Run 'npx prisma db push'.");
 
         // We do NOT use a transaction here to be more resilient to missing columns (subscribersCount)
         // If the subscription creation fails, we throw.
