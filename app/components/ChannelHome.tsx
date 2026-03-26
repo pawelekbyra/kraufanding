@@ -29,7 +29,7 @@ interface ChannelHomeProps {
 }
 
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
   const [mounted, setMounted] = useState(false);
@@ -54,11 +54,27 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
     });
   };
 
-  const playlistItems = [...allVideos].sort((a, b) => {
+  // CUSTOM SORTING LOGIC:
+  // 1. Current (selected) video always first
+  // 2. PUBLIC videos
+  // 3. LOGGED_IN/VIP videos
+  const sortedVideos = [...allVideos].sort((a, b) => {
+      // Rule 1: Selected video first
       if (a.id === selectedVideo.id) return -1;
       if (b.id === selectedVideo.id) return 1;
+
+      // Rule 2: PUBLIC videos first
+      const aIsPublic = a.tier === 'PUBLIC' || a.isMainFeatured;
+      const bIsPublic = b.tier === 'PUBLIC' || b.isMainFeatured;
+
+      if (aIsPublic && !bIsPublic) return -1;
+      if (!aIsPublic && bIsPublic) return 1;
+
+      // Default: keep existing order (createdAt desc)
       return 0;
-  }).reduce((acc: any[], video, i) => {
+  });
+
+  const playlistItems = sortedVideos.reduce((acc: any[], video, i) => {
       const isCurrent = video.id === selectedVideo.id;
       const isLoggedIn = !!userProfile;
       const hasVIP1 = (userProfile?.totalPaid || 0) >= 5;
@@ -117,11 +133,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    {video.creator?.name || 'Anonimowy Twórca'}
                  </Link>
                  <div className="flex items-center gap-1">
-                    <span>{mounted ? video.views?.toLocaleString('pl-PL') : video.views} {t.views}</span>
+                    <span>{mounted ? video.views?.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}</span>
                     {video.publishedAt && (
                         <>
                             <span>•</span>
-                            <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
+                            <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: language === 'pl' ? pl : undefined }) : ''}</span>
                         </>
                     )}
                  </div>
@@ -130,15 +146,16 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 hasAccess ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">{t.available}</span>
                 ) : video.tier === 'LOGGED_IN' ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">Log in to watch</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{language === 'pl' ? 'Zaloguj się aby obejrzeć' : 'Log in to watch'}</span>
                 ) : (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">Become a Patron</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">{language === 'pl' ? 'Zostań Patronem' : 'Become a Patron'}</span>
                 )
               )}
             </div>
           </div>
       );
 
+      // Rule: Donate section always appears after the 2nd item (index 1) in the visual list
       if (i === 1) {
         acc.push(
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
@@ -172,7 +189,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
-                 Komentarze
+                 {t.comments}
                </button>
                <button
                  onClick={() => setActiveTab('videos')}
@@ -181,7 +198,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
-                 Filmy
+                 Video
                </button>
             </div>
 
