@@ -111,6 +111,7 @@ export const translations = {
     available: 'Odblokowane',
     loginToWatch: 'Pokaż dowód (zaloguj się)',
     becomePatron: 'Wspieraj projekt',
+    topSecret: 'Ściśle Tajne',
     paywallText: 'Nie masz psychy się',
     paywallAction: 'zalogować'
   },
@@ -140,6 +141,7 @@ export const translations = {
     available: 'Available',
     loginToWatch: 'Log in to watch',
     becomePatron: 'Become a Patron',
+    topSecret: 'TOP SECRET',
     paywallText: 'You dont have nuts to',
     paywallAction: 'log in'
   }
