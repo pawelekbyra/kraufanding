@@ -5,7 +5,6 @@ import ChannelHome from './components/ChannelHome';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from './types/video';
-import { mockVideos } from './data/mock-videos';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,19 +15,22 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     orderBy: { createdAt: 'desc' }
   }).catch(() => []);
 
-  let mainVideo: Video;
-  let allVideos: Video[];
-
-  if (allVideosDb.length > 0) {
-    // DB Content exists
-    const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
-    mainVideo = mapDbToVideo(mainVideoDb);
-    allVideos = allVideosDb.map(mapDbToVideo);
-  } else {
-    // Fallback to identical mock state
-    mainVideo = mockVideos[0];
-    allVideos = mockVideos;
+  if (allVideosDb.length === 0) {
+    return (
+        <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif flex flex-col">
+            <Navbar />
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                <h1 className="text-4xl font-black uppercase tracking-tighter">Brak materiałów</h1>
+                <p className="text-[#606060] mt-2">Baza danych jest pusta lub w trakcie konfiguracji.</p>
+            </div>
+            <Footer />
+        </div>
+    );
   }
+
+  const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
+  const mainVideo = mapDbToVideo(mainVideoDb);
+  const allVideos = allVideosDb.map(mapDbToVideo);
 
   const { userId } = auth();
   const user = await currentUser();
@@ -69,16 +71,21 @@ function mapDbToVideo(v: any): Video {
     description: v.description,
     videoUrl: v.videoUrl,
     thumbnailUrl: v.thumbnailUrl,
+    duration: v.duration,
     tier: v.tier,
     views: v.views,
     likesCount: v.likesCount,
+    dislikesCount: v.dislikesCount,
     isMainFeatured: v.isMainFeatured,
     publishedAt: v.publishedAt,
+    createdAt: v.createdAt,
+    updatedAt: v.updatedAt,
     creator: v.creator ? {
       id: v.creator.id,
       name: v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
+      bannerUrl: v.creator.bannerUrl,
       subscribersCount: v.creator.subscribersCount
     } : undefined
   };

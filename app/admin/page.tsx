@@ -3,7 +3,7 @@
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star } from "lucide-react";
+import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, Image as ImageIcon } from "lucide-react";
 
 export default function AdminPanel() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -21,7 +21,6 @@ export default function AdminPanel() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'videos' | 'channel' | 'stats'>('videos');
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     id: "",
@@ -30,8 +29,10 @@ export default function AdminPanel() {
     description: "",
     videoUrl: "",
     thumbnailUrl: "",
+    duration: "",
     tier: "PUBLIC",
     likesCount: 0,
+    dislikesCount: 0,
     views: 0,
     isMainFeatured: false
   });
@@ -40,7 +41,8 @@ export default function AdminPanel() {
     id: "",
     name: "",
     bio: "",
-    slug: ""
+    slug: "",
+    bannerUrl: ""
   });
 
   const adminEmail = "pawel.perfect@gmail.com";
@@ -85,7 +87,8 @@ export default function AdminPanel() {
                 id: data.id,
                 name: data.name || "",
                 bio: data.bio || "",
-                slug: data.slug || ""
+                slug: data.slug || "",
+                bannerUrl: data.bannerUrl || ""
             });
         }
     } catch (err) {
@@ -112,8 +115,10 @@ export default function AdminPanel() {
       description: vid.description || "",
       videoUrl: vid.videoUrl,
       thumbnailUrl: vid.thumbnailUrl,
+      duration: vid.duration || "",
       tier: vid.tier,
       likesCount: vid.likesCount,
+      dislikesCount: vid.dislikesCount || 0,
       views: vid.views,
       isMainFeatured: vid.isMainFeatured
     });
@@ -128,8 +133,10 @@ export default function AdminPanel() {
       description: "",
       videoUrl: "",
       thumbnailUrl: "",
+      duration: "",
       tier: "PUBLIC",
       likesCount: 0,
+      dislikesCount: 0,
       views: 0,
       isMainFeatured: false
     });
@@ -228,18 +235,22 @@ export default function AdminPanel() {
                   <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-serif text-sm transition-all h-24" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Wideo (Vimeo/YouTube)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Wideo</label>
                     <input value={formData.videoUrl} onChange={e => setFormData({...formData, videoUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Miniaturki</label>
                     <input value={formData.thumbnailUrl} onChange={e => setFormData({...formData, thumbnailUrl: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" required />
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Czas trwania (np. 12:45)</label>
+                    <input value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Poziom Dostępu</label>
                     <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-black uppercase text-xs transition-all">
@@ -249,24 +260,30 @@ export default function AdminPanel() {
                       <option value="VIP2">Sponsor (10€+)</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Liczba Polubień</label>
-                    <input type="number" value={formData.likesCount} onChange={e => setFormData({...formData, likesCount: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Liczba Wyświetleń</label>
-                    <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  <div className="space-y-1 flex items-center gap-3 pt-6">
+                       <input
+                        type="checkbox"
+                        checked={formData.isMainFeatured}
+                        onChange={e => setFormData({...formData, isMainFeatured: e.target.checked})}
+                        className="w-5 h-5 accent-[#1a1a1a]"
+                       />
+                       <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Hero Video</label>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-[#1a1a1a]/5 p-4 border-2 border-dashed border-[#1a1a1a]/10">
-                   <input
-                    type="checkbox"
-                    checked={formData.isMainFeatured}
-                    onChange={e => setFormData({...formData, isMainFeatured: e.target.checked})}
-                    className="w-5 h-5 accent-[#1a1a1a]"
-                   />
-                   <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Ustaw jako główny materiał (Hero)</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Polubienia</label>
+                    <input type="number" value={formData.likesCount} onChange={e => setFormData({...formData, likesCount: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Dislajki</label>
+                    <input type="number" value={formData.dislikesCount} onChange={e => setFormData({...formData, dislikesCount: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Wyświetlenia</label>
+                    <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-mono text-sm transition-all" />
+                  </div>
                 </div>
 
                 <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist">
@@ -346,8 +363,8 @@ export default function AdminPanel() {
                     </td>
                     <td className="p-4 font-mono text-[10px] space-x-3">
                        <span className="text-[#1a1a1a]/60">L: {vid.likesCount}</span>
+                       <span className="text-[#1a1a1a]/60">D: {vid.dislikesCount}</span>
                        <span className="text-[#1a1a1a]/60">V: {vid.views}</span>
-                       <span className="text-[#1a1a1a]/60">C: {vid._count?.comments || 0}</span>
                     </td>
                     <td className="p-4 text-right space-x-2">
                        <button onClick={() => handleEdit(vid)} className="p-2 hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent hover:border-[#1a1a1a]"><Edit size={16} /></button>
@@ -435,6 +452,16 @@ export default function AdminPanel() {
                         onChange={e => setCreatorForm({...creatorForm, bio: e.target.value})}
                         placeholder="Napisz coś o swoim kanale..."
                         className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-serif text-base transition-all h-32 leading-relaxed"
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">URL Bannera Kanału</label>
+                    <input
+                        value={creatorForm.bannerUrl}
+                        onChange={e => setCreatorForm({...creatorForm, bannerUrl: e.target.value})}
+                        placeholder="https://..."
+                        className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-mono text-sm transition-all"
                     />
                 </div>
 

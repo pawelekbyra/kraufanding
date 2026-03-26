@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * API Route for fetching comments for a video.
+ */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const videoId = searchParams.get('videoId');
@@ -24,74 +27,69 @@ export async function GET(request: NextRequest) {
             const user = await UserService.getOrCreateUser(userId);
             internalUserId = user?.id;
         } catch (e) {
-            console.error("Error syncing user during GET comments:", e);
+            console.error("User sync failed during GET comments:", e);
         }
     }
 
-    let comments: any[] = [];
-    try {
-        comments = await prisma.comment.findMany({
-            where: { videoId, parentId: null },
-            take: limit,
-            skip: cursor ? 1 : 0,
-            cursor: cursor ? { id: cursor } : undefined,
-            orderBy: { createdAt: 'desc' },
-            include: {
-                author: {
-                    select: { id: true, email: true, imageUrl: true }
+    const comments = await prisma.comment.findMany({
+        where: { videoId, parentId: null },
+        take: limit,
+        skip: cursor ? 1 : 0,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: 'desc' },
+        include: {
+            author: {
+                select: { id: true, email: true, imageUrl: true }
+            },
+            replies: {
+                include: {
+                    author: { select: { id: true, email: true, imageUrl: true } },
+                    _count: { select: { likes: true, dislikes: true } }
                 },
-                replies: {
-                    include: {
-                        author: { select: { id: true, email: true, imageUrl: true } },
-                        _count: { select: { likes: true } }
-                    },
-                    orderBy: { createdAt: 'asc' }
-                },
-                _count: {
-                    select: { likes: true, replies: true }
-                }
+                orderBy: { createdAt: 'asc' }
+            },
+            _count: {
+                select: { likes: true, dislikes: true, replies: true }
             }
-        });
-    } catch (e: any) {
-        console.error("Database error fetching comments:", e);
-        // P2021: Table does not exist (database not migrated yet)
-        if (e.code === 'P2021') {
-           return NextResponse.json({ success: true, comments: [], nextCursor: null, dbMissing: true });
         }
-        return NextResponse.json({ success: true, comments: [], nextCursor: null });
-    }
+    });
 
     const mapComment = async (c: any) => {
         let isLiked = false;
-        try {
-            if (internalUserId) {
-                const like = await prisma.commentLike.findUnique({
+        let isDisliked = false;
+        if (internalUserId) {
+            const [like, dislike] = await Promise.all([
+                prisma.commentLike.findUnique({
                     where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-        }).catch(e => {
-            if (e.code === 'P2021') return null;
-            throw e;
-                });
-                isLiked = !!like;
-            }
-        } catch (e) {}
+                }),
+                prisma.commentDislike.findUnique({
+                    where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
+                })
+            ]);
+            isLiked = !!like;
+            isDisliked = !!dislike;
+        }
 
         const replies = c.replies ? await Promise.all(c.replies.map(async (r: any) => {
             let rLiked = false;
-            try {
-                if (internalUserId) {
-                    const rLike = await prisma.commentLike.findUnique({
+            let rDisliked = false;
+            if (internalUserId) {
+                const [like, dislike] = await Promise.all([
+                    prisma.commentLike.findUnique({
                         where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
-            }).catch(e => {
-                if (e.code === 'P2021') return null;
-                throw e;
-                    });
-                    rLiked = !!rLike;
-                }
-            } catch (e) {}
+                    }),
+                    prisma.commentDislike.findUnique({
+                        where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
+                    })
+                ]);
+                rLiked = !!like;
+                rDisliked = !!dislike;
+            }
 
             return {
                 ...r,
                 isLiked: rLiked,
+                isDisliked: rDisliked,
                 authorName: r.author?.email?.split('@')[0] || "Użytkownik",
             };
         })) : [];
@@ -99,18 +97,19 @@ export async function GET(request: NextRequest) {
         return {
             ...c,
             isLiked,
+            isDisliked,
             authorName: c.author?.email?.split('@')[0] || "Użytkownik",
             replies,
         };
     };
 
-    const commentsWithLiked = await Promise.all(comments.map(mapComment));
+    const commentsWithStatus = await Promise.all(comments.map(mapComment));
 
     const nextCursor = comments.length === limit ? comments[limit - 1].id : null;
-    return NextResponse.json({ success: true, comments: commentsWithLiked, nextCursor });
+    return NextResponse.json({ success: true, comments: commentsWithStatus, nextCursor });
   } catch (error: any) {
-    console.error('General error fetching comments:', error);
-    return NextResponse.json({ success: true, comments: [], nextCursor: null });
+    console.error('[GET_COMMENTS_API_ERROR]', error);
+    return NextResponse.json({ success: false, message: 'Wystąpił błąd podczas pobierania komentarzy.' }, { status: 500 });
   }
 }
 
@@ -118,60 +117,45 @@ export async function POST(request: NextRequest) {
   const { userId } = auth();
 
   if (!userId) {
-    return NextResponse.json({ success: false, message: 'Authentication required.' }, { status: 401 });
+    return NextResponse.json({ success: false, message: 'Musisz być zalogowany.' }, { status: 401 });
   }
 
   try {
-    let user = await UserService.getOrCreateUser(userId);
+    await UserService.getOrCreateUser(userId);
 
-    if (user.isFallback) {
-         return NextResponse.json({ success: false, message: 'Database is currently unavailable. Please try again later.' }, { status: 503 });
-    }
-
-    let body;
-    try {
-        body = await request.json();
-    } catch (e) {
-        return NextResponse.json({ success: false, message: 'Invalid JSON body' }, { status: 400 });
-    }
-
+    const body = await request.json();
     const { videoId, text, parentId, imageUrl } = body;
 
     if (!videoId || (!text && !imageUrl)) {
-      return NextResponse.json({ success: false, message: 'Missing content: videoId and (text or imageUrl) required.' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Brak treści.' }, { status: 400 });
     }
 
-    let newComment;
-    try {
-        newComment = await prisma.comment.create({
-            data: {
-                videoId,
-                text: text?.trim() || '',
-                authorId: userId,
-                parentId: parentId || null,
-                imageUrl: imageUrl || null,
-            },
-            include: {
-                author: { select: { id: true, email: true, imageUrl: true } },
-                _count: { select: { likes: true, replies: true } }
-            }
-        });
-    } catch (e: any) {
-        console.error("[COMMENT_POST_CREATE_ERROR]", e);
-        return NextResponse.json({ success: false, message: 'Database error creating comment: ' + e.message }, { status: 500 });
-    }
+    const newComment = await prisma.comment.create({
+        data: {
+            videoId,
+            text: text?.trim() || '',
+            authorId: userId,
+            parentId: parentId || null,
+            imageUrl: imageUrl || null,
+        },
+        include: {
+            author: { select: { id: true, email: true, imageUrl: true } },
+            _count: { select: { likes: true, dislikes: true, replies: true } }
+        }
+    });
 
     return NextResponse.json({
         success: true,
         comment: {
             ...newComment,
             isLiked: false,
+            isDisliked: false,
             authorName: newComment.author?.email?.split('@')[0] || "Użytkownik",
             replies: [],
         }
     }, { status: 201 });
   } catch (error: any) {
-    console.error('Error posting comment:', error);
+    console.error('[POST_COMMENT_API_ERROR]', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

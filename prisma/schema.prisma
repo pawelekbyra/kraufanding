@@ -22,7 +22,9 @@ model User {
   creators         Creator[]
   comments         Comment[]
   commentLikes     CommentLike[]
+  commentDislikes  CommentDislike[]
   videoLikes       VideoLike[]
+  videoDislikes    VideoDislike[]
   transactions     Transaction[]
   subscriptions    Subscription[]
 
@@ -54,6 +56,7 @@ model Creator {
   slug             String    @unique
   name             String
   bio              String?
+  bannerUrl        String?
   subscribersCount Int       @default(0)
   isApproved       Boolean   @default(false)
   stripeConnectId  String?   @unique
@@ -88,9 +91,11 @@ model Video {
   description   String?
   videoUrl      String
   thumbnailUrl  String
+  duration      String?   // e.g. "12:45"
   tier          AccessTier @default(PUBLIC)
   views         Int       @default(0)
   likesCount    Int       @default(0)
+  dislikesCount Int       @default(0)
   isMainFeatured Boolean  @default(false) // This video is the "One Hero Video" on homepage
   publishedAt   DateTime?
   createdAt     DateTime  @default(now())
@@ -99,12 +104,26 @@ model Video {
   creator       Creator   @relation(fields: [creatorId], references: [id])
   comments      Comment[]
   videoLikes    VideoLike[]
+  videoDislikes VideoDislike[]
 
   @@index([creatorId])
   @@index([slug])
 }
 
 model VideoLike {
+  id        String   @id @default(uuid())
+  userId    String
+  videoId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, videoId])
+  @@index([videoId])
+  @@index([userId])
+}
+
+model VideoDislike {
   id        String   @id @default(uuid())
   userId    String
   videoId   String
@@ -136,6 +155,7 @@ model Comment {
   replies    Comment[] @relation("CommentReplies")
 
   likes      CommentLike[]
+  dislikes   CommentDislike[]
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -146,6 +166,19 @@ model Comment {
 }
 
 model CommentLike {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+model CommentDislike {
   id        String   @id @default(uuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

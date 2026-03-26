@@ -6,7 +6,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock } from 'lucide-react';
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface EmbeddedCommentsProps {
@@ -100,13 +99,68 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     ...page,
                     comments: page.comments.map((c: any) => {
                         if (c.id === commentId) {
-                            const currentlyLiked = c.isLiked;
+                            const wasLiked = c.isLiked;
+                            const wasDisliked = c.isDisliked;
                             return {
                                 ...c,
-                                isLiked: !currentlyLiked,
+                                isLiked: !wasLiked,
+                                isDisliked: false,
                                 _count: {
                                     ...c._count,
-                                    likes: currentlyLiked ? Math.max(0, c._count.likes - 1) : c._count.likes + 1
+                                    likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes + 1,
+                                    dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes
+                                }
+                            };
+                        }
+                        return c;
+                    })
+                }))
+            };
+        });
+
+        return { previousData };
+    },
+    onError: (err, commentId, context) => {
+        if (context?.previousData) {
+            queryClient.setQueryData(['comments', videoId], context.previousData);
+        }
+    },
+    onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ['comments', videoId] });
+    }
+  });
+
+  const dislikeMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+        const res = await fetch('/api/comments/dislike', {
+            method: 'POST',
+            body: JSON.stringify({ commentId }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return res.json();
+    },
+    onMutate: async (commentId) => {
+        await queryClient.cancelQueries({ queryKey: ['comments', videoId] });
+        const previousData = queryClient.getQueryData(['comments', videoId]);
+
+        queryClient.setQueryData(['comments', videoId], (old: any) => {
+            if (!old) return old;
+            return {
+                ...old,
+                pages: old.pages.map((page: any) => ({
+                    ...page,
+                    comments: page.comments.map((c: any) => {
+                        if (c.id === commentId) {
+                            const wasLiked = c.isLiked;
+                            const wasDisliked = c.isDisliked;
+                            return {
+                                ...c,
+                                isLiked: false,
+                                isDisliked: !wasDisliked,
+                                _count: {
+                                    ...c._count,
+                                    likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes,
+                                    dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes + 1
                                 }
                             };
                         }
@@ -267,8 +321,15 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     <ThumbsUp size={13} className={cn(comment.isLiked && "fill-primary")} />
                     <span className="text-[11px] font-normal">{comment._count?.likes || 0}</span>
                   </button>
-                  <button className="text-[#606060] hover:text-[#0f0f0f] transition-all">
-                    <ThumbsDown size={13} />
+                  <button
+                    onClick={() => userProfile && dislikeMutation.mutate(comment.id)}
+                    className={cn(
+                        "flex items-center gap-1 transition-all group",
+                        comment.isDisliked ? "text-black" : "text-[#606060] hover:text-[#0f0f0f]"
+                    )}
+                  >
+                    <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-black")} />
+                    <span className="text-[11px] font-normal">{comment._count?.dislikes || 0}</span>
                   </button>
                   <button
                       onClick={() => userProfile && setReplyTo(comment.id)}

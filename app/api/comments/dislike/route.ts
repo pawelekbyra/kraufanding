@@ -6,8 +6,8 @@ import { UserService } from '@/lib/services/user.service';
 export const dynamic = 'force-dynamic';
 
 /**
- * API Route for toggling a 'Like' on a comment.
- * Mutually exclusive with 'Dislike'.
+ * API Route for toggling a 'Dislike' on a comment.
+ * Mutually exclusive with 'Like'.
  */
 export async function POST(request: NextRequest) {
   const { userId } = auth();
@@ -26,26 +26,26 @@ export async function POST(request: NextRequest) {
     }
 
     return await prisma.$transaction(async (tx) => {
-        // 1. Remove existing dislike if any
-        await tx.commentDislike.deleteMany({
+        // 1. Remove existing like if any
+        await tx.commentLike.deleteMany({
             where: { userId, commentId }
         });
 
-        // 2. Toggle Like
-        const existingLike = await tx.commentLike.findUnique({
+        // 2. Toggle Dislike
+        const existingDislike = await tx.commentDislike.findUnique({
             where: { userId_commentId: { userId, commentId } }
         });
 
-        if (existingLike) {
-            await tx.commentLike.delete({ where: { id: existingLike.id } });
+        if (existingDislike) {
+            await tx.commentDislike.delete({ where: { id: existingDislike.id } });
             return NextResponse.json({ success: true, liked: false, disliked: false });
         } else {
-            await tx.commentLike.create({ data: { userId, commentId } });
-            return NextResponse.json({ success: true, liked: true, disliked: false });
+            await tx.commentDislike.create({ data: { userId, commentId } });
+            return NextResponse.json({ success: true, liked: false, disliked: true });
         }
     });
   } catch (error: any) {
-    console.error('[COMMENT_LIKE_ERROR]', error);
+    console.error('[COMMENT_DISLIKE_ERROR]', error);
     return NextResponse.json({ success: false, message: 'Wystąpił błąd podczas oceniania komentarza.' }, { status: 500 });
   }
 }

@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 import { Video } from '@/app/types/video';
 import VideoPlayer from './VideoPlayer';
+import { formatDistanceToNow } from 'date-fns';
+import { pl } from 'date-fns/locale';
 
 interface ChannelVideoCardProps {
     video: Video;
@@ -44,9 +46,11 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                     >
                         <VideoPlayer video={video} variant="thumbnail" />
                     </PremiumWrapper>
-                    <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
-                        12:45
-                    </div>
+                    {video.duration && (
+                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
+                            {video.duration}
+                        </div>
+                    )}
                     {/* Access Indicator Badge on Thumbnail */}
                     {mounted && !hasAccess && (
                         <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
@@ -64,8 +68,12 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
                             <div className="flex items-center gap-1">
                                 <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
-                                <span>•</span>
-                                <span>2 tyg. temu</span>
+                                {video.publishedAt && (
+                                    <>
+                                        <span>•</span>
+                                        <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
+                                    </>
+                                )}
                             </div>
                             <div className="mt-0.5">
                                 {mounted && (
