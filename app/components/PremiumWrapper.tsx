@@ -4,6 +4,7 @@ import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Lock, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
+import { useLanguage } from './LanguageContext';
 
 interface VideoAccessContextType {
   hasAccess: boolean;
@@ -119,11 +120,13 @@ export default function PremiumWrapper({
 }
 
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
+  const { language, t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
   const mainTitle = "TOP SECRET";
+
   const subTitle = (requiredTier === "LOGGED_IN" && !isLoggedIn)
-    ? "Log in to watch"
-    : "Become a Patron";
+    ? t.loginToWatch
+    : t.becomePatron;
 
   if (variant === 'thumbnail') {
     return (
@@ -163,21 +166,29 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]">
                   {mainTitle}
                </h2>
-               <p className={`text-base md:text-xl font-black uppercase tracking-[0.5em] ${isVIPGated ? 'text-yellow-400' : 'text-blue-400'}`}>
-                  {subTitle}
-               </p>
+
+               {/* Custom Paywall Text as requested */}
+               <div className={`text-base md:text-xl font-black uppercase tracking-[0.2em] px-4 text-center ${isVIPGated ? 'text-yellow-400' : 'text-blue-400'}`}>
+                  {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
+                    <>
+                      {t.paywallText} <SignInButton mode="modal"><span className="underline cursor-pointer hover:text-white transition-colors">{t.paywallAction}</span></SignInButton>
+                    </>
+                  ) : (
+                    subTitle
+                  )}
+               </div>
             </div>
 
             <div className="pt-6">
                {!isLoggedIn ? (
                  <SignInButton mode="modal">
                    <button className="btn bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_20px_40px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95">
-                     Sign In
+                     {t.signIn}
                    </button>
                  </SignInButton>
                ) : (
                  <a href="#donations" className="btn bg-yellow-500 hover:bg-yellow-400 text-black border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_20px_40px_rgba(234,179,8,0.4)] transition-all hover:scale-105 active:scale-95">
-                   Become a Patron
+                   {t.becomePatron}
                  </a>
                )}
             </div>

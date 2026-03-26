@@ -42,7 +42,7 @@ export class UserService {
       return await prisma.user.upsert({
         where: { id },
         update: { email, imageUrl, name, role },
-        create: { id, email, imageUrl, name, role }
+        create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
       });
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
@@ -60,7 +60,7 @@ export class UserService {
       return await prisma.user.upsert({
         where: { id },
         update: { email, name, imageUrl, role },
-        create: { id, email, name, imageUrl, role }
+        create: { id, email, name, imageUrl, role, preferredLanguage: "en" }
       });
     } catch (e: any) {
       console.error("[SYNC_USER_ERROR]", e);

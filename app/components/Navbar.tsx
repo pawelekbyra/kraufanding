@@ -64,27 +64,6 @@ const Navbar = () => {
           </Link>
         )}
 
-        {/* Language Switcher */}
-        <div className="flex items-center bg-neutral/5 rounded-full px-1 h-8 md:h-9 border border-neutral/10">
-           <button
-             onClick={() => setLanguage('pl')}
-             className={cn(
-               "px-2 md:px-3 h-6 md:h-7 rounded-full text-[10px] md:text-xs font-bold transition-all uppercase tracking-tighter",
-               language === 'pl' ? "bg-black text-white shadow-sm" : "text-neutral/40 hover:text-neutral/70"
-             )}
-           >
-             PL
-           </button>
-           <button
-             onClick={() => setLanguage('en')}
-             className={cn(
-               "px-2 md:px-3 h-6 md:h-7 rounded-full text-[10px] md:text-xs font-bold transition-all uppercase tracking-tighter",
-               language === 'en' ? "bg-black text-white shadow-sm" : "text-neutral/40 hover:text-neutral/70"
-             )}
-           >
-             EN
-           </button>
-        </div>
 
         <SignedOut>
           <SignInButton mode="modal">
