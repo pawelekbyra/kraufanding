@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { ContentService } from '@/lib/services/content.service';
 import ChannelVideoCard from '@/app/components/ChannelVideoCard';
+import SubscribeButton from '@/app/components/SubscribeButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,41 +51,45 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       <Navbar />
 
       {/* CHANNEL COVER */}
-      <div className="w-full h-[16vw] min-h-[120px] max-h-[300px] bg-neutral-200 relative overflow-hidden">
-         <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 animate-pulse" />
-         {/* Placeholder for real banner */}
-         <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-            <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{creator.name}</span>
-         </div>
+      <div className="max-w-[1284px] mx-auto px-0 md:px-4 lg:px-6">
+        <div className="w-full aspect-[6/1] bg-neutral-200 relative overflow-hidden rounded-none md:rounded-xl">
+           <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 animate-pulse" />
+           {/* Placeholder for real banner */}
+           <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+              <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{creator.name}</span>
+           </div>
+        </div>
       </div>
 
       {/* CHANNEL HEADER */}
-      <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-4">
+      <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-sm overflow-hidden bg-white shrink-0">
+          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border-0 overflow-hidden bg-white shrink-0">
              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.name}`} alt={creator.name} className="w-full h-full object-cover" />
           </div>
-          <div className="flex-1 text-center md:text-left space-y-2">
-            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase">{creator.name}</h1>
-            <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-2 gap-y-1 font-sans">
+          <div className="flex-1 text-center md:text-left space-y-1">
+            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">{creator.name}</h1>
+            <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
                <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
-               <span>•</span>
-               <span>{(creator.subscribersCount || 0).toLocaleString('pl-PL')} subskrajberów</span>
                <span>•</span>
                <span>{allVideos.length} filmów</span>
             </div>
-            <p className="text-[14px] text-[#606060] line-clamp-2 max-w-2xl font-sans mt-2">
-               {creator.bio || "Witamy na oficjalnym kanale. Subskrybuj, aby być na bieżąco z najnowszymi materiałami."}
+            <p className="text-[14px] text-[#606060] line-clamp-1 max-w-2xl font-sans mt-1">
+               {creator.bio || "Witamy na oficjalnym kanale."}
+               <span className="ml-1 text-[#0f0f0f] font-bold cursor-pointer hover:opacity-70">więcej...</span>
             </p>
-            <div className="pt-4 flex flex-wrap justify-center md:justify-start gap-3 items-center">
-               <button className="bg-[#0f0f0f] text-white rounded-full px-6 h-10 font-bold text-[14px] hover:bg-[#272727] transition-all uppercase tracking-widest">Subskrajbuj</button>
-               <button className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-10 font-bold text-[14px] transition-all uppercase tracking-widest">Wspieraj</button>
+            <div className="pt-3 flex flex-wrap justify-center md:justify-start gap-4 items-center">
+               <SubscribeButton
+                 creatorId={creator.id}
+                 initialSubscribersCount={creator.subscribersCount || 0}
+               />
+               <button className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest mb-5">Wspieraj</button>
             </div>
           </div>
         </div>
 
         {/* CHANNEL TABS */}
-        <div className="flex border-b border-[#1a1a1a]/10 mt-8 overflow-x-auto no-scrollbar gap-8">
+        <div className="flex border-b border-[#1a1a1a]/10 mt-6 overflow-x-auto no-scrollbar gap-8">
            <button className="pb-3 border-b-2 border-[#0f0f0f] text-[14px] font-bold uppercase tracking-widest">Wideo</button>
            <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Playlisty</button>
            <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Społeczność</button>
@@ -102,7 +107,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         </div>
 
         {/* VIDEOS GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-8 py-6">
           {allVideos.map((video) => (
             <ChannelVideoCard
               key={video.id}

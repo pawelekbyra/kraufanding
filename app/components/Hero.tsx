@@ -7,6 +7,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import PremiumWrapper, { useVideoAccess } from './PremiumWrapper';
 import Link from 'next/link';
+import SubscribeButton from './SubscribeButton';
 
 interface HeroProps {
   video: Video;
@@ -47,8 +48,6 @@ const HeroPlayer = ({ video }: { video: Video }) => {
 const Hero: React.FC<HeroProps> = ({ video }) => {
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [subscribersCount, setSubscribersCount] = useState(video.creator?.subscribersCount || 1200000);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -63,66 +62,10 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
     })
   );
 
-  useEffect(() => {
-    if (userId && video.creatorId) {
-      fetch(`/api/subscriptions?creatorId=${video.creatorId}`)
-        .then(res => res.json())
-        .then(data => setIsSubscribed(data.isSubscribed))
-        .catch(err => console.error("Error fetching subscription status:", err));
-    }
-  }, [userId, video.creatorId]);
-
   const handleLike = async () => {
     if (!userId) return openSignIn();
     addOptimisticLike(!optimisticLike.isLiked);
     // TODO: Implement toggleVideoLike
-  };
-
-  const handleSubscribe = async () => {
-    if (!userId) {
-        openSignIn();
-        return;
-    }
-    if (!video.creatorId) return;
-
-    // Optimistic UI update
-    const prevSubscribed = isSubscribed;
-    setIsSubscribed(!prevSubscribed);
-    setSubscribersCount(prev => prevSubscribed ? prev - 1 : prev + 1);
-
-    try {
-      const res = await fetch('/api/subscriptions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ creatorId: video.creatorId }),
-      });
-
-      if (!res.ok) {
-        if (res.status === 401) {
-            alert("Błąd autoryzacji. Spróbuj się wylogować i zalogować ponownie (lub wyczyść ciasteczka).");
-            openSignIn();
-            // Rollback on 401
-            setIsSubscribed(prevSubscribed);
-            setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-            return;
-        }
-        throw new Error("Subscription update failed");
-      }
-      const data = await res.json();
-      if (data.error) {
-        alert("Błąd bazy danych: " + data.error);
-        setIsSubscribed(prevSubscribed);
-        setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-        return;
-      }
-      setIsSubscribed(data.isSubscribed);
-    } catch (err) {
-      console.error("Error updating subscription:", err);
-      alert("Wystąpił nieoczekiwany błąd podczas subskrypcji.");
-      // Rollback on error
-      setIsSubscribed(prevSubscribed);
-      setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-    }
   };
 
   if (!mounted) return (
@@ -160,19 +103,11 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
                   >
                     {video.creator?.name || 'Paweł Polutek'}
                   </Link>
-                  <p className="text-[12px] text-[#606060] whitespace-nowrap">{subscribersCount.toLocaleString('pl-PL')} subskrajberów</p>
                </div>
-               <button
-                 onClick={handleSubscribe}
-                 className={cn(
-                   "text-[14px] font-bold rounded-full px-4 h-9 flex items-center transition-all ml-1 shrink-0",
-                   isSubscribed
-                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                     : "bg-[#0f0f0f] text-white hover:bg-[#272727]"
-                 )}
-               >
-                 {isSubscribed ? 'Subskrybujesz' : 'Subskrajb'}
-               </button>
+               <SubscribeButton
+                 creatorId={video.creatorId}
+                 initialSubscribersCount={video.creator?.subscribersCount || 1200000}
+               />
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">

@@ -30,9 +30,9 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                       video.isMainFeatured;
 
     return (
-        <div className="group cursor-pointer">
+        <div className="group cursor-pointer flex flex-col">
             <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="block">
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-black mb-3">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -56,18 +56,18 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         </div>
                     )}
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                     <div className="flex-1 min-w-0">
-                        <h3 className="text-[16px] font-bold text-[#0f0f0f] leading-snug line-clamp-2 uppercase tracking-tight mb-1">
+                        <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1">
                             {video.title}
                         </h3>
-                        <div className="text-[14px] text-[#606060] font-sans">
+                        <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
                             <div className="flex items-center gap-1">
                                 <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
                                 <span>•</span>
                                 <span>2 tyg. temu</span>
                             </div>
-                            <div className="mt-1">
+                            <div className="mt-0.5">
                                 {mounted && (
                                     hasAccess ? (
                                         <span className="text-[11px] font-black uppercase tracking-widest text-primary">Dostępne</span>
