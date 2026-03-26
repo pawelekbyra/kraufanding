@@ -6,6 +6,7 @@ import { MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 import { Video } from '@/app/types/video';
+import VideoPlayer from './VideoPlayer';
 
 interface ChannelVideoCardProps {
     video: Video;
@@ -31,8 +32,9 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
 
     return (
         <div className="group cursor-pointer flex flex-col">
-            <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="block">
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5">
+            <div className="block relative">
+                <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -40,11 +42,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         isMainFeatured={video.isMainFeatured}
                         variant="thumbnail"
                     >
-                        <img
-                            src={video.thumbnailUrl}
-                            alt={video.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        <VideoPlayer video={video} />
                     </PremiumWrapper>
                     <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
                         12:45
@@ -56,11 +54,13 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         </div>
                     )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative z-10">
                     <div className="flex-1 min-w-0">
-                        <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1">
-                            {video.title}
-                        </h3>
+                        <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
+                            <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
+                                {video.title}
+                            </h3>
+                        </Link>
                         <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
                             <div className="flex items-center gap-1">
                                 <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
@@ -87,7 +87,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         <MoreVertical size={20} />
                     </button>
                 </div>
-            </Link>
+            </div>
         </div>
     );
 }

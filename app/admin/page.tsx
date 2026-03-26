@@ -10,6 +10,11 @@ export default function AdminPanel() {
   const { isLoaded: authLoaded } = useAuth();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [videos, setVideos] = useState<any[]>([]);
   const [creator, setCreator] = useState<any>(null);
   const [stats, setStats] = useState<any>(null);
@@ -276,7 +281,7 @@ export default function AdminPanel() {
           <StatCard title="Wszystkie Filmy" value={stats?.totalVideos?.toString() || videos.length.toString()} icon={<Video size={20} />} />
           <StatCard title="Użytkownicy" value={stats?.totalUsers?.toString() || "0"} icon={<Plus size={20} />} />
           <StatCard title="Przychód" value={`€${stats?.totalRevenue?.toFixed(2) || "0.00"}`} icon={<BarChart3 size={20} />} />
-          <StatCard title="Subskrypcje" value={creator?.subscribersCount?.toLocaleString() || "0"} icon={<Star size={20} />} />
+          <StatCard title="Subskrypcje" value={mounted ? (creator?.subscribersCount?.toLocaleString() || "0") : "0"} icon={<Star size={20} />} />
         </section>
 
         <div className="flex border-b-2 border-[#1a1a1a]/10">
@@ -380,7 +385,7 @@ export default function AdminPanel() {
                                         <span className="bg-success/10 text-success text-[8px] font-black uppercase px-2 py-1 rounded">Zakończono</span>
                                     </td>
                                     <td className="p-4 text-right font-mono text-[10px] text-[#1a1a1a]/40">
-                                        {new Date(tx.createdAt).toLocaleString('pl-PL')}
+                                        {mounted ? new Date(tx.createdAt).toLocaleString('pl-PL') : ''}
                                     </td>
                                 </tr>
                             ))}

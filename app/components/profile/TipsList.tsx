@@ -9,8 +9,10 @@ import { Loader2, Coins } from 'lucide-react';
 export default function TipsList() {
   const [tips, setTips] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     async function fetchTips() {
       try {
         const data = await getUserTips();
@@ -58,14 +60,14 @@ export default function TipsList() {
                </div>
                <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mb-1 italic">
-                    {format(new Date(tip.createdAt), 'd MMMM yyyy, HH:mm', { locale: pl })}
+                    {mounted ? format(new Date(tip.createdAt), 'd MMMM yyyy, HH:mm', { locale: pl }) : ''}
                   </p>
                   <h4 className="text-xl font-black text-[#1a1a1a] uppercase tracking-tight">Wsparcie Projektu</h4>
                </div>
             </div>
             <div className="text-right">
                <span className="text-2xl font-black text-primary">
-                  {(tip.amount / 100).toLocaleString('pl-PL', { style: 'currency', currency: tip.currency })}
+                  {mounted ? (tip.amount / 100).toLocaleString('pl-PL', { style: 'currency', currency: tip.currency }) : ''}
                </span>
             </div>
           </div>
