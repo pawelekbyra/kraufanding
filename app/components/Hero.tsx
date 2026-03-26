@@ -71,6 +71,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                 console.error("[Hero] LIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
+                } else if (result.error === 'CLERK_ERROR') {
+                    alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nSprawdź klucze API w Vercel.`);
+                } else if (result.error === 'DATABASE_ERROR') {
+                    alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nUruchom 'npx prisma db push'.`);
                 } else {
                     alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
                 }
@@ -98,6 +102,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                 console.error("[Hero] DISLIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
+                } else if (result.error === 'CLERK_ERROR') {
+                    alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nSprawdź klucze API w Vercel.`);
+                } else if (result.error === 'DATABASE_ERROR') {
+                    alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nUruchom 'npx prisma db push'.`);
                 } else {
                     alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
                 }

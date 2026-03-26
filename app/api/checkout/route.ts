@@ -15,7 +15,17 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth();
+    let userId: string | null = null;
+    try {
+        const authData = auth();
+        userId = authData.userId;
+    } catch (e: any) {
+        console.error("[Checkout] Clerk Handshake Failed:", e.message);
+        return NextResponse.json({
+            error: "CLERK_ERROR",
+            message: "Błąd weryfikacji sesji (Clerk Handshake). Sprawdź klucze API CLERK_SECRET_KEY i NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY w panelu Vercel. Muszą pochodzić z tego samego projektu."
+        }, { status: 500 });
+    }
 
     if (!userId) {
       return NextResponse.json({
