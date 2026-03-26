@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
 import { Video } from '@/app/types/video';
+import { cn } from '@/lib/utils';
 
 interface VideoPlayerProps {
     video: Video;
+    variant?: 'hero' | 'thumbnail';
 }
 
-export default function VideoPlayer({ video }: VideoPlayerProps) {
+export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
     const [isPlaying, setIsPlaying] = useState(false);
 
@@ -33,9 +35,14 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
                 alt={video.title}
                 className="w-full h-full object-cover opacity-90 transition duration-1000 group-hover/player:scale-105"
             />
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(var(--p),0.5)] border-2 border-white/20 transition-all duration-300 group-hover/player:scale-110 group-hover/player:bg-primary">
-                    <svg className="w-10 h-10 text-white fill-current ml-1" viewBox="0 0 24 24">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className={cn(
+                    "bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/20 transition-all duration-500",
+                    variant === 'hero'
+                        ? "w-20 h-20 shadow-[0_0_50px_rgba(var(--p),0.5)] group-hover/player:scale-110 group-hover/player:bg-primary"
+                        : "w-10 h-10 shadow-[0_0_20px_rgba(var(--p),0.4)] group-hover/player:scale-110 group-hover/player:opacity-100 opacity-80"
+                )}>
+                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-10 h-10 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                     </svg>
                 </div>

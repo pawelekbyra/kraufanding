@@ -130,39 +130,47 @@ export class UserService {
         });
 
         if (existing) {
-            await prisma.subscription.delete({
-                where: { id: existing.id }
-            }).catch(de => {
+            try {
+                await prisma.subscription.delete({
+                    where: { id: existing.id }
+                });
+
+                // Attempt to update count, but don't fail the whole action if it crashes (e.g. missing column)
+                await prisma.creator.update({
+                    where: { id: creatorId },
+                    data: { subscribersCount: { decrement: 1 } }
+                }).catch(ce => {
+                    console.error("Could not decrement subscribersCount", ce);
+                });
+
+                return { isSubscribed: false };
+            } catch (de: any) {
                 console.error("Could not delete subscription", de);
-                if (de.code === 'P2021') throw new Error("Tabela subskrypcji nie istnieje.");
+                if (de.code === 'P2021') throw new Error("Database error: Subscription table missing.");
                 throw de;
-            });
-
-            // Attempt to update count, but don't fail the whole action if it crashes (e.g. missing column)
-            await prisma.creator.update({
-                where: { id: creatorId },
-                data: { subscribersCount: { decrement: 1 } }
-            }).catch(ce => console.error("Could not decrement subscribersCount", ce));
-
-            return { isSubscribed: false };
+            }
         } else {
-            await prisma.subscription.create({
-                data: {
-                    userId: user.id,
-                    creatorId: creatorId
-                }
-            }).catch(ce => {
+            try {
+                await prisma.subscription.create({
+                    data: {
+                        userId: user.id,
+                        creatorId: creatorId
+                    }
+                });
+
+                await prisma.creator.update({
+                    where: { id: creatorId },
+                    data: { subscribersCount: { increment: 1 } }
+                }).catch(ce => {
+                    console.error("Could not increment subscribersCount", ce);
+                });
+
+                return { isSubscribed: true };
+            } catch (ce: any) {
                 console.error("Could not create subscription", ce);
-                if (ce.code === 'P2021') throw new Error("Tabela subskrypcji nie istnieje.");
+                if (ce.code === 'P2021') throw new Error("Database error: Subscription table missing.");
                 throw ce;
-            });
-
-            await prisma.creator.update({
-                where: { id: creatorId },
-                data: { subscribersCount: { increment: 1 } }
-            }).catch(ce => console.error("Could not increment subscribersCount", ce));
-
-            return { isSubscribed: true };
+            }
         }
     } catch (error: any) {
         console.error("[TOGGLE_SUBSCRIPTION_ERROR]", error);
