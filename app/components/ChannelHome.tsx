@@ -122,8 +122,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 py-3">
-        <div className="grid grid-cols-12 gap-5">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
+        <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8">
             <Hero video={selectedVideo} />
 
