@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useOptimistic, useState, useEffect, startTransition } from 'react';
+import React, { useOptimistic, useState, useEffect, useTransition } from 'react';
 import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
@@ -21,12 +21,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
   const [mounted, setMounted] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Multi-state optimistic UI
   const [optimisticState, addOptimisticAction] = useOptimistic(
     {
         isLiked: initialInteraction?.liked || false,
@@ -59,52 +59,54 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
   const handleLike = async () => {
     if (!userId) return openSignIn();
+    if (isPending) return;
 
     startTransition(async () => {
         try {
+            console.log("[Hero] Toggling LIKE for video:", video.id);
             addOptimisticAction('LIKE');
             const result = await toggleVideoLike(video.id) as any;
 
             if (result.error) {
+                console.error("[Hero] LIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
-                } else if (result.error === 'CLERK_ERROR') {
-                    alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
-                } else if (result.error === 'DATABASE_ERROR') {
-                    alert("BŁĄD BAZY DANYCH: " + result.message);
                 } else {
-                    alert("Błąd: " + (result.message || result.error));
+                    alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
                 }
+            } else {
+                console.log("[Hero] LIKE Action success:", result);
             }
         } catch (error: any) {
-            console.error("Error toggling like:", error);
-            alert("Błąd serwera podczas zapisywania polubienia.");
+            console.error("[Hero] Transition error during LIKE:", error);
+            alert("Błąd serwera podczas polubienia. Sprawdź połączenie.");
         }
     });
   };
 
   const handleDislike = async () => {
     if (!userId) return openSignIn();
+    if (isPending) return;
 
     startTransition(async () => {
         try {
+            console.log("[Hero] Toggling DISLIKE for video:", video.id);
             addOptimisticAction('DISLIKE');
             const result = await toggleVideoDislike(video.id) as any;
 
             if (result.error) {
+                console.error("[Hero] DISLIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
-                } else if (result.error === 'CLERK_ERROR') {
-                    alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
-                } else if (result.error === 'DATABASE_ERROR') {
-                    alert("BŁĄD BAZY DANYCH: " + result.message);
                 } else {
-                    alert("Błąd: " + (result.message || result.error));
+                    alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
                 }
+            } else {
+                console.log("[Hero] DISLIKE Action success:", result);
             }
         } catch (error: any) {
-            console.error("Error toggling dislike:", error);
-            alert("Błąd serwera podczas zapisywania oceny.");
+            console.error("[Hero] Transition error during DISLIKE:", error);
+            alert("Błąd serwera podczas oceny. Sprawdź połączenie.");
         }
     });
   };
@@ -156,9 +158,11 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0">
                   <button
                     onClick={handleLike}
+                    disabled={isPending}
                     className={cn(
                         "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
-                        optimisticState.isLiked && "text-black"
+                        optimisticState.isLiked && "text-black",
+                        isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
@@ -167,9 +171,11 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                   </button>
                   <button
                     onClick={handleDislike}
+                    disabled={isPending}
                     className={cn(
                         "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors",
-                        optimisticState.isDisliked && "text-black"
+                        optimisticState.isDisliked && "text-black",
+                        isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                   >
