@@ -56,7 +56,8 @@ export class UserService {
         return await prisma.user.update({
             where: { id },
             data: {
-                id: `deleted_${id}_${anonymousId}`,
+                // Primary key (id) cannot be updated in Prisma.
+                // We anonymize sensitive data while keeping the ID for foreign key integrity.
                 email: `deleted_${anonymousId}@deleted.com`,
                 name: "Usunięty Użytkownik",
                 imageUrl: null,
