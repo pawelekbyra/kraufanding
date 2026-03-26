@@ -26,7 +26,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
     setMounted(true);
   }, []);
 
-  // Multi-state optimistic UI for Like/Dislike initialized from server props
+  // Multi-state optimistic UI
   const [optimisticState, addOptimisticAction] = useOptimistic(
     {
         isLiked: initialInteraction?.liked || false,
@@ -60,41 +60,53 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   const handleLike = async () => {
     if (!userId) return openSignIn();
 
-    try {
-        startTransition(async () => {
+    startTransition(async () => {
+        try {
             addOptimisticAction('LIKE');
             const result = await toggleVideoLike(video.id) as any;
+
             if (result.error) {
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
+                } else if (result.error === 'CLERK_ERROR') {
+                    alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
+                } else if (result.error === 'DATABASE_ERROR') {
+                    alert("BŁĄD BAZY DANYCH: " + result.message);
                 } else {
-                    alert("Błąd: " + result.error);
+                    alert("Błąd: " + (result.message || result.error));
                 }
             }
-        });
-    } catch (error: any) {
-        console.error("Error toggling like:", error);
-    }
+        } catch (error: any) {
+            console.error("Error toggling like:", error);
+            alert("Błąd serwera podczas zapisywania polubienia.");
+        }
+    });
   };
 
   const handleDislike = async () => {
     if (!userId) return openSignIn();
 
-    try {
-        startTransition(async () => {
+    startTransition(async () => {
+        try {
             addOptimisticAction('DISLIKE');
             const result = await toggleVideoDislike(video.id) as any;
+
             if (result.error) {
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
+                } else if (result.error === 'CLERK_ERROR') {
+                    alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
+                } else if (result.error === 'DATABASE_ERROR') {
+                    alert("BŁĄD BAZY DANYCH: " + result.message);
                 } else {
-                    alert("Błąd: " + result.error);
+                    alert("Błąd: " + (result.message || result.error));
                 }
             }
-        });
-    } catch (error: any) {
-        console.error("Error toggling dislike:", error);
-    }
+        } catch (error: any) {
+            console.error("Error toggling dislike:", error);
+            alert("Błąd serwera podczas zapisywania oceny.");
+        }
+    });
   };
 
   if (!mounted) return (
@@ -104,7 +116,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   return (
     <section className="bg-[#FDFBF7]">
       <div className="w-full">
-        {/* FEATURED MEDIA (VIDEO PLAYER) */}
+        {/* FEATURED MEDIA */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
           <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             <VideoPlayer video={video} />

@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * API Route for fetching comments for a video.
+ * RESILIENCE: Returns empty state if DB tables are missing.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +19,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'videoId is required' }, { status: 400 });
   }
 
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {}
 
   try {
     let internalUserId = null;
@@ -61,10 +66,10 @@ export async function GET(request: NextRequest) {
             const [like, dislike] = await Promise.all([
                 prisma.commentLike.findUnique({
                     where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-                }),
+                }).catch(() => null),
                 prisma.commentDislike.findUnique({
                     where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
-                })
+                }).catch(() => null)
             ]);
             isLiked = !!like;
             isDisliked = !!dislike;
@@ -77,10 +82,10 @@ export async function GET(request: NextRequest) {
                 const [like, dislike] = await Promise.all([
                     prisma.commentLike.findUnique({
                         where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
-                    }),
+                    }).catch(() => null),
                     prisma.commentDislike.findUnique({
                         where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
-                    })
+                    }).catch(() => null)
                 ]);
                 rLiked = !!like;
                 rDisliked = !!dislike;
@@ -109,12 +114,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: true, comments: commentsWithStatus, nextCursor });
   } catch (error: any) {
     console.error('[GET_COMMENTS_API_ERROR]', error);
-    return NextResponse.json({ success: false, message: 'Wystąpił błąd podczas pobierania komentarzy.' }, { status: 500 });
+    // P2021: Table missing - return success but empty state to avoid frontend crash
+    if (error.code === 'P2021') {
+        return NextResponse.json({ success: true, comments: [], nextCursor: null, warning: "Database not initialized." });
+    }
+    return NextResponse.json({ success: false, message: 'Błąd podczas pobierania komentarzy.' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {
+      return NextResponse.json({ success: false, message: 'Handshake Error: Check Clerk Keys.' }, { status: 401 });
+  }
 
   if (!userId) {
     return NextResponse.json({ success: false, message: 'Musisz być zalogowany.' }, { status: 401 });
@@ -156,12 +171,22 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
   } catch (error: any) {
     console.error('[POST_COMMENT_API_ERROR]', error);
+    if (error.code === 'P2021') {
+        return NextResponse.json({ success: false, message: "Baza danych nie jest gotowa (P2021)." }, { status: 503 });
+    }
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
-    const { userId } = auth();
+    let userId: string | null = null;
+    try {
+        const authData = auth();
+        userId = authData.userId;
+    } catch (e) {
+        return NextResponse.json({ error: "Handshake Error" }, { status: 401 });
+    }
+
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {

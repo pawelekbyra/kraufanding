@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
@@ -27,8 +27,6 @@ export default function SubscribeButton({
 
     useEffect(() => {
         setMounted(true);
-        // If server provided a value, we trust it initially.
-        // If not, and we are logged in, we can double check (optional fallback)
         if (userId && creatorId && initialIsSubscribed === undefined) {
             getSubscriptionStatusAction(creatorId)
                 .then(data => setIsSubscribed(data.isSubscribed))
@@ -44,35 +42,41 @@ export default function SubscribeButton({
         if (!creatorId || isLoading) return;
 
         setIsLoading(true);
-        // Optimistic UI update
         const prevSubscribed = isSubscribed;
+
+        // Optimistic Update
         setIsSubscribed(!prevSubscribed);
         setSubscribersCount(prev => prevSubscribed ? Math.max(0, prev - 1) : prev + 1);
 
-        try {
-            const result = await toggleSubscriptionAction(creatorId);
+        startTransition(async () => {
+            try {
+                const result = await toggleSubscriptionAction(creatorId) as any;
 
-            if (result.error) {
-                if (result.error === 'UNAUTHORIZED' || result.error === 'AUTH_REQUIRED') {
-                    openSignIn();
-                } else {
-                    alert(`Wystąpił błąd: ${result.error}`);
+                if (result.error) {
+                    if (result.error === 'AUTH_REQUIRED') {
+                        openSignIn();
+                    } else if (result.error === 'CLERK_ERROR') {
+                        alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
+                    } else if (result.error === 'DATABASE_ERROR') {
+                        alert("BŁĄD BAZY DANYCH: " + result.message);
+                    } else {
+                        alert(`Wystąpił błąd: ${result.message || result.error}`);
+                    }
+                    // Rollback
+                    setIsSubscribed(prevSubscribed);
+                    setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
+                } else if (result.success) {
+                    setIsSubscribed(result.isSubscribed ?? false);
                 }
-                // Rollback
+            } catch (err: any) {
+                console.error("Error updating subscription:", err);
+                alert("Wystąpił nieoczekiwany błąd serwera. Spróbuj ponownie później.");
                 setIsSubscribed(prevSubscribed);
                 setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-            } else if (result.success) {
-                setIsSubscribed(result.isSubscribed ?? false);
+            } finally {
+                setIsLoading(false);
             }
-        } catch (err: any) {
-            console.error("Error updating subscription:", err);
-            alert("Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
-            // Rollback
-            setIsSubscribed(prevSubscribed);
-            setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     return (
