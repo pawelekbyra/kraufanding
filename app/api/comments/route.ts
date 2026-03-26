@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,26 +21,7 @@ export async function GET(request: NextRequest) {
     let internalUserId = null;
     if (clerkUserId) {
         try {
-            let user = await prisma.user.findUnique({
-                where: { clerkUserId },
-                select: { id: true }
-                }).catch(e => {
-                    if (e.code === 'P2021') return null;
-                    throw e;
-            });
-
-            if (!user) {
-                const clerkUser = await currentUser();
-                if (clerkUser) {
-                    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-                    const imageUrl = clerkUser.imageUrl || null;
-                    user = await prisma.user.upsert({
-                        where: { clerkUserId },
-                        update: { email, imageUrl },
-                        create: { clerkUserId, email, imageUrl }
-                    });
-                }
-            }
+            const user = await UserService.getOrCreateUser(clerkUserId);
             internalUserId = user?.id;
         } catch (e) {
             console.error("Error syncing user during GET comments:", e);
@@ -140,33 +122,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    let user = null;
-    try {
-        user = await prisma.user.findUnique({ where: { clerkUserId } });
-    } catch (e) {}
+    let user = await UserService.getOrCreateUser(clerkUserId);
 
-    if (!user) {
-        const clerkUser = await currentUser();
-        if (!clerkUser) return NextResponse.json({ success: false, message: 'Clerk User not found.' }, { status: 404 });
-
-        const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || "user@polutek.pl";
-        const imageUrl = clerkUser.imageUrl || null;
-
-        try {
-            user = await prisma.user.upsert({
-                where: { clerkUserId },
-                update: { email, imageUrl },
-                create: {
-                    clerkUserId,
-                    email,
-                    imageUrl,
-                }
-            });
-        } catch (e: any) {
-            console.error("[COMMENT_POST_USER_SYNC_ERROR]", e);
-            user = await prisma.user.findUnique({ where: { clerkUserId } });
-            if (!user) return NextResponse.json({ success: false, message: 'DB Sync error: ' + e.message }, { status: 500 });
-        }
+    if (user.id === 'temp-id') {
+         return NextResponse.json({ success: false, message: 'Database is currently unavailable. Please try again later.' }, { status: 503 });
     }
 
     let body;

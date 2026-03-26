@@ -99,6 +99,9 @@ export class ContentService {
       const user = await prisma.user.findUnique({
         where: { clerkUserId },
         select: { totalPaid: true, role: true, email: true }
+      }).catch(e => {
+          if (e.code === 'P2021') return null;
+          throw e;
       });
 
       if (!user) return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
@@ -140,15 +143,21 @@ export class ContentService {
     creatorId?: string,
     imageUrl?: string
   }) {
-    return await prisma.comment.create({
-      data: {
-        text: data.text,
-        authorId: data.authorId,
-        videoId: data.videoId,
-        parentId: data.parentId,
-        creatorId: data.creatorId,
-        imageUrl: data.imageUrl
-      }
-    });
+    try {
+        return await prisma.comment.create({
+            data: {
+                text: data.text,
+                authorId: data.authorId,
+                videoId: data.videoId,
+                parentId: data.parentId,
+                creatorId: data.creatorId,
+                imageUrl: data.imageUrl
+            }
+        });
+    } catch (e: any) {
+        console.error("[CREATE_COMMENT_ERROR]", e);
+        if (e.code === 'P2021') throw new Error("Database table missing.");
+        throw e;
+    }
   }
 }
