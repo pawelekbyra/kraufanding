@@ -42,7 +42,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         isMainFeatured={video.isMainFeatured}
                         variant="thumbnail"
                     >
-                        <VideoPlayer video={video} />
+                        <VideoPlayer video={video} variant="thumbnail" />
                     </PremiumWrapper>
                     <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
                         12:45

@@ -47,7 +47,11 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
             if (result.error) {
                 if (result.error === 'UNAUTHORIZED') {
                     openSignIn();
+                } else if (result.error.includes("handshake") || result.error.includes("JWKS")) {
+                    alert("Wystąpił problem z autoryzacją (Clerk). Spróbuj odświeżyć stronę lub zalogować się ponownie.");
+                    console.error("Clerk Handshake Error:", result.error);
                 } else {
+                    alert(`Błąd: ${result.error}`);
                     console.error("Subscription action error:", result.error);
                 }
                 // Rollback
@@ -56,8 +60,9 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
             } else if (result.isSubscribed !== undefined) {
                 setIsSubscribed(result.isSubscribed);
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error updating subscription:", err);
+            alert("Wystąpił nieoczekiwany błąd. Sprawdź połączenie z internetem.");
             // Rollback
             setIsSubscribed(prevSubscribed);
             setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);

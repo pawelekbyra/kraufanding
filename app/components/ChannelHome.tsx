@@ -75,7 +75,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             />
             <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative z-10">
               <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
-                 <VideoPlayer video={video} />
+                 <VideoPlayer video={video} variant="thumbnail" />
               </PremiumWrapper>
               <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
             </div>
