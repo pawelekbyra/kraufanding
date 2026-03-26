@@ -42,9 +42,10 @@ async function main() {
     },
   });
 
-  // 3. Define Videos
+  // 3. Define Videos (Matching INITIAL_VIDEOS in lib/data/initial-content.ts)
   const videosData = [
     {
+      id: 'v_fallback_001',
       title: 'I raise money for my Secret Project',
       slug: 'secret-project',
       description: 'To jest mój najważniejszy projekt. Zbieram fundusze na realizację wizji, która zmieni sposób, w jaki konsumujemy media.',
@@ -58,10 +59,11 @@ async function main() {
       dislikesCount: 120,
     },
     {
+      id: 'v_fallback_002',
       title: 'Dlaczego niezależność jest kluczowa w 2024?',
       slug: 'independency-2024',
       description: 'W tym odcinku analizuję, dlaczego twórcy muszą szukać alternatywnych dróg finansowania poza wielkimi korporacjami.',
-      videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4', // Reusing asset for seed
+      videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4',
       thumbnailUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2659&auto=format&fit=crop',
       duration: '15:30',
       tier: AccessTier.LOGGED_IN,
@@ -71,6 +73,7 @@ async function main() {
       dislikesCount: 50,
     },
     {
+      id: 'v_fallback_003',
       title: 'Mój setup do nagrywania śledztw',
       slug: 'setup-tour',
       description: 'Pokazuję sprzęt, którego używam do tworzenia moich materiałów. Od kamer po mikrofony i oświetlenie.',
@@ -84,6 +87,7 @@ async function main() {
       dislikesCount: 10,
     },
     {
+      id: 'v_fallback_004',
       title: 'Niepublikowane materiały z ostatniego śledztwa',
       slug: 'unreleased-investigation',
       description: 'Tylko dla Patronów. Nagrania, które nie weszły do głównego materiału ze względu na ich kontrowersyjną naturę.',
@@ -97,6 +101,7 @@ async function main() {
       dislikesCount: 5,
     },
     {
+      id: 'v_fallback_005',
       title: 'Q&A: Odpowiedzi na Wasze najtrudniejsze pytania',
       slug: 'qa-session-1',
       description: 'Odpowiadam na pytania przesłane przez moich wspierających. Nic nie jest poza granicami.',
@@ -113,7 +118,7 @@ async function main() {
 
   for (const v of videosData) {
     await prisma.video.upsert({
-      where: { slug: v.slug },
+      where: { id: v.id },
       update: {
         title: v.title,
         description: v.description,
@@ -128,6 +133,7 @@ async function main() {
         publishedAt: new Date(),
       },
       create: {
+        id: v.id,
         creatorId: creator.id,
         title: v.title,
         slug: v.slug,

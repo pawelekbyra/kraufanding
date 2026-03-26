@@ -16,6 +16,10 @@ export class UserService {
       let clerkUser = null;
       try {
           clerkUser = await currentUser();
+          // Ensure the clerkUser matches the ID we're syncing
+          if (clerkUser && clerkUser.id !== id) {
+              clerkUser = null;
+          }
       } catch (ce) {
           console.error("[UserService] Clerk Handshake Failed. Attempting local lookup only.", ce);
       }
@@ -27,6 +31,21 @@ export class UserService {
               console.log(`[UserService] Recovered user ${id} from local DB after auth provider issue.`);
               return existing;
           }
+
+          // Special handling for admin fallback during auto-healing
+          if (id === "user_admin_001") {
+              return await prisma.user.upsert({
+                  where: { id: "user_admin_001" },
+                  update: { role: 'ADMIN' },
+                  create: {
+                      id: "user_admin_001",
+                      email: ADMIN_EMAIL,
+                      name: "Paweł Polutek",
+                      role: 'ADMIN'
+                  }
+              });
+          }
+
           // If no local user and no provider data, we can't create a real record.
           throw new Error("AUTH_HANDSHAKE_FAILED_NO_LOCAL_DATA");
       }

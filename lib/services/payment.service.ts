@@ -29,7 +29,7 @@ export class PaymentService {
               name: `Support: ${params.title || "Creator Support"}`,
               description: `Lifetime VIP Access`,
             },
-            unit_amount: Math.round(params.amount * 100),
+            unit_amount: Math.round(params.amount * 100), // convert EUR to cents
           },
           quantity: 1,
         },
@@ -70,7 +70,7 @@ export class PaymentService {
     const userId = session.metadata?.userId || session.metadata?.clerkUserId;
     const creatorIdRaw = session.metadata?.creatorId;
     const creatorId = (creatorIdRaw && creatorIdRaw !== "") ? creatorIdRaw : null;
-    const amountPaid = (session.amount_total || 0) / 100;
+    const amountPaidCents = session.amount_total || 0;
     const currency = session.currency?.toUpperCase() || 'EUR';
 
     if (!userId) return;
@@ -93,7 +93,7 @@ export class PaymentService {
         data: {
           userId: localUser.id,
           creatorId: creatorId,
-          amount: amountPaid,
+          amount: amountPaidCents,
           currency: currency,
           stripeSessionId: session.id,
           status: 'COMPLETED'
@@ -103,18 +103,18 @@ export class PaymentService {
       return await tx.user.update({
         where: { id: localUser.id },
         data: {
-          totalPaid: { increment: amountPaid },
+          totalPaid: { increment: amountPaidCents },
           stripeCustomerId: session.customer as string,
         },
       });
     });
 
     if (user.email && process.env.RESEND_API_KEY) {
-      await this.sendThankYouEmail(user.email, amountPaid, user.totalPaid);
+      await this.sendThankYouEmail(user.email, amountPaidCents / 100, user.totalPaid / 100);
     }
   }
 
-  private static async sendThankYouEmail(email: string, amountPaid: number, totalPaid: number) {
+  private static async sendThankYouEmail(email: string, amountPaidEur: number, totalPaidEur: number) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     try {
       await resend.emails.send({
@@ -125,8 +125,8 @@ export class PaymentService {
           <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6;">
             <h1 style="text-transform: uppercase; letter-spacing: -0.05em;">Thank you for your patronage</h1>
             <p>Hello,</p>
-            <p>We've successfully processed your contribution of <strong>€${amountPaid.toFixed(2)}</strong>.</p>
-            <p>Your total support is now <strong>€${totalPaid.toFixed(2)}</strong>.</p>
+            <p>We've successfully processed your contribution of <strong>€${amountPaidEur.toFixed(2)}</strong>.</p>
+            <p>Your total support is now <strong>€${totalPaidEur.toFixed(2)}</strong>.</p>
             <p>Depending on your total support level, you've unlocked permanent access to our premium materials.</p>
             <p>Visit <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a> to see your unlocked content.</p>
             <br />

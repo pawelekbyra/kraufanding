@@ -105,12 +105,12 @@ export class ContentService {
       }
 
       if (video.tier === AccessTier.VIP1) {
-        const hasAccess = user.totalPaid >= 5;
+        const hasAccess = user.totalPaid >= 500; // 5 EUR in cents
         return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
       }
 
       if (video.tier === AccessTier.VIP2) {
-        const hasAccess = user.totalPaid >= 10;
+        const hasAccess = user.totalPaid >= 1000; // 10 EUR in cents
         return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
       }
 

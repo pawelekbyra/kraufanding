@@ -7,15 +7,18 @@ export async function getUserTips() {
   const { userId } = auth();
   if (!userId) return [];
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { id: true }
-  });
+  try {
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        userId: userId,
+        status: 'COMPLETED'
+      },
+      orderBy: { createdAt: 'desc' }
+    });
 
-  if (!user) return [];
-
-  // This part needs updating since Tip model is gone?
-  // Actually, we don't have a Tip model anymore.
-  // Let's check schema.prisma again.
-  return [];
+    return transactions;
+  } catch (error) {
+    console.error("[GET_USER_TIPS_ERROR]", error);
+    return [];
+  }
 }
