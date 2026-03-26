@@ -21,7 +21,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
             <h1 className="text-4xl font-black uppercase">Kanał nie znaleziony</h1>
-            <p className="text-[#606060] mt-2 mb-6">Ten kanał może nie istnieć lub baza danych jest w trakcie konfiguracji.</p>
+            <p className="text-[#606060] mt-2 mb-6">Ten kanał nie istnieje.</p>
             <Link href="/" className="bg-[#0f0f0f] text-white px-8 py-3 rounded-full uppercase font-bold tracking-widest hover:bg-[#272727] transition-all">Wróć na stronę główną</Link>
         </div>
         <Footer />
@@ -38,6 +38,8 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       id: creator.id,
       name: creator.name,
       slug: creator.slug,
+      bio: creator.bio,
+      bannerUrl: creator.bannerUrl,
       subscribersCount: creator.subscribersCount || 0
     }
   }));
@@ -83,7 +85,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
                  creatorId={creator.id}
                  initialSubscribersCount={creator.subscribersCount || 0}
                />
-               <Link href="#donations" className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5">Wspieraj</Link>
+               <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5">Wspieraj</Link>
             </div>
           </div>
         </div>
@@ -97,13 +99,6 @@ export default async function ChannelPage({ params }: { params: { slug: string }
            <div className="ml-auto pb-3 flex items-center gap-4">
               <Search size={20} className="text-[#606060] cursor-pointer" />
            </div>
-        </div>
-
-        {/* SEARCH & FILTERS BAR */}
-        <div className="py-4 flex items-center gap-4 overflow-x-auto no-scrollbar">
-           <button className="bg-[#0f0f0f] text-white rounded-lg px-4 py-1.5 text-[14px] font-bold shrink-0">Najnowsze</button>
-           <button className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-lg px-4 py-1.5 text-[14px] font-bold shrink-0">Popularne</button>
-           <button className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-lg px-4 py-1.5 text-[14px] font-bold shrink-0">Najstarsze</button>
         </div>
 
         {/* VIDEOS GRID */}
