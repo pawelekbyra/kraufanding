@@ -4,8 +4,18 @@ import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * API Route for checking subscription status.
+ */
 export async function GET(req: NextRequest) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {
+      return NextResponse.json({ isSubscribed: false, error: "Handshake failed" });
+  }
+
   const { searchParams } = new URL(req.url);
   const creatorId = searchParams.get('creatorId');
 
@@ -18,12 +28,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ isSubscribed });
   } catch (error: any) {
     console.error("[SUBSCRIPTION_GET_ERROR]", error);
-    return NextResponse.json({ isSubscribed: false }, { status: 500 });
+    return NextResponse.json({ isSubscribed: false, error: error.message }, { status: 500 });
   }
 }
 
+/**
+ * API Route for toggling subscription status.
+ */
 export async function POST(req: NextRequest) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {
+      return NextResponse.json({ error: "Handshake Error" }, { status: 401 });
+  }
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,6 +60,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error: any) {
     console.error("[SUBSCRIPTION_POST_ERROR]", error);
+    if (error.message?.includes("DATABASE_TABLES_MISSING")) {
+        return NextResponse.json({ error: "DATABASE_ERROR" }, { status: 503 });
+    }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

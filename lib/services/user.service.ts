@@ -7,20 +7,35 @@ const ADMIN_EMAIL = "pawel.perfect@gmail.com";
 export class UserService {
   /**
    * Retrieves or creates a user record in the database using the Clerk ID.
-   * This method centralizes user session identification and synchronization.
+   * RESILIENCE: If Clerk API fails (e.g. handshake mismatch), it tries to find the user locally first.
    */
   static async getOrCreateUser(id: string) {
     try {
       console.log(`[UserService] Syncing user for ID: ${id}`);
-      const clerkUser = await currentUser();
 
-      // Ensure we have at least an email to identify the user
-      const email = clerkUser?.primaryEmailAddress?.emailAddress ||
-                    clerkUser?.emailAddresses[0]?.emailAddress ||
+      let clerkUser = null;
+      try {
+          clerkUser = await currentUser();
+      } catch (ce) {
+          console.error("[UserService] Clerk Handshake Failed. Attempting local lookup only.", ce);
+      }
+
+      // If Clerk is down or misconfigured, try finding existing user by ID
+      if (!clerkUser) {
+          const existing = await prisma.user.findUnique({ where: { id } });
+          if (existing) {
+              console.log(`[UserService] Recovered user ${id} from local DB after auth provider issue.`);
+              return existing;
+          }
+          // If no local user and no provider data, we can't create a real record.
+          throw new Error("AUTH_HANDSHAKE_FAILED_NO_LOCAL_DATA");
+      }
+
+      const email = clerkUser.primaryEmailAddress?.emailAddress ||
+                    clerkUser.emailAddresses[0]?.emailAddress ||
                     `user_${id}@polutek.pl`;
-      const imageUrl = clerkUser?.imageUrl || null;
-      const name = clerkUser ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null : null;
-
+      const imageUrl = clerkUser.imageUrl || null;
+      const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null;
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       // Atomic upsert ensures the user record exists and is up-to-date
@@ -31,13 +46,14 @@ export class UserService {
       });
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
-      throw new Error(`Failed to sync user: ${e.message}`);
+      // P2021: Table missing - this is the error the user is seeing!
+      if (e.code === 'P2021') {
+          throw new Error("DATABASE_TABLES_MISSING: Run 'npx prisma db push' in your environment.");
+      }
+      throw e;
     }
   }
 
-  /**
-   * Synchronizes user data directly from a webhook or manual call.
-   */
   static async syncUser(id: string, email: string, imageUrl?: string | null) {
     try {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
@@ -48,13 +64,10 @@ export class UserService {
       });
     } catch (e: any) {
       console.error("[SYNC_USER_ERROR]", e);
-      throw new Error(`Failed to sync user data: ${e.message}`);
+      throw e;
     }
   }
 
-  /**
-   * Soft-deletes a user by anonymizing their personal data while preserving their ID.
-   */
   static async softDeleteUser(id: string) {
     try {
       const anonymousId = crypto.randomUUID();
@@ -70,13 +83,10 @@ export class UserService {
       });
     } catch (e: any) {
       console.error("[SOFT_DELETE_USER_ERROR]", e);
-      throw new Error(`Failed to soft-delete user: ${e.message}`);
+      throw e;
     }
   }
 
-  /**
-   * Returns the total historical donation amount for a user.
-   */
   static async getUserTotalPaid(id: string) {
     try {
       const user = await prisma.user.findUnique({
@@ -86,13 +96,10 @@ export class UserService {
       return user?.totalPaid || 0;
     } catch (e: any) {
       console.error("[GET_USER_TOTAL_PAID_ERROR]", e);
-      return 0; // Safe default for access checks
+      return 0;
     }
   }
 
-  /**
-   * Checks if a user is subscribed to a specific creator.
-   */
   static async isSubscribed(id: string, creatorId: string) {
     try {
       const sub = await prisma.subscription.findUnique({
@@ -110,18 +117,15 @@ export class UserService {
     }
   }
 
-  /**
-   * Retrieves the user's interaction status (like/dislike) for a video.
-   */
   static async getVideoInteraction(userId: string, videoId: string) {
     try {
         const [like, dislike] = await Promise.all([
             prisma.videoLike.findUnique({
                 where: { userId_videoId: { userId, videoId } }
-            }),
+            }).catch(() => null),
             prisma.videoDislike.findUnique({
                 where: { userId_videoId: { userId, videoId } }
-            })
+            }).catch(() => null)
         ]);
         return {
             liked: !!like,
@@ -133,14 +137,12 @@ export class UserService {
     }
   }
 
-  /**
-   * Toggles the subscription status for a user and a creator.
-   * Atomically increments/decrements the creator's subscriber count.
-   */
   static async toggleSubscription(id: string, creatorId: string) {
     try {
-      // Ensure the user exists before toggling
-      await this.getOrCreateUser(id);
+      // Lazy sync
+      await this.getOrCreateUser(id).catch(err => {
+          console.warn("[UserService] ToggleSub could not sync user provider data, continuing with DB lookup.", err.message);
+      });
 
       return await prisma.$transaction(async (tx) => {
         const existing = await tx.subscription.findUnique({
@@ -181,7 +183,8 @@ export class UserService {
       });
     } catch (e: any) {
       console.error("[TOGGLE_SUBSCRIPTION_ERROR]", e);
-      throw new Error(`Failed to toggle subscription: ${e.message}`);
+      if (e.code === 'P2021') throw new Error("DATABASE_TABLES_MISSING");
+      throw e;
     }
   }
 }

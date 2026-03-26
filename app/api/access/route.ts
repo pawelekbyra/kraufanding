@@ -4,8 +4,19 @@ import { ContentService } from '@/lib/services/content.service';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * API Route for checking video access.
+ * RESILIENCE: Never returns a 500 error; falls back to restricted access on DB failure.
+ */
 export async function GET(req: NextRequest) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {
+      console.warn("[Access] Clerk Handshake failure during access check. Proceeding as guest.");
+  }
+
   const { searchParams } = new URL(req.url);
   const videoId = searchParams.get('videoId');
 
@@ -18,9 +29,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(access);
   } catch (error: any) {
     console.error("[ACCESS_API_ERROR]", error);
+    // Extreme fallback: restrict access but don't crash
     return NextResponse.json({
-        error: "Internal Error",
-        message: error.message || "Unknown error during access check"
-    }, { status: 500 });
+        hasAccess: false,
+        userTotalPaid: 0,
+        requiredTier: 'VIP1',
+        videoUrl: null,
+        error: "Access check partially failed. Check DB connectivity."
+    });
   }
 }

@@ -23,21 +23,31 @@ export async function incrementVideoViews(videoId: string) {
  * Toggles a 'Like' on a video.
  */
 export async function toggleVideoLike(videoId: string) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e: any) {
+      console.error("[Interaction] Clerk Auth Handshake Failed:", e.message);
+      return { error: "CLERK_ERROR", message: "Problem z autoryzacją (handshake). Sprawdź klucze API w Vercel." };
+  }
+
   console.log(`[Interaction] User ${userId} toggling LIKE on video ${videoId}`);
 
   try {
     if (!userId) {
-        console.warn("[Interaction] Attempted LIKE without session.");
         return { error: "AUTH_REQUIRED" };
     }
 
-    await UserService.getOrCreateUser(userId);
+    // Try to sync/fetch user record.
+    await UserService.getOrCreateUser(userId).catch(err => {
+        console.warn("[Interaction] UserService sync issue during LIKE:", err.message);
+    });
 
     const result = await prisma.$transaction(async (tx) => {
-      // 1. Remove existing dislike if any
+      // 1. Remove existing dislike
       const existingDislike = await tx.videoDislike.findUnique({
-        where: { userId_videoId: { userId, videoId } }
+        where: { userId_videoId: { userId: userId!, videoId } }
       });
 
       if (existingDislike) {
@@ -50,7 +60,7 @@ export async function toggleVideoLike(videoId: string) {
 
       // 2. Toggle Like
       const existingLike = await tx.videoLike.findUnique({
-        where: { userId_videoId: { userId, videoId } }
+        where: { userId_videoId: { userId: userId!, videoId } }
       });
 
       if (existingLike) {
@@ -61,7 +71,7 @@ export async function toggleVideoLike(videoId: string) {
         });
         return { liked: false, disliked: false };
       } else {
-        await tx.videoLike.create({ data: { userId, videoId } });
+        await tx.videoLike.create({ data: { userId: userId!, videoId } });
         await tx.video.update({
           where: { id: videoId },
           data: { likesCount: { increment: 1 } }
@@ -70,13 +80,14 @@ export async function toggleVideoLike(videoId: string) {
       }
     });
 
-    // Global revalidation to ensure all components see the new counts
     revalidatePath('/', 'layout');
-    console.log(`[Interaction] LIKE toggle success for user ${userId}:`, result);
     return result;
   } catch (error: any) {
     console.error("[TOGGLE_LIKE_ERROR]", error);
-    return { error: error.message || "INTERNAL_ERROR" };
+    if (error.code === 'P2021' || error.message?.includes("DATABASE_TABLES_MISSING")) {
+        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa. Uruchom 'npx prisma db push'." };
+    }
+    return { error: "INTERNAL_ERROR", message: error.message };
   }
 }
 
@@ -84,21 +95,29 @@ export async function toggleVideoLike(videoId: string) {
  * Toggles a 'Dislike' on a video.
  */
 export async function toggleVideoDislike(videoId: string) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e: any) {
+      console.error("[Interaction] Clerk Auth Handshake Failed:", e.message);
+      return { error: "CLERK_ERROR", message: "Problem z autoryzacją (handshake). Sprawdź klucze API w Vercel." };
+  }
+
   console.log(`[Interaction] User ${userId} toggling DISLIKE on video ${videoId}`);
 
   try {
     if (!userId) {
-        console.warn("[Interaction] Attempted DISLIKE without session.");
         return { error: "AUTH_REQUIRED" };
     }
 
-    await UserService.getOrCreateUser(userId);
+    await UserService.getOrCreateUser(userId).catch(err => {
+        console.warn("[Interaction] UserService sync issue during DISLIKE:", err.message);
+    });
 
     const result = await prisma.$transaction(async (tx) => {
-      // 1. Remove existing like if any
       const existingLike = await tx.videoLike.findUnique({
-        where: { userId_videoId: { userId, videoId } }
+        where: { userId_videoId: { userId: userId!, videoId } }
       });
 
       if (existingLike) {
@@ -109,9 +128,8 @@ export async function toggleVideoDislike(videoId: string) {
         });
       }
 
-      // 2. Toggle Dislike
       const existingDislike = await tx.videoDislike.findUnique({
-        where: { userId_videoId: { userId, videoId } }
+        where: { userId_videoId: { userId: userId!, videoId } }
       });
 
       if (existingDislike) {
@@ -122,7 +140,7 @@ export async function toggleVideoDislike(videoId: string) {
         });
         return { liked: false, disliked: false };
       } else {
-        await tx.videoDislike.create({ data: { userId, videoId } });
+        await tx.videoDislike.create({ data: { userId: userId!, videoId } });
         await tx.video.update({
           where: { id: videoId },
           data: { dislikesCount: { increment: 1 } }
@@ -132,10 +150,12 @@ export async function toggleVideoDislike(videoId: string) {
     });
 
     revalidatePath('/', 'layout');
-    console.log(`[Interaction] DISLIKE toggle success for user ${userId}:`, result);
     return result;
   } catch (error: any) {
     console.error("[TOGGLE_DISLIKE_ERROR]", error);
-    return { error: error.message || "INTERNAL_ERROR" };
+    if (error.code === 'P2021' || error.message?.includes("DATABASE_TABLES_MISSING")) {
+        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa. Uruchom 'npx prisma db push'." };
+    }
+    return { error: "INTERNAL_ERROR", message: error.message };
   }
 }
