@@ -17,8 +17,10 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [subscribersCount, setSubscribersCount] = useState(initialSubscribersCount);
     const [isLoading, setIsLoading] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         if (userId && creatorId) {
             getSubscriptionStatusAction(creatorId)
                 .then(data => setIsSubscribed(data.isSubscribed))
@@ -81,7 +83,7 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
                 {isSubscribed ? 'Subskrybujesz' : 'Subskrajb'}
             </button>
             <p className="text-[12px] text-[#606060] mt-1 whitespace-nowrap">
-                {subscribersCount.toLocaleString('pl-PL')} subskrypcji
+                {mounted ? subscribersCount.toLocaleString('pl-PL') : subscribersCount} subskrypcji
             </p>
         </div>
     );

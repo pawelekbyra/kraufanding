@@ -20,10 +20,12 @@ interface ChannelHomeProps {
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
   const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
+  const [mounted, setMounted] = useState(false);
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    setMounted(true);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [selectedVideo.id]);
 
@@ -90,7 +92,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    {video.creator?.name || 'Polutek Archive'}
                  </Link>
                  <div className="flex items-center gap-1">
-                    <span>{video.views?.toLocaleString('pl-PL')} wyświetleń</span>
+                    <span>{mounted ? video.views?.toLocaleString('pl-PL') : video.views} wyświetleń</span>
                     <span>•</span>
                     <span>1 rok temu</span>
                  </div>
@@ -129,7 +131,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[13px] font-bold not-italic">
-                  <span className="not-italic">{selectedVideo.views?.toLocaleString('pl-PL')} wyświetleń</span>
+                  <span className="not-italic">{mounted ? selectedVideo.views?.toLocaleString('pl-PL') : selectedVideo.views} wyświetleń</span>
                   <span className="not-italic">21 mar 2024</span>
                </div>
                <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
