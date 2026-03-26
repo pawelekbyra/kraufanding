@@ -10,6 +10,8 @@ import { Video } from '../types/video';
 import Link from 'next/link';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { formatDistanceToNow, format } from 'date-fns';
+import { pl } from 'date-fns/locale';
 
 interface ChannelHomeProps {
   mainVideo: Video;
@@ -77,7 +79,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
                  <VideoPlayer video={video} variant="thumbnail" />
               </PremiumWrapper>
-              <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
+              {video.duration && (
+                <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">
+                   {video.duration}
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5 z-10">
               <Link
@@ -94,12 +100,16 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                    className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
                  >
-                   {video.creator?.name || 'Polutek Archive'}
+                   {video.creator?.name || 'Anonimowy Twórca'}
                  </Link>
                  <div className="flex items-center gap-1">
                     <span>{mounted ? video.views?.toLocaleString('pl-PL') : video.views} wyświetleń</span>
-                    <span>•</span>
-                    <span>1 rok temu</span>
+                    {video.publishedAt && (
+                        <>
+                            <span>•</span>
+                            <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
+                        </>
+                    )}
                  </div>
               </div>
               {mounted && (
@@ -139,7 +149,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[13px] font-bold not-italic">
                   <span className="not-italic">{mounted ? selectedVideo.views?.toLocaleString('pl-PL') : selectedVideo.views} wyświetleń</span>
-                  <span className="not-italic">21 mar 2024</span>
+                  {selectedVideo.publishedAt && (
+                      <span className="not-italic">
+                          {mounted ? format(new Date(selectedVideo.publishedAt), 'd MMM yyyy', { locale: pl }) : ''}
+                      </span>
+                  )}
                </div>
                <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
                   {selectedVideo.description}

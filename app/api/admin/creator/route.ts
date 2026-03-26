@@ -35,13 +35,13 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { id, name, bio, slug } = body;
+  const { id, name, bio, slug, bannerUrl } = body;
 
   try {
     if (id) {
       const updated = await prisma.creator.update({
         where: { id },
-        data: { name, bio, slug }
+        data: { name, bio, slug, bannerUrl }
       });
       return NextResponse.json(updated);
     } else {
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
                 name,
                 bio,
                 slug,
+                bannerUrl
             }
         });
         return NextResponse.json(created);

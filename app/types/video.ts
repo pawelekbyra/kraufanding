@@ -5,6 +5,7 @@ export interface Creator {
   name: string;
   slug: string;
   bio?: string | null;
+  bannerUrl?: string | null;
   subscribersCount: number;
 }
 
@@ -16,10 +17,14 @@ export interface Video {
   description?: string | null;
   videoUrl: string;
   thumbnailUrl: string;
+  duration?: string | null;
   tier: AccessTier;
   views: number;
   likesCount: number;
+  dislikesCount: number;
   isMainFeatured: boolean;
   publishedAt?: Date | string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
   creator?: Creator;
 }

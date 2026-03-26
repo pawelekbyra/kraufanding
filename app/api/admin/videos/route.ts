@@ -21,7 +21,7 @@ export async function GET() {
 
   const videos = await prisma.video.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { creator: true, _count: { select: { videoLikes: true, comments: true } } }
+    include: { creator: true, _count: { select: { videoLikes: true, videoDislikes: true, comments: true } } }
   });
 
   return NextResponse.json(videos);
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { id, title, slug, description, videoUrl, thumbnailUrl, tier, likesCount, views, isMainFeatured } = body;
+  const { id, title, slug, description, videoUrl, thumbnailUrl, duration, tier, likesCount, dislikesCount, views, isMainFeatured } = body;
 
   try {
     if (id) {
@@ -46,8 +46,10 @@ export async function POST(req: Request) {
             description,
             videoUrl,
             thumbnailUrl,
+            duration,
             tier,
             likesCount: parseInt(likesCount) || 0,
+            dislikesCount: parseInt(dislikesCount) || 0,
             views: parseInt(views) || 0,
             isMainFeatured: !!isMainFeatured
           }
@@ -87,8 +89,10 @@ export async function POST(req: Request) {
             description,
             videoUrl,
             thumbnailUrl,
+            duration,
             tier: tier || 'PUBLIC',
             likesCount: parseInt(likesCount) || 0,
+            dislikesCount: parseInt(dislikesCount) || 0,
             views: parseInt(views) || 0,
             isMainFeatured: !!isMainFeatured
           }

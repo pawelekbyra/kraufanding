@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import { prisma } from '@/lib/prisma';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import { Video } from '@/app/types/video';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
@@ -30,11 +30,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
   }
 
   const { userId } = auth();
-  const userDb = userId ? await prisma.user.findUnique({ where: { id: userId } }).catch(() => null) : null;
-
-  const userProfile = userId ? {
-      totalPaid: userDb?.totalPaid || 0
-  } : null;
+  const userDb = userId ? await prisma.user.findUnique({ where: { id: userId }, select: { totalPaid: true } }).catch(() => null) : null;
 
   const allVideos: Video[] = (creator.videos || []).map((v: any) => ({
     ...v,
@@ -52,19 +48,24 @@ export default async function ChannelPage({ params }: { params: { slug: string }
 
       {/* CHANNEL COVER */}
       <div className="max-w-[1284px] mx-auto px-0 md:px-4 lg:px-6">
-        <div className="w-full aspect-[6/1] bg-neutral-200 relative overflow-hidden rounded-none md:rounded-xl">
-           <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 animate-pulse" />
-           {/* Placeholder for real banner */}
-           <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-              <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{creator.name}</span>
-           </div>
+        <div className="w-full aspect-[6/1] bg-neutral-200 relative overflow-hidden rounded-none md:rounded-xl border border-black/5">
+           {creator.bannerUrl ? (
+             <img src={creator.bannerUrl} alt={creator.name} className="w-full h-full object-cover" />
+           ) : (
+             <>
+               <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 opacity-50" />
+               <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                  <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{creator.name}</span>
+               </div>
+             </>
+           )}
         </div>
       </div>
 
       {/* CHANNEL HEADER */}
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border-0 overflow-hidden bg-white shrink-0">
+          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.name}`} alt={creator.name} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">
@@ -76,14 +77,13 @@ export default async function ChannelPage({ params }: { params: { slug: string }
             </div>
             <p className="text-[14px] text-[#606060] line-clamp-1 max-w-2xl font-sans mt-1">
                {creator.bio || "Witamy na oficjalnym kanale."}
-               <span className="ml-1 text-[#0f0f0f] font-bold cursor-pointer hover:opacity-70">więcej...</span>
             </p>
             <div className="pt-3 flex flex-wrap justify-center md:justify-start gap-4 items-center">
                <SubscribeButton
                  creatorId={creator.id}
                  initialSubscribersCount={creator.subscribersCount || 0}
                />
-               <button className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest mb-5">Wspieraj</button>
+               <Link href="#donations" className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5">Wspieraj</Link>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
               key={video.id}
               video={video}
               isLoggedIn={!!userId}
-              userTotalPaid={userProfile?.totalPaid || 0}
+              userTotalPaid={userDb?.totalPaid || 0}
             />
           ))}
         </div>
