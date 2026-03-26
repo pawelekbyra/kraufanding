@@ -207,42 +207,42 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       </div>
 
       {/* Input Area */}
-      {userProfile ? (
-        <div className="flex gap-4 items-start mb-6">
-          <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]/10">
-             <img
-               src={userProfile.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`}
-               alt="Avatar"
-               className="w-full h-full object-cover"
-             />
+      <div className="flex gap-4 items-start mb-10">
+        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]/10">
+           <img
+             src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
+             alt="Avatar"
+             className="w-full h-full object-cover"
+           />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="relative">
+            {replyTo && userProfile && (
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
+                <CornerDownRight size={12} />
+                Odpowiadasz
+                <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
+              </div>
+            )}
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onFocus={() => setIsInputFocused(true)}
+              placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
+            />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="relative">
-              {replyTo && (
-                <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
-                  <CornerDownRight size={12} />
-                  Odpowiadasz
-                  <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
-                </div>
-              )}
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                onFocus={() => setIsInputFocused(true)}
-                placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
-                className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
-              />
-            </div>
 
-            {(isInputFocused || newComment.trim() || replyTo) && (
-              <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                 <button
-                   onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                   className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-4 py-2 rounded-full transition-all"
-                 >
-                   Anuluj
-                 </button>
+          {(isInputFocused || newComment.trim() || replyTo) && (
+            <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+               <button
+                 onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-4 py-2 rounded-full transition-all"
+               >
+                 Anuluj
+               </button>
 
+                {userProfile ? (
                   <button
                     onClick={handleSubmit}
                     disabled={!newComment.trim() || postMutation.isPending}
@@ -255,26 +255,17 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   >
                     {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Skomentuj')}
                   </button>
-              </div>
-            )}
-          </div>
+                ) : (
+                  <SignInButton mode="modal">
+                    <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
+                      Zaloguj się
+                    </button>
+                  </SignInButton>
+                )}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="bg-[#1a1a1a]/5 rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-4 border-2 border-dashed border-[#1a1a1a]/10 mb-8">
-           <div className="p-3 bg-white rounded-full shadow-sm">
-              <Lock size={24} className="text-[#1a1a1a]/40" />
-           </div>
-           <div className="space-y-1">
-              <h4 className="text-[16px] font-black uppercase tracking-tight">Chcesz dołączyć do dyskusji?</h4>
-              <p className="text-[12px] text-[#1a1a1a]/60 font-bold uppercase tracking-widest">Zaloguj się, aby dodawać komentarze i lajkować.</p>
-           </div>
-           <SignInButton mode="modal">
-              <button className="btn btn-sm bg-[#1a1a1a] text-[#FDFBF7] hover:bg-primary border-none rounded-full px-8 h-10 font-black tracking-widest transition-all">
-                ZALOGUJ SIĘ
-              </button>
-           </SignInButton>
-        </div>
-      )}
+      </div>
 
       {/* Comments List */}
       <div className="space-y-6">
