@@ -4,6 +4,7 @@ import React, { useState, useEffect, useTransition } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
+import { useLanguage } from './LanguageContext';
 
 interface SubscribeButtonProps {
     creatorId: string;
@@ -18,6 +19,7 @@ export default function SubscribeButton({
     initialIsSubscribed = false,
     className
 }: SubscribeButtonProps) {
+    const { t } = useLanguage();
     const { userId } = useAuth();
     const { openSignIn } = useClerk();
     const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
@@ -98,10 +100,10 @@ export default function SubscribeButton({
                     className
                 )}
             >
-                {isSubscribed ? 'Subskrybujesz' : 'Subskrajb'}
+                {isSubscribed ? t.subscribed : t.subscribe}
             </button>
             <p className="text-[12px] text-[#606060] mt-1 whitespace-nowrap">
-                {mounted ? subscribersCount.toLocaleString('pl-PL') : subscribersCount} subskrypcji
+                {mounted ? subscribersCount.toLocaleString('pl-PL') : subscribersCount} {t.subscribers}
             </p>
         </div>
     );

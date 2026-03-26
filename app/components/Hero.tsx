@@ -10,6 +10,7 @@ import Link from 'next/link';
 import SubscribeButton from './SubscribeButton';
 import VideoPlayer from './VideoPlayer';
 import { toggleVideoLike, toggleVideoDislike } from '@/lib/actions/interactions';
+import { useLanguage } from './LanguageContext';
 
 interface HeroProps {
   video: Video;
@@ -18,6 +19,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscribed }) => {
+  const { t } = useLanguage();
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
   const [mounted, setMounted] = useState(false);
@@ -193,7 +195,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
                   <Share2 size={16} />
-                  <span className="text-[13px] font-bold">Udostępnij</span>
+                  <span className="text-[13px] font-bold">{t.share}</span>
                </button>
                <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
                   <MoreHorizontal size={16} />
@@ -206,10 +208,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         <div className="mt-3 bg-[#000000]/5 rounded-xl p-3 hover:bg-[#000000]/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
               <span className="text-[14px] font-bold text-[#0f0f0f]">
-                 {video.views.toLocaleString('pl-PL')} wyświetleń
+                 {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
               <span className="text-[14px] font-bold text-[#0f0f0f]">
-                 {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Brak daty'}
+                 {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
@@ -217,7 +219,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
               "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap font-sans",
               !isExpanded && "line-clamp-2"
            )}>
-              {video.description || "Brak opisu filmu."}
+              {video.description || t.noDescription}
            </div>
 
            <button
@@ -227,7 +229,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                setIsExpanded(!isExpanded);
              }}
            >
-              {isExpanded ? 'Pokaż mniej' : '...więcej'}
+              {isExpanded ? t.showLess : t.showMore}
            </button>
         </div>
       </div>

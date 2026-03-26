@@ -52,6 +52,7 @@ async function ensureContentExists(videoId: string) {
                 isMainFeatured: fallback.isMainFeatured,
                 views: fallback.views,
                 likesCount: fallback.likesCount,
+                dislikesCount: fallback.dislikesCount || 0,
                 publishedAt: new Date()
             }
         });

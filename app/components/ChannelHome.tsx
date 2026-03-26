@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow, format } from 'date-fns';
 import { pl } from 'date-fns/locale';
+import { useLanguage } from './LanguageContext';
 
 interface ChannelHomeProps {
   mainVideo: Video;
@@ -28,6 +29,7 @@ interface ChannelHomeProps {
 }
 
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
+  const { t } = useLanguage();
   const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
   const [mounted, setMounted] = useState(false);
@@ -115,7 +117,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    {video.creator?.name || 'Anonimowy Twórca'}
                  </Link>
                  <div className="flex items-center gap-1">
-                    <span>{mounted ? video.views?.toLocaleString('pl-PL') : video.views} wyświetleń</span>
+                    <span>{mounted ? video.views?.toLocaleString('pl-PL') : video.views} {t.views}</span>
                     {video.publishedAt && (
                         <>
                             <span>•</span>
@@ -126,7 +128,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               </div>
               {mounted && (
                 hasAccess ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">{t.available}</span>
                 ) : video.tier === 'LOGGED_IN' ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">Log in to watch</span>
                 ) : (
@@ -140,7 +142,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       if (i === 1) {
         acc.push(
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">Wesprzyj Twórcę</h3>
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">{t.donate}</h3>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
               />
@@ -205,7 +207,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">Materiały</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">{t.materials}</h3>
             {playlistItems}
           </aside>
         </div>

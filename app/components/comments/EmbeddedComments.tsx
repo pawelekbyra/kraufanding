@@ -7,6 +7,7 @@ import { pl } from 'date-fns/locale';
 import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock } from 'lucide-react';
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '../LanguageContext';
 
 interface EmbeddedCommentsProps {
   userProfile?: {
@@ -21,6 +22,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   userProfile: initialUserProfile,
   videoId
 }) => {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
@@ -203,7 +205,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   return (
     <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-serif">
       <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} Komentarzy</h3>
+         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {t.comments}</h3>
       </div>
 
       {/* Input Area */}
@@ -220,7 +222,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             {replyTo && userProfile && (
               <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
                 <CornerDownRight size={12} />
-                Odpowiadasz
+                {t.replying}
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
               </div>
             )}
@@ -228,7 +230,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
-              placeholder={replyTo ? "Dodaj odpowiedź..." : "Dodaj komentarz..."}
+              placeholder={replyTo ? t.addReply : t.addComment}
               className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#000000]/10 focus:border-b-2 focus:border-[#0f0f0f] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
@@ -239,7 +241,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                  onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
                  className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-4 py-2 rounded-full transition-all"
                >
-                 Anuluj
+                   {t.cancel}
                </button>
 
                 {userProfile ? (
@@ -253,12 +255,12 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                             : "bg-[#000000]/5 text-[#606060] cursor-not-allowed"
                     )}
                   >
-                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? 'Odpowiedz' : 'Skomentuj')}
+                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
                   </button>
                 ) : (
                   <SignInButton mode="modal">
                     <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
-                      Zaloguj się
+                      {t.signIn}
                     </button>
                   </SignInButton>
                 )}
@@ -291,7 +293,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     </div>
                     {userProfile?.id === comment.authorId && (
                         <button
-                          onClick={() => confirm('Usunąć komentarz?') && deleteMutation.mutate(comment.id)}
+                          onClick={() => confirm(t.deleteComment) && deleteMutation.mutate(comment.id)}
                           className="opacity-0 group-hover/comment:opacity-40 hover:!opacity-100 transition-opacity p-1"
                         >
                             <Trash2 size={12} className="text-error" />
@@ -326,7 +328,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                       onClick={() => userProfile && setReplyTo(comment.id)}
                       className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-2.5 py-0.5 rounded-full ml-1 transition-all"
                   >
-                      Odpowiedz
+                      {t.reply}
                   </button>
                 </div>
               </div>
@@ -350,7 +352,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         <span className="text-[10px] text-[#606060]">
                           {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
                             ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
-                            : 'niedawno'}
+                            : t.justNow}
                         </span>
                       </div>
                       <p className="text-[#0f0f0f] text-[13px] leading-relaxed">

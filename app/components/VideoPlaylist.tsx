@@ -67,7 +67,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <div className="bg-[#FDFBF7] border-2 border-black p-6 shadow-brutalist relative overflow-hidden">
           {/* Decorative Stamp */}
           <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight">THANK<br/>YOU!</span>
+            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
           </div>
 
           <div className="space-y-2 relative z-10">
