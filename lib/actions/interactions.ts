@@ -60,8 +60,9 @@ export async function toggleVideoLike(videoId: string) {
           data: { likesCount: { increment: 1 } }
       });
       return { liked: true };
-    });
-  } catch (error: any) {
+    }
+  });
+} catch (error: any) {
     console.error("[TOGGLE_VIDEO_LIKE_ERROR]", error);
     if (error.code === 'P2021') return { error: "DATABASE_UNAVAILABLE" };
     return { error: error.message || "INTERNAL_ERROR" };
