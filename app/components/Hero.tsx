@@ -22,6 +22,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   const { openSignIn } = useClerk();
   const [mounted, setMounted] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -163,32 +164,31 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0">
+               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0 overflow-hidden">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
+                        "flex items-center gap-2 pl-4 pr-3 h-full hover:bg-[#000000]/10 transition-colors border-r border-black/10 relative",
                         optimisticState.isLiked && "text-black",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={16} className={cn(optimisticState.isLiked && "fill-black")} />
-                     <span className="text-[13px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-black")} />
+                     <span className="text-[14px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors",
+                        "flex items-center px-4 h-full hover:bg-[#000000]/10 transition-colors",
                         optimisticState.isDisliked && "text-black",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                   >
-                     <ThumbsDown size={16} className={cn(optimisticState.isDisliked && "fill-black")} />
-                     <span className="text-[13px] font-bold">{optimisticState.dislikesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-black")} />
                   </button>
                </div>
                <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
@@ -200,6 +200,35 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </button>
             </div>
           </div>
+        </div>
+
+        {/* DESCRIPTION BOX */}
+        <div className="mt-3 bg-[#000000]/5 rounded-xl p-3 hover:bg-[#000000]/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+           <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
+              <span className="text-[14px] font-bold text-[#0f0f0f]">
+                 {video.views.toLocaleString('pl-PL')} wyświetleń
+              </span>
+              <span className="text-[14px] font-bold text-[#0f0f0f]">
+                 {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Brak daty'}
+              </span>
+           </div>
+
+           <div className={cn(
+              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap font-sans",
+              !isExpanded && "line-clamp-2"
+           )}>
+              {video.description || "Brak opisu filmu."}
+           </div>
+
+           <button
+             className="text-[14px] font-bold text-[#0f0f0f] mt-1 hover:underline block"
+             onClick={(e) => {
+               e.stopPropagation();
+               setIsExpanded(!isExpanded);
+             }}
+           >
+              {isExpanded ? 'Pokaż mniej' : '...więcej'}
+           </button>
         </div>
       </div>
     </section>
