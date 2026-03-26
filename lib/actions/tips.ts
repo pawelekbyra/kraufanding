@@ -4,11 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
 export async function getUserTips() {
-  const { userId: clerkUserId } = auth();
-  if (!clerkUserId) return [];
+  const { userId } = auth();
+  if (!userId) return [];
 
   const user = await prisma.user.findUnique({
-    where: { clerkUserId },
+    where: { id: userId },
     select: { id: true }
   });
 
