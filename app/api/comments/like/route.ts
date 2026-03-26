@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
+import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
 
-  if (!clerkUserId) {
+  if (!userId) {
     return NextResponse.json({ success: false, message: 'Authentication required.' }, { status: 401 });
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { clerkUserId } });
-    if (!user) {
-        return NextResponse.json({ success: false, message: 'User not found.' }, { status: 404 });
-    }
+    const user = await UserService.getOrCreateUser(userId);
 
     const { commentId } = await request.json();
 
@@ -27,7 +25,7 @@ export async function POST(request: NextRequest) {
     const existingLike = await prisma.commentLike.findUnique({
         where: {
             userId_commentId: {
-                userId: user.id,
+                userId,
                 commentId
             }
         }
@@ -45,7 +43,7 @@ export async function POST(request: NextRequest) {
         // Add like
         await prisma.commentLike.create({
             data: {
-                userId: user.id,
+                userId,
                 commentId
             }
         });

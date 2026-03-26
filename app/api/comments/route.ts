@@ -15,13 +15,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'videoId is required' }, { status: 400 });
   }
 
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
 
   try {
     let internalUserId = null;
-    if (clerkUserId) {
+    if (userId) {
         try {
-            const user = await UserService.getOrCreateUser(clerkUserId);
+            const user = await UserService.getOrCreateUser(userId);
             internalUserId = user?.id;
         } catch (e) {
             console.error("Error syncing user during GET comments:", e);
@@ -115,14 +115,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
 
-  if (!clerkUserId) {
+  if (!userId) {
     return NextResponse.json({ success: false, message: 'Authentication required.' }, { status: 401 });
   }
 
   try {
-    let user = await UserService.getOrCreateUser(clerkUserId);
+    let user = await UserService.getOrCreateUser(userId);
 
     if (user.id === 'temp-id') {
          return NextResponse.json({ success: false, message: 'Database is currently unavailable. Please try again later.' }, { status: 503 });
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
             data: {
                 videoId,
                 text: text?.trim() || '',
-                authorId: user.id,
+                authorId: userId,
                 parentId: parentId || null,
                 imageUrl: imageUrl || null,
             },
@@ -177,19 +177,18 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-    const { userId: clerkUserId } = auth();
-    if (!clerkUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { userId } = auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const user = await prisma.user.findUnique({ where: { clerkUserId } });
         const { searchParams } = new URL(request.url);
         const commentId = searchParams.get('id');
 
-        if (!commentId || !user) return NextResponse.json({ error: "Bad request" }, { status: 400 });
+        if (!commentId) return NextResponse.json({ error: "Bad request" }, { status: 400 });
 
         const comment = await prisma.comment.findUnique({ where: { id: commentId } });
         if (!comment) return NextResponse.json({ error: "Not found" }, { status: 404 });
-        if (comment.authorId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        if (comment.authorId !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
         await prisma.comment.delete({ where: { id: commentId } });
         return NextResponse.json({ success: true });

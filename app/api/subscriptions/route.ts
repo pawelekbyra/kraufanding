@@ -5,16 +5,16 @@ import { UserService } from '@/lib/services/user.service';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
   const { searchParams } = new URL(req.url);
   const creatorId = searchParams.get('creatorId');
 
-  if (!clerkUserId || !creatorId) {
+  if (!userId || !creatorId) {
     return NextResponse.json({ isSubscribed: false });
   }
 
   try {
-    const isSubscribed = await UserService.isSubscribed(clerkUserId, creatorId);
+    const isSubscribed = await UserService.isSubscribed(userId, creatorId);
     return NextResponse.json({ isSubscribed });
   } catch (error: any) {
     console.error("[SUBSCRIPTION_GET_ERROR]", error);
@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
 
-  if (!clerkUserId) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Creator ID is required" }, { status: 400 });
     }
 
-    const result = await UserService.toggleSubscription(clerkUserId, creatorId);
+    const result = await UserService.toggleSubscription(userId, creatorId);
     return NextResponse.json(result);
   } catch (error: any) {
     console.error("[SUBSCRIPTION_POST_ERROR]", error);

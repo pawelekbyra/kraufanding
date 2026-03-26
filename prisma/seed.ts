@@ -7,10 +7,10 @@ async function main() {
 
   // Create or find a user for the creator
   const user = await prisma.user.upsert({
-    where: { clerkUserId: 'user_2tW7q1Z5vW3N8mR0pL4K6j9H1D2' },
+    where: { id: 'user_2tW7q1Z5vW3N8mR0pL4K6j9H1D2' },
     update: {},
     create: {
-      clerkUserId: 'user_2tW7q1Z5vW3N8mR0pL4K6j9H1D2',
+      id: 'user_2tW7q1Z5vW3N8mR0pL4K6j9H1D2',
       email: 'pawel.perfect@gmail.com',
       role: SystemRole.ADMIN,
     },

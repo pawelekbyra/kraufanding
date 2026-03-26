@@ -3,44 +3,44 @@ import { currentUser } from '@clerk/nextjs/server';
 import crypto from 'crypto';
 
 export class UserService {
-  static async getOrCreateUser(clerkUserId: string) {
+  static async getOrCreateUser(id: string) {
     try {
         const clerkUser = await currentUser();
 
         // If we can't get clerk user (e.g. session issue), try to find local user first
         if (!clerkUser) {
-            const existing = await prisma.user.findUnique({ where: { clerkUserId } });
+            const existing = await prisma.user.findUnique({ where: { id } });
             if (existing) return existing;
-            // If neither exists, we'll use fallbacks below to at least create a shell
         }
 
         const email = clerkUser?.primaryEmailAddress?.emailAddress ||
                       clerkUser?.emailAddresses[0]?.emailAddress ||
-                      `user_${clerkUserId}@polutek.pl`;
+                      `user_${id}@polutek.pl`;
         const imageUrl = clerkUser?.imageUrl || null;
         const name = clerkUser ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null : null;
 
         return await prisma.user.upsert({
-            where: { clerkUserId },
+            where: { id },
             update: { email, imageUrl, name },
-            create: { clerkUserId, email, imageUrl, name }
+            create: { id, email, imageUrl, name }
         });
     } catch (e: any) {
         console.error("[GET_OR_CREATE_USER_ERROR]", e);
+        // Table missing fallback
         if (e.code === 'P2021') {
-            return { id: 'temp-id', email: 'guest@polutek.pl', totalPaid: 0, clerkUserId } as any;
+            return { id, email: 'guest@polutek.pl', totalPaid: 0 } as any;
         }
         // Minimal fallback for UI not to crash
-        return { id: 'temp-id', email: 'guest@polutek.pl', totalPaid: 0, clerkUserId } as any;
+        return { id, email: 'guest@polutek.pl', totalPaid: 0 } as any;
     }
   }
 
-  static async syncUser(clerkUserId: string, email: string, imageUrl?: string | null) {
+  static async syncUser(id: string, email: string, imageUrl?: string | null) {
     try {
         return await prisma.user.upsert({
-            where: { clerkUserId },
+            where: { id },
             update: { email, imageUrl },
-            create: { clerkUserId, email, imageUrl }
+            create: { id, email, imageUrl }
         });
     } catch (e) {
         console.error("[SYNC_USER_ERROR]", e);
@@ -48,13 +48,13 @@ export class UserService {
     }
   }
 
-  static async softDeleteUser(clerkUserId: string) {
+  static async softDeleteUser(id: string) {
     try {
         const anonymousId = crypto.randomUUID();
         return await prisma.user.update({
-            where: { clerkUserId },
+            where: { id },
             data: {
-                clerkUserId: `deleted_${clerkUserId}_${anonymousId}`,
+                id: `deleted_${id}_${anonymousId}`,
                 email: `deleted_${anonymousId}@deleted.com`,
                 name: "Usunięty Użytkownik",
                 imageUrl: null,
@@ -68,10 +68,10 @@ export class UserService {
     }
   }
 
-  static async getUserTotalPaid(clerkUserId: string) {
+  static async getUserTotalPaid(id: string) {
     try {
         const user = await prisma.user.findUnique({
-            where: { clerkUserId },
+            where: { id },
             select: { totalPaid: true }
         }).catch(e => {
             if (e.code === 'P2021') return null;
@@ -86,23 +86,13 @@ export class UserService {
     }
   }
 
-  static async isSubscribed(clerkUserId: string, creatorId: string) {
+  static async isSubscribed(id: string, creatorId: string) {
     try {
-        const user = await prisma.user.findUnique({
-            where: { clerkUserId },
-            select: { id: true }
-        }).catch((e) => {
-            if (e.code === 'P2021') return null;
-            throw e;
-        });
-
-        if (!user) return false;
-
-        // Defensive check for Subscription table existence
+        // Now id IS the internal id
         const sub = await prisma.subscription.findUnique({
             where: {
                 userId_creatorId: {
-                    userId: user.id,
+                    userId: id,
                     creatorId
                 }
             }
@@ -118,9 +108,9 @@ export class UserService {
     }
   }
 
-  static async toggleSubscription(clerkUserId: string, creatorId: string) {
+  static async toggleSubscription(id: string, creatorId: string) {
     try {
-        const user = await this.getOrCreateUser(clerkUserId);
+        const user = await this.getOrCreateUser(id);
         if (user.id === 'temp-id') throw new Error("Database unavailable");
 
         // We do NOT use a transaction here to be more resilient to missing columns (subscribersCount)
@@ -130,7 +120,7 @@ export class UserService {
         const existing = await prisma.subscription.findUnique({
             where: {
                 userId_creatorId: {
-                    userId: user.id,
+                    userId: id,
                     creatorId
                 }
             }
@@ -164,7 +154,7 @@ export class UserService {
             try {
                 await prisma.subscription.create({
                     data: {
-                        userId: user.id,
+                        userId: id,
                         creatorId: creatorId
                     }
                 });

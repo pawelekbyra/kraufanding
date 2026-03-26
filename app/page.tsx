@@ -34,7 +34,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   const user = await currentUser();
   let userDb = null;
   try {
-      userDb = userId ? await prisma.user.findUnique({ where: { clerkUserId: userId } }) : null;
+      userDb = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
   } catch (e) {
       console.error("[HOME_PAGE_USER_DB_ERROR]", e);
   }
