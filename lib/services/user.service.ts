@@ -54,13 +54,13 @@ export class UserService {
     }
   }
 
-  static async syncUser(id: string, email: string, imageUrl?: string | null) {
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null) {
     try {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
       return await prisma.user.upsert({
         where: { id },
-        update: { email, imageUrl, role },
-        create: { id, email, imageUrl, role }
+        update: { email, name, imageUrl, role },
+        create: { id, email, name, imageUrl, role }
       });
     } catch (e: any) {
       console.error("[SYNC_USER_ERROR]", e);

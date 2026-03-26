@@ -59,7 +59,7 @@ export default function SubscribeButton({
                     } else if (result.error === 'CLERK_ERROR') {
                         alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nUpewnij się, że klucze Secret i Publishable pochodzą z tego samego projektu.`);
                     } else if (result.error === 'DATABASE_ERROR') {
-                        alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nUruchom 'npx prisma db push' w swoim środowisku.`);
+                        alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nJeśli problem nadal występuje, spróbuj uruchomić:\n'npx prisma db push --force'`);
                     } else {
                         alert(`BŁĄD SUBSKRYPCJI: ${result.message || result.error}`);
                     }

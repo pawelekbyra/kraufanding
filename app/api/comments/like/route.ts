@@ -10,7 +10,17 @@ export const dynamic = 'force-dynamic';
  * Mutually exclusive with 'Dislike'.
  */
 export async function POST(request: NextRequest) {
-  const { userId } = auth();
+  let userId: string | null = null;
+  try {
+      const authData = auth();
+      userId = authData.userId;
+  } catch (e) {
+      return NextResponse.json({
+          success: false,
+          error: "CLERK_ERROR",
+          message: 'Błąd weryfikacji sesji (Clerk Handshake). Sprawdź klucze API w panelu Vercel.'
+      }, { status: 500 });
+  }
 
   if (!userId) {
     return NextResponse.json({ success: false, message: 'Musisz być zalogowany.' }, { status: 401 });
