@@ -20,13 +20,14 @@ export async function incrementVideoViews(videoId: string) {
 }
 
 export async function toggleVideoLike(videoId: string) {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = auth();
+    if (!userId) return { error: "AUTH_REQUIRED" };
 
-  const user = await UserService.getOrCreateUser(userId);
-  if (user.id === 'temp-id') throw new Error("Database unavailable");
+    const user = await UserService.getOrCreateUser(userId);
+    if (user.isFallback) return { error: "DATABASE_UNAVAILABLE" };
 
-  return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx) => {
     const existingLike = await tx.videoLike.findUnique({
       where: {
         userId_videoId: {
@@ -59,6 +60,10 @@ export async function toggleVideoLike(videoId: string) {
           data: { likesCount: { increment: 1 } }
       });
       return { liked: true };
-    }
-  });
+    });
+  } catch (error: any) {
+    console.error("[TOGGLE_VIDEO_LIKE_ERROR]", error);
+    if (error.code === 'P2021') return { error: "DATABASE_UNAVAILABLE" };
+    return { error: error.message || "INTERNAL_ERROR" };
+  }
 }
