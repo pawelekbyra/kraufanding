@@ -2,6 +2,7 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { UserService } from "@/lib/services/user.service";
 
 export async function incrementVideoViews(videoId: string) {
   try {
@@ -22,22 +23,8 @@ export async function toggleVideoLike(videoId: string) {
   const { userId: clerkUserId } = auth();
   if (!clerkUserId) throw new Error("Unauthorized");
 
-  let user = await prisma.user.findUnique({
-    where: { clerkUserId },
-    select: { id: true }
-  });
-
-  if (!user) {
-    const clerkUser = await currentUser();
-    if (!clerkUser) throw new Error("Clerk User not found");
-    const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-    const imageUrl = clerkUser.imageUrl || null;
-    user = await prisma.user.upsert({
-      where: { clerkUserId },
-      update: { email, imageUrl },
-      create: { clerkUserId, email, imageUrl }
-    });
-  }
+  const user = await UserService.getOrCreateUser(clerkUserId);
+  if (user.id === 'temp-id') throw new Error("Database unavailable");
 
   return await prisma.$transaction(async (tx) => {
     const existingLike = await tx.videoLike.findUnique({

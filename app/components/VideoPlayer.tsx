@@ -27,8 +27,13 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
 
     return (
         <div
-            className="relative w-full h-full cursor-pointer group/player"
-            onClick={() => { if (videoUrl) setIsPlaying(true); }}
+            className={cn(
+                "relative w-full h-full group/player",
+                variant === 'hero' ? "cursor-pointer" : "cursor-default"
+            )}
+            onClick={() => {
+                if (variant === 'hero' && videoUrl) setIsPlaying(true);
+            }}
         >
             <img
                 src={video.thumbnailUrl}

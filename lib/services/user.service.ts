@@ -5,25 +5,33 @@ import crypto from 'crypto';
 export class UserService {
   static async getOrCreateUser(clerkUserId: string) {
     try {
-        let localUser = await prisma.user.findUnique({ where: { clerkUserId } });
+        const clerkUser = await currentUser();
 
-        if (!localUser) {
-            const clerkUser = await currentUser();
-            const email = clerkUser?.primaryEmailAddress?.emailAddress || clerkUser?.emailAddresses[0]?.emailAddress || `user_${clerkUserId}@polutek.pl`;
-            const imageUrl = clerkUser?.imageUrl || null;
-
-            localUser = await prisma.user.upsert({
-                where: { clerkUserId },
-                update: { email, imageUrl },
-                create: { clerkUserId, email, imageUrl }
-            });
+        // If we can't get clerk user (e.g. session issue), try to find local user first
+        if (!clerkUser) {
+            const existing = await prisma.user.findUnique({ where: { clerkUserId } });
+            if (existing) return existing;
+            // If neither exists, we'll use fallbacks below to at least create a shell
         }
 
-        return localUser;
-    } catch (e) {
+        const email = clerkUser?.primaryEmailAddress?.emailAddress ||
+                      clerkUser?.emailAddresses[0]?.emailAddress ||
+                      `user_${clerkUserId}@polutek.pl`;
+        const imageUrl = clerkUser?.imageUrl || null;
+        const name = clerkUser ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null : null;
+
+        return await prisma.user.upsert({
+            where: { clerkUserId },
+            update: { email, imageUrl, name },
+            create: { clerkUserId, email, imageUrl, name }
+        });
+    } catch (e: any) {
         console.error("[GET_OR_CREATE_USER_ERROR]", e);
+        if (e.code === 'P2021') {
+            return { id: 'temp-id', email: 'guest@polutek.pl', totalPaid: 0, clerkUserId } as any;
+        }
         // Minimal fallback for UI not to crash
-        return { id: 'temp-id', email: 'guest@polutek.pl', totalPaid: 0 } as any;
+        return { id: 'temp-id', email: 'guest@polutek.pl', totalPaid: 0, clerkUserId } as any;
     }
   }
 
@@ -65,6 +73,9 @@ export class UserService {
         const user = await prisma.user.findUnique({
             where: { clerkUserId },
             select: { totalPaid: true }
+        }).catch(e => {
+            if (e.code === 'P2021') return null;
+            throw e;
         });
         return user?.totalPaid || 0;
     } catch (e: any) {
