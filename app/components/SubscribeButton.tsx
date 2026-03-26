@@ -32,7 +32,12 @@ export default function SubscribeButton({
                 .then(data => setIsSubscribed(data.isSubscribed))
                 .catch(err => console.error("Error fetching subscription status:", err));
         }
-    }, [userId, creatorId, initialIsSubscribed]);
+
+        // Reset state on logout
+        if (!userId && mounted) {
+            setIsSubscribed(false);
+        }
+    }, [userId, creatorId, initialIsSubscribed, mounted]);
 
     const handleSubscribe = async () => {
         if (!userId) {

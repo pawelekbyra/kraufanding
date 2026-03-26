@@ -67,7 +67,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <div className="bg-[#FDFBF7] border-2 border-black p-6 shadow-brutalist relative overflow-hidden">
           {/* Decorative Stamp */}
           <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[10px] font-bold text-center uppercase">Approved<br/>By<br/>Polutek</span>
+            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight">THANK<br/>YOU!</span>
           </div>
 
           <div className="space-y-2 relative z-10">
@@ -78,7 +78,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
             <div className="space-y-4">
               <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
-                Tip any amount to unlock permanent VIP access levels. All contributions directly support the channel.
+                Tip any amount to unlock permanent access to bonus content. All contributions directly support the channel and help keep it going and grow.
               </p>
 
               <div className="space-y-2 pt-2">

@@ -82,12 +82,17 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative z-10">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative z-10 group/thumb">
+              <Link
+                href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+                scroll={false}
+                className="absolute inset-0 z-20"
+              />
               <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
                  <VideoPlayer video={video} variant="thumbnail" />
               </PremiumWrapper>
               {video.duration && (
-                <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">
+                <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-bold px-1 rounded z-30 pointer-events-none">
                    {video.duration}
                 </div>
               )}
@@ -156,21 +161,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               initialInteraction={userProfile?.initialInteraction}
               initialIsSubscribed={userProfile?.initialIsSubscribed}
             />
-
-            <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
-               <div className="flex gap-4 text-[13px] font-bold not-italic">
-                  <span className="not-italic">{mounted ? selectedVideo.views?.toLocaleString('pl-PL') : selectedVideo.views} wyświetleń</span>
-                  {selectedVideo.publishedAt && (
-                      <span className="not-italic">
-                          {mounted ? format(new Date(selectedVideo.publishedAt), 'd MMM yyyy', { locale: pl }) : ''}
-                      </span>
-                  )}
-               </div>
-               <div className="text-[13px] leading-relaxed whitespace-pre-wrap font-serif text-[#1a1a1a]/90 mt-1">
-                  {selectedVideo.description}
-               </div>
-               <button className="text-[11px] font-bold uppercase mt-2 opacity-60 group-hover:opacity-100">Pokaż więcej</button>
-            </div>
 
             <div className="lg:hidden flex border-b border-[#1a1a1a]/5 mt-4">
                <button

@@ -30,8 +30,8 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
   const [optimisticState, addOptimisticAction] = useOptimistic(
     {
-        isLiked: initialInteraction?.liked || false,
-        isDisliked: initialInteraction?.disliked || false,
+        isLiked: (userId ? initialInteraction?.liked : false) || false,
+        isDisliked: (userId ? initialInteraction?.disliked : false) || false,
         likesCount: video.likesCount || 0,
         dislikesCount: video.dislikesCount || 0
     },

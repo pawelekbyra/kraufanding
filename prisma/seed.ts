@@ -45,9 +45,9 @@ async function main() {
   // 3. Define Videos
   const videosData = [
     {
-      title: 'I raise money for my Secret Project',
-      slug: 'secret-project',
-      description: 'To jest mój najważniejszy projekt. Zbieram fundusze na realizację wizji, która zmieni sposób, w jaki konsumujemy media.',
+      title: 'Wuthering Heights - Kate Bush Cover',
+      slug: 'wuthering-heights-cover',
+      description: 'Moja interpretacja klasycznego utworu Kate Bush. Nagrane w jednym ujęciu, aby oddać surowość i emocje tej kompozycji.',
       videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4',
       thumbnailUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.jpg',
       duration: '04:12',
