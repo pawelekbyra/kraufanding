@@ -115,8 +115,8 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error('[GET_COMMENTS_API_ERROR]', error);
     // P2021: Table missing - return success but empty state to avoid frontend crash
-    if (error.code === 'P2021') {
-        return NextResponse.json({ success: true, comments: [], nextCursor: null, warning: "Database not initialized." });
+    if (error.code === 'P2021' || error.message?.includes("P2021")) {
+        return NextResponse.json({ success: true, comments: [], nextCursor: null, warning: "Database not initialized. Run 'npx prisma db push'." });
     }
     return NextResponse.json({ success: false, message: 'Błąd podczas pobierania komentarzy.' }, { status: 500 });
   }
@@ -128,7 +128,11 @@ export async function POST(request: NextRequest) {
       const authData = auth();
       userId = authData.userId;
   } catch (e) {
-      return NextResponse.json({ success: false, message: 'Handshake Error: Check Clerk Keys.' }, { status: 401 });
+      return NextResponse.json({
+          success: false,
+          error: "CLERK_ERROR",
+          message: 'Błąd weryfikacji sesji (Clerk Handshake). Sprawdź klucze API CLERK_SECRET_KEY i NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY w panelu Vercel.'
+      }, { status: 500 });
   }
 
   if (!userId) {

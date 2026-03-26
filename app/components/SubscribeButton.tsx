@@ -56,6 +56,10 @@ export default function SubscribeButton({
                     console.error("[SubscribeButton] Action failed:", result.error, result.message);
                     if (result.error === 'AUTH_REQUIRED') {
                         openSignIn();
+                    } else if (result.error === 'CLERK_ERROR') {
+                        alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nUpewnij się, że klucze Secret i Publishable pochodzą z tego samego projektu.`);
+                    } else if (result.error === 'DATABASE_ERROR') {
+                        alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nUruchom 'npx prisma db push' w swoim środowisku.`);
                     } else {
                         alert(`BŁĄD SUBSKRYPCJI: ${result.message || result.error}`);
                     }
