@@ -5,6 +5,7 @@ import ChannelHome from './components/ChannelHome';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from './types/video';
+import { INITIAL_VIDEOS } from '@/lib/data/initial-content';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,22 +16,19 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     orderBy: { createdAt: 'desc' }
   }).catch(() => []);
 
-  if (allVideosDb.length === 0) {
-    return (
-        <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif flex flex-col">
-            <Navbar />
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                <h1 className="text-4xl font-black uppercase tracking-tighter">Brak materiałów</h1>
-                <p className="text-[#606060] mt-2">Baza danych jest pusta lub w trakcie konfiguracji.</p>
-            </div>
-            <Footer />
-        </div>
-    );
-  }
+  let mainVideo: Video;
+  let allVideos: Video[];
 
-  const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
-  const mainVideo = mapDbToVideo(mainVideoDb);
-  const allVideos = allVideosDb.map(mapDbToVideo);
+  if (allVideosDb.length > 0) {
+    // DB Content exists
+    const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
+    mainVideo = mapDbToVideo(mainVideoDb);
+    allVideos = allVideosDb.map(mapDbToVideo);
+  } else {
+    // Fallback to professional initial data if DB is empty
+    mainVideo = INITIAL_VIDEOS.find(v => v.isMainFeatured) || INITIAL_VIDEOS[0];
+    allVideos = INITIAL_VIDEOS;
+  }
 
   const { userId } = auth();
   const user = await currentUser();

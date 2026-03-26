@@ -1,30 +1,39 @@
 import { prisma } from '@/lib/prisma';
 import { AccessTier } from '@prisma/client';
+import { INITIAL_VIDEOS, DEFAULT_CREATOR } from '@/lib/data/initial-content';
 
 const ADMIN_EMAIL = "pawel.perfect@gmail.com";
 
 export class ContentService {
   /**
    * Retrieves a single video by ID, including creator information.
+   * Falls back to initial data if not found in DB.
    */
   static async getVideoById(videoId: string) {
     try {
-      return await prisma.video.findUnique({
+      const video = await prisma.video.findUnique({
         where: { id: videoId },
         include: { creator: true }
       });
+
+      if (!video) {
+        return INITIAL_VIDEOS.find(v => v.id === videoId) || null;
+      }
+
+      return video;
     } catch (e: any) {
       console.error("[GET_VIDEO_BY_ID_ERROR]", e);
-      return null;
+      return INITIAL_VIDEOS.find(v => v.id === videoId) || null;
     }
   }
 
   /**
    * Retrieves a creator by their unique slug.
+   * Falls back to default creator for 'polutek' if not found.
    */
   static async getCreatorBySlug(slug: string) {
     try {
-      return await prisma.creator.findUnique({
+      const creator = await prisma.creator.findUnique({
         where: { slug },
         include: {
           videos: {
@@ -32,15 +41,29 @@ export class ContentService {
           }
         }
       });
+
+      if (!creator && slug === 'polutek') {
+        return {
+            ...DEFAULT_CREATOR,
+            videos: INITIAL_VIDEOS
+        };
+      }
+
+      return creator;
     } catch (e: any) {
       console.error("[GET_CREATOR_BY_SLUG_ERROR]", e);
+      if (slug === 'polutek') {
+        return {
+            ...DEFAULT_CREATOR,
+            videos: INITIAL_VIDEOS
+        };
+      }
       return null;
     }
   }
 
   /**
-   * Evaluates if a user has access to a specific video based on its access tier
-   * and the user's total historical donation value.
+   * Evaluates if a user has access to a specific video.
    */
   static async getVideoAccess(userId: string | null, videoId: string) {
     try {
@@ -52,27 +75,22 @@ export class ContentService {
 
       const videoUrl = video.videoUrl;
 
-      // Rule 1: The designated homepage "Hero" video is always public
       if (video.isMainFeatured) {
         return { hasAccess: true, userTotalPaid: 0, requiredTier: AccessTier.PUBLIC, videoUrl };
       }
 
-      // Rule 2: PUBLIC tier videos are accessible by everyone
       if (video.tier === AccessTier.PUBLIC) {
         return { hasAccess: true, userTotalPaid: 0, requiredTier: video.tier, videoUrl };
       }
 
-      // From here on, a user MUST be logged in
       if (!userId) {
         return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier, videoUrl: null };
       }
 
-      // Rule 3: LOGGED_IN tier requires only a valid session
       if (video.tier === AccessTier.LOGGED_IN) {
         return { hasAccess: true, userTotalPaid: 0, requiredTier: video.tier, videoUrl };
       }
 
-      // Check user's LTV status for VIP tiers
       const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { totalPaid: true, role: true, email: true }
@@ -82,18 +100,15 @@ export class ContentService {
         return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier };
       }
 
-      // Rule 4: System Admins have bypass access
       if (user.role === 'ADMIN' || user.email === ADMIN_EMAIL) {
         return { hasAccess: true, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl };
       }
 
-      // Rule 5: VIP1 requires >= 5 EUR historical total
       if (video.tier === AccessTier.VIP1) {
         const hasAccess = user.totalPaid >= 5;
         return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
       }
 
-      // Rule 6: VIP2 requires >= 10 EUR historical total
       if (video.tier === AccessTier.VIP2) {
         const hasAccess = user.totalPaid >= 10;
         return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
@@ -102,7 +117,15 @@ export class ContentService {
       return { hasAccess: false, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: null };
     } catch (error: any) {
       console.error("[GET_VIDEO_ACCESS_ERROR]", error);
-      return { hasAccess: false, userTotalPaid: 0, requiredTier: AccessTier.PUBLIC, videoUrl: null };
+      // Fallback check against initial data for public access
+      const v = INITIAL_VIDEOS.find(vid => vid.id === videoId);
+      const isPublic = v?.tier === AccessTier.PUBLIC || v?.isMainFeatured;
+      return {
+        hasAccess: !!isPublic,
+        userTotalPaid: 0,
+        requiredTier: v?.tier || AccessTier.PUBLIC,
+        videoUrl: isPublic ? v?.videoUrl : null
+      };
     }
   }
 
