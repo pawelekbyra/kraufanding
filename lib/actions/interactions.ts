@@ -4,18 +4,60 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { UserService } from "@/lib/services/user.service";
 import { revalidatePath } from "next/cache";
+import { INITIAL_VIDEOS, DEFAULT_CREATOR } from "@/lib/data/initial-content";
 
 /**
- * Increments the view count for a video.
+ * Ensures a video and its creator exist in the DB before an interaction.
+ * Useful for "auto-healing" when using fallback data on a fresh DB.
  */
-export async function incrementVideoViews(videoId: string) {
+async function ensureContentExists(videoId: string) {
   try {
-    await prisma.video.update({
-      where: { id: videoId },
-      data: { views: { increment: 1 } }
-    });
-  } catch (error) {
-    console.error("[INCREMENT_VIEWS_ERROR]", error);
+    const video = await prisma.video.findUnique({ where: { id: videoId } });
+    if (!video) {
+        console.log(`[Interaction] Auto-healing: Video ${videoId} missing from DB. Creating from fallback.`);
+        const fallback = INITIAL_VIDEOS.find(v => v.id === videoId);
+        if (!fallback) return;
+
+        // 1. Ensure Creator exists
+        let creator = await prisma.creator.findUnique({ where: { slug: DEFAULT_CREATOR.slug } });
+        if (!creator) {
+            // Find or create admin user to link the creator to
+            const adminUser = await UserService.getOrCreateUser("user_admin_001").catch(() => null);
+            if (!adminUser) throw new Error("Could not create admin user for auto-healing.");
+
+            creator = await prisma.creator.create({
+                data: {
+                    id: DEFAULT_CREATOR.id,
+                    userId: adminUser.id,
+                    slug: DEFAULT_CREATOR.slug,
+                    name: DEFAULT_CREATOR.name,
+                    bio: DEFAULT_CREATOR.bio,
+                    isApproved: true
+                }
+            });
+        }
+
+        // 2. Create Video
+        await prisma.video.create({
+            data: {
+                id: fallback.id,
+                creatorId: creator.id,
+                title: fallback.title,
+                slug: fallback.slug,
+                description: fallback.description,
+                videoUrl: fallback.videoUrl,
+                thumbnailUrl: fallback.thumbnailUrl,
+                duration: fallback.duration,
+                tier: fallback.tier,
+                isMainFeatured: fallback.isMainFeatured,
+                views: fallback.views,
+                likesCount: fallback.likesCount,
+                publishedAt: new Date()
+            }
+        });
+    }
+  } catch (e: any) {
+    console.error("[Interaction] Auto-healing failed:", e.message);
   }
 }
 
@@ -28,24 +70,22 @@ export async function toggleVideoLike(videoId: string) {
       const authData = auth();
       userId = authData.userId;
   } catch (e: any) {
-      console.error("[Interaction] Clerk Auth Handshake Failed:", e.message);
-      return { error: "CLERK_ERROR", message: "Problem z autoryzacją (handshake). Sprawdź klucze API w Vercel." };
+      console.error("[Interaction] Clerk Handshake Failed:", e.message);
+      return { error: "CLERK_ERROR", message: "Clerk handshake failed. Check your API keys in Vercel." };
   }
 
-  console.log(`[Interaction] User ${userId} toggling LIKE on video ${videoId}`);
+  if (!userId) return { error: "AUTH_REQUIRED" };
 
   try {
-    if (!userId) {
-        return { error: "AUTH_REQUIRED" };
-    }
+    // 0. Auto-healing check
+    await ensureContentExists(videoId);
 
-    // Try to sync/fetch user record.
+    // 1. Sync/Fetch user record
     await UserService.getOrCreateUser(userId).catch(err => {
-        console.warn("[Interaction] UserService sync issue during LIKE:", err.message);
+        console.warn("[Interaction] UserService sync issue:", err.message);
     });
 
     const result = await prisma.$transaction(async (tx) => {
-      // 1. Remove existing dislike
       const existingDislike = await tx.videoDislike.findUnique({
         where: { userId_videoId: { userId: userId!, videoId } }
       });
@@ -58,7 +98,6 @@ export async function toggleVideoLike(videoId: string) {
         });
       }
 
-      // 2. Toggle Like
       const existingLike = await tx.videoLike.findUnique({
         where: { userId_videoId: { userId: userId!, videoId } }
       });
@@ -85,7 +124,7 @@ export async function toggleVideoLike(videoId: string) {
   } catch (error: any) {
     console.error("[TOGGLE_LIKE_ERROR]", error);
     if (error.code === 'P2021' || error.message?.includes("DATABASE_TABLES_MISSING")) {
-        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa. Uruchom 'npx prisma db push'." };
+        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa (Run prisma db push)." };
     }
     return { error: "INTERNAL_ERROR", message: error.message };
   }
@@ -100,19 +139,16 @@ export async function toggleVideoDislike(videoId: string) {
       const authData = auth();
       userId = authData.userId;
   } catch (e: any) {
-      console.error("[Interaction] Clerk Auth Handshake Failed:", e.message);
-      return { error: "CLERK_ERROR", message: "Problem z autoryzacją (handshake). Sprawdź klucze API w Vercel." };
+      console.error("[Interaction] Clerk Handshake Failed:", e.message);
+      return { error: "CLERK_ERROR", message: "Clerk handshake failed. Check your API keys in Vercel." };
   }
 
-  console.log(`[Interaction] User ${userId} toggling DISLIKE on video ${videoId}`);
+  if (!userId) return { error: "AUTH_REQUIRED" };
 
   try {
-    if (!userId) {
-        return { error: "AUTH_REQUIRED" };
-    }
-
+    await ensureContentExists(videoId);
     await UserService.getOrCreateUser(userId).catch(err => {
-        console.warn("[Interaction] UserService sync issue during DISLIKE:", err.message);
+        console.warn("[Interaction] UserService sync issue:", err.message);
     });
 
     const result = await prisma.$transaction(async (tx) => {
@@ -154,7 +190,7 @@ export async function toggleVideoDislike(videoId: string) {
   } catch (error: any) {
     console.error("[TOGGLE_DISLIKE_ERROR]", error);
     if (error.code === 'P2021' || error.message?.includes("DATABASE_TABLES_MISSING")) {
-        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa. Uruchom 'npx prisma db push'." };
+        return { error: "DATABASE_ERROR", message: "Baza danych nie jest gotowa (Run prisma db push)." };
     }
     return { error: "INTERNAL_ERROR", message: error.message };
   }

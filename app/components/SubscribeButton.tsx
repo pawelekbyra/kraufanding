@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, startTransition } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
@@ -22,7 +22,7 @@ export default function SubscribeButton({
     const { openSignIn } = useClerk();
     const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
     const [subscribersCount, setSubscribersCount] = useState(initialSubscribersCount);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -39,42 +39,38 @@ export default function SubscribeButton({
             openSignIn();
             return;
         }
-        if (!creatorId || isLoading) return;
+        if (!creatorId || isPending) return;
 
-        setIsLoading(true);
         const prevSubscribed = isSubscribed;
 
-        // Optimistic Update
+        // Optimistic UI state
         setIsSubscribed(!prevSubscribed);
         setSubscribersCount(prev => prevSubscribed ? Math.max(0, prev - 1) : prev + 1);
 
         startTransition(async () => {
             try {
+                console.log("[SubscribeButton] Toggling subscription for creator:", creatorId);
                 const result = await toggleSubscriptionAction(creatorId) as any;
 
                 if (result.error) {
+                    console.error("[SubscribeButton] Action failed:", result.error, result.message);
                     if (result.error === 'AUTH_REQUIRED') {
                         openSignIn();
-                    } else if (result.error === 'CLERK_ERROR') {
-                        alert("PROBLEM Z AUTORYZACJĄ: " + result.message + "\n\nSprawdź klucze API Clerka w panelu Vercel.");
-                    } else if (result.error === 'DATABASE_ERROR') {
-                        alert("BŁĄD BAZY DANYCH: " + result.message);
                     } else {
-                        alert(`Wystąpił błąd: ${result.message || result.error}`);
+                        alert(`BŁĄD SUBSKRYPCJI: ${result.message || result.error}`);
                     }
                     // Rollback
                     setIsSubscribed(prevSubscribed);
                     setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
                 } else if (result.success) {
+                    console.log("[SubscribeButton] Action success:", result);
                     setIsSubscribed(result.isSubscribed ?? false);
                 }
             } catch (err: any) {
-                console.error("Error updating subscription:", err);
-                alert("Wystąpił nieoczekiwany błąd serwera. Spróbuj ponownie później.");
+                console.error("[SubscribeButton] Transition error:", err);
+                alert("Wystąpił błąd serwera. Spróbuj ponownie później.");
                 setIsSubscribed(prevSubscribed);
                 setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-            } finally {
-                setIsLoading(false);
             }
         });
     };
@@ -83,13 +79,13 @@ export default function SubscribeButton({
         <div className="flex flex-col items-center md:items-start">
             <button
                 onClick={handleSubscribe}
-                disabled={isLoading}
+                disabled={isPending}
                 className={cn(
                     "text-[14px] font-bold rounded-full px-6 h-9 flex items-center transition-all uppercase tracking-widest",
                     isSubscribed
                         ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
                         : "bg-[#0f0f0f] text-white hover:bg-[#272727]",
-                    isLoading && "opacity-50 cursor-not-allowed",
+                    isPending && "opacity-50 cursor-wait",
                     className
                 )}
             >
