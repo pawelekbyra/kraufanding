@@ -8,25 +8,33 @@ import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/act
 interface SubscribeButtonProps {
     creatorId: string;
     initialSubscribersCount: number;
+    initialIsSubscribed?: boolean;
     className?: string;
 }
 
-export default function SubscribeButton({ creatorId, initialSubscribersCount, className }: SubscribeButtonProps) {
+export default function SubscribeButton({
+    creatorId,
+    initialSubscribersCount,
+    initialIsSubscribed = false,
+    className
+}: SubscribeButtonProps) {
     const { userId } = useAuth();
     const { openSignIn } = useClerk();
-    const [isSubscribed, setIsSubscribed] = useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
     const [subscribersCount, setSubscribersCount] = useState(initialSubscribersCount);
     const [isLoading, setIsLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        if (userId && creatorId) {
+        // If server provided a value, we trust it initially.
+        // If not, and we are logged in, we can double check (optional fallback)
+        if (userId && creatorId && initialIsSubscribed === undefined) {
             getSubscriptionStatusAction(creatorId)
                 .then(data => setIsSubscribed(data.isSubscribed))
                 .catch(err => console.error("Error fetching subscription status:", err));
         }
-    }, [userId, creatorId]);
+    }, [userId, creatorId, initialIsSubscribed]);
 
     const handleSubscribe = async () => {
         if (!userId) {
@@ -39,7 +47,7 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
         // Optimistic UI update
         const prevSubscribed = isSubscribed;
         setIsSubscribed(!prevSubscribed);
-        setSubscribersCount(prev => prevSubscribed ? prev - 1 : prev + 1);
+        setSubscribersCount(prev => prevSubscribed ? Math.max(0, prev - 1) : prev + 1);
 
         try {
             const result = await toggleSubscriptionAction(creatorId);
@@ -47,24 +55,18 @@ export default function SubscribeButton({ creatorId, initialSubscribersCount, cl
             if (result.error) {
                 if (result.error === 'UNAUTHORIZED' || result.error === 'AUTH_REQUIRED') {
                     openSignIn();
-                } else if (result.error === 'DATABASE_UNAVAILABLE') {
-                    alert("Baza danych jest niedostępna (npx prisma db push).");
-                } else if (result.error.includes("handshake") || result.error.includes("JWKS")) {
-                    alert("Wystąpił problem z autoryzacją (Clerk). Spróbuj odświeżyć stronę lub zalogować się ponownie.");
-                    console.error("Clerk Handshake Error:", result.error);
                 } else {
-                    alert(`Błąd: ${result.error}`);
-                    console.error("Subscription action error:", result.error);
+                    alert(`Wystąpił błąd: ${result.error}`);
                 }
                 // Rollback
                 setIsSubscribed(prevSubscribed);
                 setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
-            } else if (result.isSubscribed !== undefined) {
-                setIsSubscribed(result.isSubscribed);
+            } else if (result.success) {
+                setIsSubscribed(result.isSubscribed ?? false);
             }
         } catch (err: any) {
             console.error("Error updating subscription:", err);
-            alert("Wystąpił nieoczekiwany błąd. Sprawdź połączenie z internetem.");
+            alert("Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
             // Rollback
             setIsSubscribed(prevSubscribed);
             setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);

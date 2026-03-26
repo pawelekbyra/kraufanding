@@ -53,8 +53,7 @@ export class UserService {
   }
 
   /**
-   * Soft-deletes a user by anonymizing their personal data while preserving their ID
-   * to maintain transaction and interaction history.
+   * Soft-deletes a user by anonymizing their personal data while preserving their ID.
    */
   static async softDeleteUser(id: string) {
     try {
@@ -108,6 +107,29 @@ export class UserService {
     } catch (e: any) {
       console.error("[IS_SUBSCRIBED_ERROR]", e);
       return false;
+    }
+  }
+
+  /**
+   * Retrieves the user's interaction status (like/dislike) for a video.
+   */
+  static async getVideoInteraction(userId: string, videoId: string) {
+    try {
+        const [like, dislike] = await Promise.all([
+            prisma.videoLike.findUnique({
+                where: { userId_videoId: { userId, videoId } }
+            }),
+            prisma.videoDislike.findUnique({
+                where: { userId_videoId: { userId, videoId } }
+            })
+        ]);
+        return {
+            liked: !!like,
+            disliked: !!dislike
+        };
+    } catch (e) {
+        console.error("[GET_VIDEO_INTERACTION_ERROR]", e);
+        return { liked: false, disliked: false };
     }
   }
 

@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from './types/video';
 import { INITIAL_VIDEOS } from '@/lib/data/initial-content';
+import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,20 +31,38 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     allVideos = INITIAL_VIDEOS;
   }
 
+  const selectedVideo = allVideos.find(v => v.id === searchParams.v) || mainVideo;
+
   const { userId } = auth();
   const user = await currentUser();
+
   let userDb = null;
+  let initialInteraction = { liked: false, disliked: false };
+  let initialIsSubscribed = false;
+
   try {
-      userDb = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
+      if (userId) {
+          // Fetch user record and interaction status in parallel
+          const [dbUser, interaction, subscribed] = await Promise.all([
+              prisma.user.findUnique({ where: { id: userId } }),
+              UserService.getVideoInteraction(userId, selectedVideo.id),
+              UserService.isSubscribed(userId, selectedVideo.creatorId)
+          ]);
+          userDb = dbUser;
+          initialInteraction = interaction;
+          initialIsSubscribed = subscribed;
+      }
   } catch (e) {
-      console.error("[HOME_PAGE_USER_DB_ERROR]", e);
+      console.error("[HOME_PAGE_USER_DATA_ERROR]", e);
   }
 
   const userProfile = userId ? {
       id: userId,
       email: user?.primaryEmailAddress?.emailAddress || '',
       imageUrl: user?.imageUrl || null,
-      totalPaid: userDb?.totalPaid || 0
+      totalPaid: userDb?.totalPaid || 0,
+      initialInteraction,
+      initialIsSubscribed
   } : null;
 
   return (
@@ -53,7 +72,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
             mainVideo={mainVideo}
             allVideos={allVideos}
             currentVideoId={searchParams.v}
-            userProfile={userProfile}
+            userProfile={userProfile as any}
           />
           <Footer />
       </div>

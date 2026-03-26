@@ -21,18 +21,21 @@ export async function incrementVideoViews(videoId: string) {
 
 /**
  * Toggles a 'Like' on a video.
- * Mutually exclusive with 'Dislike': liking a video removes any existing dislike.
  */
 export async function toggleVideoLike(videoId: string) {
-  try {
-    const { userId } = auth();
-    if (!userId) return { error: "AUTH_REQUIRED" };
+  const { userId } = auth();
+  console.log(`[Interaction] User ${userId} toggling LIKE on video ${videoId}`);
 
-    // Sync user record
+  try {
+    if (!userId) {
+        console.warn("[Interaction] Attempted LIKE without session.");
+        return { error: "AUTH_REQUIRED" };
+    }
+
     await UserService.getOrCreateUser(userId);
 
-    return await prisma.$transaction(async (tx) => {
-      // 1. Check for existing dislike and remove it
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Remove existing dislike if any
       const existingDislike = await tx.videoDislike.findUnique({
         where: { userId_videoId: { userId, videoId } }
       });
@@ -45,7 +48,7 @@ export async function toggleVideoLike(videoId: string) {
         });
       }
 
-      // 2. Toggle the Like
+      // 2. Toggle Like
       const existingLike = await tx.videoLike.findUnique({
         where: { userId_videoId: { userId, videoId } }
       });
@@ -56,7 +59,6 @@ export async function toggleVideoLike(videoId: string) {
           where: { id: videoId },
           data: { likesCount: { decrement: 1 } }
         });
-        revalidatePath('/');
         return { liked: false, disliked: false };
       } else {
         await tx.videoLike.create({ data: { userId, videoId } });
@@ -64,10 +66,14 @@ export async function toggleVideoLike(videoId: string) {
           where: { id: videoId },
           data: { likesCount: { increment: 1 } }
         });
-        revalidatePath('/');
         return { liked: true, disliked: false };
       }
     });
+
+    // Global revalidation to ensure all components see the new counts
+    revalidatePath('/', 'layout');
+    console.log(`[Interaction] LIKE toggle success for user ${userId}:`, result);
+    return result;
   } catch (error: any) {
     console.error("[TOGGLE_LIKE_ERROR]", error);
     return { error: error.message || "INTERNAL_ERROR" };
@@ -76,18 +82,21 @@ export async function toggleVideoLike(videoId: string) {
 
 /**
  * Toggles a 'Dislike' on a video.
- * Mutually exclusive with 'Like': disliking a video removes any existing like.
  */
 export async function toggleVideoDislike(videoId: string) {
-  try {
-    const { userId } = auth();
-    if (!userId) return { error: "AUTH_REQUIRED" };
+  const { userId } = auth();
+  console.log(`[Interaction] User ${userId} toggling DISLIKE on video ${videoId}`);
 
-    // Sync user record
+  try {
+    if (!userId) {
+        console.warn("[Interaction] Attempted DISLIKE without session.");
+        return { error: "AUTH_REQUIRED" };
+    }
+
     await UserService.getOrCreateUser(userId);
 
-    return await prisma.$transaction(async (tx) => {
-      // 1. Check for existing like and remove it
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Remove existing like if any
       const existingLike = await tx.videoLike.findUnique({
         where: { userId_videoId: { userId, videoId } }
       });
@@ -100,7 +109,7 @@ export async function toggleVideoDislike(videoId: string) {
         });
       }
 
-      // 2. Toggle the Dislike
+      // 2. Toggle Dislike
       const existingDislike = await tx.videoDislike.findUnique({
         where: { userId_videoId: { userId, videoId } }
       });
@@ -111,7 +120,6 @@ export async function toggleVideoDislike(videoId: string) {
           where: { id: videoId },
           data: { dislikesCount: { decrement: 1 } }
         });
-        revalidatePath('/');
         return { liked: false, disliked: false };
       } else {
         await tx.videoDislike.create({ data: { userId, videoId } });
@@ -119,10 +127,13 @@ export async function toggleVideoDislike(videoId: string) {
           where: { id: videoId },
           data: { dislikesCount: { increment: 1 } }
         });
-        revalidatePath('/');
         return { liked: false, disliked: true };
       }
     });
+
+    revalidatePath('/', 'layout');
+    console.log(`[Interaction] DISLIKE toggle success for user ${userId}:`, result);
+    return result;
   } catch (error: any) {
     console.error("[TOGGLE_DISLIKE_ERROR]", error);
     return { error: error.message || "INTERNAL_ERROR" };

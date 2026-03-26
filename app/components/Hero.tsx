@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useOptimistic, useState, useEffect } from 'react';
+import React, { useOptimistic, useState, useEffect, startTransition } from 'react';
 import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
@@ -9,13 +9,15 @@ import PremiumWrapper from './PremiumWrapper';
 import Link from 'next/link';
 import SubscribeButton from './SubscribeButton';
 import VideoPlayer from './VideoPlayer';
-import { toggleVideoLike } from '@/lib/actions/interactions';
+import { toggleVideoLike, toggleVideoDislike } from '@/lib/actions/interactions';
 
 interface HeroProps {
   video: Video;
+  initialInteraction?: { liked: boolean; disliked: boolean };
+  initialIsSubscribed?: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ video }) => {
+const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscribed }) => {
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
   const [mounted, setMounted] = useState(false);
@@ -24,42 +26,74 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
     setMounted(true);
   }, []);
 
-  const [optimisticLike, addOptimisticLike] = useOptimistic(
-    { isLiked: false, count: video.likesCount || 0 },
-    (state, newLiked: boolean) => ({
-      isLiked: newLiked,
-      count: newLiked ? state.count + 1 : Math.max(0, state.count - 1)
-    })
+  // Multi-state optimistic UI for Like/Dislike initialized from server props
+  const [optimisticState, addOptimisticAction] = useOptimistic(
+    {
+        isLiked: initialInteraction?.liked || false,
+        isDisliked: initialInteraction?.disliked || false,
+        likesCount: video.likesCount || 0,
+        dislikesCount: video.dislikesCount || 0
+    },
+    (state, action: 'LIKE' | 'DISLIKE') => {
+      if (action === 'LIKE') {
+        const wasLiked = state.isLiked;
+        const wasDisliked = state.isDisliked;
+        return {
+          isLiked: !wasLiked,
+          isDisliked: false,
+          likesCount: wasLiked ? state.likesCount - 1 : state.likesCount + 1,
+          dislikesCount: wasDisliked ? state.dislikesCount - 1 : state.dislikesCount
+        };
+      } else {
+        const wasLiked = state.isLiked;
+        const wasDisliked = state.isDisliked;
+        return {
+          isLiked: false,
+          isDisliked: !wasDisliked,
+          likesCount: wasLiked ? state.likesCount - 1 : state.likesCount,
+          dislikesCount: wasDisliked ? state.dislikesCount - 1 : state.dislikesCount + 1
+        };
+      }
+    }
   );
 
   const handleLike = async () => {
     if (!userId) return openSignIn();
 
-    // Check for Clerk auth issue mentioned in logs
     try {
-        addOptimisticLike(!optimisticLike.isLiked);
-        const result = await toggleVideoLike(video.id) as any;
-
-        if (result.error) {
-            if (result.error === 'AUTH_REQUIRED') {
-                openSignIn();
-            } else if (result.error === 'DATABASE_UNAVAILABLE') {
-                alert("Baza danych jest niedostępna (npx prisma db push).");
-            } else {
-                alert("Błąd: " + result.error);
+        startTransition(async () => {
+            addOptimisticAction('LIKE');
+            const result = await toggleVideoLike(video.id) as any;
+            if (result.error) {
+                if (result.error === 'AUTH_REQUIRED') {
+                    openSignIn();
+                } else {
+                    alert("Błąd: " + result.error);
+                }
             }
-            // Add a temporary manual rollback since we're calling useOptimistic manually
-            addOptimisticLike(optimisticLike.isLiked);
-        }
+        });
     } catch (error: any) {
         console.error("Error toggling like:", error);
-        if (error.message?.includes("handshake") || error.message?.includes("JWKS")) {
-            alert("Problem z autoryzacją. Odśwież stronę.");
-        } else {
-            alert("Błąd podczas zapisywania polubienia.");
-        }
-        // Rollback is handled by useOptimistic when the action completes if we were using it with a form action,
-        // but here we call it manually. For simplicity in this brutalist setup, we'll let it be or the user can refresh.
+    }
+  };
+
+  const handleDislike = async () => {
+    if (!userId) return openSignIn();
+
+    try {
+        startTransition(async () => {
+            addOptimisticAction('DISLIKE');
+            const result = await toggleVideoDislike(video.id) as any;
+            if (result.error) {
+                if (result.error === 'AUTH_REQUIRED') {
+                    openSignIn();
+                } else {
+                    alert("Błąd: " + result.error);
+                }
+            }
+        });
+    } catch (error: any) {
+        console.error("Error toggling dislike:", error);
     }
   };
 
@@ -101,7 +135,8 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
                </div>
                <SubscribeButton
                  creatorId={video.creatorId}
-                 initialSubscribersCount={video.creator?.subscribersCount || 1200000}
+                 initialSubscribersCount={video.creator?.subscribersCount || 0}
+                 initialIsSubscribed={initialIsSubscribed}
                />
             </div>
 
@@ -111,14 +146,23 @@ const Hero: React.FC<HeroProps> = ({ video }) => {
                     onClick={handleLike}
                     className={cn(
                         "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-l-full transition-colors border-r border-black/10",
-                        optimisticLike.isLiked && "text-primary"
+                        optimisticState.isLiked && "text-black"
                     )}
+                    title="Lubię to"
                   >
-                     <ThumbsUp size={16} className={cn(optimisticLike.isLiked && "fill-primary")} />
-                     <span className="text-[13px] font-bold">{mounted ? optimisticLike.count.toLocaleString('pl-PL') : optimisticLike.count}</span>
+                     <ThumbsUp size={16} className={cn(optimisticState.isLiked && "fill-black")} />
+                     <span className="text-[13px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
-                  <button className="px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors">
-                     <ThumbsDown size={16} />
+                  <button
+                    onClick={handleDislike}
+                    className={cn(
+                        "flex items-center gap-2 px-3 h-full hover:bg-[#000000]/10 rounded-r-full transition-colors",
+                        optimisticState.isDisliked && "text-black"
+                    )}
+                    title="Nie lubię"
+                  >
+                     <ThumbsDown size={16} className={cn(optimisticState.isDisliked && "fill-black")} />
+                     <span className="text-[13px] font-bold">{optimisticState.dislikesCount.toLocaleString('pl-PL')}</span>
                   </button>
                </div>
                <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">

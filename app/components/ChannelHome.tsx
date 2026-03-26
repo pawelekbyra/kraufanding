@@ -17,7 +17,14 @@ interface ChannelHomeProps {
   mainVideo: Video;
   allVideos: Video[];
   currentVideoId?: string;
-  userProfile?: { id: string; email: string; imageUrl?: string | null; totalPaid: number } | null;
+  userProfile?: {
+    id: string;
+    email: string;
+    imageUrl?: string | null;
+    totalPaid: number;
+    initialInteraction?: { liked: boolean; disliked: boolean };
+    initialIsSubscribed?: boolean;
+  } | null;
 }
 
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
@@ -144,7 +151,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8">
-            <Hero video={selectedVideo} />
+            <Hero
+              video={selectedVideo}
+              initialInteraction={userProfile?.initialInteraction}
+              initialIsSubscribed={userProfile?.initialIsSubscribed}
+            />
 
             <div className="mt-2.5 bg-[#1a1a1a]/5 rounded-xl p-3 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer group">
                <div className="flex gap-4 text-[13px] font-bold not-italic">
