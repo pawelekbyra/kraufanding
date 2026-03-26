@@ -10,7 +10,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 export class PaymentService {
   static async createCheckoutSession(params: {
-    clerkUserId: string,
+    userId: string,
     amount: number,
     title?: string,
     creatorId?: string,
@@ -38,7 +38,7 @@ export class PaymentService {
       success_url: params.successUrl,
       cancel_url: params.cancelUrl,
       metadata: {
-        clerkUserId: params.clerkUserId,
+        userId: params.userId,
         creatorId: params.creatorId || "",
         type: 'TIP_DONATION'
       },
@@ -67,21 +67,21 @@ export class PaymentService {
   }
 
   private static async processCompletedSession(session: Stripe.Checkout.Session) {
-    const clerkUserId = session.metadata?.clerkUserId;
+    const userId = session.metadata?.userId || session.metadata?.clerkUserId;
     const creatorIdRaw = session.metadata?.creatorId;
     const creatorId = (creatorIdRaw && creatorIdRaw !== "") ? creatorIdRaw : null;
     const amountPaid = (session.amount_total || 0) / 100;
     const currency = session.currency?.toUpperCase() || 'EUR';
 
-    if (!clerkUserId) return;
+    if (!userId) return;
 
     const user = await prisma.$transaction(async (tx) => {
       const localUser = await tx.user.findUnique({
-        where: { clerkUserId },
+        where: { id: userId },
         select: { id: true, email: true, totalPaid: true }
       });
 
-      if (!localUser) throw new Error(`User with clerkUserId ${clerkUserId} not found.`);
+      if (!localUser) throw new Error(`User with ID ${userId} not found.`);
 
       const existingTx = await tx.transaction.findUnique({
         where: { stripeSessionId: session.id }

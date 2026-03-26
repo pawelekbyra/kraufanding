@@ -20,17 +20,17 @@ export async function incrementVideoViews(videoId: string) {
 }
 
 export async function toggleVideoLike(videoId: string) {
-  const { userId: clerkUserId } = auth();
-  if (!clerkUserId) throw new Error("Unauthorized");
+  const { userId } = auth();
+  if (!userId) throw new Error("Unauthorized");
 
-  const user = await UserService.getOrCreateUser(clerkUserId);
+  const user = await UserService.getOrCreateUser(userId);
   if (user.id === 'temp-id') throw new Error("Database unavailable");
 
   return await prisma.$transaction(async (tx) => {
     const existingLike = await tx.videoLike.findUnique({
       where: {
         userId_videoId: {
-          userId: user.id,
+          userId,
           videoId
         }
       }
@@ -49,7 +49,7 @@ export async function toggleVideoLike(videoId: string) {
     } else {
       await tx.videoLike.create({
         data: {
-          userId: user.id,
+          userId,
           videoId
         }
       });

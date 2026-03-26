@@ -72,7 +72,7 @@ export class ContentService {
     }
   }
 
-  static async getVideoAccess(clerkUserId: string | null, videoId: string) {
+  static async getVideoAccess(userId: string | null, videoId: string) {
     try {
       const video = await this.getVideoById(videoId);
 
@@ -88,7 +88,7 @@ export class ContentService {
         return { hasAccess: true, userTotalPaid: 0, requiredTier: video.tier, videoUrl };
       }
 
-      if (!clerkUserId) {
+      if (!userId) {
         return { hasAccess: false, userTotalPaid: 0, requiredTier: video.tier, videoUrl: null };
       }
 
@@ -97,7 +97,7 @@ export class ContentService {
       }
 
       const user = await prisma.user.findUnique({
-        where: { clerkUserId },
+        where: { id: userId },
         select: { totalPaid: true, role: true, email: true }
       }).catch(e => {
           if (e.code === 'P2021') return null;

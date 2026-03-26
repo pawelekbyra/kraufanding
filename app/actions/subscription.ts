@@ -5,14 +5,14 @@ import { UserService } from '@/lib/services/user.service';
 import { revalidatePath } from 'next/cache';
 
 export async function toggleSubscriptionAction(creatorId: string) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
 
-  if (!clerkUserId) {
+  if (!userId) {
     return { error: 'UNAUTHORIZED' };
   }
 
   try {
-    const result = await UserService.toggleSubscription(clerkUserId, creatorId);
+    const result = await UserService.toggleSubscription(userId, creatorId);
 
     // Optional: revalidate any paths that show subscription status
     revalidatePath('/');
@@ -26,11 +26,11 @@ export async function toggleSubscriptionAction(creatorId: string) {
 }
 
 export async function getSubscriptionStatusAction(creatorId: string) {
-    const { userId: clerkUserId } = auth();
-    if (!clerkUserId) return { isSubscribed: false };
+    const { userId } = auth();
+    if (!userId) return { isSubscribed: false };
 
     try {
-        const isSubscribed = await UserService.isSubscribed(clerkUserId, creatorId);
+        const isSubscribed = await UserService.isSubscribed(userId, creatorId);
         return { isSubscribed };
     } catch (error) {
         return { isSubscribed: false };

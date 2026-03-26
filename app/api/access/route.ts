@@ -5,7 +5,7 @@ import { ContentService } from '@/lib/services/content.service';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const { userId: clerkUserId } = auth();
+  const { userId } = auth();
   const { searchParams } = new URL(req.url);
   const videoId = searchParams.get('videoId');
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const access = await ContentService.getVideoAccess(clerkUserId, videoId);
+    const access = await ContentService.getVideoAccess(userId, videoId);
     return NextResponse.json(access);
   } catch (error: any) {
     console.error("[ACCESS_API_ERROR]", error);

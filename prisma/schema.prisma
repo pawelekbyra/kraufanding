@@ -8,8 +8,7 @@ datasource db {
 }
 
 model User {
-  id               String              @id @default(uuid())
-  clerkUserId      String              @unique
+  id               String              @id // This is now the clerkUserId directly
   email            String              @unique
   name             String?
   isDeleted        Boolean             @default(false)
@@ -28,7 +27,6 @@ model User {
   subscriptions    Subscription[]
 
   @@index([email])
-  @@index([clerkUserId])
 }
 
 model Transaction {

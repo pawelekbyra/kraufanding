@@ -40,23 +40,23 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { id: clerkUserId, email_addresses, image_url } = evt.data;
+    const { id, email_addresses, image_url } = evt.data;
     const email = email_addresses[0]?.email_address;
 
-    if (clerkUserId && email) {
-      await UserService.syncUser(clerkUserId, email, image_url);
-      console.log(`User ${clerkUserId} synced via webhook.`);
+    if (id && email) {
+      await UserService.syncUser(id, email, image_url);
+      console.log(`User ${id} synced via webhook.`);
     }
   }
 
   if (eventType === 'user.deleted') {
-      const { id: clerkUserId } = evt.data;
-      if (clerkUserId) {
+      const { id } = evt.data;
+      if (id) {
           try {
-              await UserService.softDeleteUser(clerkUserId);
-              console.log(`User ${clerkUserId} soft-deleted/anonymized via webhook.`);
+              await UserService.softDeleteUser(id);
+              console.log(`User ${id} soft-deleted/anonymized via webhook.`);
           } catch (e) {
-              console.error(`Error soft-deleting user ${clerkUserId}:`, e);
+              console.error(`Error soft-deleting user ${id}:`, e);
           }
       }
   }

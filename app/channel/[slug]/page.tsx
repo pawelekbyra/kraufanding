@@ -30,7 +30,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
   }
 
   const { userId } = auth();
-  const userDb = userId ? await prisma.user.findUnique({ where: { clerkUserId: userId } }).catch(() => null) : null;
+  const userDb = userId ? await prisma.user.findUnique({ where: { id: userId } }).catch(() => null) : null;
 
   const userProfile = userId ? {
       totalPaid: userDb?.totalPaid || 0

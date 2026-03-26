@@ -15,9 +15,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId: clerkUserId } = auth();
+    const { userId } = auth();
 
-    if (!clerkUserId) {
+    if (!userId) {
       return NextResponse.json({
         error: "Unauthorized",
         message: "Twoja sesja wygasła. Zaloguj się ponownie, aby dokonać wpłaty."
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Lazy Sync Fallback via Service
-    await UserService.getOrCreateUser(clerkUserId);
+    await UserService.getOrCreateUser(userId);
 
     const body = await req.json();
     const { amount, title, creatorId } = body;
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
 
     const session = await PaymentService.createCheckoutSession({
-      clerkUserId,
+      userId,
       amount,
       title,
       creatorId,

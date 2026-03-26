@@ -7,11 +7,11 @@ import { NextResponse } from 'next/server';
  * Access is restricted based on the user's totalPaid amount.
  */
 export async function getGatedBlobResponse(
-  clerkUserId: string | null,
+  userId: string | null,
   videoId: string,
   blobUrl: string
 ) {
-  const { hasAccess } = await ContentService.getVideoAccess(clerkUserId, videoId);
+  const { hasAccess } = await ContentService.getVideoAccess(userId, videoId);
 
   if (!hasAccess) {
     return new NextResponse('Forbidden', { status: 403 });
