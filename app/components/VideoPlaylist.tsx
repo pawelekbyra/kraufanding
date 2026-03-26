@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
+import { useLanguage } from './LanguageContext';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -10,6 +11,7 @@ interface VideoPlaylistProps {
 }
 
 const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
+  const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState<number | ''>(10);
   const { userId } = useAuth();
@@ -22,40 +24,38 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     }
 
     if (!amount || amount < 5) {
-      alert("Minimalna kwota wsparcia to 5 €");
+      alert(language === 'pl' ? "Minimalna kwota wsparcia to 5 €" : "Minimum support amount is 5 €");
       return;
     }
 
     try {
       setIsLoading(true);
 
-      // ARCHITEKTURA ON-DEMAND: Sesja generowana wyłącznie po kliknięciu
       const response = await fetch('/api/checkout', {
-          method: 'POST', // WYŁĄCZNIE METODA POST
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: Number(amount),
             title: videoTitle || "Tip The Guy / Patron"
           }),
-          cache: 'no-store' // BEZWZGLĘDNE ZABICIE CACHE
+          cache: 'no-store'
       });
 
       const data = await response.json();
 
       if (data?.url) {
-        // TWARDE PRZEKIEROWANIE: Unikanie cache'u przeglądarki
         window.location.href = data.url;
       } else if (data?.error) {
         if (response.status === 401 || data.error.includes("AUTH_REQUIRED")) {
-          alert("Twoja sesja wygasła. Zaloguj się ponownie.");
+          alert(language === 'pl' ? "Twoja sesja wygasła. Zaloguj się ponownie." : "Your session has expired. Please sign in again.");
           openSignIn();
         } else {
-          alert("Błąd: " + (data.message || data.error));
+          alert(language === 'pl' ? `Błąd: ${data.message || data.error}` : `Error: ${data.message || data.error}`);
         }
       }
     } catch (error: any) {
       console.error("Payment error", error);
-      alert("Błąd połączenia z systemem płatności. Spróbuj odświeżyć stronę.");
+      alert(language === 'pl' ? "Błąd połączenia z systemem płatności. Spróbuj odświeżyć stronę." : "Payment system connection error. Please refresh the page.");
     } finally {
       setIsLoading(false);
     }
@@ -63,27 +63,26 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        {/* PAYMENT AUTHORIZATION REQUEST - BRUTALIST DOCUMENT STYLE */}
         <div className="bg-[#FDFBF7] border-2 border-black p-6 shadow-brutalist relative overflow-hidden">
-          {/* Decorative Stamp */}
           <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
             <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
           </div>
 
           <div className="space-y-2 relative z-10">
-            {/* Header section */}
             <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              BECOME A PATRON
+              {t.donate}
             </h3>
 
             <div className="space-y-4">
               <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
-                Tip any amount to unlock permanent access to bonus content. All contributions directly support the channel and help keep it going and grow.
+                {language === 'pl'
+                  ? "Dowolny napiwek odblokuje stały dostęp do materiałów premium. Całość wspiera rozwój kanału."
+                  : "Tip any amount to unlock permanent access to bonus content. All contributions directly support the channel."}
               </p>
 
               <div className="space-y-2 pt-2">
                 <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
-                  Transaction Amount (MIN 5.00 EUR)
+                  {language === 'pl' ? "KWOTA WSPARCIA (MIN 5.00 EUR)" : "TRANSACTION AMOUNT (MIN 5.00 EUR)"}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -103,12 +102,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   />
                 </div>
                 {typeof amount === 'number' && amount < 5 && (
-                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">Error: Minimum amount not met (5 EUR)</p>
+                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
+                    {language === 'pl' ? "Błąd: Nie osiągnięto minimum (5 EUR)" : "Error: Minimum amount not met (5 EUR)"}
+                  </p>
                 )}
               </div>
             </div>
 
-            {/* CZYSTY BUTTON: Zero tagów Link, zero <a> */}
             <button
               type="button"
               onClick={onSupport}
@@ -118,13 +118,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               {isLoading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  LOADING...
+                  {language === 'pl' ? "PRZETWARZANIE..." : "LOADING..."}
                 </>
               ) : (
-                'TIP THE GUY'
+                language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
               )}
             </button>
-
           </div>
         </div>
     </div>

@@ -122,7 +122,7 @@ export default function PremiumWrapper({
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const { language, t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
-  const mainTitle = "TOP SECRET";
+  const mainTitle = t.topSecret;
 
   const subTitle = (requiredTier === "LOGGED_IN" && !isLoggedIn)
     ? t.loginToWatch
@@ -140,7 +140,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             ) : (
               <Lock className="w-6 h-6 text-blue-500 mb-1 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
             )}
-            <span className="text-[10px] font-black text-white uppercase tracking-[0.15em] leading-tight">
+            <span className="text-[10px] font-black text-white tracking-[0.15em] leading-tight">
                {mainTitle}
             </span>
             <span className="text-[7px] font-black text-white/60 uppercase tracking-widest mt-1 border-t border-white/10 pt-1">
@@ -163,7 +163,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                <div className={`p-5 rounded-full mb-2 ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.3)]'}`}>
                   {isVIPGated ? <Gem size={56} strokeWidth={2} /> : <Lock size={56} strokeWidth={2} />}
                </div>
-               <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic uppercase drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]">
+               <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]">
                   {mainTitle}
                </h2>
 
@@ -177,20 +177,6 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                     subTitle
                   )}
                </div>
-            </div>
-
-            <div className="pt-6">
-               {!isLoggedIn ? (
-                 <SignInButton mode="modal">
-                   <button className="btn bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_20px_40px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95">
-                     {t.signIn}
-                   </button>
-                 </SignInButton>
-               ) : (
-                 <a href="#donations" className="btn bg-yellow-500 hover:bg-yellow-400 text-black border-none rounded-full px-14 h-16 text-xl font-black uppercase tracking-widest shadow-[0_20px_40px_rgba(234,179,8,0.4)] transition-all hover:scale-105 active:scale-95">
-                   {t.becomePatron}
-                 </a>
-               )}
             </div>
          </div>
       </div>
