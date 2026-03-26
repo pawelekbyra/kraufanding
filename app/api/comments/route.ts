@@ -23,6 +23,9 @@ export async function GET(request: NextRequest) {
             let user = await prisma.user.findUnique({
                 where: { clerkUserId },
                 select: { id: true }
+                }).catch(e => {
+                    if (e.code === 'P2021') return null;
+                    throw e;
             });
 
             if (!user) {
@@ -82,6 +85,9 @@ export async function GET(request: NextRequest) {
             if (internalUserId) {
                 const like = await prisma.commentLike.findUnique({
                     where: { userId_commentId: { userId: internalUserId, commentId: c.id } }
+        }).catch(e => {
+            if (e.code === 'P2021') return null;
+            throw e;
                 });
                 isLiked = !!like;
             }
@@ -93,6 +99,9 @@ export async function GET(request: NextRequest) {
                 if (internalUserId) {
                     const rLike = await prisma.commentLike.findUnique({
                         where: { userId_commentId: { userId: internalUserId, commentId: r.id } }
+            }).catch(e => {
+                if (e.code === 'P2021') return null;
+                throw e;
                     });
                     rLiked = !!rLike;
                 }

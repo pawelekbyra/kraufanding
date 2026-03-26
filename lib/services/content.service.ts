@@ -18,7 +18,7 @@ export class ContentService {
       }
 
       return video;
-    } catch (e) {
+    } catch (e: any) {
       console.error("[GET_VIDEO_BY_ID_ERROR]", e);
       const mock = mockVideos.find(v => v.id === videoId);
       return mock || null;
@@ -52,9 +52,9 @@ export class ContentService {
         }
 
         return creator;
-    } catch (e) {
+    } catch (e: any) {
         console.error("[GET_CREATOR_BY_SLUG_ERROR]", e);
-        if (slug === 'polutek') {
+        if (slug === 'polutek' || e.code === 'P2021') {
             const mainMock = mockVideos[0];
             return {
                 id: mainMock.creator?.id || 'c1',

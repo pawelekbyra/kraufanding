@@ -67,8 +67,10 @@ export class UserService {
             select: { totalPaid: true }
         });
         return user?.totalPaid || 0;
-    } catch (e) {
+    } catch (e: any) {
         console.error("[GET_USER_TOTAL_PAID_ERROR]", e);
+        // P2021: Table does not exist
+        if (e.code === 'P2021') return 0;
         return 0;
     }
   }
@@ -78,7 +80,10 @@ export class UserService {
         const user = await prisma.user.findUnique({
             where: { clerkUserId },
             select: { id: true }
-        }).catch(() => null);
+        }).catch((e) => {
+            if (e.code === 'P2021') return null;
+            throw e;
+        });
 
         if (!user) return false;
 
@@ -90,10 +95,13 @@ export class UserService {
                     creatorId
                 }
             }
-        }).catch(() => null);
+        }).catch((e) => {
+            if (e.code === 'P2021') return null;
+            throw e;
+        });
 
         return !!sub;
-    } catch (e) {
+    } catch (e: any) {
         console.error("[IS_SUBSCRIBED_ERROR]", e);
         return false;
     }
@@ -117,6 +125,7 @@ export class UserService {
             }
         }).catch(e => {
             console.error("[CHECK_EXISTING_SUB_ERROR]", e);
+            if (e.code === 'P2021') return null; // Table missing
             return null;
         });
 
@@ -125,6 +134,7 @@ export class UserService {
                 where: { id: existing.id }
             }).catch(de => {
                 console.error("Could not delete subscription", de);
+                if (de.code === 'P2021') throw new Error("Tabela subskrypcji nie istnieje.");
                 throw de;
             });
 
@@ -143,6 +153,7 @@ export class UserService {
                 }
             }).catch(ce => {
                 console.error("Could not create subscription", ce);
+                if (ce.code === 'P2021') throw new Error("Tabela subskrypcji nie istnieje.");
                 throw ce;
             });
 
