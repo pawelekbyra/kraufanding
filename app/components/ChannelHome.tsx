@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Hero from './Hero';
 import VideoPlaylist from './VideoPlaylist';
 import PremiumWrapper from './PremiumWrapper';
+import VideoPlayer from './VideoPlayer';
 import EmbeddedComments from './comments/EmbeddedComments';
 import { Video } from '../types/video';
 import Link from 'next/link';
@@ -59,35 +60,39 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                         video.isMainFeatured;
 
       acc.push(
-          <Link
+          <div
             key={video.id}
-            href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
-            scroll={false}
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
-              "group flex gap-2 p-0.5 rounded-lg transition-colors",
+              "group flex gap-2 p-0.5 rounded-lg transition-colors relative",
               isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
             )}
           >
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative">
+            <Link
+               href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+               scroll={false}
+               className="absolute inset-0 z-0"
+            />
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative z-10">
               <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured} variant="thumbnail">
-                 <img
-                   src={video.thumbnailUrl}
-                   alt={video.title}
-                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                 />
+                 <VideoPlayer video={video} />
               </PremiumWrapper>
               <div className="absolute bottom-1 right-1 bg-black text-white text-[10px] font-bold px-1 rounded">12:45</div>
             </div>
-            <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-              <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
-                 {video.title}
-              </h4>
+            <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5 z-10">
+              <Link
+                href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+                scroll={false}
+                className="hover:opacity-80 transition-opacity"
+              >
+                <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
+                   {video.title}
+                </h4>
+              </Link>
               <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
                  <Link
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                   className="hover:text-[#0f0f0f] transition-colors hover:underline"
-                   onClick={(e) => e.stopPropagation()}
+                   className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
                  >
                    {video.creator?.name || 'Polutek Archive'}
                  </Link>
@@ -97,15 +102,17 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     <span>1 rok temu</span>
                  </div>
               </div>
-              {hasAccess ? (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
-              ) : video.tier === 'LOGGED_IN' ? (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">Log in to watch</span>
-              ) : (
-                 <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">Become a Patron</span>
+              {mounted && (
+                hasAccess ? (
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">Dostępne</span>
+                ) : video.tier === 'LOGGED_IN' ? (
+                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">Log in to watch</span>
+                ) : (
+                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">Become a Patron</span>
+                )
               )}
             </div>
-          </Link>
+          </div>
       );
 
       if (i === 1) {
