@@ -150,13 +150,16 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                >
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'Polutek'}`} alt={video.creator?.name} className="w-full h-full object-cover" />
                </Link>
-               <div className="min-w-0 pr-1">
+               <div className="min-w-0 pr-1 flex flex-col">
                   <Link
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                     className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
                   >
                     {video.creator?.name || 'Paweł Polutek'}
                   </Link>
+                  <span className="text-[12px] text-[#606060] whitespace-nowrap">
+                     {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
+                  </span>
                </div>
                <SubscribeButton
                  creatorId={video.creatorId}

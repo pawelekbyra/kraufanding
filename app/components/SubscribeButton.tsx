@@ -87,24 +87,19 @@ export default function SubscribeButton({
     };
 
     return (
-        <div className="flex flex-col items-center md:items-start">
-            <button
-                onClick={handleSubscribe}
-                disabled={isPending}
-                className={cn(
-                    "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px]",
-                    isSubscribed
-                        ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                        : "bg-[#0f0f0f] text-white hover:bg-[#272727]",
-                    isPending && "opacity-50 cursor-wait",
-                    className
-                )}
-            >
-                {isSubscribed ? t.subscribed : t.subscribe}
-            </button>
-            <p className="text-[12px] text-[#606060] mt-1 whitespace-nowrap">
-                {mounted ? subscribersCount.toLocaleString('pl-PL') : subscribersCount} {t.subscribers}
-            </p>
-        </div>
+        <button
+            onClick={handleSubscribe}
+            disabled={isPending}
+            className={cn(
+                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px]",
+                isSubscribed
+                    ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
+                    : "bg-[#0f0f0f] text-white hover:bg-[#272727]",
+                isPending && "opacity-50 cursor-wait",
+                className
+            )}
+        >
+            {isSubscribed ? t.subscribed : t.subscribe}
+        </button>
     );
 }
