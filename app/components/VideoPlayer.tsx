@@ -21,6 +21,11 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         }
     }, [videoUrl, variant]);
 
+    // Reset playing state when video changes
+    React.useEffect(() => {
+        setIsPlaying(false);
+    }, [video.id]);
+
     if (videoUrl && isPlaying) {
         return (
             <video

@@ -120,7 +120,7 @@ export default function PremiumWrapper({
 }
 
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
 
   const subTitle = (requiredTier === "LOGGED_IN" && !isLoggedIn)
@@ -129,20 +129,25 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
 
   if (variant === 'thumbnail') {
     return (
-      <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg border border-white/5">
-         <div className="absolute inset-0 z-0">
-            <div className={`w-full h-full opacity-70 blur-[4px] transition-all duration-700 group-hover:blur-[2px] ${isVIPGated ? 'bg-gradient-to-br from-amber-900/60 to-yellow-900/60' : 'bg-gradient-to-br from-blue-900/60 to-indigo-900/60'}`} />
+      <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg border border-white/10">
+         <div className="absolute inset-0 z-0 opacity-40">
+            <div className={`w-full h-full blur-[8px] transition-all duration-700 group-hover:scale-110 ${isVIPGated ? 'bg-gradient-to-br from-amber-900 to-black' : 'bg-gradient-to-br from-neutral-800 to-black'}`} />
          </div>
-         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 bg-black/20">
+         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 gap-1.5">
             {isVIPGated ? (
-              <Gem className="w-6 h-6 text-yellow-500 mb-1 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+              <Gem className="w-5 h-5 text-yellow-500 mb-1 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
             ) : (
-              <Lock className="w-6 h-6 text-blue-500 mb-1 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+              <Lock className="w-5 h-5 text-white/40" />
             )}
-            <span className="text-[10px] font-black text-white tracking-[0.15em] leading-[0.9] italic text-center">
-               {t.paywallText}<br/>{t.paywallAction}
-            </span>
-            <span className="text-[7px] font-black text-white/60 uppercase tracking-widest mt-1 border-t border-white/10 pt-1">
+            <div className="flex flex-col gap-0.5 leading-[0.9]">
+               <span className="text-[10px] font-black text-white uppercase tracking-tighter italic">
+                  {t.paywallText}
+               </span>
+               <span className="text-[10px] font-black text-primary uppercase tracking-tighter italic">
+                  {t.paywallAction}
+               </span>
+            </div>
+            <span className="text-[7px] font-black text-white/30 uppercase tracking-[0.2em] mt-1 pt-1 border-t border-white/10 w-16">
                {subTitle}
             </span>
          </div>
@@ -153,29 +158,48 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
   return (
     <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative">
       <div className="aspect-video bg-black rounded-2xl overflow-hidden relative group border-4 border-black h-full w-full shadow-2xl">
-         <div className="absolute inset-0 z-0 opacity-40">
-            <div className={`w-full h-full blur-[25px] transition-all duration-1000 group-hover:scale-110 ${isVIPGated ? 'bg-gradient-to-br from-amber-600 to-yellow-900' : 'bg-gradient-to-br from-blue-600 to-indigo-900'}`} />
+         {/* Brutalist Investigative Background */}
+         <div className="absolute inset-0 z-0">
+            <div className={`w-full h-full opacity-20 blur-[40px] transition-all duration-1000 group-hover:scale-110 ${isVIPGated ? 'bg-amber-600' : 'bg-neutral-600'}`} />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
          </div>
 
-         <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 bg-black/40 backdrop-blur-[6px]">
-            <div className="flex flex-col items-center text-center space-y-10">
-               <div className={`p-8 rounded-full ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.3)]'}`}>
-                  {isVIPGated ? <Gem size={80} strokeWidth={2} /> : <Lock size={80} strokeWidth={2} />}
+         <div className="absolute inset-0 flex flex-col items-center justify-center gap-12 z-10 bg-black/60 backdrop-blur-[12px]">
+            <div className="flex flex-col items-center text-center space-y-12 w-full max-w-2xl px-6">
+               <div className={`relative ${isVIPGated ? 'text-yellow-500' : 'text-white'}`}>
+                  {isVIPGated ? (
+                    <Gem size={100} strokeWidth={1.5} className="drop-shadow-[0_0_30px_rgba(234,179,8,0.4)]" />
+                  ) : (
+                    <Lock size={100} strokeWidth={1.5} className="drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] opacity-40" />
+                  )}
                </div>
 
-               {/* Custom Paywall Text as requested */}
-               <div className={`text-5xl md:text-7xl font-black uppercase tracking-tighter px-4 text-center leading-[0.9] italic drop-shadow-2xl ${isVIPGated ? 'text-yellow-400' : 'text-white'}`}>
+               <div className="flex flex-col gap-4 w-full">
                   {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                    <div className="flex flex-col gap-4">
-                      <span className={isVIPGated ? 'text-yellow-400' : 'text-white'}>{t.paywallText}</span>
-                      <SignInButton mode="modal">
-                        <span className="underline cursor-pointer hover:text-primary transition-colors block">
-                          {t.paywallAction}
+                    <div className="flex flex-col gap-6 items-center">
+                      <div className="flex flex-col gap-2">
+                        <span className="text-5xl md:text-8xl font-black uppercase tracking-tighter italic text-white leading-[0.8] drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
+                          {t.paywallText}
                         </span>
-                      </SignInButton>
+                        <SignInButton mode="modal">
+                          <button className="text-5xl md:text-8xl font-black uppercase tracking-tighter italic text-primary leading-[0.8] hover:scale-105 transition-transform cursor-pointer drop-shadow-[0_5px_15px_rgba(var(--p),0.3)] decoration-primary underline decoration-8 underline-offset-8">
+                            {t.paywallAction}
+                          </button>
+                        </SignInButton>
+                      </div>
+                      <p className="text-white/20 font-mono text-[10px] uppercase tracking-[0.4em] pt-4">
+                         Authentication Required // Evidence Gated
+                      </p>
                     </div>
                   ) : (
-                    <span className={isVIPGated ? 'text-yellow-400' : 'text-blue-400'}>{subTitle}</span>
+                    <div className="flex flex-col gap-4 items-center">
+                       <span className={`text-4xl md:text-7xl font-black uppercase tracking-tighter italic leading-[0.8] ${isVIPGated ? 'text-yellow-500' : 'text-white'}`}>
+                          {subTitle}
+                       </span>
+                       <a href="#donations" className="btn btn-primary rounded-none px-12 h-14 font-black uppercase tracking-widest text-sm hover:translate-x-1 hover:translate-y-1 transition-all shadow-brutalist active:translate-x-2 active:translate-y-2">
+                          Unlock Access
+                       </a>
+                    </div>
                   )}
                </div>
             </div>
