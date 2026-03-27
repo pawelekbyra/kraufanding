@@ -29,7 +29,7 @@ interface ChannelHomeProps {
 }
 
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
   const [mounted, setMounted] = useState(false);
@@ -224,7 +224,13 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a] mb-1.5 border-b border-[#1a1a1a]/5 pb-1">{t.materials}</h3>
+            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">{t.materials}</h3>
+              <div className="flex gap-3 opacity-30 scale-[0.8] mb-[-4px]">
+                <button onClick={() => { if (setLanguage) setLanguage('pl'); }} className={cn("text-[9px] font-bold tracking-[0.2em] uppercase", language === 'pl' ? "opacity-100 underline decoration-primary underline-offset-2" : "opacity-40 hover:opacity-100")}>PL</button>
+                <button onClick={() => { if (setLanguage) setLanguage('en'); }} className={cn("text-[9px] font-bold tracking-[0.2em] uppercase", language === 'en' ? "opacity-100 underline decoration-primary underline-offset-2" : "opacity-40 hover:opacity-100")}>EN</button>
+              </div>
+            </div>
             {playlistItems}
           </aside>
         </div>

@@ -24,9 +24,13 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
-      <div className="navbar-start flex-1 md:w-56 md:flex-none">
-        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-16 min-h-16 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+      <div className="navbar-start flex-1 md:w-56 md:flex-none flex flex-col items-center justify-center">
+        <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-9 flex items-center">POLUTEK<span className="text-primary">.PL</span></Link>
+        <div className="flex gap-3 opacity-30 scale-[0.8] -mt-1">
+          <button onClick={() => setLanguage('pl')} className={cn("text-[9px] font-bold tracking-[0.2em] uppercase", language === 'pl' ? "opacity-100 underline decoration-primary underline-offset-2" : "opacity-40 hover:opacity-100")}>PL</button>
+          <button onClick={() => setLanguage('en')} className={cn("text-[9px] font-bold tracking-[0.2em] uppercase", language === 'en' ? "opacity-100 underline decoration-primary underline-offset-2" : "opacity-40 hover:opacity-100")}>EN</button>
+        </div>
       </div>
 
       <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
