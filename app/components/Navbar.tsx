@@ -69,7 +69,7 @@ const Navbar = () => {
           <SignInButton mode="modal">
             <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
               <CircleUser size={18} strokeWidth={2.5} />
-              <span className="hidden sm:inline">Sign In / Sign Up</span>
+              <span className="hidden sm:inline">Zaloguj się</span>
             </button>
           </SignInButton>
         </SignedOut>

@@ -1,4 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs'
+import { plPL } from '@clerk/localizations'
 import Providers from "@/app/components/Providers";
 import "./globals.css";
 
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="polutek" suppressHydrationWarning>
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
-        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+        <ClerkProvider
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+          localization={plPL}
+        >
           <Providers>
             {children}
           </Providers>
