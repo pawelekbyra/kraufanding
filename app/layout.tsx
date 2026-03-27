@@ -1,29 +1,22 @@
-import Providers from "@/app/components/Providers";
-import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
-import { Suspense } from 'react';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-export const metadata = {
-  title: "POLUTEK.PL",
-  description: "A secret project that aims to change something big.",
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Polutek Starter",
+  description: "Minimalist Next.js starter",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" data-theme="polutek" suppressHydrationWarning>
-      <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
-        <Suspense>
-          <Providers>
-            <ClerkLocalizationProvider>
-              {children}
-            </ClerkLocalizationProvider>
-          </Providers>
-        </Suspense>
-      </body>
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
