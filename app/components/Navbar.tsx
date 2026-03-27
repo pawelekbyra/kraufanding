@@ -72,9 +72,10 @@ const Navbar = () => {
         </SignedOut>
         <SignedIn>
           <div className="flex items-center gap-3">
-             <div className="hidden sm:flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full border border-primary/20">
-                <ShieldCheck size={14} strokeWidth={3} />
-                <span className="text-[9px] font-black uppercase tracking-widest">VIP</span>
+             <div className="hidden sm:flex items-center gap-1.5 bg-gradient-to-tr from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-black px-3 py-1 rounded-full border border-[#AA771C] shadow-[0_0_10px_rgba(191,149,63,0.3)] relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-shimmer pointer-events-none" />
+                <ShieldCheck size={14} strokeWidth={3} className="text-black/80" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] drop-shadow-sm">VIP</span>
              </div>
              <UserButton afterSignOutUrl="/" />
           </div>

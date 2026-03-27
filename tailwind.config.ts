@@ -23,11 +23,15 @@ const config = {
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
+        'shimmer': 'shimmer 2s infinite',
       },
       keyframes: {
         glow: {
           '0%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.2)' },
           '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)' },
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
         }
       }
     },
