@@ -118,12 +118,13 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <div className="flex items-center gap-2 sm:gap-3">
-             <div className="flex flex-col items-center justify-center -space-y-1 text-amber-500 hover:scale-105 transition-transform cursor-default px-1">
-                <Star size={18} strokeWidth={2.5} className="fill-yellow-400 drop-shadow-[0_0_3px_rgba(245,158,11,0.5)]" />
-                <span className="text-[9px] font-black uppercase tracking-[0.1em] italic leading-tight">VIP</span>
+          <div className="flex flex-col items-center -space-y-1 pt-1">
+             <div className="p-[2px] rounded-full border-2 border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]">
+                <UserButton afterSignOutUrl="/" />
              </div>
-             <UserButton afterSignOutUrl="/" />
+             <div className="bg-amber-500 text-white px-1.5 rounded-full z-10 border border-white/20 shadow-sm scale-90">
+                <span className="text-[9px] font-black uppercase tracking-tight leading-none block py-0.5">VIP</span>
+             </div>
           </div>
         </SignedIn>
       </div>
