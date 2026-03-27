@@ -1,8 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from '@clerk/nextjs';
-import { updateUserLanguage } from '@/lib/actions/user';
 
 type Language = 'pl' | 'en';
 
@@ -15,7 +13,6 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('en'); // Default to English
-  const { userId, isLoaded } = useAuth();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -41,44 +38,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     initializeLanguage();
   }, []);
 
-  // Sync with DB if user logs in and we haven't synced their DB preference yet
-  useEffect(() => {
-    if (isLoaded && userId && isInitialized) {
-      const fetchDbPreference = async () => {
-        try {
-          // We can call an API to get the current user's profile
-          const res = await fetch('/api/user/profile');
-          if (res.ok) {
-            const data = await res.json();
-            if (data.preferredLanguage && data.preferredLanguage !== language) {
-              setLanguageState(data.preferredLanguage);
-              localStorage.setItem('app-language', data.preferredLanguage);
-            }
-          }
-        } catch (e) {
-          console.error("Failed to fetch language preference from DB", e);
-        }
-      };
-      fetchDbPreference();
-    }
-  }, [userId, isLoaded, isInitialized]);
-
   const setLanguage = async (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
-
-    // Persist to DB if user is logged in
-    if (userId) {
-      try {
-        await updateUserLanguage(lang);
-      } catch (error) {
-        console.error("Failed to sync language to DB:", error);
-      }
-    }
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, isInitialized }}>
       {children}
     </LanguageContext.Provider>
   );
