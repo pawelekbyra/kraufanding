@@ -91,6 +91,25 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
     });
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: video.title,
+      text: video.description || "",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert(language === 'pl' ? "Link skopiowany do schowka!" : "Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   const handleDislike = async () => {
     if (!userId) return openSignIn();
     if (isPending) return;
@@ -196,7 +215,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-black")} />
                   </button>
                </div>
-               <button className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+               <button
+                 onClick={handleShare}
+                 className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0"
+               >
                   <Share2 size={16} />
                   <span className="text-[13px] font-bold">{t.share}</span>
                </button>

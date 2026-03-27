@@ -178,30 +178,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
     <main className="bg-[#FDFBF7] min-h-screen">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
 
-        {/* Mobile Language Switcher */}
-        <div className="lg:hidden flex justify-end mb-4 pr-2">
-            <div className="flex gap-6 items-center bg-neutral/5 rounded-full px-4 py-1.5 border border-neutral/10 shadow-sm">
-                <button
-                  onClick={() => { if (setLanguage) setLanguage('pl'); }}
-                  className={cn(
-                    "text-xs font-black tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary scale-110" : "text-[#1a1a1a]/30"
-                  )}
-                >
-                  PL
-                </button>
-                <div className="w-[1px] h-3 bg-black/10" />
-                <button
-                  onClick={() => { if (setLanguage) setLanguage('en'); }}
-                  className={cn(
-                    "text-xs font-black tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary scale-110" : "text-[#1a1a1a]/30"
-                  )}
-                >
-                  EN
-                </button>
-            </div>
-        </div>
 
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8">
@@ -240,6 +216,16 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  />
                ) : (
                  <div className="space-y-3">
+                    {searchQuery && (
+                      <div className="px-2 pb-2">
+                        <Link
+                          href="/"
+                          className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline flex items-center gap-1"
+                        >
+                          {language === 'pl' ? '← Wróć do listy' : '← Back to playlist'}
+                        </Link>
+                      </div>
+                    )}
                     {playlistItems}
                  </div>
                )}
@@ -255,9 +241,19 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
             <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
-                {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
-              </h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
+                  {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
+                </h3>
+                {searchQuery && (
+                  <Link
+                    href="/"
+                    className="text-[9px] font-black uppercase tracking-widest text-primary hover:underline"
+                  >
+                    {language === 'pl' ? 'Wróć do listy' : 'Back to playlist'}
+                  </Link>
+                )}
+              </div>
               <div className="flex gap-5 mb-[-2px]">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
