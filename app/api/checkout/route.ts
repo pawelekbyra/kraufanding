@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     const { amount, title, creatorId } = body;
 
     if (!amount || amount < 5) {
-      return NextResponse.json({ error: "Minimum parameters (min. 5 EUR)" }, { status: 400 });
+      return NextResponse.json({ error: "Minimum parameters (min. 5 PLN)" }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
