@@ -1,11 +1,26 @@
 import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+
+function getResendClient() {
+  if (!resendClient) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn('[EmailService] RESEND_API_KEY is missing.');
+      return null;
+    }
+    resendClient = new Resend(apiKey);
+  }
+  return resendClient;
+}
 
 export class EmailService {
   static async sendWelcomeEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
     try {
+      const resend = getResendClient();
+      if (!resend) return;
+
       const template = await prisma.emailTemplate.findUnique({
         where: { name: 'WELCOME' }
       });
