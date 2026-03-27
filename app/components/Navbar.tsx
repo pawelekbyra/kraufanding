@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Globe, CircleUser } from "lucide-react";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
@@ -10,15 +11,16 @@ import { cn } from '@/lib/utils';
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
   const { user } = useUser();
-  const [searchValue, setSearchValue] = useState("");
-  const [showMatrix, setShowMatrix] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') || "");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      setSearchValue("");
-      setShowMatrix(true);
-      setTimeout(() => setShowMatrix(false), 3000);
+      router.push(`/?q=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      router.push('/');
     }
   };
 
@@ -31,11 +33,6 @@ const Navbar = () => {
 
       <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
         <div className="relative w-full group">
-          {showMatrix ? (
-             <div className="absolute inset-0 flex items-center justify-center bg-black rounded-full overflow-hidden animate-in fade-in zoom-in duration-500 z-10">
-                <span className="text-green-500 font-mono text-sm tracking-widest animate-pulse">Matrix has You...</span>
-             </div>
-          ) : null}
           <form onSubmit={handleSearch} className="flex w-full">
             <div className="relative flex-1 flex items-center min-w-0">
               <input

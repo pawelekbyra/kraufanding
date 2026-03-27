@@ -10,7 +10,9 @@ import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home({ searchParams }: { searchParams: { v?: string } }) {
+export default async function Home({ searchParams }: { searchParams: { v?: string, q?: string } }) {
+  const query = searchParams.q?.trim().toLowerCase();
+
   // 1. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
     include: { creator: true },
@@ -29,6 +31,16 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     // Fallback to professional initial data if DB is empty
     mainVideo = INITIAL_VIDEOS.find(v => v.isMainFeatured) || INITIAL_VIDEOS[0];
     allVideos = INITIAL_VIDEOS;
+  }
+
+  // 2. Implement Search Logic
+  let filteredVideos = allVideos;
+  if (query) {
+    filteredVideos = allVideos.filter(v =>
+      v.title.toLowerCase().includes(query) ||
+      (v.description && v.description.toLowerCase().includes(query)) ||
+      (v.creator?.name && v.creator.name.toLowerCase().includes(query))
+    );
   }
 
   const selectedVideo = allVideos.find(v => v.id === searchParams.v) || mainVideo;
@@ -70,7 +82,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
           <Navbar />
           <ChannelHome
             mainVideo={mainVideo}
-            allVideos={allVideos}
+            allVideos={filteredVideos}
             currentVideoId={searchParams.v}
             userProfile={userProfile as any}
           />
