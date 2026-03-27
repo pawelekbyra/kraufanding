@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, CircleUser, ShieldCheck } from "lucide-react";
+import { Search, Globe, CircleUser, Trophy } from "lucide-react";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -72,8 +72,9 @@ const Navbar = () => {
         </SignedOut>
         <SignedIn>
           <div className="flex items-center gap-3">
-             <div className="hidden sm:flex items-center gap-1 text-[#BF953F] opacity-60 hover:opacity-100 transition-opacity">
-                <span className="text-[8px] font-black uppercase tracking-[0.3em] italic">VIP</span>
+             <div className="hidden sm:flex flex-col items-center justify-center -space-y-0.5 text-[#B8860B] opacity-80 hover:opacity-100 transition-opacity cursor-default">
+                <Trophy size={16} strokeWidth={2.5} />
+                <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">VIP</span>
              </div>
              <UserButton afterSignOutUrl="/" />
           </div>
