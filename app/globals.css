@@ -2,29 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-start-rgb: 2, 6, 23;
+    --background-end-rgb: 15, 23, 42;
   }
-}
 
-body {
-  color: #1a1a1a;
-  background-color: #FDFBF7;
+  body {
+    @apply bg-obsidian-950 text-slate-100 min-h-screen selection:bg-velvet-indigo selection:text-white;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 100;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  }
+
+  .obsidian-gradient {
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent),
+                radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.1), transparent);
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -34,20 +56,24 @@ body {
   }
 }
 
-/* Custom Scrollbar for better UI */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #999;
+/* DaisyUI Overrides */
+.btn {
+  @apply transition-all duration-300 active:scale-95;
+}
+
+.input {
+  @apply bg-white/5 border-white/10 focus:border-velvet-indigo focus:ring-1 focus:ring-velvet-indigo transition-all;
 }

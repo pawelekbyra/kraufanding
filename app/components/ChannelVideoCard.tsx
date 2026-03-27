@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, Eye, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 import { Video } from '@/app/types/video';
@@ -33,10 +33,10 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                       video.isMainFeatured;
 
     return (
-        <div className="group cursor-pointer flex flex-col">
+        <div className="group cursor-pointer flex flex-col transition-all duration-500 hover:-translate-y-1">
             <div className="block relative">
                 <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10">
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-obsidian-900 border border-white/5 mb-3 z-10 group-hover:border-primary/30 group-hover:shadow-glow transition-all duration-500">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -47,42 +47,48 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         <VideoPlayer video={video} variant="thumbnail" />
                     </PremiumWrapper>
                     {video.duration && (
-                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
+                        <div className="absolute bottom-2 right-2 bg-obsidian-950/80 backdrop-blur-md text-white text-[10px] font-black font-mono px-1.5 py-0.5 rounded border border-white/10">
                             {video.duration}
                         </div>
                     )}
                     {/* Access Indicator Badge on Thumbnail */}
                     {mounted && !hasAccess && (
-                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
-                            {video.tier === 'LOGGED_IN' ? 'Login Req' : 'Patron Only'}
+                        <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-md text-primary text-[10px] font-black uppercase px-2 py-1 rounded-md border border-primary/30 tracking-widest shadow-lg">
+                            {video.tier === 'LOGGED_IN' ? 'Login' : 'Premium'}
                         </div>
                     )}
                 </div>
-                <div className="flex gap-2 relative z-10">
+                <div className="flex gap-3 relative z-10 px-1">
                     <div className="flex-1 min-w-0">
                         <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
-                            <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
+                            <h3 className="text-sm md:text-base font-serif font-black text-white leading-tight line-clamp-2 uppercase tracking-tight mb-2 group-hover:text-primary transition-colors">
                                 {video.title}
                             </h3>
                         </Link>
-                        <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
-                            <div className="flex items-center gap-1">
-                                <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
+                        <div className="flex flex-col gap-1 text-[11px] font-mono uppercase tracking-widest text-white/40">
+                            <div className="flex items-center gap-2">
+                                <span className="flex items-center gap-1">
+                                  <Eye size={12} className="text-primary/60" />
+                                  {mounted ? video.views.toLocaleString('pl-PL') : video.views}
+                                </span>
                                 {video.publishedAt && (
                                     <>
                                         <span>•</span>
-                                        <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
+                                        <span className="flex items-center gap-1">
+                                          <Clock size={12} className="text-primary/60" />
+                                          {mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: false, locale: pl }) : ''}
+                                        </span>
                                     </>
                                 )}
                             </div>
-                            <div className="mt-0.5">
+                            <div className="mt-1">
                                 {mounted && (
                                     hasAccess ? (
-                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">Dostępne</span>
+                                        <span className="text-[10px] font-black text-primary/80">Otwarty dostęp</span>
                                     ) : (
                                         <span className={cn(
-                                            "text-[11px] font-black uppercase tracking-widest",
-                                            video.tier === 'LOGGED_IN' ? "text-blue-600" : "text-[#1a1a1a]/40"
+                                            "text-[10px] font-black",
+                                            video.tier === 'LOGGED_IN' ? "text-blue-400" : "text-amber-400"
                                         )}>
                                             {video.tier === 'LOGGED_IN' ? 'Zaloguj się' : 'Dla Patronów'}
                                         </span>
@@ -91,8 +97,8 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
-                        <MoreVertical size={20} />
+                    <button className="h-fit p-1.5 hover:bg-white/10 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0 text-white/40">
+                        <MoreVertical size={18} />
                     </button>
                 </div>
             </div>
