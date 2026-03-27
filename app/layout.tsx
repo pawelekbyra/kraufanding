@@ -1,6 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import { plPL } from '@clerk/localizations'
 import Providers from "@/app/components/Providers";
+import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
 import "./globals.css";
 
 export const metadata = {
@@ -16,14 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="polutek" suppressHydrationWarning>
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
-        <ClerkProvider
-          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          localization={plPL as any}
-        >
-          <Providers>
+        <Providers>
+          <ClerkLocalizationProvider>
             {children}
-          </Providers>
-        </ClerkProvider>
+          </ClerkLocalizationProvider>
+        </Providers>
       </body>
     </html>
   );

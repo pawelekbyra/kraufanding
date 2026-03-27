@@ -28,8 +28,12 @@ interface ChannelHomeProps {
   } | null;
 }
 
+import { useSearchParams } from 'next/navigation';
+
 export default function ChannelHome({ mainVideo, allVideos, currentVideoId, userProfile }: ChannelHomeProps) {
   const { t, language, setLanguage } = useLanguage();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q');
   const selectedVideo = allVideos.find(v => v.id === currentVideoId) || mainVideo;
   const [activeTab, setActiveTab] = useState<'comments' | 'videos'>('comments');
   const [mounted, setMounted] = useState(false);
@@ -173,6 +177,32 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   return (
     <main className="bg-[#FDFBF7] min-h-screen">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
+
+        {/* Mobile Language Switcher */}
+        <div className="lg:hidden flex justify-end mb-4 pr-2">
+            <div className="flex gap-6 items-center bg-neutral/5 rounded-full px-4 py-1.5 border border-neutral/10 shadow-sm">
+                <button
+                  onClick={() => { if (setLanguage) setLanguage('pl'); }}
+                  className={cn(
+                    "text-xs font-black tracking-widest uppercase transition-all",
+                    language === 'pl' ? "text-primary scale-110" : "text-[#1a1a1a]/30"
+                  )}
+                >
+                  PL
+                </button>
+                <div className="w-[1px] h-3 bg-black/10" />
+                <button
+                  onClick={() => { if (setLanguage) setLanguage('en'); }}
+                  className={cn(
+                    "text-xs font-black tracking-widest uppercase transition-all",
+                    language === 'en' ? "text-primary scale-110" : "text-[#1a1a1a]/30"
+                  )}
+                >
+                  EN
+                </button>
+            </div>
+        </div>
+
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8">
             <Hero
@@ -225,13 +255,15 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
             <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">{t.materials}</h3>
-              <div className="flex gap-4 mb-[-2px]">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
+                {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
+              </h3>
+              <div className="flex gap-5 mb-[-2px]">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-[0.2em] uppercase transition-all",
-                    language === 'pl' ? "text-primary border-b-2 border-primary" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    "text-xs font-black tracking-widest uppercase transition-all",
+                    language === 'pl' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
                   PL
@@ -239,15 +271,23 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <button
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-[0.2em] uppercase transition-all",
-                    language === 'en' ? "text-primary border-b-2 border-primary" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    "text-xs font-black tracking-widest uppercase transition-all",
+                    language === 'en' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
                   EN
                 </button>
               </div>
             </div>
-            {playlistItems}
+            {playlistItems.length > 0 ? (
+                playlistItems
+            ) : (
+                <div className="py-10 text-center opacity-30">
+                    <p className="font-serif italic text-sm">
+                        {language === 'pl' ? 'Brak zeznań dla tej kwerendy.' : 'No evidence found for this query.'}
+                    </p>
+                </div>
+            )}
           </aside>
         </div>
       </div>
