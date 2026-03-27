@@ -33,10 +33,10 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                       video.isMainFeatured;
 
     return (
-        <div className="group cursor-pointer flex flex-col">
+        <div className="group cursor-pointer flex flex-col transition-all hover:translate-y-[-2px]">
             <div className="block relative">
                 <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10">
+                <div className="relative aspect-video overflow-hidden bg-black mb-3 z-10 border border-obsidian/10 shadow-none group-hover:shadow-brutalist-sm group-hover:border-obsidian transition-all duration-300">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -47,52 +47,52 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         <VideoPlayer video={video} variant="thumbnail" />
                     </PremiumWrapper>
                     {video.duration && (
-                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[12px] font-bold px-1.5 py-0.5 rounded">
+                        <div className="absolute bottom-2 right-2 bg-obsidian text-white text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-none tracking-tighter">
                             {video.duration}
                         </div>
                     )}
                     {/* Access Indicator Badge on Thumbnail */}
                     {mounted && !hasAccess && (
-                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
-                            {video.tier === 'LOGGED_IN' ? 'Login Req' : 'Patron Only'}
+                        <div className="absolute top-2 right-2 bg-ikb text-white text-[9px] font-mono font-black uppercase px-2 py-1 border border-white/20 tracking-[0.2em] shadow-brutalist-sm">
+                            {video.tier === 'LOGGED_IN' ? 'LOGIN' : 'PATRON'}
                         </div>
                     )}
                 </div>
                 <div className="flex gap-2 relative z-10">
                     <div className="flex-1 min-w-0">
                         <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
-                            <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
+                            <h3 className="text-[15px] font-black text-obsidian leading-tight line-clamp-2 uppercase tracking-tighter mb-2 group-hover:text-ikb transition-colors italic">
                                 {video.title}
                             </h3>
                         </Link>
-                        <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
-                            <div className="flex items-center gap-1">
-                                <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
+                        <div className="text-[11px] text-obsidian/60 font-mono leading-relaxed uppercase tracking-widest">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-obsidian font-bold">{mounted ? video.views.toLocaleString('pl-PL') : video.views} WYŚWIETLEŃ</span>
                                 {video.publishedAt && (
                                     <>
-                                        <span>•</span>
+                                        <span className="opacity-30">•</span>
                                         <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
                                     </>
                                 )}
                             </div>
-                            <div className="mt-0.5">
+                            <div className="mt-1.5">
                                 {mounted && (
                                     hasAccess ? (
-                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">Dostępne</span>
+                                        <span className="text-ikb font-black border-b-2 border-ikb/20">ARCHIWUM DOSTĘPNE</span>
                                     ) : (
                                         <span className={cn(
-                                            "text-[11px] font-black uppercase tracking-widest",
-                                            video.tier === 'LOGGED_IN' ? "text-blue-600" : "text-[#1a1a1a]/40"
+                                            "font-black px-1.5 py-0.5",
+                                            video.tier === 'LOGGED_IN' ? "bg-ikb text-white" : "bg-obsidian text-white"
                                         )}>
-                                            {video.tier === 'LOGGED_IN' ? 'Zaloguj się' : 'Dla Patronów'}
+                                            {video.tier === 'LOGGED_IN' ? 'WYMAGA LOGOWANIA' : 'DLA PATRONÓW'}
                                         </span>
                                     )
                                 )}
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
-                        <MoreVertical size={20} />
+                    <button className="h-fit p-1 hover:bg-obsidian/5 rounded-none transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-transparent hover:border-obsidian/10">
+                        <MoreVertical size={18} />
                     </button>
                 </div>
             </div>

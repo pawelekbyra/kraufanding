@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
 import { Video } from '@/app/types/video';
 import { cn } from '@/lib/utils';
+import { Play } from 'lucide-react';
 
 interface VideoPlayerProps {
     video: Video;
@@ -44,7 +45,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     return (
         <div
             className={cn(
-                "relative w-full h-full group/player",
+                "relative w-full h-full group/player overflow-hidden",
                 variant === 'hero' ? "cursor-pointer" : "cursor-default"
             )}
             onClick={() => {
@@ -54,24 +55,36 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
             <img
                 src={video.thumbnailUrl}
                 alt={video.title}
-                className="w-full h-full object-cover opacity-90 transition duration-1000 group-hover/player:scale-105"
+                className="w-full h-full object-cover transition duration-1000 grayscale hover:grayscale-0 scale-100 group-hover/player:scale-105"
             />
+
+            {/* Minimalist Overlay */}
+            <div className="absolute inset-0 bg-obsidian/10 transition-colors group-hover/player:bg-obsidian/0" />
+
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className={cn(
-                    "bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/20 transition-all duration-500",
+                    "bg-white/90 border border-obsidian flex items-center justify-center transition-all duration-300 shadow-brutalist-sm",
                     variant === 'hero'
-                        ? "w-20 h-20 shadow-[0_0_50px_rgba(var(--p),0.5)] group-hover/player:scale-110 group-hover/player:bg-primary"
-                        : "w-10 h-10 shadow-[0_0_20px_rgba(var(--p),0.4)] group-hover/player:scale-110 group-hover/player:opacity-100 opacity-80"
+                        ? "w-20 h-20 group-hover/player:scale-110 group-hover/player:bg-ikb group-hover/player:text-white"
+                        : "w-10 h-10 group-hover/player:scale-110 group-hover/player:opacity-100 opacity-0"
                 )}>
-                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-10 h-10 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <Play size={variant === 'hero' ? 40 : 20} className={cn("fill-current", variant === 'hero' ? "ml-2" : "ml-1")} />
                 </div>
             </div>
+
             {!videoUrl && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-opacity">
-                    <span className="text-white font-mono text-[10px] uppercase tracking-widest bg-black/60 px-4 py-2 border border-white/20">
-                        Access Restricted
+                <div className="absolute inset-0 bg-obsidian/60 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-opacity">
+                    <span className="text-white font-mono text-[10px] uppercase font-bold tracking-widest bg-obsidian px-6 py-3 border border-white/20 shadow-brutalist">
+                        Archiwum Zastrzeżone
+                    </span>
+                </div>
+            )}
+
+            {/* Accent Border for Hero */}
+            {variant === 'hero' && (
+                <div className="absolute bottom-4 left-4 border-l-2 border-ikb pl-4 py-2 pointer-events-none opacity-0 group-hover/player:opacity-100 transition-opacity duration-500">
+                    <span className="text-white font-mono text-[10px] uppercase tracking-[0.3em] font-bold bg-ikb px-2 py-0.5">
+                        ODTWARZAJ
                     </span>
                 </div>
             )}

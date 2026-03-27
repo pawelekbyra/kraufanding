@@ -63,28 +63,34 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#FDFBF7] border-2 border-black p-6 shadow-brutalist relative overflow-hidden">
-          <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
+        <div className="bg-white border border-obsidian p-6 shadow-brutalist relative overflow-hidden">
+          {/* Authentic Archive Stamp */}
+          <div className="absolute -top-4 -right-4 w-28 h-28 border-2 border-ikb rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity">
+            <span className="font-mono text-[10px] font-black text-center uppercase leading-tight text-ikb tracking-widest">CERTIFIED<br/>DONOR<br/>2024</span>
           </div>
 
-          <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.supportArtist}
-            </h3>
+          <div className="space-y-4 relative z-10">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 bg-ikb flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white rotate-45" />
+               </div>
+               <h3 className="text-xl font-serif font-black text-obsidian uppercase tracking-tighter italic">
+                 {t.supportArtist}
+               </h3>
+            </div>
 
-            <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
+            <div className="space-y-6">
+              <p className="font-sans text-[14px] leading-relaxed text-obsidian/70 max-w-sm">
                 {t.donationDescription}
               </p>
 
-              <div className="space-y-2 pt-2">
-                <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
+              <div className="space-y-3 pt-2">
+                <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-obsidian/50">
                   {language === 'pl' ? "KWOTA WSPARCIA (MIN 5.00 PLN)" : "TRANSACTION AMOUNT (MIN 5.00 PLN)"}
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="font-mono text-xl font-bold text-black/20">zł</span>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-transform group-focus-within/input:scale-110">
+                    <span className="font-mono text-xl font-black text-ikb">PLN</span>
                   </div>
                   <input
                     type="number"
@@ -95,12 +101,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border-2 border-black rounded-none py-3 pl-10 pr-4 font-mono text-2xl text-black focus:ring-0 outline-none transition-all placeholder:opacity-20"
-                    placeholder="00.00"
+                    className="w-full bg-linen border border-obsidian rounded-none py-4 pl-16 pr-6 font-mono text-2xl text-obsidian focus:ring-0 focus:border-ikb focus:bg-white outline-none transition-all placeholder:opacity-20 shadow-inner"
+                    placeholder="00"
                   />
                 </div>
                 {typeof amount === 'number' && amount < 5 && (
-                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
+                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase tracking-widest animate-pulse border-l-2 border-red-600 pl-2">
                     {language === 'pl' ? "Błąd: Nie osiągnięto minimum (5 PLN)" : "Error: Minimum amount not met (5 PLN)"}
                   </p>
                 )}
@@ -111,15 +117,18 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < 5}
-              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 5 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-obsidian text-white py-4 font-mono font-bold text-sm tracking-[0.3em] uppercase transition-all flex items-center justify-center gap-3 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist active:translate-x-[4px] active:translate-y-[4px] group ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 5 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-none animate-spin" />
                   {language === 'pl' ? "PRZETWARZANIE..." : "LOADING..."}
                 </>
               ) : (
-                language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
+                <>
+                  {language === 'pl' ? 'WYŚLIJ WSPARCIE' : 'SEND SUPPORT'}
+                  <div className="w-2 h-2 bg-ikb group-hover:scale-125 transition-transform" />
+                </>
               )}
             </button>
           </div>
