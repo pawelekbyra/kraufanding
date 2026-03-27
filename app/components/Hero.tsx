@@ -19,7 +19,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscribed }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
   const [mounted, setMounted] = useState(false);
