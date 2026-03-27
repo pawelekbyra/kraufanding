@@ -70,14 +70,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.donate}
+              {t.supportArtist}
             </h3>
 
             <div className="space-y-4">
               <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
-                {language === 'pl'
-                  ? "Dowolny napiwek odblokuje stały dostęp do materiałów premium. Całość wspiera rozwój kanału."
-                  : "Tip any amount to unlock permanent access to bonus content. All contributions directly support the channel."}
+                {t.donationDescription}
               </p>
 
               <div className="space-y-2 pt-2">

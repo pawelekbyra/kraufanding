@@ -57,9 +57,9 @@ export const translations = {
     showMore: '...więcej',
     showLess: 'Pokaż mniej',
     subscribe: 'Subskrajb',
-    subscribed: 'W KOLEJCE',
+    subscribed: 'Subskrajbd',
     subscribers: 'subskrypcji',
-    share: 'Podaj dalej',
+    share: 'Szeruj',
     noDate: 'Świeża sprawa',
     comments: 'Głosy ludu',
     replying: 'Wchodzisz w dyskusję',
@@ -80,7 +80,10 @@ export const translations = {
     becomePatron: 'Zostań Patronem',
     topSecret: 'Ściśle Tajne',
     paywallText: 'Nie masz psychy się',
-    paywallAction: 'zalogować'
+    paywallAction: 'zalogować',
+    supportArtist: 'Wspieraj artystę',
+    patronZone: 'Strefa Patrona',
+    donationDescription: 'Napiwek odblokuje stały dostęp do Strefy Patrona Całość wspiera rozwój kanału.'
   },
   en: {
     views: 'views',
@@ -110,7 +113,10 @@ export const translations = {
     becomePatron: 'Become a Patron',
     topSecret: 'TOP SECRET',
     paywallText: 'You dont have nuts to',
-    paywallAction: 'log in'
+    paywallAction: 'log in',
+    supportArtist: 'Support the artist',
+    patronZone: 'Patrons Only',
+    donationDescription: 'A tip will unlock permanent access to the Patrons Only zone. All contributions support the channel.'
   }
 };
 

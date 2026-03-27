@@ -139,13 +139,21 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             ) : (
               <Lock className="w-5 h-5 text-white/20" />
             )}
-            <div className="flex flex-col leading-[1] italic">
-               <span className="text-[10px] font-black text-white/90 uppercase tracking-tighter">
-                  {t.paywallText}
-               </span>
-               <span className="text-[10px] font-black text-primary uppercase tracking-tighter">
-                  {t.paywallAction}
-               </span>
+            <div className="flex flex-col leading-[1] italic text-center">
+               {isVIPGated ? (
+                 <span className="text-[10px] font-black text-yellow-500 uppercase tracking-tighter">
+                   {t.patronZone}
+                 </span>
+               ) : (
+                 <>
+                   <span className="text-[10px] font-black text-white/90 uppercase tracking-tighter">
+                      {t.paywallText}
+                   </span>
+                   <span className="text-[10px] font-black text-primary uppercase tracking-tighter">
+                      {t.paywallAction}
+                   </span>
+                 </>
+               )}
             </div>
             <span className="text-[6px] font-black text-white/20 uppercase tracking-[0.2em] mt-1 pt-1 border-t border-white/5 w-12">
                {requiredTier}
