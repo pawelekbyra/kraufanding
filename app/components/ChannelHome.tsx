@@ -60,14 +60,24 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
 
   // CUSTOM SORTING LOGIC:
   // 1. Current (selected) video always first
-  // 2. PUBLIC videos
-  // 3. LOGGED_IN/VIP videos
+  // 2. LOGGED_IN video (with "nie masz psychy sie zalogować" overlay) second
+  // 3. Other videos (PUBLIC first, then VIP)
   const sortedVideos = [...allVideos].sort((a, b) => {
       // Rule 1: Selected video first
       if (a.id === selectedVideo.id) return -1;
       if (b.id === selectedVideo.id) return 1;
 
-      // Rule 2: PUBLIC videos first
+      // Rule 2: "LOGGED_IN" video (with paywall overlay) second
+      const aIsLoggedInGated = a.tier === 'LOGGED_IN';
+      const bIsLoggedInGated = b.tier === 'LOGGED_IN';
+
+      // If we're on the main video, we want a LOGGED_IN video at index 1
+      if (selectedVideo.id === mainVideo.id) {
+          if (aIsLoggedInGated && !bIsLoggedInGated) return -1;
+          if (!aIsLoggedInGated && bIsLoggedInGated) return 1;
+      }
+
+      // Rule 3: PUBLIC videos first among others
       const aIsPublic = a.tier === 'PUBLIC' || a.isMainFeatured;
       const bIsPublic = b.tier === 'PUBLIC' || b.isMainFeatured;
 

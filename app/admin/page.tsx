@@ -3,7 +3,8 @@
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, Image as ImageIcon, Mail } from "lucide-react";
+import Link from 'next/link';
+import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, Image as ImageIcon, Mail, ArrowLeft } from "lucide-react";
 
 export default function AdminPanel() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -243,6 +244,12 @@ export default function AdminPanel() {
             <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40 italic">Dostęp Administratora // Zweryfikowano: {adminEmail}</p>
           </div>
           <div className="flex gap-4">
+            <Link
+              href="/"
+              className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest px-6 shadow-brutalist-sm"
+            >
+              <ArrowLeft size={16} className="mr-2" /> Powrót do aplikacji
+            </Link>
             <button
               onClick={handleCreateNew}
               className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest px-6 shadow-brutalist-sm"
