@@ -74,15 +74,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                 console.error("[Hero] LIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
-                } else if (result.error === 'CLERK_ERROR') {
-                    alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nSprawdź klucze API w Vercel.`);
-                } else if (result.error === 'DATABASE_ERROR') {
-                    alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nJeśli problem nadal występuje, spróbuj uruchomić:\n'npx prisma db push --force'`);
                 } else {
-                    alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
+                    alert(`BŁĄD: ${result.message || result.error}`);
                 }
-            } else {
-                console.log("[Hero] LIKE Action success:", result);
             }
         } catch (error: any) {
             console.error("[Hero] Transition error during LIKE:", error);
@@ -124,15 +118,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                 console.error("[Hero] DISLIKE Action failed:", result.error, result.message);
                 if (result.error === 'AUTH_REQUIRED') {
                     openSignIn();
-                } else if (result.error === 'CLERK_ERROR') {
-                    alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nSprawdź klucze API w Vercel.`);
-                } else if (result.error === 'DATABASE_ERROR') {
-                    alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nJeśli problem nadal występuje, spróbuj uruchomić:\n'npx prisma db push --force'`);
                 } else {
-                    alert(`BŁĄD: ${result.message || result.error}\n\nSprawdź logi Vercela lub konsolę przeglądarki.`);
+                    alert(`BŁĄD: ${result.message || result.error}`);
                 }
-            } else {
-                console.log("[Hero] DISLIKE Action success:", result);
             }
         } catch (error: any) {
             console.error("[Hero] Transition error during DISLIKE:", error);
@@ -142,41 +130,41 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   };
 
   if (!mounted) return (
-      <div className="w-full aspect-video bg-black rounded-xl animate-pulse" />
+      <div className="w-full aspect-video bg-obsidian/10 animate-pulse" />
   );
 
   return (
-    <section className="bg-[#FDFBF7]">
+    <section className="bg-linen">
       <div className="w-full">
         {/* FEATURED MEDIA */}
-        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
+        <div className="relative aspect-video w-full overflow-hidden shadow-brutalist border border-obsidian mb-6 group bg-black">
           <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             <VideoPlayer video={video} />
           </PremiumWrapper>
         </div>
 
         {/* INFO SECTION */}
-        <div className="space-y-3 pt-3">
-          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
+        <div className="space-y-4 pt-2">
+          <h2 className="text-[24px] md:text-[28px] font-black text-obsidian tracking-tighter leading-[1.1] uppercase italic">
             {video.title}
           </h2>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-obsidian/10">
+            <div className="flex items-center gap-4 min-w-0">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-12 h-12 bg-obsidian border border-obsidian overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'Polutek'}`} alt={video.creator?.name} className="w-full h-full object-cover" />
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'Polutek'}`} alt={video.creator?.name} className="w-full h-full object-cover grayscale" />
                </Link>
                <div className="min-w-0 pr-1 flex flex-col">
                   <Link
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                    className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
+                    className="font-black text-obsidian text-[18px] leading-tight truncate block hover:text-ikb transition-colors uppercase tracking-tight"
                   >
                     {video.creator?.name || 'Paweł Polutek'}
                   </Link>
-                  <span className="text-[12px] text-[#606060] whitespace-nowrap">
+                  <span className="text-[12px] font-mono font-bold text-obsidian/50 whitespace-nowrap uppercase tracking-widest mt-0.5">
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
                   </span>
                </div>
@@ -188,41 +176,41 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0 overflow-hidden">
+               <div className="flex items-center bg-white border border-obsidian h-10 shrink-0 overflow-hidden shadow-brutalist-sm">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center gap-2 pl-4 pr-3 h-full hover:bg-[#000000]/10 transition-colors border-r border-black/10 relative",
-                        optimisticState.isLiked && "text-black",
+                        "flex items-center gap-2 pl-4 pr-3 h-full hover:bg-obsidian/5 transition-all border-r border-obsidian relative",
+                        optimisticState.isLiked && "bg-ikb text-white",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-black")} />
-                     <span className="text-[14px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-white")} />
+                     <span className="text-[14px] font-mono font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center px-4 h-full hover:bg-[#000000]/10 transition-colors",
-                        optimisticState.isDisliked && "text-black",
+                        "flex items-center px-4 h-full hover:bg-obsidian/5 transition-all",
+                        optimisticState.isDisliked && "bg-obsidian text-white",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                   >
-                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-black")} />
+                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-white")} />
                   </button>
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0"
+                 className="flex items-center gap-2 px-4 h-10 bg-white border border-obsidian hover:bg-obsidian/5 transition-all shrink-0 shadow-brutalist-sm font-mono font-bold text-[13px] uppercase tracking-widest"
                >
                   <Share2 size={16} />
-                  <span className="text-[13px] font-bold">{t.share}</span>
+                  <span>{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
+               <button className="w-10 h-10 flex items-center justify-center bg-white border border-obsidian hover:bg-obsidian/5 transition-all shrink-0 shadow-brutalist-sm">
                   <MoreHorizontal size={16} />
                </button>
             </div>
@@ -230,31 +218,35 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#000000]/5 rounded-xl p-3 hover:bg-[#000000]/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-           <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+        <div className="mt-6 bg-white border border-obsidian p-5 hover:bg-linen transition-colors cursor-pointer shadow-brutalist-sm relative overflow-hidden group" onClick={() => setIsExpanded(!isExpanded)}>
+           <div className="absolute top-0 right-0 w-12 h-12 border-l border-b border-obsidian flex items-center justify-center bg-obsidian text-white font-mono text-[10px] uppercase rotate-0 origin-top-right group-hover:bg-ikb transition-colors">
+              INFO
+           </div>
+
+           <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
+              <span className="text-[14px] font-mono font-bold text-obsidian uppercase tracking-widest border-b-2 border-ikb">
                  {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+              <span className="text-[14px] font-mono font-bold text-obsidian/60 uppercase tracking-widest">
                  {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
            <div className={cn(
-              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap font-sans",
+              "text-[15px] text-obsidian/80 leading-relaxed whitespace-pre-wrap font-sans",
               !isExpanded && "line-clamp-2"
            )}>
               {video.description || t.noDescription}
            </div>
 
            <button
-             className="text-[14px] font-bold text-[#0f0f0f] mt-1 hover:underline block"
+             className="text-[12px] font-mono font-bold text-ikb mt-3 hover:underline uppercase tracking-widest block"
              onClick={(e) => {
                e.stopPropagation();
                setIsExpanded(!isExpanded);
              }}
            >
-              {isExpanded ? t.showLess : t.showMore}
+              {isExpanded ? `[-] ${t.showLess}` : `[+] ${t.showMore}`}
            </button>
         </div>
       </div>
