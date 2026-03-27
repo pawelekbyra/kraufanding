@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { UserService } from '@/lib/services/user.service';
+import { EmailService } from '@/lib/services/email.service';
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -45,8 +46,13 @@ export async function POST(req: Request) {
     const name = `${first_name || ''} ${last_name || ''}`.trim() || null;
 
     if (id && email) {
-      await UserService.syncUser(id, email, name, image_url);
+      const user = await UserService.syncUser(id, email, name, image_url);
       console.log(`User ${id} synced via webhook.`);
+
+      if (eventType === 'user.created') {
+        // Send welcome email in user's preferred language (defaults to "pl" if not set)
+        await EmailService.sendWelcomeEmail(email, user.preferredLanguage as 'pl' | 'en' || 'pl');
+      }
     }
   }
 

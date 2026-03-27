@@ -203,3 +203,13 @@ enum SystemRole {
   ADMIN
   USER
 }
+
+model EmailTemplate {
+  id        String   @id @default(uuid())
+  name      String   @unique // e.g., "WELCOME"
+  subjectPl String
+  bodyPl    String   @db.Text
+  subjectEn String
+  bodyEn    String   @db.Text
+  updatedAt DateTime @updatedAt
+}
