@@ -3,7 +3,7 @@
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, Image as ImageIcon } from "lucide-react";
+import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, Image as ImageIcon, Mail } from "lucide-react";
 
 export default function AdminPanel() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -19,7 +19,7 @@ export default function AdminPanel() {
   const [creator, setCreator] = useState<any>(null);
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'videos' | 'channel' | 'stats'>('videos');
+  const [activeTab, setActiveTab] = useState<'videos' | 'channel' | 'stats' | 'email'>('videos');
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const [formData, setFormData] = useState({
@@ -45,6 +45,13 @@ export default function AdminPanel() {
     bannerUrl: ""
   });
 
+  const [emailTemplate, setEmailTemplate] = useState({
+    subjectPl: "",
+    bodyPl: "",
+    subjectEn: "",
+    bodyEn: ""
+  });
+
   const adminEmail = "pawel.perfect@gmail.com";
 
   useEffect(() => {
@@ -61,7 +68,7 @@ export default function AdminPanel() {
   const fetchAll = async () => {
     setIsLoading(true);
     try {
-        await Promise.all([fetchVideos(), fetchCreator(), fetchStats()]);
+        await Promise.all([fetchVideos(), fetchCreator(), fetchStats(), fetchEmailTemplate()]);
     } finally {
         setIsLoading(false);
     }
@@ -104,6 +111,23 @@ export default function AdminPanel() {
       } catch (err) {
           console.error("Failed to fetch stats", err);
       }
+  }
+
+  const fetchEmailTemplate = async () => {
+    try {
+      const res = await fetch("/api/admin/templates");
+      const data = await res.json();
+      if (data && !data.error) {
+        setEmailTemplate({
+          subjectPl: data.subjectPl || "",
+          bodyPl: data.bodyPl || "",
+          subjectEn: data.subjectEn || "",
+          bodyEn: data.bodyEn || ""
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch email template", err);
+    }
   }
 
   const handleEdit = (vid: any) => {
@@ -187,6 +211,23 @@ export default function AdminPanel() {
       } catch (err) {
           console.error("Creator update failed", err);
       }
+  }
+
+  const handleEmailTemplateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/admin/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(emailTemplate)
+      });
+      if (res.ok) {
+        alert("Email template updated successfully");
+        fetchEmailTemplate();
+      }
+    } catch (err) {
+      console.error("Email template update failed", err);
+    }
   }
 
   if (!isAdmin || isLoading) {
@@ -320,6 +361,12 @@ export default function AdminPanel() {
             >
                 Ustawienia Kanału
             </button>
+            <button
+                onClick={() => setActiveTab('email')}
+                className={`px-8 py-4 font-black uppercase tracking-widest text-sm transition-all border-b-2 -mb-[2px] ${activeTab === 'email' ? 'border-[#1a1a1a] text-[#1a1a1a]' : 'border-transparent text-[#1a1a1a]/30 hover:text-[#1a1a1a]'}`}
+            >
+                E-mail
+            </button>
         </div>
 
         {activeTab === 'videos' ? (
@@ -415,7 +462,7 @@ export default function AdminPanel() {
                     </table>
                 </div>
             </section>
-        ) : (
+        ) : activeTab === 'channel' ? (
           <section className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
              <div className="space-y-1">
                 <h2 className="text-2xl font-black uppercase tracking-tight italic">Tożsamość Kanału</h2>
@@ -469,6 +516,65 @@ export default function AdminPanel() {
                     Aktualizuj Ustawienia Kanału
                 </button>
              </form>
+          </section>
+        ) : (
+          <section className="max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">E-mail Powitalny</h2>
+              <p className="text-xs text-[#1a1a1a]/40 font-bold uppercase">Edytuj wiadomość, którą otrzymują nowi użytkownicy.</p>
+            </div>
+
+            <form onSubmit={handleEmailTemplateSubmit} className="space-y-8 bg-white border-2 border-[#1a1a1a] p-8 shadow-brutalist">
+              <div className="space-y-4">
+                <h3 className="text-sm font-black uppercase border-b border-[#1a1a1a]/10 pb-2">Wersja Polska</h3>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Temat</label>
+                  <input
+                    value={emailTemplate.subjectPl}
+                    onChange={e => setEmailTemplate({...emailTemplate, subjectPl: e.target.value})}
+                    placeholder="np. Witaj w POLUTEK.PL!"
+                    className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-bold text-sm transition-all"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Treść (HTML)</label>
+                  <textarea
+                    value={emailTemplate.bodyPl}
+                    onChange={e => setEmailTemplate({...emailTemplate, bodyPl: e.target.value})}
+                    className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-mono text-xs transition-all h-40 leading-relaxed"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <h3 className="text-sm font-black uppercase border-b border-[#1a1a1a]/10 pb-2">English Version</h3>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Subject</label>
+                  <input
+                    value={emailTemplate.subjectEn}
+                    onChange={e => setEmailTemplate({...emailTemplate, subjectEn: e.target.value})}
+                    placeholder="e.g. Welcome to POLUTEK.PL!"
+                    className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-bold text-sm transition-all"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]/40">Body (HTML)</label>
+                  <textarea
+                    value={emailTemplate.bodyEn}
+                    onChange={e => setEmailTemplate({...emailTemplate, bodyEn: e.target.value})}
+                    className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-mono text-xs transition-all h-40 leading-relaxed"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn btn-block bg-[#1a1a1a] text-white hover:bg-primary border-none rounded-none h-14 font-black uppercase tracking-[0.2em] shadow-brutalist transition-all">
+                Aktualizuj Szablony E-mail
+              </button>
+            </form>
           </section>
         )}
       </div>

@@ -42,6 +42,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setLanguage = async (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
+
+    // Sync with database if user is logged in
+    try {
+      await fetch('/api/user/language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: lang })
+      });
+    } catch (e) {
+      console.warn('[LanguageContext] Failed to sync language with DB:', e);
+    }
   };
 
   return (

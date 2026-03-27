@@ -118,12 +118,9 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <div className="flex flex-col items-center space-y-0.5 pb-0.5">
-             <div className="rounded-full border-[3px] border-orange-600 p-[1px] inline-flex items-center justify-center bg-transparent aspect-square">
+          <div className="flex flex-col items-center pb-0.5">
+             <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square">
                 <UserButton afterSignOutUrl="/" />
-             </div>
-             <div className="bg-orange-600 text-white px-1.5 rounded-full z-10 border border-white/20 shadow-sm scale-90">
-                <span className="text-[9px] font-black uppercase tracking-tight leading-none block py-0.5">VIP</span>
              </div>
           </div>
         </SignedIn>
