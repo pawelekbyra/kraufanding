@@ -18,7 +18,7 @@ function LocalizationLogic({ children }: { children: React.ReactNode }) {
         setLanguage(dbLang);
       }
     }
-  }, [user, isLoaded, isInitialized]);
+  }, [user, isLoaded, isInitialized, language, setLanguage]);
 
   // Sync Context to DB/Metadata on change
   useEffect(() => {

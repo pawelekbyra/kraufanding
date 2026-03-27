@@ -7,6 +7,7 @@ type Language = 'pl' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
+  isInitialized: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
