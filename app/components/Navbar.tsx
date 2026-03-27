@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, CircleUser } from "lucide-react";
+import { Search, Globe, CircleUser, ShieldCheck } from "lucide-react";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -66,12 +66,18 @@ const Navbar = () => {
           <SignInButton mode="modal">
             <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
               <CircleUser size={18} strokeWidth={2.5} />
-              <span className="hidden sm:inline">Zaloguj się</span>
+              <span className="hidden sm:inline">{language === 'pl' ? 'Zaloguj się' : 'Sign In'}</span>
             </button>
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <UserButton afterSignOutUrl="/" />
+          <div className="flex items-center gap-3">
+             <div className="hidden sm:flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full border border-primary/20">
+                <ShieldCheck size={14} strokeWidth={3} />
+                <span className="text-[9px] font-black uppercase tracking-widest">VIP</span>
+             </div>
+             <UserButton afterSignOutUrl="/" />
+          </div>
         </SignedIn>
       </div>
     </div>

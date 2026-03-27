@@ -1,4 +1,3 @@
-import { ClerkProvider } from '@clerk/nextjs'
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
 import "./globals.css";
