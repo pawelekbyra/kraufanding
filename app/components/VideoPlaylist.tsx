@@ -24,7 +24,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     }
 
     if (!amount || amount < 5) {
-      alert(language === 'pl' ? "Minimalna kwota wsparcia to 5 €" : "Minimum support amount is 5 €");
+      alert(language === 'pl' ? "Minimalna kwota wsparcia to 5 zł" : "Minimum support amount is 5 PLN");
       return;
     }
 
@@ -80,11 +80,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
               <div className="space-y-2 pt-2">
                 <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
-                  {language === 'pl' ? "KWOTA WSPARCIA (MIN 5.00 EUR)" : "TRANSACTION AMOUNT (MIN 5.00 EUR)"}
+                  {language === 'pl' ? "KWOTA WSPARCIA (MIN 5.00 PLN)" : "TRANSACTION AMOUNT (MIN 5.00 PLN)"}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="font-mono text-xl font-bold text-black/20">€</span>
+                    <span className="font-mono text-xl font-bold text-black/20">zł</span>
                   </div>
                   <input
                     type="number"
@@ -101,7 +101,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
                 {typeof amount === 'number' && amount < 5 && (
                   <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
-                    {language === 'pl' ? "Błąd: Nie osiągnięto minimum (5 EUR)" : "Error: Minimum amount not met (5 EUR)"}
+                    {language === 'pl' ? "Błąd: Nie osiągnięto minimum (5 PLN)" : "Error: Minimum amount not met (5 PLN)"}
                   </p>
                 )}
               </div>

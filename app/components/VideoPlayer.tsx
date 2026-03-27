@@ -21,10 +21,14 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         }
     }, [videoUrl, variant]);
 
-    // Reset playing state when video changes
+    // Reset playing state and trigger autoplay for new video if access is already present
     React.useEffect(() => {
-        setIsPlaying(false);
-    }, [video.id]);
+        if (videoUrl) {
+            setIsPlaying(true);
+        } else {
+            setIsPlaying(false);
+        }
+    }, [video.id, videoUrl]);
 
     if (videoUrl && isPlaying) {
         return (

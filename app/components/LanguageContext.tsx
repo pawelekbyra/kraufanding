@@ -90,11 +90,11 @@ export const translations = {
     loginToWatch: 'Pokaż dowód (zaloguj się)',
     becomePatron: 'Zostań Patronem',
     topSecret: 'Ściśle Tajne',
-    paywallText: 'Nie masz psychy się',
-    paywallAction: 'zalogować',
-    supportArtist: 'Wspieraj artystę',
+    paywallText: 'Dla',
+    paywallAction: 'zalogowanych',
+    supportArtist: 'Wspieraj POLUTEK.PL',
     patronZone: 'Strefa Patrona',
-    donationDescription: 'Napiwek odblokuje stały dostęp do Strefy Patrona Całość wspiera rozwój kanału.'
+    donationDescription: 'Napiwek odblokuje dostęp do Strefy Patrona. Wsparcie pomaga w rozwoju projektu.'
   },
   en: {
     views: 'views',
@@ -123,11 +123,11 @@ export const translations = {
     loginToWatch: 'Log in to watch',
     becomePatron: 'Become a Patron',
     topSecret: 'TOP SECRET',
-    paywallText: 'You dont have nuts to',
-    paywallAction: 'log in',
-    supportArtist: 'Support the artist',
+    paywallText: 'For',
+    paywallAction: 'logged in users',
+    supportArtist: 'Support POLUTEK.PL',
     patronZone: 'Patrons Only',
-    donationDescription: 'A tip will unlock permanent access to the Patrons Only zone. All contributions support the channel.'
+    donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.'
   }
 };
 

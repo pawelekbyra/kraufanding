@@ -20,9 +20,29 @@ export async function GET() {
     return NextResponse.json(template || {
         name: 'WELCOME',
         subjectPl: 'Witaj w POLUTEK.PL!',
-        bodyPl: '<p>Cześć! Cieszymy się, że jesteś z nami.</p>',
+        bodyPl: `
+          <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6; border: 1px solid #1a1a1a;">
+            <h1 style="text-transform: uppercase; letter-spacing: -0.05em; border-bottom: 2px solid #1a1a1a; padding-bottom: 16px;">Witaj w POLUTEK.PL</h1>
+            <p>Cześć!</p>
+            <p>Dziękujemy za dołączenie do naszej społeczności. Od teraz masz dostęp do podstawowych funkcji platformy, takich jak komentowanie i ocenianie materiałów.</p>
+            <p>Jeśli chcesz odblokować dostęp do <strong>Strefy Patrona</strong> i oglądać ekskluzywne materiały, możesz wesprzeć projekt dowolnym napiwkiem.</p>
+            <p>Odwiedź <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">polutek.pl</a>, aby zobaczyć najnowsze filmy.</p>
+            <br />
+            <p style="font-style: italic; border-top: 1px solid #1a1a1a; padding-top: 16px;">Pozdrawiamy,<br />Zespół POLUTEK.PL</p>
+          </div>
+        `,
         subjectEn: 'Welcome to POLUTEK.PL!',
-        bodyEn: '<p>Hi! We are happy to have you here.</p>'
+        bodyEn: `
+          <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6; border: 1px solid #1a1a1a;">
+            <h1 style="text-transform: uppercase; letter-spacing: -0.05em; border-bottom: 2px solid #1a1a1a; padding-bottom: 16px;">Welcome to POLUTEK.PL</h1>
+            <p>Hello!</p>
+            <p>Thank you for joining our community. You now have access to basic platform features like commenting and rating materials.</p>
+            <p>If you want to unlock access to the <strong>Patron Zone</strong> and watch exclusive content, you can support the project with any tip.</p>
+            <p>Visit <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">polutek.pl</a> to see the latest videos.</p>
+            <br />
+            <p style="font-style: italic; border-top: 1px solid #1a1a1a; padding-top: 16px;">Best regards,<br />POLUTEK.PL Team</p>
+          </div>
+        `
     });
   } catch (err) {
     return NextResponse.json({ error: "Failed to fetch template" }, { status: 500 });

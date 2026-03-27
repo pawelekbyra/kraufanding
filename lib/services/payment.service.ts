@@ -20,14 +20,14 @@ export class PaymentService {
     if (!stripe) throw new Error("Stripe not configured");
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['blik', 'p24', 'card'],
       line_items: [
         {
           price_data: {
-            currency: 'eur',
+            currency: 'pln',
             product_data: {
-              name: `Support: ${params.title || "Creator Support"}`,
-              description: `Lifetime VIP Access`,
+              name: `Wsparcie: ${params.title || "Patronat POLUTEK.PL"}`,
+              description: `Dożywotni dostęp do Strefy Patrona`,
             },
             unit_amount: Math.round(params.amount * 100),
           },
@@ -71,7 +71,7 @@ export class PaymentService {
     const creatorIdRaw = session.metadata?.creatorId;
     const creatorId = (creatorIdRaw && creatorIdRaw !== "") ? creatorIdRaw : null;
     const amountPaid = (session.amount_total || 0) / 100;
-    const currency = session.currency?.toUpperCase() || 'EUR';
+    const currency = session.currency?.toUpperCase() || 'PLN';
 
     if (!userId) return;
 
@@ -120,17 +120,17 @@ export class PaymentService {
       await resend.emails.send({
         from: 'polutek.pl <no-reply@polutek.pl>',
         to: email,
-        subject: 'Thank you for your support!',
+        subject: 'Dziękujemy za wsparcie POLUTEK.PL!',
         html: `
-          <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6;">
-            <h1 style="text-transform: uppercase; letter-spacing: -0.05em;">Thank you for your patronage</h1>
-            <p>Hello,</p>
-            <p>We've successfully processed your contribution of <strong>€${amountPaid.toFixed(2)}</strong>.</p>
-            <p>Your total support is now <strong>€${totalPaid.toFixed(2)}</strong>.</p>
-            <p>Depending on your total support level, you've unlocked permanent access to our premium materials.</p>
-            <p>Visit <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a> to see your unlocked content.</p>
+          <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6; border: 1px solid #1a1a1a;">
+            <h1 style="text-transform: uppercase; letter-spacing: -0.05em; border-bottom: 2px solid #1a1a1a; pb-4;">Dziękujemy za Twoje wsparcie</h1>
+            <p>Witaj!</p>
+            <p>Pomyślnie przetworzyliśmy Twoją wpłatę w wysokości <strong>${amountPaid.toFixed(2)} zł</strong>.</p>
+            <p>Twoja łączna suma wsparcia wynosi teraz <strong>${totalPaid.toFixed(2)} zł</strong>.</p>
+            <p>Na podstawie Twojej sumy wpłat odblokowujesz dożywotni dostęp do materiałów premium w Strefie Patrona.</p>
+            <p>Odwiedź <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a>, aby zobaczyć swoje odblokowane treści.</p>
             <br />
-            <p style="font-style: italic;">Best regards,<br />Paweł Polutek</p>
+            <p style="font-style: italic; border-top: 1px solid #1a1a1a; pt-4;">Z wyrazami szacunku,<br />Paweł Polutek</p>
           </div>
         `,
       });

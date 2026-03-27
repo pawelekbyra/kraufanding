@@ -226,17 +226,17 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  />
                ) : (
                  <div className="space-y-3">
+                    {playlistItems}
                     {searchQuery && (
-                      <div className="px-2 pb-2">
+                      <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
                         <Link
                           href="/"
-                          className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline flex items-center gap-1"
+                          className="btn btn-sm btn-block rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
                         >
-                          {language === 'pl' ? '← Wróć do listy' : '← Back to playlist'}
+                          {language === 'pl' ? '← Wróć do wszystkich' : '← Back to all'}
                         </Link>
                       </div>
                     )}
-                    {playlistItems}
                  </div>
                )}
             </div>
@@ -255,14 +255,6 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
                 </h3>
-                {searchQuery && (
-                  <Link
-                    href="/"
-                    className="text-[9px] font-black uppercase tracking-widest text-primary hover:underline"
-                  >
-                    {language === 'pl' ? 'Wróć do listy' : 'Back to playlist'}
-                  </Link>
-                )}
               </div>
               <div className="flex gap-5 mb-[-2px]">
                 <button
@@ -286,12 +278,30 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               </div>
             </div>
             {playlistItems.length > 0 ? (
-                playlistItems
+                <>
+                  {playlistItems}
+                  {searchQuery && (
+                    <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
+                      <Link
+                        href="/"
+                        className="btn btn-sm btn-block rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
+                      >
+                        {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
+                      </Link>
+                    </div>
+                  )}
+                </>
             ) : (
-                <div className="py-10 text-center opacity-30">
-                    <p className="font-serif italic text-sm">
+                <div className="py-10 text-center">
+                    <p className="font-serif italic text-sm opacity-30 mb-6">
                         {language === 'pl' ? 'Brak zeznań dla tej kwerendy.' : 'No evidence found for this query.'}
                     </p>
+                    <Link
+                      href="/"
+                      className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm px-6"
+                    >
+                      {language === 'pl' ? 'Pokaż wszystko' : 'Show all'}
+                    </Link>
                 </div>
             )}
           </aside>
