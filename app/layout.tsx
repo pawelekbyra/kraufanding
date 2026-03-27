@@ -1,6 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import Providers from "@/app/components/Providers";
-import { LanguageSwitcherSubtle } from "@/app/components/LanguageSwitcherSubtle";
 import "./globals.css";
 
 export const metadata = {
@@ -18,7 +17,6 @@ export default function RootLayout({
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
         <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
           <Providers>
-            <LanguageSwitcherSubtle />
             {children}
           </Providers>
         </ClerkProvider>
