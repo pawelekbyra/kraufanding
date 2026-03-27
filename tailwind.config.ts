@@ -7,23 +7,33 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
-        cream: '#FDFBF7',
-        charcoal: '#1a1a1a',
+        cyber: {
+          950: '#020617',
+          900: '#0f172a',
+          800: '#1e293b',
+          700: '#334155',
+          neon: {
+            blue: '#3b82f6',
+            purple: '#a855f7',
+            cyan: '#06b6d4',
+          }
+        },
         primary: {
           DEFAULT: '#3b82f6',
           dark: '#1d4ed8',
         },
         secondary: {
-          DEFAULT: '#8b5cf6',
-          dark: '#6d28d9',
+          DEFAULT: '#a855f7',
+          dark: '#9333ea',
         },
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s infinite',
+        'pulse-neon': 'pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         glow: {
@@ -32,7 +42,15 @@ const config = {
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
+        },
+        'pulse-neon': {
+          '0%, 100%': { opacity: '1', filter: 'brightness(1)' },
+          '50%': { opacity: '0.8', filter: 'brightness(1.5)' },
         }
+      },
+      boxShadow: {
+        'neon': '0 0 5px theme("colors.primary.DEFAULT"), 0 0 20px theme("colors.primary.DEFAULT")',
+        'neon-purple': '0 0 5px theme("colors.secondary.DEFAULT"), 0 0 20px theme("colors.secondary.DEFAULT")',
       }
     },
   },
@@ -46,17 +64,20 @@ const config = {
       {
         polutek: {
           "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
-          "neutral": "#1a1a1a",
-          "base-100": "#FDFBF7",
+          "secondary": "#a855f7",
+          "accent": "#06b6d4",
+          "neutral": "#1e293b",
+          "base-100": "#020617",
+          "base-200": "#0f172a",
+          "base-300": "#1e293b",
+          "base-content": "#f8fafc",
           "info": "#3abff8",
           "success": "#36d399",
           "warning": "#fbbd23",
           "error": "#f87272",
         },
       },
-      "light",
+      "dark",
     ],
   },
 } satisfies Config
