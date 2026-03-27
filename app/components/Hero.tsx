@@ -9,6 +9,7 @@ import PremiumWrapper from './PremiumWrapper';
 import Link from 'next/link';
 import SubscribeButton from './SubscribeButton';
 import VideoPlayer from './VideoPlayer';
+import Game from './Game';
 import { toggleVideoLike, toggleVideoDislike } from '@/lib/actions/interactions';
 import { useLanguage } from './LanguageContext';
 
@@ -150,9 +151,13 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
       <div className="w-full">
         {/* FEATURED MEDIA */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
-          <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
-            <VideoPlayer video={video} />
-          </PremiumWrapper>
+          {video.isMainFeatured ? (
+            <Game />
+          ) : (
+            <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
+              <VideoPlayer video={video} />
+            </PremiumWrapper>
+          )}
         </div>
 
         {/* INFO SECTION */}
