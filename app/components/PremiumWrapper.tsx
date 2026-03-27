@@ -122,7 +122,6 @@ export default function PremiumWrapper({
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const { language, t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
-  const mainTitle = t.topSecret;
 
   const subTitle = (requiredTier === "LOGGED_IN" && !isLoggedIn)
     ? t.loginToWatch
@@ -140,8 +139,8 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             ) : (
               <Lock className="w-6 h-6 text-blue-500 mb-1 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
             )}
-            <span className="text-[10px] font-black text-white tracking-[0.15em] leading-tight">
-               {mainTitle}
+            <span className="text-[10px] font-black text-white tracking-[0.15em] leading-[0.9] italic text-center">
+               {t.paywallText}<br/>{t.paywallAction}
             </span>
             <span className="text-[7px] font-black text-white/60 uppercase tracking-widest mt-1 border-t border-white/10 pt-1">
                {subTitle}
@@ -159,22 +158,24 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
          </div>
 
          <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 bg-black/40 backdrop-blur-[6px]">
-            <div className="flex flex-col items-center text-center space-y-3">
-               <div className={`p-5 rounded-full mb-2 ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.3)]'}`}>
-                  {isVIPGated ? <Gem size={56} strokeWidth={2} /> : <Lock size={56} strokeWidth={2} />}
+            <div className="flex flex-col items-center text-center space-y-10">
+               <div className={`p-8 rounded-full ${isVIPGated ? 'bg-yellow-500/10 text-yellow-400 border-2 border-yellow-500/20 shadow-[0_0_60px_rgba(234,179,8,0.3)]' : 'bg-blue-500/10 text-blue-400 border-2 border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.3)]'}`}>
+                  {isVIPGated ? <Gem size={80} strokeWidth={2} /> : <Lock size={80} strokeWidth={2} />}
                </div>
-               <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]">
-                  {mainTitle}
-               </h2>
 
                {/* Custom Paywall Text as requested */}
-               <div className={`text-base md:text-xl font-black uppercase tracking-[0.2em] px-4 text-center ${isVIPGated ? 'text-yellow-400' : 'text-blue-400'}`}>
+               <div className={`text-5xl md:text-7xl font-black uppercase tracking-tighter px-4 text-center leading-[0.9] italic drop-shadow-2xl ${isVIPGated ? 'text-yellow-400' : 'text-white'}`}>
                   {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                    <>
-                      {t.paywallText} <SignInButton mode="modal"><span className="underline cursor-pointer hover:text-white transition-colors">{t.paywallAction}</span></SignInButton>
-                    </>
+                    <div className="flex flex-col gap-4">
+                      <span className={isVIPGated ? 'text-yellow-400' : 'text-white'}>{t.paywallText}</span>
+                      <SignInButton mode="modal">
+                        <span className="underline cursor-pointer hover:text-primary transition-colors block">
+                          {t.paywallAction}
+                        </span>
+                      </SignInButton>
+                    </div>
                   ) : (
-                    subTitle
+                    <span className={isVIPGated ? 'text-yellow-400' : 'text-blue-400'}>{subTitle}</span>
                   )}
                </div>
             </div>

@@ -110,7 +110,7 @@ export const translations = {
     donate: 'Bramka Napiwkowa',
     available: 'Odblokowane',
     loginToWatch: 'Pokaż dowód (zaloguj się)',
-    becomePatron: 'Wspieraj projekt',
+    becomePatron: 'Zostań Patronem',
     topSecret: 'Ściśle Tajne',
     paywallText: 'Nie masz psychy się',
     paywallAction: 'zalogować'
