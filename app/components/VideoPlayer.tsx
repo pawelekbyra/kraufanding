@@ -12,7 +12,14 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = React.useState(false);
+
+    // Auto-play when video URL is available and it's the main player
+    React.useEffect(() => {
+        if (variant === 'hero' && videoUrl) {
+            setIsPlaying(true);
+        }
+    }, [videoUrl, variant]);
 
     if (videoUrl && isPlaying) {
         return (

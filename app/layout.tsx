@@ -18,7 +18,7 @@ export default function RootLayout({
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          localization={plPL}
+          localization={plPL as any}
         >
           <Providers>
             {children}
