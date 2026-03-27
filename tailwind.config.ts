@@ -7,28 +7,35 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        serif: ['var(--font-eb-garamond)', 'Georgia', 'serif'],
+        sans: ['var(--font-space-grotesk)', 'Inter', 'sans-serif'],
+        mono: ['var(--font-ibm-plex-mono)', 'monospace'],
       },
       colors: {
-        cream: '#FDFBF7',
-        charcoal: '#1a1a1a',
+        obsidian: '#050505',
+        bone: '#E8E6E3',
+        gold: '#C5A059',
+        crimson: '#8B0000',
+        charcoal: '#141414',
+        cream: '#FDFBF7', // Keeping legacy for smooth transition if needed, but will phase out
         primary: {
-          DEFAULT: '#3b82f6',
-          dark: '#1d4ed8',
-        },
-        secondary: {
-          DEFAULT: '#8b5cf6',
-          dark: '#6d28d9',
+          DEFAULT: '#C5A059',
+          dark: '#A6823E',
         },
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
+        'gold-glow': 'gold-glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s infinite',
       },
       keyframes: {
         glow: {
-          '0%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.2)' },
-          '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)' },
+          '0%': { boxShadow: '0 0 5px rgba(197, 160, 89, 0.2)' },
+          '100%': { boxShadow: '0 0 20px rgba(197, 160, 89, 0.6)' },
+        },
+        'gold-glow': {
+          '0%': { boxShadow: '0 0 2px rgba(197, 160, 89, 0.1)' },
+          '100%': { boxShadow: '0 0 15px rgba(197, 160, 89, 0.4)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
@@ -45,18 +52,20 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
-          "neutral": "#1a1a1a",
-          "base-100": "#FDFBF7",
+          "primary": "#C5A059",
+          "secondary": "#8B0000",
+          "accent": "#C5A059",
+          "neutral": "#E8E6E3",
+          "base-100": "#050505",
+          "base-200": "#141414",
+          "base-300": "#1F1F1F",
           "info": "#3abff8",
           "success": "#36d399",
           "warning": "#fbbd23",
           "error": "#f87272",
         },
       },
-      "light",
+      "dark",
     ],
   },
 } satisfies Config

@@ -78,7 +78,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   } : null;
 
   return (
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
+      <div className="min-h-screen bg-obsidian text-bone font-sans">
           <Navbar />
           <ChannelHome
             mainVideo={mainVideo}
