@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="polutek" suppressHydrationWarning>
-      <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
+    <html lang="pl" data-theme="polutek" suppressHydrationWarning className="dark">
+      <body className="font-sans bg-base-100 text-base-content min-h-screen relative selection:bg-primary/30" suppressHydrationWarning>
         <Suspense>
           <Providers>
             <ClerkLocalizationProvider>
