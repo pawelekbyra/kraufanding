@@ -1,5 +1,6 @@
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
+import { Suspense } from 'react';
 import "./globals.css";
 
 export const metadata = {
@@ -15,11 +16,13 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="polutek" suppressHydrationWarning>
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
-        <Providers>
-          <ClerkLocalizationProvider>
-            {children}
-          </ClerkLocalizationProvider>
-        </Providers>
+        <Suspense>
+          <Providers>
+            <ClerkLocalizationProvider>
+              {children}
+            </ClerkLocalizationProvider>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );
