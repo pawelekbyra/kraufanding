@@ -72,7 +72,7 @@ export const translations = {
     subscribers: 'subskrypcji',
     share: 'Szeruj',
     noDate: 'Świeża sprawa',
-    comments: 'Głosy ludu',
+    comments: 'Komentarze',
     replying: 'Wchodzisz w dyskusję',
     addComment: 'Zostaw ślad...',
     addReply: 'Odpowiedź...',

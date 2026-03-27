@@ -22,7 +22,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   userProfile: initialUserProfile,
   videoId
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const queryClient = useQueryClient();
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
@@ -202,10 +202,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     postMutation.mutate({ text: newComment, parentId: replyTo || undefined });
   };
 
+  const getCommentsLabel = (count: number) => {
+    if (language === 'pl') {
+      if (count === 1) return 'Komentarz';
+      return 'Komentarze';
+    }
+    return t.comments;
+  };
+
   return (
     <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-serif">
       <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {t.comments}</h3>
+         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
       </div>
 
       {/* Input Area */}
