@@ -8,27 +8,29 @@ const config = {
     extend: {
       fontFamily: {
         serif: ['Georgia', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
-        cream: '#FDFBF7',
-        charcoal: '#1a1a1a',
-        primary: {
-          DEFAULT: '#3b82f6',
-          dark: '#1d4ed8',
-        },
-        secondary: {
-          DEFAULT: '#8b5cf6',
-          dark: '#6d28d9',
-        },
+        midnight: '#020202',
+        onyx: '#111111',
+        amber: '#F59E0B',
+        indigo: '#6366F1',
+      },
+      boxShadow: {
+        'glow-amber': '0 0 20px rgba(245, 158, 11, 0.3)',
+        'glow-indigo': '0 0 20px rgba(99, 102, 241, 0.3)',
+        'brutalist-soft': '4px 4px 0px 0px rgba(245, 158, 11, 0.2)',
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         glow: {
-          '0%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.2)' },
-          '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)' },
+          '0%': { boxShadow: '0 0 5px rgba(245, 158, 11, 0.2)' },
+          '100%': { boxShadow: '0 0 25px rgba(245, 158, 11, 0.5)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
@@ -45,18 +47,18 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
-          "neutral": "#1a1a1a",
-          "base-100": "#FDFBF7",
+          "primary": "#F59E0B",
+          "secondary": "#6366F1",
+          "accent": "#8B5CF6",
+          "neutral": "#111111",
+          "base-100": "#020202",
+          "base-content": "#E5E7EB",
           "info": "#3abff8",
           "success": "#36d399",
           "warning": "#fbbd23",
           "error": "#f87272",
         },
       },
-      "light",
     ],
   },
 } satisfies Config

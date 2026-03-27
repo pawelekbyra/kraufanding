@@ -94,7 +94,21 @@ export const translations = {
     paywallAction: 'zalogowanych',
     supportArtist: 'Wspieraj POLUTEK.PL',
     patronZone: 'Strefa Patrona',
-    donationDescription: 'Napiwek odblokuje dostęp do Strefy Patrona. Wsparcie pomaga w rozwoju projektu.'
+    donationDescription: 'Napiwek odblokuje dostęp do Strefy Patrona. Wsparcie pomaga w rozwoju projektu.',
+    // New translations for Onyx & Amber theme
+    searchPlaceholder: 'Przeszukaj bazę danych...',
+    archiveSearch: 'Szukaj w archiwum...',
+    authorize: 'Autoryzacja',
+    database: 'Baza Danych',
+    archiveRestricted: 'ARCHIWUM ZASTRZEŻONE',
+    authorized: 'Autoryzowano',
+    accessKeyRequired: 'Klucz Dostępu Wymagany',
+    restrictedEntry: 'Wstęp Wzbroniony',
+    terms: 'Regulamin',
+    privacy: 'Polityka Prywatności',
+    systemStatus: 'Status Systemu',
+    online: 'Online',
+    allRightsSecured: 'WSZELKIE PRAWA ZASTRZEŻONE'
   },
   en: {
     views: 'views',
@@ -127,7 +141,21 @@ export const translations = {
     paywallAction: 'logged in users',
     supportArtist: 'Support POLUTEK.PL',
     patronZone: 'Patrons Only',
-    donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.'
+    donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.',
+    // New translations for Onyx & Amber theme
+    searchPlaceholder: 'Search database...',
+    archiveSearch: 'Search archive...',
+    authorize: 'Authorize',
+    database: 'Database',
+    archiveRestricted: 'ARCHIVE RESTRICTED',
+    authorized: 'Authorized',
+    accessKeyRequired: 'Access Key Required',
+    restrictedEntry: 'Restricted Entry',
+    terms: 'Terms of Service',
+    privacy: 'Privacy Protocols',
+    systemStatus: 'System Status',
+    online: 'Online',
+    allRightsSecured: 'ALL RIGHTS SECURED'
   }
 };
 
