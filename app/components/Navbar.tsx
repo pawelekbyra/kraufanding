@@ -52,7 +52,7 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK.PL</Link>
+            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
           </div>
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
@@ -118,11 +118,11 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <div className="flex flex-col items-center -space-y-2 pb-0.5">
+          <div className="flex flex-col items-center space-y-0.5 pb-0.5">
              <div className="rounded-full border-[3px] border-orange-600 p-[1px] inline-flex items-center justify-center bg-transparent aspect-square">
                 <UserButton afterSignOutUrl="/" />
              </div>
-             <div className="bg-orange-600 text-white px-1.5 rounded-full z-10 border border-white/20 shadow-sm scale-90 -translate-y-[2px]">
+             <div className="bg-orange-600 text-white px-1.5 rounded-full z-10 border border-white/20 shadow-sm scale-90">
                 <span className="text-[9px] font-black uppercase tracking-tight leading-none block py-0.5">VIP</span>
              </div>
           </div>
