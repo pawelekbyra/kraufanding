@@ -170,7 +170,7 @@ export const translations = {
     paywallUnlock: 'Send a tip to join',
     noMoney: "I don't have the cash",
     noMoneyTitle: 'NO CASH?',
-    noMoneySub: "Me neither, that's why I'm hustling. You hustle too: refer 5 friends and gain access to the Patrons' Zone as a reward.",
+    noMoneySub: "Me neither, that's why I'm hustling. You hustle too: instead of tipping, refer 5 friends and gain access to the Patrons' Zone as a reward.",
     noMoneyHowTitle: "What's this about?",
     noMoneyHowText: "The rule is simple: if 5 new people register through your referral, the system will automatically grant you access to the Patrons' Zone.",
     noMoneyStepTitle: 'How to do it?',
