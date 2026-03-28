@@ -54,13 +54,41 @@ export class UserService {
     }
   }
 
-  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null) {
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string) {
     try {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
-      return await prisma.user.upsert({
-        where: { id },
-        update: { email, name, imageUrl, role },
-        create: { id, email, name, imageUrl, role, preferredLanguage: "en" }
+
+      return await prisma.$transaction(async (tx) => {
+        const existing = await tx.user.findUnique({ where: { id } });
+
+        const user = await tx.user.upsert({
+          where: { id },
+          update: { email, name, imageUrl, role },
+          create: {
+            id,
+            email,
+            name,
+            imageUrl,
+            role,
+            preferredLanguage: "en",
+            referredById: referrerId || null
+          }
+        });
+
+        // Only increment referralCount if this is a new user and there's a referrer
+        if (!existing && referrerId) {
+          try {
+            await tx.user.update({
+              where: { id: referrerId },
+              data: { referralCount: { increment: 1 } }
+            });
+            console.log(`[UserService] Incremented referralCount for ${referrerId}`);
+          } catch (err) {
+            console.warn(`[UserService] Failed to increment referralCount for ${referrerId}. Referrer might not exist in DB yet.`);
+          }
+        }
+
+        return user;
       });
     } catch (e: any) {
       console.error("[SYNC_USER_ERROR]", e);

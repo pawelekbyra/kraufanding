@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
+import ReferralModal from './ReferralModal';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -14,8 +15,27 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState<number | ''>(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
+
+  useEffect(() => {
+    if (userId) {
+      const fetchReferralData = async () => {
+        try {
+          const response = await fetch(`/api/user/referrals`);
+          if (response.ok) {
+            const data = await response.json();
+            setReferralCount(data.referralCount || 0);
+          }
+        } catch (error) {
+          console.error("[VideoPlaylist] Failed to fetch referral count:", error);
+        }
+      };
+      fetchReferralData();
+    }
+  }, [userId]);
 
   const onSupport = async () => {
     if (!userId) {
@@ -123,8 +143,25 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
               )}
             </button>
+
+            <button
+              type="button"
+              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+              className="w-full text-black/40 hover:text-black font-mono font-bold text-[10px] uppercase tracking-widest pt-4 transition-colors"
+            >
+              {t.noMoney}
+            </button>
           </div>
         </div>
+
+        {userId && (
+          <ReferralModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            userId={userId}
+            referralCount={referralCount}
+          />
+        )}
     </div>
   );
 };

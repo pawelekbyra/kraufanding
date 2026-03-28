@@ -15,6 +15,10 @@ model User {
   role             SystemRole          @default(USER)
   preferredLanguage String             @default("en")
   totalPaid        Float               @default(0) // Lifetime sum of all payments
+  referralCount    Int                 @default(0)
+  referredById     String?
+  referredBy       User?               @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals        User[]              @relation("UserReferrals")
   stripeCustomerId String?             @unique
   imageUrl         String?
   createdAt        DateTime            @default(now())

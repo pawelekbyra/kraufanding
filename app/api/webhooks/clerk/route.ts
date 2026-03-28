@@ -41,13 +41,14 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { id, email_addresses, image_url, first_name, last_name } = evt.data;
+    const { id, email_addresses, image_url, first_name, last_name, unsafe_metadata } = evt.data;
     const email = email_addresses[0]?.email_address;
     const name = `${first_name || ''} ${last_name || ''}`.trim() || null;
+    const referrerId = unsafe_metadata?.referrerId as string | undefined;
 
     if (id && email) {
-      const user = await UserService.syncUser(id, email, name, image_url);
-      console.log(`User ${id} synced via webhook.`);
+      const user = await UserService.syncUser(id, email, name, image_url, referrerId);
+      console.log(`User ${id} synced via webhook. Referrer: ${referrerId || 'None'}`);
 
       if (eventType === 'user.created') {
         // Send welcome email in user's preferred language (defaults to "pl" if not set)
