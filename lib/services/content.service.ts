@@ -42,6 +42,10 @@ export class ContentService {
         }
       });
 
+      if (slug === 'polutek' && creator) {
+        creator.name = 'POLUTEK.PL';
+      }
+
       if (!creator && slug === 'polutek') {
         return {
             ...DEFAULT_CREATOR,

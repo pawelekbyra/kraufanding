@@ -111,7 +111,7 @@ function mapDbToVideo(v: any): Video {
     updatedAt: v.updatedAt,
     creator: v.creator ? {
       id: v.creator.id,
-      name: v.creator.name,
+      name: v.creator.slug === 'polutek' ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
       bannerUrl: v.creator.bannerUrl,

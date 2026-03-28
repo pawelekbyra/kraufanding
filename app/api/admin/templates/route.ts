@@ -26,7 +26,7 @@ export async function GET() {
             <p>Cześć!</p>
             <p>Dziękujemy za dołączenie do naszej społeczności. Od teraz masz dostęp do podstawowych funkcji platformy, takich jak komentowanie i ocenianie materiałów.</p>
             <p>Jeśli chcesz odblokować dostęp do <strong>Strefy Patrona</strong> i oglądać ekskluzywne materiały, możesz wesprzeć projekt dowolnym napiwkiem.</p>
-            <p>Odwiedź <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">polutek.pl</a>, aby zobaczyć najnowsze filmy.</p>
+            <p>Odwiedź <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">POLUTEK.PL</a>, aby zobaczyć najnowsze filmy.</p>
             <br />
             <p style="font-style: italic; border-top: 1px solid #1a1a1a; padding-top: 16px;">Pozdrawiamy,<br />Zespół POLUTEK.PL</p>
           </div>
@@ -38,7 +38,7 @@ export async function GET() {
             <p>Hello!</p>
             <p>Thank you for joining our community. You now have access to basic platform features like commenting and rating materials.</p>
             <p>If you want to unlock access to the <strong>Patron Zone</strong> and watch exclusive content, you can support the project with any tip.</p>
-            <p>Visit <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">polutek.pl</a> to see the latest videos.</p>
+            <p>Visit <a href="https://polutek.pl" style="color: #3b82f6; font-weight: bold; text-decoration: none;">POLUTEK.PL</a> to see the latest videos.</p>
             <br />
             <p style="font-style: italic; border-top: 1px solid #1a1a1a; padding-top: 16px;">Best regards,<br />POLUTEK.PL Team</p>
           </div>
