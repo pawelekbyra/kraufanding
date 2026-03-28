@@ -39,10 +39,33 @@ export class UserService {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       // Atomic upsert ensures the user record exists and is up-to-date
-      return await prisma.user.upsert({
-        where: { id },
-        update: { email, imageUrl, name, role },
-        create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
+      return await prisma.$transaction(async (tx) => {
+        // Handle Email Conflict (e.g. seed data with placeholder ID)
+        const conflictUser = await tx.user.findFirst({
+            where: { email, NOT: { id } }
+        });
+
+        if (conflictUser) {
+            console.log(`[UserService] getOrCreate Conflict detected for email ${email}. Reassigning ${conflictUser.id} -> ${id}`);
+
+            // We need to create/update the target user first
+            const user = await tx.user.upsert({
+                where: { id },
+                update: { email, imageUrl, name, role },
+                create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
+            });
+
+            await this.reassignUserRelations(tx, conflictUser.id, id);
+            await tx.user.delete({ where: { id: conflictUser.id } });
+
+            return user;
+        }
+
+        return await tx.user.upsert({
+            where: { id },
+            update: { email, imageUrl, name, role },
+            create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
+        });
       });
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
@@ -54,11 +77,72 @@ export class UserService {
     }
   }
 
+  /**
+   * REASSIGNMENT HELPER: Transfers all relations from an old user record to a new one.
+   * Used when a Clerk login conflicts with an existing email (e.g. from seed data).
+   */
+  private static async reassignUserRelations(tx: any, oldUserId: string, newUserId: string) {
+    console.log(`[UserService] Reassigning relations from ${oldUserId} to ${newUserId}`);
+
+    // 1. Numerical Stats Transfer
+    const oldUser = await tx.user.findUnique({
+        where: { id: oldUserId },
+        select: { totalPaid: true, referralCount: true }
+    });
+
+    if (oldUser) {
+        await tx.user.update({
+            where: { id: newUserId },
+            data: {
+                totalPaid: { increment: oldUser.totalPaid },
+                referralCount: { increment: oldUser.referralCount }
+            }
+        });
+    }
+
+    // 2. Simple Relations (No Unique Conflicts)
+    await tx.creator.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } });
+    await tx.comment.updateMany({ where: { authorId: oldUserId }, data: { authorId: newUserId } });
+    await tx.transaction.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } });
+    await tx.user.updateMany({ where: { referredById: oldUserId }, data: { referredById: newUserId } });
+
+    // 3. Complex Relations (Potential Unique Conflicts)
+    // For simplicity, we just delete the old record if it would cause a conflict,
+    // effectively prioritizing the existing data on the target account or just moving what can be moved.
+    // However, usually the 'new' account is freshly created by Clerk, so conflicts are rare.
+    await tx.subscription.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } }).catch(() => null);
+    await tx.videoLike.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } }).catch(() => null);
+    await tx.videoDislike.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } }).catch(() => null);
+    await tx.commentLike.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } }).catch(() => null);
+    await tx.commentDislike.updateMany({ where: { userId: oldUserId }, data: { userId: newUserId } }).catch(() => null);
+  }
+
   static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string) {
     try {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       return await prisma.$transaction(async (tx) => {
+        // Handle Email Conflict (e.g. seed data with placeholder ID)
+        const conflictUser = await tx.user.findFirst({
+            where: { email, NOT: { id } }
+        });
+
+        if (conflictUser) {
+            console.log(`[UserService] Conflict detected for email ${email}. Reassigning ${conflictUser.id} -> ${id}`);
+
+            // We need to create the user first if it doesn't exist so we can reassign to it
+            const user = await tx.user.upsert({
+                where: { id },
+                update: { email, name, imageUrl, role },
+                create: { id, email, name, imageUrl, role, preferredLanguage: "en", referredById: referrerId || null }
+            });
+
+            await this.reassignUserRelations(tx, conflictUser.id, id);
+            await tx.user.delete({ where: { id: conflictUser.id } });
+
+            return user;
+        }
+
         const existing = await tx.user.findUnique({ where: { id } });
 
         const user = await tx.user.upsert({

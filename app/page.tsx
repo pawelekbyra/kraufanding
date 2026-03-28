@@ -39,8 +39,8 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   if (allVideosDb.length > 0) {
     // DB Content exists
     const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
-    mainVideo = mapDbToVideo(mainVideoDb);
-    allVideos = allVideosDb.map(mapDbToVideo);
+    mainVideo = mapWithAdminFallback(mapDbToVideo(mainVideoDb), adminUser?.imageUrl);
+    allVideos = allVideosDb.map(mapDbToVideo).map(vid => mapWithAdminFallback(vid, adminUser?.imageUrl));
   } else {
     // Fallback to professional initial data if DB is empty
     const fallbackCreator = {
@@ -56,9 +56,9 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   }
 
   // 2. Implement Search Logic
-  let filteredVideos = allVideos;
+  let filteredVideos = allVideos.map(vid => mapWithAdminFallback(vid, adminUser?.imageUrl));
   if (query) {
-    filteredVideos = allVideos.filter(v =>
+    filteredVideos = filteredVideos.filter(v =>
       v.title.toLowerCase().includes(query) ||
       (v.description && v.description.toLowerCase().includes(query)) ||
       (v.creator?.name && v.creator.name.toLowerCase().includes(query))
@@ -112,6 +112,20 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
           <Footer />
       </div>
   );
+}
+
+function mapWithAdminFallback(v: Video, adminImageUrl?: string | null): Video {
+    const isPlaceholder = !v.creator?.imageUrl || v.creator.imageUrl.includes('dicebear.com');
+    if (v.creator?.slug === 'polutek' && isPlaceholder && adminImageUrl) {
+        return {
+            ...v,
+            creator: {
+                ...v.creator,
+                imageUrl: adminImageUrl
+            }
+        };
+    }
+    return v;
 }
 
 function mapDbToVideo(v: any): Video {
