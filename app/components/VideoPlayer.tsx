@@ -15,20 +15,14 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     const [isPlaying, setIsPlaying] = React.useState(false);
 
     // Auto-play when video URL is available and it's the main player
+    // This effect handles both the initial load and video changes in the hero player
     React.useEffect(() => {
         if (variant === 'hero' && videoUrl) {
             setIsPlaying(true);
-        }
-    }, [videoUrl, variant]);
-
-    // Reset playing state and trigger autoplay for new video if access is already present
-    React.useEffect(() => {
-        if (videoUrl) {
-            setIsPlaying(true);
-        } else {
+        } else if (!videoUrl) {
             setIsPlaying(false);
         }
-    }, [video.id, videoUrl]);
+    }, [videoUrl, variant, video.id]);
 
     if (videoUrl && isPlaying) {
         return (
