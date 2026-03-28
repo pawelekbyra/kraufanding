@@ -300,7 +300,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                       href="/"
                       className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm px-6"
                     >
-                      {language === 'pl' ? 'Pokaż wszystko' : 'Show all'}
+                      {t.showAll}
                     </Link>
                 </div>
             )}

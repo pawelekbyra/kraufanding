@@ -75,6 +75,12 @@ const Navbar = () => {
       </div>
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
         <div className="md:hidden flex items-center gap-1">
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors"
+            >
+                <Search size={20} />
+            </button>
             <div className="flex gap-4 items-center bg-neutral/5 rounded-full px-3 py-1 mr-1 border border-neutral/10">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
@@ -95,12 +101,6 @@ const Navbar = () => {
                   EN
                 </button>
             </div>
-            <button
-              onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors"
-            >
-                <Search size={20} />
-            </button>
         </div>
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
