@@ -37,11 +37,11 @@ export default function RootLayout({
     <html
       lang="pl"
       data-theme="polutek"
-      className={`${ebGaramond.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} dark`}
+      className={`${ebGaramond.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-sans bg-obsidian text-bone min-h-screen relative selection:bg-gold/30 selection:text-gold" suppressHydrationWarning>
-        <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-overlay noise-bg"></div>
+      <body className="font-sans bg-linen text-ink min-h-screen relative selection:bg-ink/10 selection:text-ink" suppressHydrationWarning>
+        <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.04] mix-blend-overlay noise-bg"></div>
         <Suspense>
           <Providers>
             <ClerkLocalizationProvider>

@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --foreground-rgb: 232, 230, 227; /* Bone */
-    --background-start-rgb: 5, 5, 5;  /* Obsidian */
-    --background-end-rgb: 5, 5, 5;
+    --foreground-rgb: 26, 26, 26; /* Ink */
+    --background-start-rgb: 245, 242, 237; /* Linen */
+    --background-end-rgb: 245, 242, 237;
   }
 
   body {
-    @apply bg-obsidian text-bone selection:bg-gold/30 selection:text-gold antialiased;
+    @apply bg-linen text-ink selection:bg-ink/10 selection:text-ink antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
 
@@ -25,15 +25,15 @@
   }
 
   .glass-panel {
-    @apply bg-charcoal/80 backdrop-blur-md border border-gold/10;
+    @apply bg-bone/70 backdrop-blur-md border border-ink/5;
   }
 
   .brutalist-card {
-    @apply border border-gold/20 bg-charcoal hover:border-gold/50 transition-all duration-300;
+    @apply border border-ink/10 bg-white/50 hover:border-ink/20 transition-all duration-300;
   }
 
   .brutalist-button {
-    @apply rounded-none border-2 border-gold/20 bg-transparent text-gold hover:bg-gold hover:text-obsidian transition-all duration-200 font-bold uppercase tracking-widest;
+    @apply rounded-none border border-ink/10 bg-transparent text-ink hover:bg-ink hover:text-linen transition-all duration-200 font-bold uppercase tracking-widest;
   }
 }
 
@@ -50,17 +50,17 @@
   }
 }
 
-/* Custom Scrollbar Obsidian/Gold Theme */
+/* Custom Scrollbar Linen Archive Theme */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-obsidian;
+  @apply bg-linen;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gold/20 border border-gold/10 hover:bg-gold/40 transition-colors;
+  @apply bg-ink/10 border border-ink/5 hover:bg-ink/20 transition-colors;
 }
 
 /* DaisyUI Overrides */
@@ -69,5 +69,5 @@
 }
 
 .input {
-  @apply rounded-none border-gold/20 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 bg-charcoal text-bone;
+  @apply rounded-none border-ink/10 focus:border-ink/30 focus:ring-1 focus:ring-ink/20 bg-white/50 text-ink;
 }
