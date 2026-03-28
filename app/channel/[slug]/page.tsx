@@ -36,13 +36,18 @@ export default async function ChannelPage({ params }: { params: { slug: string }
     ...v,
     creator: {
       id: creator.id,
-      name: creator.name,
+      name: creator.slug === 'polutek' ? 'POLUTEK.PL' : creator.name,
       slug: creator.slug,
       bio: creator.bio,
       bannerUrl: creator.bannerUrl,
       subscribersCount: creator.subscribersCount || 0
     }
   }));
+
+  const displayName = creator.slug === 'polutek' ? 'POLUTEK.PL' : creator.name;
+  const displayBio = creator.slug === 'polutek'
+    ? "Oficjalna platforma POLUTEK.PL. Ekskluzywne materiały VOD i niezależne śledztwa."
+    : (creator.bio || "Witamy na oficjalnym kanale.");
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#0f0f0f] font-serif">
@@ -52,12 +57,12 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       <div className="max-w-[1284px] mx-auto px-0 md:px-4 lg:px-6">
         <div className="w-full aspect-[6/1] bg-neutral-200 relative overflow-hidden rounded-none md:rounded-xl border border-black/5">
            {creator.bannerUrl ? (
-             <img src={creator.bannerUrl} alt={creator.name} className="w-full h-full object-cover" />
+             <img src={creator.bannerUrl} alt={displayName} className="w-full h-full object-cover" />
            ) : (
              <>
                <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 opacity-50" />
                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-                  <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{creator.name}</span>
+                  <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{displayName}</span>
                </div>
              </>
            )}
@@ -68,17 +73,17 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
-             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.name}`} alt={creator.name} className="w-full h-full object-cover" />
+             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${displayName}`} alt={displayName} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">
-            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">{creator.name}</h1>
+            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">{displayName}</h1>
             <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
                <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
                <span>•</span>
                <span>{allVideos.length} filmów</span>
             </div>
             <p className="text-[14px] text-[#606060] line-clamp-1 max-w-2xl font-sans mt-1">
-               {creator.bio || "Witamy na oficjalnym kanale."}
+               {displayBio}
             </p>
             <div className="pt-3 flex flex-wrap justify-center md:justify-start gap-4 items-center">
                <SubscribeButton
