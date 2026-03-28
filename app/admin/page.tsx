@@ -482,7 +482,7 @@ export default function AdminPanel() {
                     <input
                         value={creatorForm.name}
                         onChange={e => setCreatorForm({...creatorForm, name: e.target.value})}
-                        placeholder="np. Paweł Polutek"
+                        placeholder="np. POLUTEK.PL"
                         className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-4 font-black uppercase text-lg transition-all"
                         required
                     />

@@ -9,7 +9,7 @@ import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 
 const Navbar = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { user } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -113,7 +113,7 @@ const Navbar = () => {
           <SignInButton mode="modal">
             <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
               <CircleUser size={18} strokeWidth={2.5} />
-              <span className="hidden sm:inline">{language === 'pl' ? 'Zaloguj się' : 'Sign In'}</span>
+              <span className="hidden sm:inline">{t.signIn}</span>
             </button>
           </SignInButton>
         </SignedOut>
