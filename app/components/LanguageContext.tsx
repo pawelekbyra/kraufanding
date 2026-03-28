@@ -123,7 +123,7 @@ export const translations = {
     noMoneyFinePrint2: 'Bądź cierpliwy: Czasami licznik potrzebuje minuty lub dwóch, żeby się zaktualizować po tym, jak Twój ziomek założy konto.',
     noMoneyThanks: 'Dzięki, że pomagasz mi budować to miejsce!',
     confirmSubscribeTitle: 'CZY CHCESZ SUBSKRYBOWAĆ?',
-    confirmSubscribeText: 'Subskrypcja oznacza zgodę na otrzymywanie powiadomień mailowych o nowych materiałach na kanale POLUTEK.PL.',
+    confirmSubscribeText: 'Subskrypcja oznacza zgodę na otrzymywanie powiadomień mailowych o nowościach.',
     yes: 'TAK',
     no: 'NIE'
   },
@@ -187,7 +187,7 @@ export const translations = {
     noMoneyFinePrint2: 'Be patient: Sometimes the counter needs a minute or two to update after your friend creates an account.',
     noMoneyThanks: 'Thanks for helping me build this place!',
     confirmSubscribeTitle: 'DO YOU WANT TO SUBSCRIBE?',
-    confirmSubscribeText: 'Subscribing means you agree to receive email notifications about new content on the POLUTEK.PL channel.',
+    confirmSubscribeText: 'Subscribing means you agree to receive email notifications about news.',
     yes: 'YES',
     no: 'NO'
   }
