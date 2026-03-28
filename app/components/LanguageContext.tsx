@@ -121,7 +121,11 @@ export const translations = {
     noMoneyFinePrintTitle: 'Rzetelne info (czyli mały druczek bez ściemy):',
     noMoneyFinePrint1: 'Rejestracja to podstawa: System liczy tylko osoby, które kliknęły w Twój link i przeszły proces logowania/rejestracji przez Clerk.',
     noMoneyFinePrint2: 'Bądź cierpliwy: Czasami licznik potrzebuje minuty lub dwóch, żeby się zaktualizować po tym, jak Twój ziomek założy konto.',
-    noMoneyThanks: 'Dzięki, że pomagasz mi budować to miejsce!'
+    noMoneyThanks: 'Dzięki, że pomagasz mi budować to miejsce!',
+    confirmSubscribeTitle: 'CZY CHCESZ SUBSKRYBOWAĆ?',
+    confirmSubscribeText: 'Subskrypcja oznacza zgodę na otrzymywanie powiadomień mailowych o nowych materiałach na kanale POLUTEK.PL.',
+    yes: 'TAK',
+    no: 'NIE'
   },
   en: {
     views: 'views',
@@ -181,7 +185,11 @@ export const translations = {
     noMoneyFinePrintTitle: 'Honest info (no-nonsense fine print):',
     noMoneyFinePrint1: 'Registration is key: The system only counts people who clicked your link and completed the sign-up process via Clerk.',
     noMoneyFinePrint2: 'Be patient: Sometimes the counter needs a minute or two to update after your friend creates an account.',
-    noMoneyThanks: 'Thanks for helping me build this place!'
+    noMoneyThanks: 'Thanks for helping me build this place!',
+    confirmSubscribeTitle: 'DO YOU WANT TO SUBSCRIBE?',
+    confirmSubscribeText: 'Subscribing means you agree to receive email notifications about new content on the POLUTEK.PL channel.',
+    yes: 'YES',
+    no: 'NO'
   }
 };
 

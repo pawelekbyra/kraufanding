@@ -44,11 +44,11 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: 'desc' },
         include: {
             author: {
-                select: { id: true, email: true, imageUrl: true }
+                select: { id: true, email: true, name: true, imageUrl: true }
             },
             replies: {
                 include: {
-                    author: { select: { id: true, email: true, imageUrl: true } },
+                    author: { select: { id: true, email: true, name: true, imageUrl: true } },
                     _count: { select: { likes: true, dislikes: true } }
                 },
                 orderBy: { createdAt: 'asc' }
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
                 ...r,
                 isLiked: rLiked,
                 isDisliked: rDisliked,
-                authorName: r.author?.email?.split('@')[0] || "Użytkownik",
+                authorName: r.author?.name || r.author?.email?.split('@')[0] || "Użytkownik",
             };
         })) : [];
 
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
             ...c,
             isLiked,
             isDisliked,
-            authorName: c.author?.email?.split('@')[0] || "Użytkownik",
+            authorName: c.author?.name || c.author?.email?.split('@')[0] || "Użytkownik",
             replies,
         };
     };
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
             imageUrl: imageUrl || null,
         },
         include: {
-            author: { select: { id: true, email: true, imageUrl: true } },
+            author: { select: { id: true, email: true, name: true, imageUrl: true } },
             _count: { select: { likes: true, dislikes: true, replies: true } }
         }
     });
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
             ...newComment,
             isLiked: false,
             isDisliked: false,
-            authorName: newComment.author?.email?.split('@')[0] || "Użytkownik",
+            authorName: newComment.author?.name || newComment.author?.email?.split('@')[0] || "Użytkownik",
             replies: [],
         }
     }, { status: 201 });

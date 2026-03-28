@@ -26,6 +26,7 @@ export default function SubscribeButton({
     const [subscribersCount, setSubscribersCount] = useState(initialSubscribersCount);
     const [isPending, startTransition] = useTransition();
     const [mounted, setMounted] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -48,6 +49,15 @@ export default function SubscribeButton({
         }
         if (!creatorId || isPending) return;
 
+        if (!isSubscribed) {
+            setShowConfirm(true);
+            return;
+        }
+
+        executeSubscribe();
+    };
+
+    const executeSubscribe = async () => {
         const prevSubscribed = isSubscribed;
 
         // Optimistic UI state
@@ -87,6 +97,7 @@ export default function SubscribeButton({
     };
 
     return (
+        <>
         <button
             onClick={handleSubscribe}
             disabled={isPending}
@@ -101,5 +112,39 @@ export default function SubscribeButton({
         >
             {isSubscribed ? t.subscribed : t.subscribe}
         </button>
+
+        {showConfirm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                <div
+                    className="bg-[#FDFBF7] border-2 border-black p-8 max-w-sm w-full shadow-brutalist animate-in zoom-in-95 duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <h3 className="text-xl font-serif font-black text-black uppercase tracking-tighter mb-4">
+                        {t.confirmSubscribeTitle}
+                    </h3>
+                    <p className="font-serif text-sm leading-relaxed text-black mb-8 opacity-70">
+                        {t.confirmSubscribeText}
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <button
+                            onClick={() => {
+                                setShowConfirm(false);
+                                executeSubscribe();
+                            }}
+                            className="bg-black text-white py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                        >
+                            {t.yes}
+                        </button>
+                        <button
+                            onClick={() => setShowConfirm(false)}
+                            className="bg-white border-2 border-black text-black py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                        >
+                            {t.no}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }
