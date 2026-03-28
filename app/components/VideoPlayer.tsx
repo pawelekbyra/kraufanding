@@ -38,26 +38,31 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     return (
         <div
             className={cn(
-                "relative w-full h-full group/player",
+                "relative w-full h-full group/player overflow-hidden bg-neutral-900",
                 variant === 'hero' ? "cursor-pointer" : "cursor-default"
             )}
             onClick={() => {
                 if (variant === 'hero' && videoUrl) setIsPlaying(true);
             }}
         >
+            {/* Ambient background glow for hero */}
+            {variant === 'hero' && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 opacity-0 group-hover/player:opacity-100 transition-opacity duration-500" />
+            )}
+
             <img
                 src={video.thumbnailUrl}
                 alt={video.title}
-                className="w-full h-full object-cover opacity-90 transition duration-1000 group-hover/player:scale-105"
+                className="w-full h-full object-cover opacity-90 transition duration-700 group-hover/player:scale-105"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className={cn(
-                    "bg-primary/90 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/20 transition-all duration-500",
+                    "bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10 transition-all duration-500",
                     variant === 'hero'
-                        ? "w-20 h-20 shadow-[0_0_50px_rgba(var(--p),0.5)] group-hover/player:scale-110 group-hover/player:bg-primary"
-                        : "w-10 h-10 shadow-[0_0_20px_rgba(var(--p),0.4)] group-hover/player:scale-110 group-hover/player:opacity-100 opacity-80"
+                        ? "w-16 h-16 md:w-24 md:h-24 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
+                        : "w-10 h-10 shadow-lg group-hover/player:scale-110 opacity-60 group-hover/player:opacity-100"
                 )}>
-                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-10 h-10 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
+                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-8 h-8 md:w-12 md:h-12 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                     </svg>
                 </div>
