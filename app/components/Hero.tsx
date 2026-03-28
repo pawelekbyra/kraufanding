@@ -158,7 +158,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         {/* INFO SECTION */}
         <div className="space-y-3 pt-3">
           <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
-            {video.slug === 'independency-2024' ? t.independencyTitle : video.title}
+            {video.slug === 'independency-2024'
+              ? (userId ? t.independencyTitleLoggedIn : t.independencyTitle)
+              : video.title}
           </h2>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">

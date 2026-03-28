@@ -172,25 +172,25 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
               style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
-            <div className="mb-8 opacity-20">
-               {isVIPGated ? <Gem size={48} strokeWidth={1} /> : <Lock size={48} strokeWidth={1} className="text-white" />}
+            <div className="mb-6 opacity-20 transition-transform duration-700 group-hover:scale-110">
+               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-yellow-500" /> : <Lock size={80} strokeWidth={1} className="text-white" />}
             </div>
 
             <div className="flex flex-col gap-2 md:gap-4 mb-4">
                {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-4xl sm:text-6xl md:text-[5.5rem] font-black uppercase tracking-tighter italic text-white leading-[0.85] drop-shadow-sm">
+                  <div className="flex flex-col gap-2 items-center">
+                    <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.85] drop-shadow-sm">
                       {t.paywallText}
                     </span>
                     <SignInButton mode="modal">
-                      <button className="text-4xl sm:text-6xl md:text-[5.5rem] font-black uppercase tracking-tighter italic text-primary leading-[0.85] hover:opacity-80 transition-opacity cursor-pointer underline decoration-[6px] md:decoration-[12px] underline-offset-[8px] md:underline-offset-[16px] decoration-primary">
+                      <button className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-primary leading-[0.85] hover:opacity-80 transition-opacity cursor-pointer underline decoration-[4px] md:decoration-[8px] underline-offset-[6px] md:underline-offset-[12px] decoration-primary">
                         {t.paywallAction}
                       </button>
                     </SignInButton>
                   </div>
                ) : (
                   <div className="flex flex-col gap-8 items-center">
-                    <span className={`text-4xl sm:text-6xl md:text-[5.5rem] font-black uppercase tracking-tighter italic leading-[0.85] ${isVIPGated ? 'text-yellow-500' : 'text-white'}`}>
+                    <span className={`text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-[0.85] ${isVIPGated ? 'text-yellow-500' : 'text-white'}`}>
                       {subTitle}
                     </span>
                     <a href="#donations" className="group flex flex-col items-center gap-2">
