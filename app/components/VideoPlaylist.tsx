@@ -192,15 +192,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
               )}
             </button>
-
-            <button
-              type="button"
-              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-              className="absolute bottom-0 right-0 text-black/30 hover:text-black font-mono font-bold text-[10px] uppercase tracking-widest transition-colors px-2 py-1"
-            >
-              {t.noMoney}
-            </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+            className="absolute bottom-2 right-2 text-black/40 hover:text-black font-mono font-bold text-[11px] uppercase tracking-tighter transition-colors px-2 py-1"
+          >
+            {t.noMoney}
+          </button>
         </div>
 
         {userId && (
