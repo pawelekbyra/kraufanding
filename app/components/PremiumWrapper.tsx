@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Bird, Gem } from 'lucide-react';
+import { Star, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
 
@@ -137,7 +137,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             {isVIPGated ? (
               <Gem className="w-5 h-5 text-amber-500 mb-1" />
             ) : (
-              <Bird className="w-5 h-5 text-blue-400 mb-1" />
+              <Star className="w-5 h-5 text-blue-400 mb-1" />
             )}
             <div className="flex flex-col leading-[1] italic text-center">
                {isVIPGated ? (
@@ -178,7 +178,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                ) : (
                  <SignInButton mode="modal">
                     <button className="hover:opacity-40 opacity-20 transition-opacity cursor-pointer">
-                      <Bird size={80} strokeWidth={1} className="text-blue-400" />
+                      <Star size={80} strokeWidth={1} className="text-blue-400" />
                     </button>
                  </SignInButton>
                )}
