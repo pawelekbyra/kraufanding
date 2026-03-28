@@ -106,7 +106,7 @@ export const translations = {
     paywallUnlock: 'Wyślij napiwek, aby dołączyć',
     noMoney: 'Nie mam hajsu',
     noMoneyTitle: 'NIE MASZ HAJSU?',
-    noMoneySub: 'Ja też nie, dlatego kombinuję. Ty też kombinuj: poleć stronę 5 znajomym i zdobądź w nagrodę dostęp do Strefy Patronów.',
+    noMoneySub: 'Ja też nie, dlatego kombinuję. Ty też kombinuj: zamiast napiwkować poleć stronę 5 znajomym i zdobądź w nagrodę dostęp do Strefy Patronów.',
     noMoneyHowTitle: 'O co w tym chodzi?',
     noMoneyHowText: 'Zasada jest prosta: Jeśli dzięki Twojemu poleceniu zarejestruje się u nas 5 nowych osób, system automatycznie przyzna Ci wejściówkę do Strefy Patronów.',
     noMoneyStepTitle: 'Jak to zrobić?',
