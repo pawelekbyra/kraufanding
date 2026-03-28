@@ -38,10 +38,10 @@ export async function POST(req: NextRequest) {
     await UserService.getOrCreateUser(userId);
 
     const body = await req.json();
-    const { amount, title, creatorId } = body;
+    const { amount, currency, title, creatorId } = body;
 
     if (!amount || amount < 5) {
-      return NextResponse.json({ error: "Minimum parameters (min. 5 PLN)" }, { status: 400 });
+      return NextResponse.json({ error: `Minimum parameters (min. 5 ${currency || 'PLN'})` }, { status: 400 });
     }
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
     const session = await PaymentService.createCheckoutSession({
       userId,
       amount,
+      currency,
       title,
       creatorId,
       successUrl: `${appUrl}/?success=true`,
