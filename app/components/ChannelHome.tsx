@@ -160,9 +160,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 hasAccess ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">{t.available}</span>
                 ) : video.tier === 'LOGGED_IN' ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{language === 'pl' ? 'Zaloguj się aby obejrzeć' : 'Log in to watch'}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{t.loginToWatchShort}</span>
                 ) : (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">{language === 'pl' ? 'Zostań Patronem' : 'Become a Patron'}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">{t.becomePatron}</span>
                 )
               )}
             </div>

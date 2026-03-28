@@ -12,12 +12,12 @@ async function main() {
     where: { email: ADMIN_EMAIL },
     update: {
       role: SystemRole.ADMIN,
-      name: "Paweł Polutek",
+      name: "POLUTEK.PL",
     },
     create: {
       id: "user_admin_001", // Placeholder ID, will be synced by Clerk
       email: ADMIN_EMAIL,
-      name: "Paweł Polutek",
+      name: "POLUTEK.PL",
       role: SystemRole.ADMIN,
     },
   });
@@ -26,7 +26,7 @@ async function main() {
   const creator = await prisma.creator.upsert({
     where: { slug: 'polutek' },
     update: {
-      name: 'Paweł Polutek',
+      name: 'POLUTEK.PL',
       bio: 'Twórca platformy polutek.pl. Ekskluzywne materiały VOD i niezależne śledztwa.',
       bannerUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
       subscribersCount: 1200000,
@@ -34,7 +34,7 @@ async function main() {
     create: {
       userId: adminUser.id,
       slug: 'polutek',
-      name: 'Paweł Polutek',
+      name: 'POLUTEK.PL',
       bio: 'Twórca platformy polutek.pl. Ekskluzywne materiały VOD i niezależne śledztwa.',
       bannerUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
       subscribersCount: 1200000,

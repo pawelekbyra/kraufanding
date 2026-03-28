@@ -9,6 +9,7 @@ import { Video } from '@/app/types/video';
 import VideoPlayer from './VideoPlayer';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
+import { useLanguage } from './LanguageContext';
 
 interface ChannelVideoCardProps {
     video: Video;
@@ -17,6 +18,7 @@ interface ChannelVideoCardProps {
 }
 
 export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: ChannelVideoCardProps) {
+    const { t } = useLanguage();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -54,7 +56,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                     {/* Access Indicator Badge on Thumbnail */}
                     {mounted && !hasAccess && (
                         <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
-                            {video.tier === 'LOGGED_IN' ? 'Login Req' : 'Patron Only'}
+                            {video.tier === 'LOGGED_IN' ? t.loginReq : t.patronOnly}
                         </div>
                     )}
                 </div>
@@ -78,13 +80,13 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             <div className="mt-0.5">
                                 {mounted && (
                                     hasAccess ? (
-                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">Dostępne</span>
+                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">{t.available}</span>
                                     ) : (
                                         <span className={cn(
                                             "text-[11px] font-black uppercase tracking-widest",
                                             video.tier === 'LOGGED_IN' ? "text-blue-600" : "text-[#1a1a1a]/40"
                                         )}>
-                                            {video.tier === 'LOGGED_IN' ? 'Zaloguj się' : 'Dla Patronów'}
+                                            {video.tier === 'LOGGED_IN' ? t.loginToWatchShort : t.patronOnly}
                                         </span>
                                     )
                                 )}

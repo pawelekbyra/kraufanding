@@ -130,7 +130,7 @@ export class PaymentService {
             <p>Na podstawie Twojej sumy wpłat odblokowujesz dożywotni dostęp do materiałów premium w Strefie Patrona.</p>
             <p>Odwiedź <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a>, aby zobaczyć swoje odblokowane treści.</p>
             <br />
-            <p style="font-style: italic; border-top: 1px solid #1a1a1a; pt-4;">Z wyrazami szacunku,<br />Paweł Polutek</p>
+            <p style="font-style: italic; border-top: 1px solid #1a1a1a; pt-4;">Z wyrazami szacunku,<br />POLUTEK.PL</p>
           </div>
         `,
       });
