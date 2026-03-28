@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, CircleUser, Trophy, Star, X } from "lucide-react";
+import { Search, Globe, LogIn, Trophy, Star, X } from "lucide-react";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -112,7 +112,7 @@ const Navbar = () => {
         <SignedOut>
           <SignInButton mode="modal">
             <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
-              <CircleUser size={18} strokeWidth={2.5} />
+              <LogIn size={18} strokeWidth={2.5} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>
           </SignInButton>
