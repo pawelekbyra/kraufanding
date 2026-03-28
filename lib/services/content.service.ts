@@ -56,19 +56,21 @@ export class ContentService {
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
         // Ensure even if DB creator has no image, we try to use the linked user image
-        if (!creator.user?.imageUrl) {
-            const adminUser = await prisma.user.findFirst({
-                where: { role: 'ADMIN' },
-                select: { imageUrl: true }
-            });
-            if (adminUser) (creator as any).user = adminUser;
+        // PRIORITY: Always check the specific admin email first for the most accurate avatar
+        const adminUser = await prisma.user.findFirst({
+            where: { email: ADMIN_EMAIL },
+            select: { imageUrl: true }
+        });
+        if (adminUser?.imageUrl) {
+            if (!creator.user) (creator as any).user = {};
+            creator.user.imageUrl = adminUser.imageUrl;
         }
       }
 
       if (!creator && slug === 'polutek') {
         // Try to find the admin user to get their avatar
         const adminUser = await prisma.user.findFirst({
-            where: { role: 'ADMIN' },
+            where: { email: ADMIN_EMAIL },
             select: { imageUrl: true }
         });
 
