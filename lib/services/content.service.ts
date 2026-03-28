@@ -55,12 +55,20 @@ export class ContentService {
 
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
+        // Ensure the creator has an associated user with an image if not already included
+        if (!(creator as any).user) {
+          const adminUser = await prisma.user.findUnique({
+            where: { email: ADMIN_EMAIL },
+            select: { imageUrl: true }
+          });
+          (creator as any).user = adminUser;
+        }
       }
 
       if (!creator && slug === 'polutek') {
-        // Try to find the admin user to get their avatar
-        const adminUser = await prisma.user.findFirst({
-            where: { role: 'ADMIN' },
+        // Try to find the admin user to get their avatar by email (most robust for Admin)
+        const adminUser = await prisma.user.findUnique({
+            where: { email: ADMIN_EMAIL },
             select: { imageUrl: true }
         });
 
