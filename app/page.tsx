@@ -14,10 +14,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   const query = searchParams.q?.trim().toLowerCase();
 
   // 0. Try to fetch the admin user to get the latest avatar for 'polutek' fallback
-  const adminUser = await prisma.user.findFirst({
-    where: { role: 'ADMIN' },
-    select: { imageUrl: true }
-  }).catch(() => null);
+  const adminAvatar = await ContentService.getAdminAvatar();
 
   // 1. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
@@ -39,13 +36,13 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   if (allVideosDb.length > 0) {
     // DB Content exists
     const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
-    mainVideo = mapDbToVideo(mainVideoDb);
-    allVideos = allVideosDb.map(mapDbToVideo);
+    mainVideo = mapDbToVideo(mainVideoDb, adminAvatar);
+    allVideos = allVideosDb.map(v => mapDbToVideo(v, adminAvatar));
   } else {
     // Fallback to professional initial data if DB is empty
     const fallbackCreator = {
         ...DEFAULT_CREATOR,
-        imageUrl: adminUser?.imageUrl || null
+        imageUrl: adminAvatar
     };
 
     allVideos = INITIAL_VIDEOS.map(v => ({
@@ -114,7 +111,8 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   );
 }
 
-function mapDbToVideo(v: any): Video {
+function mapDbToVideo(v: any, adminAvatar?: string | null): Video {
+  const isPolutek = v.creator?.slug === 'polutek';
   return {
     id: v.id,
     creatorId: v.creatorId,
@@ -134,10 +132,10 @@ function mapDbToVideo(v: any): Video {
     updatedAt: v.updatedAt,
     creator: v.creator ? {
       id: v.creator.id,
-      name: v.creator.slug === 'polutek' ? 'POLUTEK.PL' : v.creator.name,
+      name: isPolutek ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
-      imageUrl: v.creator.user?.imageUrl || v.creator.imageUrl || null,
+      imageUrl: (isPolutek && adminAvatar) ? adminAvatar : (v.creator.user?.imageUrl || v.creator.imageUrl || null),
       bannerUrl: v.creator.bannerUrl,
       subscribersCount: v.creator.subscribersCount
     } : undefined
