@@ -304,8 +304,8 @@ export default function AdminPanel() {
                     <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="w-full bg-[#1a1a1a]/5 border-2 border-transparent focus:border-[#1a1a1a] outline-none p-3 font-black uppercase text-xs transition-all">
                       <option value="PUBLIC">Publiczny</option>
                       <option value="LOGGED_IN">Zalogowani</option>
-                      <option value="VIP1">Patron (5 zł+)</option>
-                      <option value="VIP2">Sponsor (10 zł+)</option>
+                      <option value="VIP1">Patron (5 PLN+)</option>
+                      <option value="VIP2">Sponsor (10 PLN+)</option>
                     </select>
                   </div>
                   <div className="space-y-1 flex items-center gap-3 pt-6">
@@ -345,7 +345,7 @@ export default function AdminPanel() {
         <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatCard title="Wszystkie Filmy" value={stats?.totalVideos?.toString() || videos.length.toString()} icon={<Video size={20} />} />
           <StatCard title="Użytkownicy" value={stats?.totalUsers?.toString() || "0"} icon={<Plus size={20} />} />
-          <StatCard title="Przychód" value={`${stats?.totalRevenue?.toFixed(2) || "0.00"} zł`} icon={<BarChart3 size={20} />} />
+          <StatCard title="Przychód" value={`${stats?.totalRevenue?.toFixed(2) || "0.00"} PLN`} icon={<BarChart3 size={20} />} />
           <StatCard title="Subskrypcje" value={mounted ? (creator?.subscribersCount?.toLocaleString() || "0") : "0"} icon={<Star size={20} />} />
         </section>
 
@@ -451,7 +451,7 @@ export default function AdminPanel() {
                             {stats?.recentTransactions?.map((tx: any) => (
                                 <tr key={tx.id} className="hover:bg-[#1a1a1a]/5 transition-colors">
                                     <td className="p-4 font-mono text-xs">{tx.user?.email}</td>
-                                    <td className="p-4 font-black">{tx.amount.toFixed(2)} zł</td>
+                                    <td className="p-4 font-black">{tx.amount.toFixed(2)} {tx.currency}</td>
                                     <td className="p-4">
                                         <span className="bg-success/10 text-success text-[8px] font-black uppercase px-2 py-1 rounded">Zakończono</span>
                                     </td>

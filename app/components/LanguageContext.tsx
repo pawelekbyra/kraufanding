@@ -100,6 +100,7 @@ export const translations = {
     independencyTitle: 'Nie masz psychy się zalogować',
     independencyTitleLoggedIn: 'WITAJ NA POLUTEK.PL',
     patronZone: 'Strefa Patrona',
+    currency: 'PLN',
     donationDescription: 'W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
   },
   en: {
@@ -139,6 +140,7 @@ export const translations = {
     independencyTitle: "You don't have the guts to log in",
     independencyTitleLoggedIn: 'WELCOME TO POLUTEK.PL',
     patronZone: 'Patrons Only',
+    currency: 'EUR',
     donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.'
   }
 };

@@ -12,6 +12,7 @@ export class PaymentService {
   static async createCheckoutSession(params: {
     userId: string,
     amount: number,
+    currency?: string,
     title?: string,
     creatorId?: string,
     successUrl: string,
@@ -20,11 +21,11 @@ export class PaymentService {
     if (!stripe) throw new Error("Stripe not configured");
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['blik', 'p24', 'card'],
+      payment_method_types: (params.currency?.toLowerCase() === 'eur') ? ['card'] : ['blik', 'p24', 'card'],
       line_items: [
         {
           price_data: {
-            currency: 'pln',
+            currency: params.currency?.toLowerCase() || 'pln',
             product_data: {
               name: `Wsparcie: ${params.title || "Patronat POLUTEK.PL"}`,
               description: `Dożywotni dostęp do Strefy Patrona`,
@@ -110,12 +111,14 @@ export class PaymentService {
     });
 
     if (user.email && process.env.RESEND_API_KEY) {
-      await this.sendThankYouEmail(user.email, amountPaid, user.totalPaid);
+      await this.sendThankYouEmail(user.email, amountPaid, user.totalPaid, currency);
     }
   }
 
-  private static async sendThankYouEmail(email: string, amountPaid: number, totalPaid: number) {
+  private static async sendThankYouEmail(email: string, amountPaid: number, totalPaid: number, currency: string) {
     const resend = new Resend(process.env.RESEND_API_KEY);
+    const currencyLabel = currency === 'PLN' ? 'PLN' : currency;
+
     try {
       await resend.emails.send({
         from: 'polutek.pl <no-reply@polutek.pl>',
@@ -125,8 +128,8 @@ export class PaymentService {
           <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6; border: 1px solid #1a1a1a;">
             <h1 style="text-transform: uppercase; letter-spacing: -0.05em; border-bottom: 2px solid #1a1a1a; pb-4;">Dziękujemy za Twoje wsparcie</h1>
             <p>Witaj!</p>
-            <p>Pomyślnie przetworzyliśmy Twoją wpłatę w wysokości <strong>${amountPaid.toFixed(2)} zł</strong>.</p>
-            <p>Twoja łączna suma wsparcia wynosi teraz <strong>${totalPaid.toFixed(2)} zł</strong>.</p>
+            <p>Pomyślnie przetworzyliśmy Twoją wpłatę w wysokości <strong>${amountPaid.toFixed(2)} ${currencyLabel}</strong>.</p>
+            <p>Twoja łączna suma wsparcia wynosi teraz <strong>${totalPaid.toFixed(2)} ${currencyLabel}</strong>.</p>
             <p>Na podstawie Twojej sumy wpłat odblokowujesz dożywotni dostęp do materiałów premium w Strefie Patrona.</p>
             <p>Odwiedź <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">polutek.pl</a>, aby zobaczyć swoje odblokowane treści.</p>
             <br />

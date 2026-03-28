@@ -24,7 +24,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     }
 
     if (!amount || amount < 5) {
-      alert(language === 'pl' ? "Minimalna kwota wsparcia to 5 zł" : "Minimum support amount is 5 PLN");
+      alert(language === 'pl' ? `Minimalna kwota wsparcia to 5 ${t.currency}` : `Minimum support amount is 5 ${t.currency}`);
       return;
     }
 
@@ -36,6 +36,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: Number(amount),
+            currency: t.currency.toLowerCase(),
             title: videoTitle || "Tip The Guy / Patron"
           }),
           cache: 'no-store'
@@ -80,11 +81,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
               <div className="space-y-2 pt-2">
                 <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
-                  {language === 'pl' ? "KWOTA WSPARCIA (MIN 5.00 PLN)" : "TRANSACTION AMOUNT (MIN 5.00 PLN)"}
+                  {language === 'pl' ? `KWOTA WSPARCIA (MIN 5.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN 5.00 ${t.currency})`}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="font-mono text-xl font-bold text-black/20">zł</span>
+                    <span className="font-mono text-xl font-bold text-black/20">{t.currency}</span>
                   </div>
                   <input
                     type="number"
@@ -95,13 +96,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border-2 border-black rounded-none py-3 pl-10 pr-4 font-mono text-2xl text-black focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-white border-2 border-black rounded-none py-3 pl-14 pr-4 font-mono text-2xl text-black focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder="00.00"
                   />
                 </div>
                 {typeof amount === 'number' && amount < 5 && (
                   <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
-                    {language === 'pl' ? "Błąd: Nie osiągnięto minimum (5 PLN)" : "Error: Minimum amount not met (5 PLN)"}
+                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (5 ${t.currency})` : `Error: Minimum amount not met (5 ${t.currency})`}
                   </p>
                 )}
               </div>
