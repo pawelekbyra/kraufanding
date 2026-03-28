@@ -14,8 +14,8 @@ export const dynamic = 'force-dynamic';
 export default async function Home({ searchParams }: { searchParams: { v?: string, q?: string } }) {
   const query = searchParams.q?.trim().toLowerCase();
 
-  // 0. Try to fetch the admin user to get the latest avatar for 'polutek' fallback
-  const adminAvatar = await ContentService.getAdminAvatar();
+  // 0. Try to fetch the admin user to get the latest data for 'polutek' fallback
+  const adminData = await ContentService.getAdminData();
 
   // 1. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
@@ -23,7 +23,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
       creator: {
         include: {
           user: {
-            select: { imageUrl: true }
+            select: { imageUrl: true, email: true }
           }
         }
       }
@@ -37,13 +37,14 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   if (allVideosDb.length > 0) {
     // DB Content exists
     const mainVideoDb = allVideosDb.find(v => v.isMainFeatured) || allVideosDb[0];
-    mainVideo = mapDbToVideo(mainVideoDb, adminAvatar);
-    allVideos = allVideosDb.map(v => mapDbToVideo(v, adminAvatar));
+    mainVideo = mapDbToVideo(mainVideoDb, adminData);
+    allVideos = allVideosDb.map(v => mapDbToVideo(v, adminData));
   } else {
     // Fallback to professional initial data if DB is empty
     const fallbackCreator = {
         ...DEFAULT_CREATOR,
-        imageUrl: adminAvatar
+        imageUrl: adminData?.imageUrl || null,
+        email: adminData?.email || null
     };
 
     allVideos = INITIAL_VIDEOS.map(v => ({
@@ -74,13 +75,14 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
   try {
       if (userId) {
-          // Fetch user record and interaction status in parallel
-          const [dbUser, interaction, subscribed] = await Promise.all([
-              prisma.user.findUnique({ where: { id: userId } }),
+          // Trigger sync and fetch user record
+          userDb = await UserService.getOrCreateUser(userId);
+
+          // Fetch interaction status and subscription in parallel
+          const [interaction, subscribed] = await Promise.all([
               UserService.getVideoInteraction(userId, selectedVideo.id),
               UserService.isSubscribed(userId, selectedVideo.creatorId)
           ]);
-          userDb = dbUser;
           initialInteraction = interaction;
           initialIsSubscribed = subscribed;
       }
@@ -112,8 +114,11 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   );
 }
 
-function mapDbToVideo(v: any, adminAvatar?: string | null): Video {
-  const isPolutek = v.creator?.slug === 'polutek';
+function mapDbToVideo(v: any, adminData?: { imageUrl?: string | null, email?: string | null } | null): Video {
+  const isPolutek = v.creator?.slug?.toLowerCase() === 'polutek';
+  const resolvedEmail = (isPolutek && adminData?.email) ? adminData.email : (v.creator?.user?.email || null);
+  const resolvedImageUrl = (isPolutek && adminData?.imageUrl) ? adminData.imageUrl : (v.creator?.user?.imageUrl || v.creator?.imageUrl || null);
+
   return {
     id: v.id,
     creatorId: v.creatorId,
@@ -136,7 +141,8 @@ function mapDbToVideo(v: any, adminAvatar?: string | null): Video {
       name: isPolutek ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
-      imageUrl: (isPolutek && adminAvatar) ? adminAvatar : (v.creator.user?.imageUrl || v.creator.imageUrl || null),
+      imageUrl: resolvedImageUrl,
+      email: resolvedEmail,
       bannerUrl: v.creator.bannerUrl,
       subscribersCount: v.creator.subscribersCount
     } : undefined

@@ -30,7 +30,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
   }
 
   const { userId } = auth();
-  const userDb = userId ? await prisma.user.findUnique({ where: { id: userId }, select: { totalPaid: true } }).catch(() => null) : null;
+  const userDb = userId ? await UserService.getOrCreateUser(userId).catch(() => null) : null;
 
   const allVideos: Video[] = (creator.videos || []).map((v: any) => ({
     ...v,
@@ -40,6 +40,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       slug: creator.slug,
       bio: creator.bio,
       imageUrl: creator.user?.imageUrl || creator.imageUrl || null,
+      email: creator.user?.email || null,
       bannerUrl: creator.bannerUrl,
       subscribersCount: creator.subscribersCount || 0
     }
@@ -75,7 +76,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
              <img
-               src={creator.user?.imageUrl || creator.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${displayName}`}
+               src={creator.user?.imageUrl || creator.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.user?.email || creator.email || displayName}`}
                alt={displayName}
                className="w-full h-full object-cover"
              />
