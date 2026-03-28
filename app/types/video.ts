@@ -5,6 +5,7 @@ export interface Creator {
   name: string;
   slug: string;
   bio?: string | null;
+  imageUrl?: string | null;
   bannerUrl?: string | null;
   subscribersCount: number;
 }

@@ -39,6 +39,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       name: creator.slug === 'polutek' ? 'POLUTEK.PL' : creator.name,
       slug: creator.slug,
       bio: creator.bio,
+      imageUrl: creator.user?.imageUrl || null,
       bannerUrl: creator.bannerUrl,
       subscribersCount: creator.subscribersCount || 0
     }
@@ -73,7 +74,11 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
-             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${displayName}`} alt={displayName} className="w-full h-full object-cover" />
+             <img
+               src={creator.user?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${displayName}`}
+               alt={displayName}
+               className="w-full h-full object-cover"
+             />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">
             <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">{displayName}</h1>

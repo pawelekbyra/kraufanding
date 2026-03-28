@@ -169,7 +169,11 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                  className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'POLUTEK.PL'}`} alt={video.creator?.name} className="w-full h-full object-cover" />
+                  <img
+                    src={(video.creator as any)?.user?.imageUrl || video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.name || 'POLUTEK.PL'}`}
+                    alt={video.creator?.name}
+                    className="w-full h-full object-cover"
+                  />
                </Link>
                <div className="min-w-0 pr-1 flex flex-col">
                   <Link
