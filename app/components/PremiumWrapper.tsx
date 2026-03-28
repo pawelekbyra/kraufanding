@@ -215,11 +215,11 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
                   <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center">
-                      <span className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter italic text-white leading-[0.8]">
+                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.8]">
                         {t.paywallText}
                       </span>
                       <div className="h-px w-32 md:w-48 bg-white/10 my-4" />
-                      <span className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
+                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
                         {t.paywallAction}
                       </span>
                     </div>
