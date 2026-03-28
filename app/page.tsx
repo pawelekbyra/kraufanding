@@ -15,7 +15,15 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
   // 1. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
-    include: { creator: true },
+    include: {
+      creator: {
+        include: {
+          user: {
+            select: { imageUrl: true }
+          }
+        }
+      }
+    },
     orderBy: { createdAt: 'desc' }
   }).catch(() => []);
 
@@ -114,6 +122,7 @@ function mapDbToVideo(v: any): Video {
       name: v.creator.slug === 'polutek' ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
+      imageUrl: v.creator.user?.imageUrl || null,
       bannerUrl: v.creator.bannerUrl,
       subscribersCount: v.creator.subscribersCount
     } : undefined

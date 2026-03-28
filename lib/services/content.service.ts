@@ -58,8 +58,15 @@ export class ContentService {
       }
 
       if (!creator && slug === 'polutek') {
+        // Try to find the admin user to get their avatar
+        const adminUser = await prisma.user.findFirst({
+            where: { role: 'ADMIN' },
+            select: { imageUrl: true }
+        });
+
         return {
             ...DEFAULT_CREATOR,
+            user: adminUser,
             videos: INITIAL_VIDEOS
         };
       }
