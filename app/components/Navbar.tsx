@@ -52,8 +52,8 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 hover:bg-transparent">
-              <img src="/logo.png" alt="Logo" className="h-full w-auto object-contain" />
+            <Link href="/" className="inline-flex items-center shrink-0 px-2 h-10 hover:opacity-80 transition-opacity bg-transparent">
+              <img src="/logo.png" alt="Logo" className="h-[24px] md:h-[28px] w-auto object-contain bg-transparent" />
             </Link>
           </div>
 
