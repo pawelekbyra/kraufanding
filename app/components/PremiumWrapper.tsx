@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useAuth, SignInButton, useClerk } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Star, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
@@ -119,6 +119,33 @@ export default function PremiumWrapper({
   );
 }
 
+function CustomAuthTrigger({ children }: { children: React.ReactNode }) {
+  const { openSignUp } = useClerk();
+
+  const handleAuth = () => {
+    // Check for referral cookie
+    const cookies = document.cookie.split('; ');
+    const refCookie = cookies.find(row => row.startsWith('clerk_referrer_id='));
+    const referrerId = refCookie ? refCookie.split('=')[1] : undefined;
+
+    if (referrerId) {
+      openSignUp({
+        unsafeMetadata: {
+          referrerId
+        }
+      });
+    } else {
+      openSignUp();
+    }
+  };
+
+  return (
+    <div onClick={handleAuth} className="cursor-pointer contents">
+      {children}
+    </div>
+  );
+}
+
 function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: AccessTier, isLoggedIn: boolean, variant: 'default' | 'thumbnail' }) {
   const { t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
@@ -176,34 +203,35 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                {isVIPGated ? (
                  <Gem size={80} strokeWidth={1} className="text-amber-500 opacity-20" />
                ) : (
-                 <SignInButton mode="modal">
+                 <CustomAuthTrigger>
                     <button className="hover:opacity-40 opacity-20 transition-opacity cursor-pointer">
                       <Star size={80} strokeWidth={1} className="text-blue-400" />
                     </button>
-                 </SignInButton>
+                 </CustomAuthTrigger>
                )}
             </div>
 
             <div className="flex flex-col gap-2 md:gap-4 mb-4">
                {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                  <div className="flex flex-col gap-6 items-center">
-                    <div className="flex flex-col gap-2 items-center">
-                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.85] drop-shadow-sm">
+                  <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center">
+                      <span className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter italic text-white leading-[0.8]">
                         {t.paywallText}
                       </span>
-                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.85]">
+                      <div className="h-px w-32 md:w-48 bg-white/10 my-4" />
+                      <span className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
                         {t.paywallAction}
                       </span>
                     </div>
 
-                    <SignInButton mode="modal">
-                       <button className="group flex flex-col items-center gap-2">
+                    <CustomAuthTrigger>
+                       <button className="group flex flex-col items-center gap-2 mt-10">
                           <div className="h-px w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
                           <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/30 group-hover:text-accent transition-colors underline decoration-accent/60 underline-offset-4 decoration-[1.5px]">
                              {t.loginGatedText}
                           </span>
                        </button>
-                    </SignInButton>
+                    </CustomAuthTrigger>
                   </div>
                ) : (
                   <div className="flex flex-col gap-8 items-center">
@@ -213,7 +241,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                     <a href="#donations" className="group flex flex-col items-center gap-2">
                        <div className="h-px w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
                        <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
-                          Access Gated // Click to Unlock
+                          {t.paywallUnlock}
                        </span>
                     </a>
                   </div>

@@ -97,7 +97,7 @@ export class ContentService {
 
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { totalPaid: true, role: true, email: true }
+        select: { totalPaid: true, referralCount: true, role: true, email: true }
       });
 
       if (!user) {
@@ -109,13 +109,13 @@ export class ContentService {
       }
 
       if (video.tier === AccessTier.VIP1) {
-        const hasAccess = user.totalPaid >= 5;
-        return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
+        const hasAccess = user.totalPaid >= 5 || user.referralCount >= 5;
+        return { hasAccess, userTotalPaid: user.totalPaid, referralCount: user.referralCount, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
       }
 
       if (video.tier === AccessTier.VIP2) {
-        const hasAccess = user.totalPaid >= 10;
-        return { hasAccess, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
+        const hasAccess = user.totalPaid >= 10 || user.referralCount >= 5;
+        return { hasAccess, userTotalPaid: user.totalPaid, referralCount: user.referralCount, requiredTier: video.tier, videoUrl: hasAccess ? videoUrl : null };
       }
 
       return { hasAccess: false, userTotalPaid: user.totalPaid, requiredTier: video.tier, videoUrl: null };
