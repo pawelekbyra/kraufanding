@@ -14,7 +14,8 @@ interface VideoPlaylistProps {
 const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState<number | ''>(25);
+  const minAmount = language === 'pl' ? 10 : 5;
+  const [amount, setAmount] = useState<number | ''>(language === 'pl' ? 25 : 10);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
@@ -43,8 +44,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       return;
     }
 
-    if (!amount || amount < 10) {
-      alert(language === 'pl' ? `Minimalna kwota wsparcia to 10 ${t.currency}` : `Minimum support amount is 10 ${t.currency}`);
+    if (!amount || amount < minAmount) {
+      alert(language === 'pl' ? `Minimalna kwota wsparcia to ${minAmount} ${t.currency}` : `Minimum support amount is ${minAmount} ${t.currency}`);
       return;
     }
 
@@ -100,11 +101,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
-                  {language === 'pl' ? `KWOTA WSPARCIA (MIN 10.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN 10.00 ${t.currency})`}
+                <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50 text-center">
+                  {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${t.currency})`}
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
                     <span className="font-mono text-xl font-bold text-black/20">{t.currency}</span>
                   </div>
                   <input
@@ -116,13 +117,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border-2 border-black rounded-none py-3 pl-14 pr-4 font-mono text-2xl text-black focus:ring-0 outline-none transition-all placeholder:opacity-20"
-                    placeholder="00.00"
+                    className="w-full bg-white border-2 border-black rounded-none py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    placeholder={String(minAmount)}
                   />
                 </div>
-                {typeof amount === 'number' && amount < 10 && (
+                {typeof amount === 'number' && amount < minAmount && (
                   <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
-                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (10 ${t.currency})` : `Error: Minimum amount not met (10 ${t.currency})`}
+                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (${minAmount} ${t.currency})` : `Error: Minimum amount not met (${minAmount} ${t.currency})`}
                   </p>
                 )}
               </div>
@@ -131,8 +132,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             <button
               type="button"
               onClick={onSupport}
-              disabled={isLoading || amount === '' || amount < 10}
-              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 10 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              disabled={isLoading || amount === '' || amount < minAmount}
+              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>

@@ -215,11 +215,11 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
                   <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center">
-                      <span className="text-5xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter italic text-white leading-[0.8]">
+                      <span className="text-[clamp(2.5rem,12vw,6rem)] font-black uppercase tracking-tighter italic text-white leading-[0.8]">
                         {t.paywallText}
                       </span>
                       <div className="h-px w-24 md:w-48 bg-white/10 my-3 md:my-6" />
-                      <span className="text-5xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
+                      <span className="text-[clamp(2.5rem,12vw,6rem)] font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
                         {t.paywallAction}
                       </span>
                     </div>
@@ -235,7 +235,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                   </div>
                ) : (
                   <div className="flex flex-col gap-6 md:gap-10 items-center">
-                    <span className={`text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter italic leading-[0.85] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
+                    <span className={`text-[clamp(2rem,10vw,6rem)] font-black uppercase tracking-tighter italic leading-[0.85] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
                       {subTitle}
                     </span>
                     <a href="#donations" className="group flex flex-col items-center gap-2">
