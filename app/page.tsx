@@ -5,13 +5,19 @@ import ChannelHome from './components/ChannelHome';
 import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from './types/video';
-import { INITIAL_VIDEOS } from '@/lib/data/initial-content';
+import { INITIAL_VIDEOS, DEFAULT_CREATOR } from '@/lib/data/initial-content';
 import { UserService } from '@/lib/services/user.service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home({ searchParams }: { searchParams: { v?: string, q?: string } }) {
   const query = searchParams.q?.trim().toLowerCase();
+
+  // 0. Try to fetch the admin user to get the latest avatar for 'polutek' fallback
+  const adminUser = await prisma.user.findFirst({
+    where: { role: 'ADMIN' },
+    select: { imageUrl: true }
+  }).catch(() => null);
 
   // 1. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
@@ -37,8 +43,16 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     allVideos = allVideosDb.map(mapDbToVideo);
   } else {
     // Fallback to professional initial data if DB is empty
-    mainVideo = INITIAL_VIDEOS.find(v => v.isMainFeatured) || INITIAL_VIDEOS[0];
-    allVideos = INITIAL_VIDEOS;
+    const fallbackCreator = {
+        ...DEFAULT_CREATOR,
+        imageUrl: adminUser?.imageUrl || null
+    };
+
+    allVideos = INITIAL_VIDEOS.map(v => ({
+        ...v,
+        creator: v.creatorId === DEFAULT_CREATOR.id ? fallbackCreator : v.creator
+    }));
+    mainVideo = allVideos.find(v => v.isMainFeatured) || allVideos[0];
   }
 
   // 2. Implement Search Logic
@@ -122,7 +136,7 @@ function mapDbToVideo(v: any): Video {
       name: v.creator.slug === 'polutek' ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
-      imageUrl: v.creator.user?.imageUrl || null,
+      imageUrl: v.creator.user?.imageUrl || v.creator.imageUrl || null,
       bannerUrl: v.creator.bannerUrl,
       subscribersCount: v.creator.subscribersCount
     } : undefined

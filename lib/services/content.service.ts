@@ -55,6 +55,14 @@ export class ContentService {
 
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
+        // Ensure even if DB creator has no image, we try to use the linked user image
+        if (!creator.user?.imageUrl) {
+            const adminUser = await prisma.user.findFirst({
+                where: { role: 'ADMIN' },
+                select: { imageUrl: true }
+            });
+            if (adminUser) (creator as any).user = adminUser;
+        }
       }
 
       if (!creator && slug === 'polutek') {
@@ -66,6 +74,7 @@ export class ContentService {
 
         return {
             ...DEFAULT_CREATOR,
+            imageUrl: adminUser?.imageUrl || null,
             user: adminUser,
             videos: INITIAL_VIDEOS
         };
