@@ -79,7 +79,7 @@ export const translations = {
     cancel: 'Odpuść',
     comment: 'Wyślij',
     reply: 'Odpowiedz',
-    signIn: 'ENTER',
+    signIn: 'WEJŚCIE',
     deleteComment: 'Wyciąć?',
     justNow: 'przed chwilą',
     noDescription: 'Cisza w eterze.',
@@ -98,7 +98,7 @@ export const translations = {
     loginToWatchShort: 'Zaloguj się',
     independencyTitle: 'Nie masz psychy się zalogować',
     patronZone: 'Strefa Patrona',
-    donationDescription: 'Napiwek odblokuje dostęp do Strefy Patrona. Wsparcie pomaga w rozwoju projektu.'
+    donationDescription: 'W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
   },
   en: {
     views: 'views',
