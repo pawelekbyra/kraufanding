@@ -39,10 +39,22 @@ export class UserService {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       // Atomic upsert ensures the user record exists and is up-to-date
-      return await prisma.user.upsert({
-        where: { id },
-        update: { email, imageUrl, name, role },
-        create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
+      return await prisma.$transaction(async (tx) => {
+        const user = await tx.user.upsert({
+          where: { id },
+          update: { email, imageUrl, name, role },
+          create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
+        });
+
+        // Sync image to any associated creators
+        if (imageUrl) {
+            await tx.creator.updateMany({
+                where: { userId: id },
+                data: { imageUrl }
+            });
+        }
+
+        return user;
       });
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
@@ -59,6 +71,18 @@ export class UserService {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       return await prisma.$transaction(async (tx) => {
+        // Handle case where a user with this email exists but with a different ID (e.g. from seed)
+        const emailUser = await tx.user.findUnique({ where: { email } });
+        if (emailUser && emailUser.id !== id) {
+          // Check if this user had any creators and reassign them
+          await tx.creator.updateMany({
+              where: { userId: emailUser.id },
+              data: { userId: id }
+          });
+          // Delete the old seed user record to allow creating the new Clerk-synced one
+          await tx.user.delete({ where: { id: emailUser.id } });
+        }
+
         const existing = await tx.user.findUnique({ where: { id } });
 
         const user = await tx.user.upsert({
@@ -74,6 +98,14 @@ export class UserService {
             referredById: referrerId || null
           }
         });
+
+        // Sync image to any associated creators
+        if (imageUrl) {
+            await tx.creator.updateMany({
+                where: { userId: id },
+                data: { imageUrl }
+            });
+        }
 
         // Only increment referralCount if this is a new user and there's a referrer
         if (!existing && referrerId) {

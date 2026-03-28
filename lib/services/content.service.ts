@@ -14,13 +14,7 @@ export class ContentService {
       const video = await prisma.video.findUnique({
         where: { id: videoId },
         include: {
-          creator: {
-            include: {
-              user: {
-                select: { imageUrl: true }
-              }
-            }
-          }
+          creator: true
         }
       });
 
@@ -44,9 +38,6 @@ export class ContentService {
       const creator = await prisma.creator.findUnique({
         where: { slug },
         include: {
-          user: {
-            select: { imageUrl: true }
-          },
           videos: {
             orderBy: { createdAt: 'desc' }
           }
@@ -55,18 +46,28 @@ export class ContentService {
 
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
+        // Ensure the creator has an image if not already set
+        if (!creator.imageUrl) {
+          const adminUser = await prisma.user.findUnique({
+            where: { email: ADMIN_EMAIL },
+            select: { imageUrl: true }
+          });
+          if (adminUser?.imageUrl) {
+              creator.imageUrl = adminUser.imageUrl;
+          }
+        }
       }
 
       if (!creator && slug === 'polutek') {
-        // Try to find the admin user to get their avatar
-        const adminUser = await prisma.user.findFirst({
-            where: { role: 'ADMIN' },
+        // Try to find the admin user to get their avatar by email (most robust for Admin)
+        const adminUser = await prisma.user.findUnique({
+            where: { email: ADMIN_EMAIL },
             select: { imageUrl: true }
         });
 
         return {
             ...DEFAULT_CREATOR,
-            user: adminUser,
+            imageUrl: adminUser?.imageUrl || null,
             videos: INITIAL_VIDEOS
         };
       }

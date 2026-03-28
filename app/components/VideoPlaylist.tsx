@@ -104,7 +104,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   {language === 'pl' ? `KWOTA WSPARCIA (MIN 10.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN 10.00 ${t.currency})`}
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                     <span className="font-mono text-xl font-bold text-black/20">{t.currency}</span>
                   </div>
                   <input
@@ -116,7 +116,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border-2 border-black rounded-none py-3 pl-14 pr-4 font-mono text-2xl text-black focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-white border-2 border-black rounded-none py-3 px-14 font-mono text-2xl text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder="00.00"
                   />
                 </div>
