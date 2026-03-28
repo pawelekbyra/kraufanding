@@ -109,7 +109,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#FDFBF7] border-2 border-black p-6 shadow-brutalist relative overflow-hidden">
+        <div className="bg-[#FDFBF7] border-2 border-black p-6 pb-10 shadow-brutalist relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
             <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
           </div>
@@ -197,7 +197,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <button
             type="button"
             onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-            className="absolute bottom-2 right-2 text-black/40 hover:text-black font-mono font-bold text-[11px] uppercase tracking-tighter transition-colors px-2 py-1"
+            className="absolute bottom-1 right-1 text-black/50 hover:text-black font-mono font-bold text-xs uppercase tracking-tighter transition-colors px-2 py-1 z-20"
           >
             {t.noMoney}
           </button>
