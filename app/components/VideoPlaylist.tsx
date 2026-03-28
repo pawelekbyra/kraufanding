@@ -15,13 +15,32 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(t.currency);
-  const minAmount = language === 'pl' ? 10 : 5;
-  const [amount, setAmount] = useState<number | ''>(language === 'pl' ? 25 : 10);
+
+  const getMinAmount = (curr: string) => {
+    if (curr === 'PLN') return 10;
+    if (curr === 'JPY') return 1000;
+    return 5;
+  };
+
+  const getSuggestedAmount = (curr: string) => {
+    if (curr === 'PLN') return 25;
+    if (curr === 'JPY') return 5000;
+    return 10;
+  };
+
+  const minAmount = getMinAmount(selectedCurrency);
+  const [amount, setAmount] = useState<number | ''>(getSuggestedAmount(t.currency));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setSelectedCurrency(t.currency);
+    setAmount(getSuggestedAmount(t.currency));
   }, [t.currency]);
+
+  const handleCurrencyChange = (curr: string) => {
+    setSelectedCurrency(curr);
+    setAmount(getSuggestedAmount(curr));
+  };
   const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
@@ -50,7 +69,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     }
 
     if (!amount || amount < minAmount) {
-      alert(language === 'pl' ? `Minimalna kwota wsparcia to ${minAmount} ${t.currency}` : `Minimum support amount is ${minAmount} ${t.currency}`);
+      alert(language === 'pl' ? `Minimalna kwota wsparcia to ${minAmount} ${selectedCurrency}` : `Minimum support amount is ${minAmount} ${selectedCurrency}`);
       return;
     }
 
@@ -118,7 +137,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     ) : (
                       <select
                         value={selectedCurrency}
-                        onChange={(e) => setSelectedCurrency(e.target.value)}
+                        onChange={(e) => handleCurrencyChange(e.target.value)}
                         className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-black/40 focus:text-black focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
                         aria-label="Select Currency"
                       >
@@ -126,6 +145,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                         <option value="EUR">EUR</option>
                         <option value="GBP">GBP</option>
                         <option value="CHF">CHF</option>
+                        <option value="JPY">JPY</option>
                       </select>
                     )}
                     {language !== 'pl' && (
@@ -138,7 +158,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   </div>
                   <input
                     type="number"
-                    min="5"
+                    min={minAmount}
                     step="1"
                     value={amount}
                     onChange={(e) => {
