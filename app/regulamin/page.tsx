@@ -13,7 +13,7 @@ export default function RegulaminPage() {
           <section>
             <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Charakter platformy</h2>
             <p>
-              Serwis polutek.pl jest prywatną, autorską platformą wideo prowadzoną przez <strong>Pawła Polutka</strong>.
+              Serwis polutek.pl jest prywatną, autorską platformą wideo.
               Platforma działa w modelu dożywotniego patronatu. Dostęp do treści cyfrowych jest uzależniony od łącznej kwoty wsparcia przekazanego twórcy.
             </p>
           </section>
@@ -35,7 +35,7 @@ export default function RegulaminPage() {
           <section>
             <h2 className="text-xl font-black uppercase tracking-tight text-[#1a1a1a]">3. Płatności i brak zwrotów</h2>
             <p>
-              Wszelkie wpłaty są procesowane przez Stripe i mają charakter bezzwrotny. Dokonując wpłaty, użytkownik wspiera rozwój projektów Pawła Polutka
+              Wszelkie wpłaty są procesowane przez Stripe i mają charakter bezzwrotny. Dokonując wpłaty, użytkownik wspiera rozwój projektów POLUTEK.PL
               i w zamian otrzymuje dostęp do określonych sekcji serwisu. Raz odblokowany poziom dostępu jest przypisany do konta użytkownika na stałe (Lifetime Access).
             </p>
           </section>

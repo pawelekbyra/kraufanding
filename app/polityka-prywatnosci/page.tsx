@@ -48,8 +48,7 @@ export default function PolitykaPrywatnosciPage() {
           <section>
             <h2 className="text-xl font-black uppercase tracking-tight text-[#1a1a1a]">5. Kontakt</h2>
             <p>
-              W sprawach dotyczących Twoich danych osobowych, możesz kontaktować się bezpośrednio z twórcą serwisu,
-              <strong>Pawła Polutka</strong>, pod adresem email: pawel.perfect@gmail.com.
+              W sprawach dotyczących Twoich danych osobowych, możesz kontaktować się bezpośrednio z twórcą serwisu pod adresem email: pawel.perfect@gmail.com.
             </p>
           </section>
         </div>
