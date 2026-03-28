@@ -58,7 +58,7 @@ async function main() {
       dislikesCount: 120,
     },
     {
-      title: 'Dlaczego niezależność jest kluczowa w 2024?',
+      title: 'Nie masz psychy się zalogować',
       slug: 'independency-2024',
       description: 'W tym odcinku analizuję, dlaczego twórcy muszą szukać alternatywnych dróg finansowania poza wielkimi korporacjami.',
       videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4', // Reusing asset for seed

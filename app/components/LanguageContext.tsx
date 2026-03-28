@@ -96,6 +96,7 @@ export const translations = {
     paywallAction: 'zalogowanych',
     supportArtist: 'Wspieraj POLUTEK.PL',
     loginToWatchShort: 'Zaloguj się',
+    independencyTitle: 'Nie masz psychy się zalogować',
     patronZone: 'Strefa Patrona',
     donationDescription: 'Napiwek odblokuje dostęp do Strefy Patrona. Wsparcie pomaga w rozwoju projektu.'
   },
@@ -132,6 +133,7 @@ export const translations = {
     paywallAction: 'logged in users',
     supportArtist: 'Support POLUTEK.PL',
     loginToWatchShort: 'Log in',
+    independencyTitle: "You don't have the guts to log in",
     patronZone: 'Patrons Only',
     donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.'
   }
