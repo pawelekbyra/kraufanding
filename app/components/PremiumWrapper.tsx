@@ -211,41 +211,28 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                )}
             </div>
 
-            <div className="flex flex-col gap-2 md:gap-4 mb-4">
-               {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                  <div className="flex flex-col items-center">
-                    <div className="flex flex-col items-center">
-                      <span className="text-[clamp(2.5rem,12vw,6rem)] font-black uppercase tracking-tighter italic text-white leading-[0.8]">
-                        {t.paywallText}
-                      </span>
-                      <div className="h-px w-24 md:w-48 bg-white/10 my-3 md:my-6" />
-                      <span className="text-[clamp(2.5rem,12vw,6rem)] font-black uppercase tracking-tighter italic text-blue-400 leading-[0.8]">
-                        {t.paywallAction}
-                      </span>
-                    </div>
+            <div className="flex flex-col gap-6 md:gap-10 items-center">
+              <span className={`text-[clamp(2rem,10vw,6rem)] font-black uppercase tracking-tighter italic leading-[0.85] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
+                {subTitle}
+              </span>
 
-                    <CustomAuthTrigger>
-                       <button className="group flex flex-col items-center gap-2 mt-6 md:mt-12">
-                          <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                          <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-accent transition-colors underline decoration-accent/60 underline-offset-4 decoration-[1.5px]">
-                             {t.loginGatedText}
-                          </span>
-                       </button>
-                    </CustomAuthTrigger>
-                  </div>
-               ) : (
-                  <div className="flex flex-col gap-6 md:gap-10 items-center">
-                    <span className={`text-[clamp(2rem,10vw,6rem)] font-black uppercase tracking-tighter italic leading-[0.85] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
-                      {subTitle}
-                    </span>
-                    <a href="#donations" className="group flex flex-col items-center gap-2">
-                       <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                       <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
-                          {t.paywallUnlock}
-                       </span>
-                    </a>
-                  </div>
-               )}
+              {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
+                <CustomAuthTrigger>
+                  <button className="group flex flex-col items-center gap-2">
+                     <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
+                     <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
+                        {t.loginGatedText}
+                     </span>
+                  </button>
+                </CustomAuthTrigger>
+              ) : (
+                <a href="#donations" className="group flex flex-col items-center gap-2">
+                   <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
+                   <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
+                      {t.paywallUnlock}
+                   </span>
+                </a>
+              )}
             </div>
          </div>
       </div>
