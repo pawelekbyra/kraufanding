@@ -4,6 +4,7 @@ export interface Creator {
   id: string;
   name: string;
   slug: string;
+  email?: string | null;
   bio?: string | null;
   imageUrl?: string | null;
   bannerUrl?: string | null;

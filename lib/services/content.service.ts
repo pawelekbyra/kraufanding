@@ -36,22 +36,26 @@ export class ContentService {
   }
 
   /**
-   * Robustly fetches an admin avatar from the database.
+   * Robustly fetches admin data from the database, prioritizing users with avatars.
    */
-  static async getAdminAvatar() {
+  static async getAdminData() {
     try {
       const adminUser = await prisma.user.findFirst({
         where: {
           OR: [
-            { role: 'ADMIN', imageUrl: { not: null } },
-            { email: ADMIN_EMAIL, imageUrl: { not: null } }
+            { role: 'ADMIN' },
+            { email: { equals: ADMIN_EMAIL, mode: 'insensitive' } }
           ]
         },
-        select: { imageUrl: true }
+        orderBy: [
+            { imageUrl: 'desc' }, // Not null first
+            { createdAt: 'desc' }
+        ],
+        select: { imageUrl: true, email: true }
       });
-      return adminUser?.imageUrl || null;
+      return adminUser || { imageUrl: null, email: ADMIN_EMAIL };
     } catch {
-      return null;
+      return { imageUrl: null, email: ADMIN_EMAIL };
     }
   }
 
@@ -73,22 +77,25 @@ export class ContentService {
         }
       });
 
-      const adminAvatar = slug === 'polutek' ? await this.getAdminAvatar() : null;
+      const adminData = slug === 'polutek' ? await this.getAdminData() : null;
 
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
-        // Force sync user image if available from admin lookup
-        if (adminAvatar && (!creator.user?.imageUrl)) {
-            if (!creator.user) (creator as any).user = { imageUrl: adminAvatar };
-            else (creator as any).user.imageUrl = adminAvatar;
+        // Force sync user data if available from admin lookup
+        if (adminData && (!creator.user?.imageUrl || !creator.user?.email)) {
+            if (!creator.user) (creator as any).user = adminData;
+            else {
+                if (!creator.user.imageUrl) (creator as any).user.imageUrl = adminData.imageUrl;
+                if (!creator.user.email) (creator as any).user.email = adminData.email;
+            }
         }
       }
 
       if (!creator && slug === 'polutek') {
         return {
             ...DEFAULT_CREATOR,
-            imageUrl: adminAvatar,
-            user: { imageUrl: adminAvatar },
+            imageUrl: adminData?.imageUrl || null,
+            user: adminData,
             videos: INITIAL_VIDEOS
         };
       }
