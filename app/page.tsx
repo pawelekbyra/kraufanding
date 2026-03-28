@@ -7,6 +7,7 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { Video } from './types/video';
 import { INITIAL_VIDEOS, DEFAULT_CREATOR } from '@/lib/data/initial-content';
 import { UserService } from '@/lib/services/user.service';
+import { ContentService } from '@/lib/services/content.service';
 
 export const dynamic = 'force-dynamic';
 
