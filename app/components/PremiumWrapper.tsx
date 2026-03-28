@@ -137,7 +137,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             {isVIPGated ? (
               <Gem className="w-5 h-5 text-amber-500 mb-1" />
             ) : (
-              <LogIn className="w-5 h-5 text-blue-400 mb-1" />
+              <LogIn className="w-5 h-5 text-blue-400 mb-1" strokeWidth={2.5} />
             )}
             <div className="flex flex-col leading-[1] italic text-center">
                {isVIPGated ? (
@@ -172,20 +172,37 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
               style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
-            <div className="mb-6 opacity-30 transition-transform duration-700 group-hover:scale-110">
-               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-amber-500" /> : <LogIn size={80} strokeWidth={1} className="text-blue-400" />}
+            <div className="mb-6 transition-all duration-700 group-hover:scale-110">
+               {isVIPGated ? (
+                 <Gem size={80} strokeWidth={1} className="text-amber-500 opacity-30" />
+               ) : (
+                 <SignInButton mode="modal">
+                    <button className="hover:opacity-100 opacity-40 transition-opacity cursor-pointer">
+                      <LogIn size={80} strokeWidth={2.5} className="text-blue-400" />
+                    </button>
+                 </SignInButton>
+               )}
             </div>
 
             <div className="flex flex-col gap-2 md:gap-4 mb-4">
                {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                  <div className="flex flex-col gap-2 items-center">
-                    <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.85] drop-shadow-sm">
-                      {t.paywallText}
-                    </span>
-                    <SignInButton mode="modal">
-                      <button className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.85] hover:opacity-80 transition-opacity cursor-pointer underline decoration-[4px] md:decoration-[8px] underline-offset-[6px] md:underline-offset-[12px] decoration-blue-400">
+                  <div className="flex flex-col gap-6 items-center">
+                    <div className="flex flex-col gap-2 items-center">
+                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.85] drop-shadow-sm">
+                        {t.paywallText}
+                      </span>
+                      <span className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.85]">
                         {t.paywallAction}
-                      </button>
+                      </span>
+                    </div>
+
+                    <SignInButton mode="modal">
+                       <button className="group flex flex-col items-center gap-2">
+                          <div className="h-px w-24 bg-accent/40 group-hover:w-48 transition-all duration-500" />
+                          <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/30 group-hover:text-accent transition-colors underline decoration-accent/60 underline-offset-4 decoration-[1.5px]">
+                             {t.loginGatedText}
+                          </span>
+                       </button>
                     </SignInButton>
                   </div>
                ) : (

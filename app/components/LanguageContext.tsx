@@ -101,6 +101,7 @@ export const translations = {
     independencyTitleLoggedIn: 'WITAJ NA POLUTEK.PL',
     patronZone: 'Strefa Patrona',
     currency: 'PLN',
+    loginGatedText: 'Zaloguj się, aby obczaić dodatkowe materiały',
     donationDescription: 'Wpłaty od widzów pomagają rozwijać projekt i tworzyć kolejne materiały. W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
   },
   en: {
@@ -141,6 +142,7 @@ export const translations = {
     independencyTitleLoggedIn: 'WELCOME TO POLUTEK.PL',
     patronZone: 'Patrons Zone',
     currency: 'EUR',
+    loginGatedText: 'Log in to discover additional content',
     donationDescription: 'A tip will unlock access to the Patron Zone. Support helps in the development of the project.'
   }
 };
