@@ -36,14 +36,8 @@ export class UserService {
                     `user_${id}@polutek.pl`;
       const imageUrl = clerkUser.imageUrl || null;
       const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null;
-      const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
-      // Atomic upsert ensures the user record exists and is up-to-date
-      return await prisma.user.upsert({
-        where: { id },
-        update: { email, imageUrl, name, role },
-        create: { id, email, imageUrl, name, role, preferredLanguage: "en" }
-      });
+      return await this.syncUser(id, email, name, imageUrl);
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
       // P2021: Table missing - this is the error the user is seeing!
@@ -59,11 +53,48 @@ export class UserService {
       const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
 
       return await prisma.$transaction(async (tx) => {
-        const existing = await tx.user.findUnique({ where: { id } });
+        // 1. Check if user already exists by ID
+        const existingById = await tx.user.findUnique({ where: { id } });
+
+        // 2. Check for email conflict (existing user with same email but different ID)
+        const existingByEmail = await tx.user.findFirst({
+            where: {
+                email,
+                id: { not: id }
+            }
+        });
+
+        if (existingByEmail) {
+            console.log(`[UserService] Email conflict detected for ${email}. Migrating data from ${existingByEmail.id} to ${id}`);
+
+            // Reassign relations to new ID
+            await tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } });
+            await tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } });
+
+            // Inherit stats and referrer if not already provided
+            if (!referrerId) referrerId = existingByEmail.referredById || undefined;
+
+            // Delete old user record
+            await tx.user.delete({ where: { id: existingByEmail.id } });
+        }
 
         const user = await tx.user.upsert({
           where: { id },
-          update: { email, name, imageUrl, role },
+          update: {
+            email,
+            name,
+            imageUrl,
+            role,
+            totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
+            referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
+          },
           create: {
             id,
             email,
@@ -71,12 +102,14 @@ export class UserService {
             imageUrl,
             role,
             preferredLanguage: "en",
-            referredById: referrerId || null
+            referredById: referrerId || null,
+            totalPaid: existingByEmail?.totalPaid || 0,
+            referralCount: existingByEmail?.referralCount || 0,
           }
         });
 
-        // Only increment referralCount if this is a new user and there's a referrer
-        if (!existing && referrerId) {
+        // Only increment referralCount if this is a brand new user (no existing ID, no migration)
+        if (!existingById && !existingByEmail && referrerId) {
           try {
             await tx.user.update({
               where: { id: referrerId },
