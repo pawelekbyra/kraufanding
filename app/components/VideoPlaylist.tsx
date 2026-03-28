@@ -193,15 +193,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               )}
             </button>
 
-            <div className="flex justify-end pt-1">
-              <button
-                type="button"
-                onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-                className="text-black/30 hover:text-black font-mono font-bold text-[8px] uppercase tracking-widest transition-colors py-1"
-              >
-                {t.noMoney}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+              className="absolute bottom-0 right-0 text-black/30 hover:text-black font-mono font-bold text-[10px] uppercase tracking-widest transition-colors px-2 py-1"
+            >
+              {t.noMoney}
+            </button>
           </div>
         </div>
 
