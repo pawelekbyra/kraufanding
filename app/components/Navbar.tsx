@@ -29,30 +29,33 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="navbar bg-linen/80 backdrop-blur-md sticky top-0 z-50 border-b border-ink/5 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden shadow-sm">
       {isMobileSearchOpen ? (
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
              onClick={() => setIsMobileSearchOpen(false)}
-             className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0"
+             className="p-2 hover:bg-ink/5 rounded-none transition-colors shrink-0"
            >
-              <X size={20} />
+              <X size={20} className="text-ink" />
            </button>
            <form onSubmit={handleSearch} className="flex-1 flex">
               <input
                 type="text"
                 autoFocus
-                placeholder="Szukaj"
+                placeholder="SZUKAJ"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-bone border border-ink/10 rounded-none px-4 text-sm focus:outline-none focus:border-ink/30 text-ink placeholder:text-ink/30 uppercase tracking-widest font-mono"
               />
            </form>
         </div>
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10 hover:bg-transparent">
+              <span className="text-ink">POLUTEK</span>
+              <span className="text-oxblood">.PL</span>
+            </Link>
           </div>
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
@@ -61,26 +64,26 @@ const Navbar = () => {
             <div className="relative flex-1 flex items-center min-w-0">
               <input
                 type="text"
-                placeholder="Szukaj"
+                placeholder="SZUKAJ"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-bone/50 border border-ink/10 rounded-none px-4 text-sm focus:outline-none focus:border-ink/30 focus:ring-1 focus:ring-ink/10 transition-all placeholder:text-ink/20 text-ink font-mono uppercase tracking-widest"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
+            <button type="submit" className="h-9 bg-bone border border-ink/10 border-l-0 rounded-none px-5 hover:bg-ink/5 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+              <Search size={18} className="text-ink/50" />
             </button>
           </form>
         </div>
       </div>
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
         <div className="md:hidden flex items-center gap-1">
-            <div className="flex gap-4 items-center bg-neutral/5 rounded-full px-3 py-1 mr-1 border border-neutral/10">
+            <div className="flex gap-4 items-center bg-ink/5 rounded-none px-3 py-1 mr-1 border border-ink/5 font-mono">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
                     "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/30"
+                    language === 'pl' ? "text-oxblood" : "text-ink/30"
                   )}
                 >
                   PL
@@ -89,7 +92,7 @@ const Navbar = () => {
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
                     "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/30"
+                    language === 'en' ? "text-oxblood" : "text-ink/30"
                   )}
                 >
                   EN
@@ -97,13 +100,13 @@ const Navbar = () => {
             </div>
             <button
               onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors"
+              className="p-2 hover:bg-ink/5 rounded-none transition-colors"
             >
-                <Search size={20} />
+                <Search size={20} className="text-ink" />
             </button>
         </div>
         {isAdmin && (
-          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
+          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-black uppercase tracking-widest text-ink/40 hover:text-ink transition-colors whitespace-nowrap font-mono border border-ink/5 hover:bg-ink/5">
             Admin
           </Link>
         )}
@@ -111,15 +114,15 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 hover:bg-ink/5 rounded-none transition-colors border border-ink/10 text-ink font-mono">
               <CircleUser size={18} strokeWidth={2.5} />
-              <span className="hidden sm:inline">{language === 'pl' ? 'Zaloguj się' : 'Sign In'}</span>
+              <span className="hidden sm:inline">{language === 'pl' ? 'WEJDŹ' : 'ENTER'}</span>
             </button>
           </SignInButton>
         </SignedOut>
         <SignedIn>
           <div className="flex flex-col items-center pb-0.5">
-             <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square">
+             <div className="rounded-none inline-flex items-center justify-center bg-transparent aspect-square border border-ink/10 p-0.5 hover:border-ink/30 transition-colors">
                 <UserButton afterSignOutUrl="/" />
              </div>
           </div>

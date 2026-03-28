@@ -35,7 +35,6 @@ export default function SubscribeButton({
                 .catch(err => console.error("Error fetching subscription status:", err));
         }
 
-        // Reset state on logout
         if (!userId && mounted) {
             setIsSubscribed(false);
         }
@@ -49,37 +48,19 @@ export default function SubscribeButton({
         if (!creatorId || isPending) return;
 
         const prevSubscribed = isSubscribed;
-
-        // Optimistic UI state
         setIsSubscribed(!prevSubscribed);
         setSubscribersCount(prev => prevSubscribed ? Math.max(0, prev - 1) : prev + 1);
 
         startTransition(async () => {
             try {
-                console.log("[SubscribeButton] Toggling subscription for creator:", creatorId);
                 const result = await toggleSubscriptionAction(creatorId) as any;
-
                 if (result.error) {
-                    console.error("[SubscribeButton] Action failed:", result.error, result.message);
-                    if (result.error === 'AUTH_REQUIRED') {
-                        openSignIn();
-                    } else if (result.error === 'CLERK_ERROR') {
-                        alert(`BŁĄD KONFIGURACJI CLERK:\n\n${result.message}\n\nUpewnij się, że klucze Secret i Publishable pochodzą z tego samego projektu.`);
-                    } else if (result.error === 'DATABASE_ERROR') {
-                        alert(`BŁĄD BAZY DANYCH:\n\n${result.message}\n\nJeśli problem nadal występuje, spróbuj uruchomić:\n'npx prisma db push --force'`);
-                    } else {
-                        alert(`BŁĄD SUBSKRYPCJI: ${result.message || result.error}`);
-                    }
-                    // Rollback
                     setIsSubscribed(prevSubscribed);
                     setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
                 } else if (result.success) {
-                    console.log("[SubscribeButton] Action success:", result);
                     setIsSubscribed(result.isSubscribed ?? false);
                 }
             } catch (err: any) {
-                console.error("[SubscribeButton] Transition error:", err);
-                alert("Wystąpił błąd serwera. Spróbuj ponownie później.");
                 setIsSubscribed(prevSubscribed);
                 setSubscribersCount(prev => prevSubscribed ? prev + 1 : prev - 1);
             }
@@ -91,10 +72,10 @@ export default function SubscribeButton({
             onClick={handleSubscribe}
             disabled={isPending}
             className={cn(
-                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px]",
+                "text-[12px] font-bold rounded-none px-6 h-9 flex items-center justify-center transition-all uppercase tracking-[0.2em] min-w-[140px] font-mono border shadow-sm",
                 isSubscribed
-                    ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                    : "bg-[#0f0f0f] text-white hover:bg-[#272727]",
+                    ? "bg-transparent text-ink/30 border-ink/10 hover:border-ink/30 hover:text-ink"
+                    : "bg-ink text-linen border-ink hover:bg-oxblood hover:border-oxblood",
                 isPending && "opacity-50 cursor-wait",
                 className
             )}

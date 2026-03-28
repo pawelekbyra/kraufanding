@@ -7,28 +7,35 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        serif: ['var(--font-eb-garamond)', 'Georgia', 'serif'],
+        sans: ['var(--font-space-grotesk)', 'Inter', 'sans-serif'],
+        mono: ['var(--font-ibm-plex-mono)', 'monospace'],
       },
       colors: {
-        cream: '#FDFBF7',
-        charcoal: '#1a1a1a',
+        linen: '#F5F2ED',
+        bone: '#EBE7E0',
+        ink: '#1A1A1A',
+        oxblood: '#6B1D1D',
+        charcoal: '#2C3E50',
+        cream: '#FDFBF7', // Legacy fallback
         primary: {
-          DEFAULT: '#3b82f6',
-          dark: '#1d4ed8',
-        },
-        secondary: {
-          DEFAULT: '#8b5cf6',
-          dark: '#6d28d9',
+          DEFAULT: '#1A1A1A',
+          dark: '#000000',
         },
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
+        'ink-glow': 'ink-glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s infinite',
       },
       keyframes: {
         glow: {
-          '0%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.2)' },
-          '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)' },
+          '0%': { boxShadow: '0 0 5px rgba(26, 26, 26, 0.1)' },
+          '100%': { boxShadow: '0 0 15px rgba(26, 26, 26, 0.2)' },
+        },
+        'ink-glow': {
+          '0%': { boxShadow: '0 0 2px rgba(26, 26, 26, 0.05)' },
+          '100%': { boxShadow: '0 0 10px rgba(26, 26, 26, 0.1)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
@@ -45,11 +52,13 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
-          "neutral": "#1a1a1a",
-          "base-100": "#FDFBF7",
+          "primary": "#1A1A1A",
+          "secondary": "#6B1D1D",
+          "accent": "#6B1D1D",
+          "neutral": "#1A1A1A",
+          "base-100": "#F5F2ED",
+          "base-200": "#EBE7E0",
+          "base-300": "#DFDAD0",
           "info": "#3abff8",
           "success": "#36d399",
           "warning": "#fbbd23",
