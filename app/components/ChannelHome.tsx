@@ -146,7 +146,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                    className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
                  >
-                   {video.creator?.name || 'Anonimowy Twórca'}
+                   {video.creator?.slug === 'polutek' ? 'POLUTEK.PL' : (video.creator?.name || 'Anonimowy Twórca')}
                  </Link>
                  <div className="flex items-center gap-1">
                     <span>{mounted ? video.views?.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}</span>

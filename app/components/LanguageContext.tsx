@@ -101,7 +101,7 @@ export const translations = {
     independencyTitleLoggedIn: 'WITAJ NA POLUTEK.PL',
     patronZone: 'Strefa Patrona',
     currency: 'PLN',
-    donationDescription: 'W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
+    donationDescription: 'Wpłaty od widzów pomagają rozwijać projekt i tworzyć kolejne materiały. W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
   },
   en: {
     views: 'views',
