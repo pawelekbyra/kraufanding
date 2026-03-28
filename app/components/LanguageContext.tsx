@@ -93,7 +93,7 @@ export const translations = {
     patronOnly: 'Dla Patronów',
     becomePatron: 'Zostań Patronem',
     topSecret: 'Ściśle Tajne',
-    paywallText: 'Tylko dla',
+    paywallText: 'Strefa',
     paywallAction: 'zalogowanych',
     supportArtist: 'Wspieraj POLUTEK.PL',
     loginToWatchShort: 'Zaloguj się',
@@ -101,7 +101,7 @@ export const translations = {
     independencyTitleLoggedIn: 'WITAJ NA POLUTEK.PL',
     patronZone: 'Strefa Patrona',
     currency: 'PLN',
-    donationDescription: 'W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
+    donationDescription: 'Wpłaty od widzów pomagają rozwijać projekt i tworzyć kolejne materiały. W podziękowaniu za napiwek zapraszam do Strefy Patrona.'
   },
   en: {
     views: 'views',
@@ -133,8 +133,8 @@ export const translations = {
     patronOnly: 'Patron Only',
     becomePatron: 'Become a Patron',
     topSecret: 'TOP SECRET',
-    paywallText: 'Only for',
-    paywallAction: 'logged in users',
+    paywallText: 'Logged in',
+    paywallAction: 'zone',
     supportArtist: 'Support POLUTEK.PL',
     loginToWatchShort: 'Log in',
     independencyTitle: "You don't have the guts to log in",

@@ -176,7 +176,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                     className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
                   >
-                    {video.creator?.name || 'POLUTEK.PL'}
+                    {video.creator?.slug === 'polutek' ? 'POLUTEK.PL' : (video.creator?.name || 'POLUTEK.PL')}
                   </Link>
                   <span className="text-[12px] text-[#606060] whitespace-nowrap">
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}

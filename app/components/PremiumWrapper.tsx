@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Key, Gem } from 'lucide-react';
+import { LogIn, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
 
@@ -135,13 +135,13 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
          </div>
          <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 gap-1.5">
             {isVIPGated ? (
-              <Gem className="w-5 h-5 text-yellow-500 mb-1" />
+              <Gem className="w-5 h-5 text-amber-500 mb-1" />
             ) : (
-              <Key className="w-5 h-5 text-white/20" />
+              <LogIn className="w-5 h-5 text-blue-400 mb-1" />
             )}
             <div className="flex flex-col leading-[1] italic text-center">
                {isVIPGated ? (
-                 <span className="text-[10px] font-black text-yellow-500 uppercase tracking-tighter">
+                 <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter">
                    {t.patronZone}
                  </span>
                ) : (
@@ -149,7 +149,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                    <span className="text-[10px] font-black text-white/90 uppercase tracking-tighter">
                       {t.paywallText}
                    </span>
-                   <span className="text-[10px] font-black text-primary uppercase tracking-tighter">
+                   <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">
                       {t.paywallAction}
                    </span>
                  </>
@@ -172,8 +172,8 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
               style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
-            <div className="mb-6 opacity-20 transition-transform duration-700 group-hover:scale-110">
-               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-yellow-500" /> : <Key size={80} strokeWidth={1} className="text-white" />}
+            <div className="mb-6 opacity-30 transition-transform duration-700 group-hover:scale-110">
+               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-amber-500" /> : <LogIn size={80} strokeWidth={1} className="text-blue-400" />}
             </div>
 
             <div className="flex flex-col gap-2 md:gap-4 mb-4">
@@ -183,14 +183,14 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                       {t.paywallText}
                     </span>
                     <SignInButton mode="modal">
-                      <button className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-primary leading-[0.85] hover:opacity-80 transition-opacity cursor-pointer underline decoration-[4px] md:decoration-[8px] underline-offset-[6px] md:underline-offset-[12px] decoration-primary">
+                      <button className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-blue-400 leading-[0.85] hover:opacity-80 transition-opacity cursor-pointer underline decoration-[4px] md:decoration-[8px] underline-offset-[6px] md:underline-offset-[12px] decoration-blue-400">
                         {t.paywallAction}
                       </button>
                     </SignInButton>
                   </div>
                ) : (
                   <div className="flex flex-col gap-8 items-center">
-                    <span className={`text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-[0.85] ${isVIPGated ? 'text-yellow-500' : 'text-white'}`}>
+                    <span className={`text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-[0.85] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
                       {subTitle}
                     </span>
                     <a href="#donations" className="group flex flex-col items-center gap-2">
