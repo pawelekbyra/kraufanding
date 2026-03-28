@@ -36,6 +36,26 @@ export class ContentService {
   }
 
   /**
+   * Robustly fetches an admin avatar from the database.
+   */
+  static async getAdminAvatar() {
+    try {
+      const adminUser = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { role: 'ADMIN', imageUrl: { not: null } },
+            { email: ADMIN_EMAIL, imageUrl: { not: null } }
+          ]
+        },
+        select: { imageUrl: true }
+      });
+      return adminUser?.imageUrl || null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Retrieves a creator by their unique slug.
    * Falls back to default creator for 'polutek' if not found.
    */
@@ -53,32 +73,22 @@ export class ContentService {
         }
       });
 
+      const adminAvatar = slug === 'polutek' ? await this.getAdminAvatar() : null;
+
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
-        // Ensure even if DB creator has no image, we try to use the linked user image or find the admin user's avatar
-        if (!creator.user?.imageUrl) {
-            const adminUser = await prisma.user.findFirst({
-                where: { role: 'ADMIN', imageUrl: { not: null } },
-                select: { imageUrl: true }
-            });
-            if (adminUser) {
-                if (!creator.user) (creator as any).user = adminUser;
-                else (creator as any).user.imageUrl = adminUser.imageUrl;
-            }
+        // Force sync user image if available from admin lookup
+        if (adminAvatar && (!creator.user?.imageUrl)) {
+            if (!creator.user) (creator as any).user = { imageUrl: adminAvatar };
+            else (creator as any).user.imageUrl = adminAvatar;
         }
       }
 
       if (!creator && slug === 'polutek') {
-        // Try to find the admin user to get their avatar
-        const adminUser = await prisma.user.findFirst({
-            where: { role: 'ADMIN' },
-            select: { imageUrl: true }
-        });
-
         return {
             ...DEFAULT_CREATOR,
-            imageUrl: adminUser?.imageUrl || null,
-            user: adminUser,
+            imageUrl: adminAvatar,
+            user: { imageUrl: adminAvatar },
             videos: INITIAL_VIDEOS
         };
       }
