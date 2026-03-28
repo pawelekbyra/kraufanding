@@ -125,7 +125,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50 text-center">
+                <label className="block font-mono text-xs font-bold uppercase tracking-widest text-black/50 text-center">
                   {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${selectedCurrency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
@@ -197,7 +197,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <button
             type="button"
             onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-            className="absolute bottom-1 right-1 text-black/50 hover:text-black font-mono font-bold text-xs uppercase tracking-tighter transition-colors px-2 py-1 z-20"
+            className="absolute bottom-1 right-1 text-black/50 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors px-2 py-1 z-20"
           >
             {t.noMoney}
           </button>
