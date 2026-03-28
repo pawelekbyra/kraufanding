@@ -8,12 +8,12 @@ export default function RegulaminPage() {
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif leading-relaxed">
       <Navbar />
       <main className="max-w-3xl mx-auto px-4 py-16">
-        <h1 className="text-3xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Regulamin Serwisu Polutek.pl</h1>
+        <h1 className="text-3xl font-black uppercase tracking-tighter mb-12 border-b-2 border-[#1a1a1a]/10 pb-8">Regulamin Serwisu POLUTEK.PL</h1>
         <div className="prose prose-md prose-neutral space-y-8 text-[#1a1a1a]">
           <section>
             <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Charakter platformy</h2>
             <p>
-              Serwis polutek.pl jest prywatną, autorską platformą wideo.
+              Serwis POLUTEK.PL jest prywatną, autorską platformą wideo.
               Platforma działa w modelu dożywotniego patronatu. Dostęp do treści cyfrowych jest uzależniony od łącznej kwoty wsparcia przekazanego twórcy.
             </p>
           </section>

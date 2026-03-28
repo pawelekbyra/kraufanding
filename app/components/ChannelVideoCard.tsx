@@ -64,7 +64,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                     <div className="flex-1 min-w-0">
                         <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
                             <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
-                                {video.title}
+                                {video.slug === 'independency-2024' ? t.independencyTitle : video.title}
                             </h3>
                         </Link>
                         <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
