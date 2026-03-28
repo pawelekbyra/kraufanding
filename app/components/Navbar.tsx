@@ -52,7 +52,9 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 hover:bg-transparent">
+              <img src="/logo.png" alt="Logo" className="h-full w-auto object-contain" />
+            </Link>
           </div>
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
