@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { CircleUser, Gem } from 'lucide-react';
+import { Key, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
 
@@ -137,7 +137,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             {isVIPGated ? (
               <Gem className="w-5 h-5 text-yellow-500 mb-1" />
             ) : (
-              <CircleUser className="w-5 h-5 text-white/20" />
+              <Key className="w-5 h-5 text-white/20" />
             )}
             <div className="flex flex-col leading-[1] italic text-center">
                {isVIPGated ? (
@@ -173,7 +173,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
             <div className="mb-6 opacity-20 transition-transform duration-700 group-hover:scale-110">
-               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-yellow-500" /> : <CircleUser size={80} strokeWidth={1} className="text-white" />}
+               {isVIPGated ? <Gem size={80} strokeWidth={1} className="text-yellow-500" /> : <Key size={80} strokeWidth={1} className="text-white" />}
             </div>
 
             <div className="flex flex-col gap-2 md:gap-4 mb-4">
