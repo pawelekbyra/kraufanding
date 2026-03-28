@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { LogIn, Gem } from 'lucide-react';
+import { Bird, Gem } from 'lucide-react';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
 
@@ -137,7 +137,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             {isVIPGated ? (
               <Gem className="w-5 h-5 text-amber-500 mb-1" />
             ) : (
-              <LogIn className="w-5 h-5 text-blue-400 mb-1" strokeWidth={2.5} />
+              <Bird className="w-5 h-5 text-blue-400 mb-1" />
             )}
             <div className="flex flex-col leading-[1] italic text-center">
                {isVIPGated ? (
@@ -172,13 +172,13 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
               style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
-            <div className="mb-6 transition-all duration-700 group-hover:scale-110">
+            <div className="mb-8 transition-all duration-700 group-hover:scale-110">
                {isVIPGated ? (
-                 <Gem size={80} strokeWidth={1} className="text-amber-500 opacity-30" />
+                 <Gem size={80} strokeWidth={1} className="text-amber-500 opacity-20" />
                ) : (
                  <SignInButton mode="modal">
-                    <button className="hover:opacity-100 opacity-40 transition-opacity cursor-pointer">
-                      <LogIn size={80} strokeWidth={2.5} className="text-blue-400" />
+                    <button className="hover:opacity-40 opacity-20 transition-opacity cursor-pointer">
+                      <Bird size={80} strokeWidth={1} className="text-blue-400" />
                     </button>
                  </SignInButton>
                )}
@@ -198,7 +198,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
 
                     <SignInButton mode="modal">
                        <button className="group flex flex-col items-center gap-2">
-                          <div className="h-px w-24 bg-accent/40 group-hover:w-48 transition-all duration-500" />
+                          <div className="h-px w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
                           <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/30 group-hover:text-accent transition-colors underline decoration-accent/60 underline-offset-4 decoration-[1.5px]">
                              {t.loginGatedText}
                           </span>
