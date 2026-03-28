@@ -13,7 +13,15 @@ export class ContentService {
     try {
       const video = await prisma.video.findUnique({
         where: { id: videoId },
-        include: { creator: true }
+        include: {
+          creator: {
+            include: {
+              user: {
+                select: { imageUrl: true }
+              }
+            }
+          }
+        }
       });
 
       if (!video) {
@@ -36,6 +44,9 @@ export class ContentService {
       const creator = await prisma.creator.findUnique({
         where: { slug },
         include: {
+          user: {
+            select: { imageUrl: true }
+          },
           videos: {
             orderBy: { createdAt: 'desc' }
           }

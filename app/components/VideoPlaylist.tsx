@@ -14,7 +14,7 @@ interface VideoPlaylistProps {
 const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState<number | ''>(10);
+  const [amount, setAmount] = useState<number | ''>(25);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
@@ -43,8 +43,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
       return;
     }
 
-    if (!amount || amount < 5) {
-      alert(language === 'pl' ? `Minimalna kwota wsparcia to 5 ${t.currency}` : `Minimum support amount is 5 ${t.currency}`);
+    if (!amount || amount < 10) {
+      alert(language === 'pl' ? `Minimalna kwota wsparcia to 10 ${t.currency}` : `Minimum support amount is 10 ${t.currency}`);
       return;
     }
 
@@ -101,7 +101,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
               <div className="space-y-2 pt-2">
                 <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50">
-                  {language === 'pl' ? `KWOTA WSPARCIA (MIN 5.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN 5.00 ${t.currency})`}
+                  {language === 'pl' ? `KWOTA WSPARCIA (MIN 10.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN 10.00 ${t.currency})`}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -109,7 +109,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   </div>
                   <input
                     type="number"
-                    min="5"
+                    min="10"
                     step="1"
                     value={amount}
                     onChange={(e) => {
@@ -120,9 +120,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     placeholder="00.00"
                   />
                 </div>
-                {typeof amount === 'number' && amount < 5 && (
+                {typeof amount === 'number' && amount < 10 && (
                   <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
-                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (5 ${t.currency})` : `Error: Minimum amount not met (5 ${t.currency})`}
+                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (10 ${t.currency})` : `Error: Minimum amount not met (10 ${t.currency})`}
                   </p>
                 )}
               </div>
@@ -131,8 +131,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             <button
               type="button"
               onClick={onSupport}
-              disabled={isLoading || amount === '' || amount < 5}
-              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 5 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              disabled={isLoading || amount === '' || amount < 10}
+              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < 10 ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
