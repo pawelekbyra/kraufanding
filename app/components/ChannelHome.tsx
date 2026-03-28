@@ -136,7 +136,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 className="hover:opacity-80 transition-opacity"
               >
                 <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
-                   {video.slug === 'independency-2024' ? t.independencyTitle : video.title}
+                   {video.slug === 'independency-2024'
+                    ? (isLoggedIn ? t.independencyTitleLoggedIn : t.independencyTitle)
+                    : video.title}
                 </h4>
               </Link>
               <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
