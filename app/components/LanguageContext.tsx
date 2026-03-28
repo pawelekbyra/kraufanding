@@ -160,7 +160,7 @@ export const translations = {
     independencyTitle: "You don't have the guts to log in",
     independencyTitleLoggedIn: 'WELCOME TO POLUTEK.PL',
     patronZone: "Patrons' Zone",
-    currency: 'EUR',
+    currency: 'USD',
     loginGatedText: 'Log in to discover additional content',
     donationDescription: "A tip will unlock access to the Patrons' Zone. Support helps in the development of the project.",
     paywallUnlock: 'Send a tip to join',

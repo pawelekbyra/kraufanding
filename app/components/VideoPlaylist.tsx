@@ -14,9 +14,14 @@ interface VideoPlaylistProps {
 const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState(t.currency);
   const minAmount = language === 'pl' ? 10 : 5;
   const [amount, setAmount] = useState<number | ''>(language === 'pl' ? 25 : 10);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedCurrency(t.currency);
+  }, [t.currency]);
   const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
@@ -57,7 +62,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             amount: Number(amount),
-            currency: t.currency.toLowerCase(),
+            currency: selectedCurrency.toLowerCase(),
             title: videoTitle || "Tip The Guy / Patron"
           }),
           cache: 'no-store'
@@ -102,15 +107,38 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
               <div className="space-y-2 pt-2">
                 <label className="block font-mono text-[10px] font-bold uppercase tracking-widest text-black/50 text-center">
-                  {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${t.currency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${t.currency})`}
+                  {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${selectedCurrency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
-                    <span className="font-mono text-xl font-bold text-black/20">{t.currency}</span>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 right-0 flex items-center">
+                    {language === 'pl' ? (
+                      <div className="pr-6 font-mono text-xl font-bold text-black/20 select-none pointer-events-none">
+                        {selectedCurrency}
+                      </div>
+                    ) : (
+                      <select
+                        value={selectedCurrency}
+                        onChange={(e) => setSelectedCurrency(e.target.value)}
+                        className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-black/40 focus:text-black focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                        aria-label="Select Currency"
+                      >
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="CHF">CHF</option>
+                      </select>
+                    )}
+                    {language !== 'pl' && (
+                      <div className="absolute right-4 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
+                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="square"/>
+                         </svg>
+                      </div>
+                    )}
                   </div>
                   <input
                     type="number"
-                    min="10"
+                    min="5"
                     step="1"
                     value={amount}
                     onChange={(e) => {
@@ -122,8 +150,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                   />
                 </div>
                 {typeof amount === 'number' && amount < minAmount && (
-                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse">
-                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (${minAmount} ${t.currency})` : `Error: Minimum amount not met (${minAmount} ${t.currency})`}
+                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse text-center">
+                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (${minAmount} ${selectedCurrency})` : `Error: Minimum amount not met (${minAmount} ${selectedCurrency})`}
                   </p>
                 )}
               </div>
