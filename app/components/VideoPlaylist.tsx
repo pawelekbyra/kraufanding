@@ -116,7 +116,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border-2 border-black rounded-none py-3 px-4 font-mono text-2xl text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-white border-2 border-black rounded-none py-3 px-14 font-mono text-2xl text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder="00.00"
                   />
                 </div>
