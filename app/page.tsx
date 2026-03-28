@@ -93,7 +93,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   const userProfile = userId ? {
       id: userId,
       email: user?.primaryEmailAddress?.emailAddress || '',
-      name: userDb?.name || user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null,
+      name: userDb?.name || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null),
       imageUrl: user?.imageUrl || null,
       totalPaid: userDb?.totalPaid || 0,
       initialInteraction,
