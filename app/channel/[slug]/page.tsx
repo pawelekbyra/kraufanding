@@ -59,7 +59,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
     : (creator.bio || "Witamy na oficjalnym kanale.");
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#0f0f0f] font-serif">
+    <div className="min-h-screen bg-base-100 text-base-content font-serif">
       <Navbar />
 
       {/* CHANNEL COVER */}
@@ -85,7 +85,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       {/* CHANNEL HEADER */}
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
+          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-base-content/10 overflow-hidden bg-base-100 shrink-0 shadow-sm">
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
@@ -96,12 +96,12 @@ export default async function ChannelPage({ params }: { params: { slug: string }
             <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">
               {creator.slug === 'polutek' ? <BrandName /> : displayName}
             </h1>
-            <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
-               <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
+            <div className="text-[14px] text-base-content/60 flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
+               <span className="font-bold text-base-content">@{creator.slug}</span>
                <span>•</span>
                <span>{allVideos.length} filmów</span>
             </div>
-            <p className="text-[14px] text-[#606060] line-clamp-1 max-w-2xl font-sans mt-1">
+            <p className="text-[14px] text-base-content/60 line-clamp-1 max-w-2xl font-sans mt-1">
                {displayBio}
             </p>
             <div className="pt-3 flex flex-wrap justify-center md:justify-start gap-4 items-center">
@@ -115,13 +115,13 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         </div>
 
         {/* CHANNEL TABS */}
-        <div className="flex border-b border-[#1a1a1a]/10 mt-6 overflow-x-auto no-scrollbar gap-8">
-           <button className="pb-3 border-b-2 border-[#0f0f0f] text-[14px] font-bold uppercase tracking-widest">Wideo</button>
-           <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Playlisty</button>
-           <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Społeczność</button>
-           <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Informacje</button>
+        <div className="flex border-b border-base-content/10 mt-6 overflow-x-auto no-scrollbar gap-8">
+           <button className="pb-3 border-b-2 border-base-content text-[14px] font-bold uppercase tracking-widest">Wideo</button>
+           <button className="pb-3 text-base-content/60 text-[14px] font-bold uppercase tracking-widest hover:text-base-content transition-colors">Playlisty</button>
+           <button className="pb-3 text-base-content/60 text-[14px] font-bold uppercase tracking-widest hover:text-base-content transition-colors">Społeczność</button>
+           <button className="pb-3 text-base-content/60 text-[14px] font-bold uppercase tracking-widest hover:text-base-content transition-colors">Informacje</button>
            <div className="ml-auto pb-3 flex items-center gap-4">
-              <Search size={20} className="text-[#606060] cursor-pointer" />
+              <Search size={20} className="text-base-content/60 cursor-pointer" />
            </div>
         </div>
 

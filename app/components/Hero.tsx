@@ -147,10 +147,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   );
 
   return (
-    <section className="bg-[#FDFBF7]">
+    <section className="bg-base-100">
       <div className="w-full">
         {/* FEATURED MEDIA */}
-        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
+        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-base-content/5 mb-3 group bg-black">
           <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             <VideoPlayer video={video} />
           </PremiumWrapper>
@@ -158,7 +158,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
         {/* INFO SECTION */}
         <div className="space-y-3 pt-3">
-          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
+          <h2 className="text-[20px] font-bold text-base-content tracking-tight leading-[1.2] uppercase">
             {video.slug === 'independency-2024'
               ? (userId ? (
                 <>{t.welcomeOn} <BrandName /></>
@@ -170,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-3 min-w-0">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-10 h-10 rounded-full bg-base-content/5 border border-base-content/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
@@ -181,11 +181,11 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                <div className="min-w-0 pr-1 flex flex-col">
                   <Link
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                    className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
+                    className="font-bold text-base-content text-[16px] leading-tight truncate block hover:underline"
                   >
                     {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || <BrandName />)}
                   </Link>
-                  <span className="text-[12px] text-[#606060] whitespace-nowrap">
+                  <span className="text-[12px] text-base-content/60 whitespace-nowrap">
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
                   </span>
                </div>
@@ -239,25 +239,25 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#000000]/5 rounded-xl p-3 hover:bg-[#000000]/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-base-content/5 rounded-xl p-3 hover:bg-base-content/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+              <span className="text-[14px] font-bold text-base-content">
                  {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+              <span className="text-[14px] font-bold text-base-content">
                  {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
            <div className={cn(
-              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap font-sans",
+              "text-[14px] text-base-content leading-relaxed whitespace-pre-wrap font-sans",
               !isExpanded && "line-clamp-2"
            )}>
               {video.description || t.noDescription}
            </div>
 
            <button
-             className="text-[14px] font-bold text-[#0f0f0f] mt-1 hover:underline block"
+             className="text-[14px] font-bold text-base-content mt-1 hover:underline block"
              onClick={(e) => {
                e.stopPropagation();
                setIsExpanded(!isExpanded);

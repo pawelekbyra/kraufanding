@@ -107,7 +107,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
               "group flex gap-2 p-0.5 rounded-lg transition-colors relative",
-              isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+              isCurrent ? "bg-base-content/10" : "hover:bg-base-content/5"
             )}
           >
             <Link
@@ -136,7 +136,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 scroll={false}
                 className="hover:opacity-80 transition-opacity"
               >
-                <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
+                <h4 className="text-[14px] font-bold text-base-content line-clamp-2 leading-[1.2] uppercase tracking-tight">
                    {video.slug === 'independency-2024'
                     ? (isLoggedIn ? (
                         <>{t.welcomeOn} <BrandName /></>
@@ -144,10 +144,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     : video.title}
                 </h4>
               </Link>
-              <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
+              <div className="text-[12px] text-base-content/60 flex flex-col mt-0.5">
                  <Link
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                   className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
+                   className="hover:text-base-content transition-colors hover:underline w-fit relative z-20"
                  >
                    {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || 'Anonimowy Twórca')}
                  </Link>
@@ -177,8 +177,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       // Rule: Donate section always appears after the 2nd item (index 1) in the visual list
       if (i === 1) {
         acc.push(
-          <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">{t.donate}</h3>
+          <div key="donate" className="py-2 border-y border-base-content/5">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 mb-1.5 px-2">{t.donate}</h3>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
               />
@@ -190,7 +190,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   }, []);
 
   return (
-    <main className="bg-[#FDFBF7] min-h-screen">
+    <main className="bg-base-100 min-h-screen">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
 
 
@@ -202,12 +202,12 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               initialIsSubscribed={userProfile?.initialIsSubscribed}
             />
 
-            <div className="lg:hidden flex border-b border-[#1a1a1a]/5 mt-4">
+            <div className="lg:hidden flex border-b border-base-content/5 mt-4">
                <button
                  onClick={() => setActiveTab('comments')}
                  className={cn(
                    "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-base-content/40"
                  )}
                >
                  {t.comments}
@@ -216,7 +216,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('videos')}
                  className={cn(
                    "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-base-content/40"
                  )}
                >
                  Video
@@ -255,9 +255,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-3">
-            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+            <div className="flex justify-between items-end border-b border-base-content/5 pb-1 mb-1.5">
               <div className="flex items-center gap-3">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-base-content">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
                 </h3>
               </div>
@@ -266,7 +266,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
                     "text-xs font-black tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'pl' ? "text-primary border-b-2 border-primary pb-0.5" : "text-base-content/30 hover:text-base-content/60"
                   )}
                 >
                   PL
@@ -275,7 +275,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
                     "text-xs font-black tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'en' ? "text-primary border-b-2 border-primary pb-0.5" : "text-base-content/30 hover:text-base-content/60"
                   )}
                 >
                   EN
@@ -286,10 +286,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <>
                   {playlistItems}
                   {searchQuery && (
-                    <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
+                    <div className="pt-4 border-t border-base-content/5 mt-4">
                       <Link
                         href="/"
-                        className="btn btn-sm btn-block rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
+                        className="btn btn-sm btn-block rounded-none border-2 border-base-content bg-base-100 text-base-content hover:bg-base-content hover:text-base-100 transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
                       >
                         {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
                       </Link>
@@ -303,7 +303,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </p>
                     <Link
                       href="/"
-                      className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm px-6"
+                      className="btn btn-sm rounded-none border-2 border-base-content bg-base-100 text-base-content hover:bg-base-content hover:text-base-100 transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm px-6"
                     >
                       {t.showAll}
                     </Link>

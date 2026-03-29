@@ -64,7 +64,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                 <div className="flex gap-2 relative z-10">
                     <div className="flex-1 min-w-0">
                         <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
-                            <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
+                            <h3 className="text-[14px] font-bold text-base-content leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
                                 {video.slug === 'independency-2024'
                                     ? (isLoggedIn ? (
                                         <>{t.welcomeOn} <BrandName /></>
@@ -72,7 +72,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                                     : video.title}
                             </h3>
                         </Link>
-                        <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
+                        <div className="text-[12px] text-base-content/60 font-sans leading-relaxed">
                             <div className="flex items-center gap-1">
                                 <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
                                 {video.publishedAt && (
@@ -98,7 +98,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
+                    <button className="h-fit p-1 hover:bg-base-content/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
                         <MoreVertical size={20} />
                     </button>
                 </div>
