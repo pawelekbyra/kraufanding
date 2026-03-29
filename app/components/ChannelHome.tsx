@@ -139,7 +139,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
                    {video.slug === 'independency-2024'
                     ? (isLoggedIn ? (
-                        <>WITAJ NA <BrandName /></>
+                        <>{t.welcomeOn} <BrandName /></>
                     ) : t.independencyTitle)
                     : video.title}
                 </h4>

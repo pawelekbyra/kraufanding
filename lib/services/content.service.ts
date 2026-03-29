@@ -100,6 +100,8 @@ export class ContentService {
                 if (adminData.imageUrl) (creator as any).user.imageUrl = adminData.imageUrl;
                 if (adminData.email) (creator as any).user.email = adminData.email;
             }
+            // Explicitly set creator image from user image
+            if (creator.user?.imageUrl) (creator as any).imageUrl = creator.user.imageUrl;
         }
       }
 

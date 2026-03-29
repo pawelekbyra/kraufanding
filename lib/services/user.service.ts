@@ -108,6 +108,17 @@ export class UserService {
           }
         });
 
+        // 3. If this is the admin, ensure the 'polutek' creator profile is synced with their profile
+        if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            await tx.creator.updateMany({
+                where: { slug: 'polutek' },
+                data: {
+                    name: 'POLUTEK.PL',
+                    userId: id // Ensure it points to the correct current Clerk ID
+                }
+            });
+        }
+
         // Only increment referralCount if this is a brand new user (no existing ID, no migration)
         if (!existingById && !existingByEmail && referrerId) {
           try {
