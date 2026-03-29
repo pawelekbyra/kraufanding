@@ -12,6 +12,10 @@ const config = {
       colors: {
         cream: '#FDFBF7',
         charcoal: '#1a1a1a',
+        linen: '#F5F2ED',
+        bone: '#EBE7E0',
+        ink: '#1A1A1A',
+        oxblood: '#6B1D1D',
         primary: {
           DEFAULT: '#3b82f6',
           dark: '#1d4ed8',
