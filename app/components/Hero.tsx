@@ -11,6 +11,7 @@ import SubscribeButton from './SubscribeButton';
 import VideoPlayer from './VideoPlayer';
 import { toggleVideoLike, toggleVideoDislike } from '@/lib/actions/interactions';
 import { useLanguage } from './LanguageContext';
+import BrandName from './BrandName';
 
 interface HeroProps {
   video: Video;
@@ -159,7 +160,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         <div className="space-y-3 pt-3">
           <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
             {video.slug === 'independency-2024'
-              ? (userId ? t.independencyTitleLoggedIn : t.independencyTitle)
+              ? (userId ? (
+                <>WITAJ NA <BrandName /></>
+              ) : t.independencyTitle)
               : video.title}
           </h2>
 
@@ -170,7 +173,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
-                    src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK.PL'}`}
+                    src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
                     alt={video.creator?.name}
                     className="w-full h-full object-cover"
                   />
@@ -180,7 +183,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                     className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
                   >
-                    {video.creator?.slug === 'polutek' ? 'POLUTEK.PL' : (video.creator?.name || 'POLUTEK.PL')}
+                    {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || <BrandName />)}
                   </Link>
                   <span className="text-[12px] text-[#606060] whitespace-nowrap">
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}

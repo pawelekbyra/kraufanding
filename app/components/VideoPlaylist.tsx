@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
+import BrandName from './BrandName';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -116,7 +117,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.supportArtist}
+              {language === 'pl' ? (
+                <>WSPIERAJ <BrandName /></>
+              ) : (
+                <>SUPPORT <BrandName /></>
+              )}
             </h3>
 
             <div className="space-y-4">

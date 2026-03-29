@@ -93,11 +93,12 @@ export class ContentService {
       if (slug === 'polutek' && creator) {
         creator.name = 'POLUTEK.PL';
         // Force sync user data if available from admin lookup
-        if (adminData && (!creator.user?.imageUrl || !creator.user?.email)) {
+        if (adminData) {
             if (!creator.user) (creator as any).user = adminData;
             else {
-                if (!creator.user.imageUrl) (creator as any).user.imageUrl = adminData.imageUrl;
-                if (!creator.user.email) (creator as any).user.email = adminData.email;
+                // Prioritize fresh data from admin lookup
+                if (adminData.imageUrl) (creator as any).user.imageUrl = adminData.imageUrl;
+                if (adminData.email) (creator as any).user.email = adminData.email;
             }
         }
       }
