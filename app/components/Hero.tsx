@@ -170,19 +170,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-3 min-w-0">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className={cn(
-                   "shrink-0 hover:opacity-80 transition-opacity flex items-center justify-center",
-                   video.creator?.slug === 'polutek'
-                     ? "h-11 w-auto"
-                     : "w-10 h-10 overflow-hidden rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10"
-                 )}
+                 className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
-                    src={video.creator?.slug === 'polutek' ? "/logo-wektorowe.svg" : (video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`)}
+                    src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
                     alt={video.creator?.name}
-                    className={cn(
-                      video.creator?.slug === 'polutek' ? "h-full w-auto object-contain" : "w-full h-full object-cover"
-                    )}
+                    className="w-full h-full object-cover"
                   />
                </Link>
                <div className="min-w-0 pr-1 flex flex-col">
