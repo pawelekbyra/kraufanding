@@ -1,7 +1,7 @@
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
 import { Suspense } from 'react';
-import { Inter, Gloria_Hallelujah } from 'next/font/google';
+import { Inter, Gluten } from 'next/font/google';
 import "./globals.css";
 
 const inter = Inter({
@@ -10,11 +10,11 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const gloriaHallelujah = Gloria_Hallelujah({
+const gluten = Gluten({
   weight: '400',
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-gloria-hallelujah',
+  variable: '--font-gluten',
 });
 
 export const metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="polutek" className={`${inter.variable} ${gloriaHallelujah.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="polutek" className={`${inter.variable} ${gluten.variable}`} suppressHydrationWarning>
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
         <Suspense>
           <Providers>
