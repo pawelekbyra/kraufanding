@@ -9,6 +9,7 @@ const config = {
       fontFamily: {
         serif: ['var(--font-eb-garamond)', 'serif'],
         sans: ['var(--font-space-grotesk)', 'sans-serif'],
+        handwriting: ['var(--font-gluten)', 'cursive'],
       },
       colors: {
         cream: '#FDFBF7',
