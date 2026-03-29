@@ -72,7 +72,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
                <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 opacity-50" />
                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                   {creator.slug === 'polutek' ? (
-                    <BrandName className="text-[10vw] rotate-2" dotPlClassName="text-primary" />
+                    <BrandName className="text-[10vw] rotate-2" />
                   ) : (
                     <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{displayName}</span>
                   )}
