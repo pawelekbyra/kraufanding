@@ -54,7 +54,7 @@ const Navbar = () => {
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10 flex items-center">
-              <img src="/obok-loga.png" alt="Logo Icon" className="h-9 w-auto object-contain mr-0" />
+              <img src="/obok-loga.png" alt="Logo Icon" className="h-9 w-auto object-contain -mr-1.5" />
               <BrandName className="text-lg md:text-xl" />
             </Link>
           </div>
