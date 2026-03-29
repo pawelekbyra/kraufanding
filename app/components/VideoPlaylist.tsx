@@ -31,6 +31,18 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const minAmount = getMinAmount(selectedCurrency);
   const [amount, setAmount] = useState<number | ''>(getSuggestedAmount(t.currency));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [receiptMeta, setReceiptMeta] = useState({ serial: '', date: '' });
+
+  useEffect(() => {
+    setReceiptMeta({
+      serial: `PLTK-${Math.random().toString(36).toUpperCase().substring(2, 10)}`,
+      date: new Date().toLocaleDateString(language === 'pl' ? 'pl-PL' : 'en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
+    });
+  }, [language]);
 
   useEffect(() => {
     setSelectedCurrency(t.currency);
@@ -109,18 +121,29 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#FDFBF7] border-2 border-black p-6 pb-10 shadow-brutalist relative overflow-hidden">
-          <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
+        <div className="bg-linen border-2 border-black p-6 pb-12 shadow-brutalist relative overflow-hidden">
+          <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-oxblood/20 rounded-full flex items-center justify-center rotate-12 opacity-30 pointer-events-none">
+            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-oxblood">THANK<br/>YOU!</span>
           </div>
 
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
+            <div className="flex justify-between items-start border-b border-dashed border-ink/10 pb-2 mb-4">
+               <div className="flex flex-col">
+                  <span className="font-mono text-[10px] text-ink/40 leading-none">SERIAL NO.</span>
+                  <span className="font-mono text-[10px] font-bold text-ink/60">{receiptMeta.serial}</span>
+               </div>
+               <div className="flex flex-col items-end">
+                  <span className="font-mono text-[10px] text-ink/40 leading-none">DATE</span>
+                  <span className="font-mono text-[10px] font-bold text-ink/60">{receiptMeta.date}</span>
+               </div>
+            </div>
+
+            <h3 className="text-xl font-serif font-black text-ink uppercase tracking-tighter italic">
               {t.supportArtist}
             </h3>
 
-            <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
+            <div className="space-y-4 border-b border-dashed border-ink/10 pb-6">
+              <p className="font-serif text-sm leading-relaxed text-ink/80 italic">
                 {t.donationDescription}
               </p>
 
@@ -128,7 +151,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 <label className="block font-mono text-xs font-bold uppercase tracking-widest text-black/50 text-center">
                   {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${selectedCurrency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
                 </label>
-                <div className="relative group">
+                <div className="relative group pt-2">
                   <div className="absolute inset-y-0 right-0 flex items-center">
                     {language === 'pl' ? (
                       <div className="pr-6 font-mono text-xl font-bold text-black/20 select-none pointer-events-none">
@@ -194,13 +217,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-            className="absolute bottom-1 right-1 text-black/50 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors px-2 py-1 z-20"
-          >
-            {t.noMoney}
-          </button>
+          <div className="absolute bottom-1 left-0 right-0 flex justify-center pointer-events-none">
+            <button
+              type="button"
+              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+              className="text-ink/30 hover:text-ink/60 font-mono font-bold text-[10px] uppercase tracking-widest transition-all px-4 py-1 z-20 pointer-events-auto border-t border-dashed border-ink/5"
+            >
+              {t.noMoney}
+            </button>
+          </div>
         </div>
 
         {userId && (
