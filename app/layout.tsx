@@ -1,13 +1,25 @@
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
 import { Suspense } from 'react';
-import { Inter, Gluten } from 'next/font/google';
+import { Inter, EB_Garamond, Space_Grotesk, Gluten } from 'next/font/google';
 import "./globals.css";
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
+});
+
+const ebGaramond = EB_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-eb-garamond',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
 });
 
 const gluten = Gluten({
@@ -28,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="polutek" className={`${inter.variable} ${gluten.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="polutek" className={`${inter.variable} ${ebGaramond.variable} ${spaceGrotesk.variable} ${gluten.variable}`} suppressHydrationWarning>
       <body className="font-serif bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
         <Suspense>
           <Providers>

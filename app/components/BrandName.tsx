@@ -4,12 +4,17 @@ import { cn } from '@/lib/utils';
 interface BrandNameProps {
   className?: string;
   dotPlClassName?: string;
+  variant?: 'handwriting' | 'classic';
 }
 
-const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName }) => {
+const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, variant = 'handwriting' }) => {
+  const isClassic = variant === 'classic';
   return (
-    <span className={cn("font-handwriting font-bold tracking-tighter uppercase", className)}>
-      POLUTEK<span className={cn("text-[#1f7b88]", dotPlClassName)}>.PL</span>
+    <span className={cn(
+      isClassic ? "font-sans font-black tracking-tighter uppercase" : "font-handwriting font-bold tracking-tighter uppercase",
+      className
+    )}>
+      POLUTEK<span className={cn("text-[#086f7a]", dotPlClassName)}>.PL</span>
     </span>
   );
 };

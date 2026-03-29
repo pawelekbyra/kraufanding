@@ -117,7 +117,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.supportBrand} <BrandName />
+              {t.supportBrand} <BrandName variant="classic" />
             </h3>
 
             <div className="space-y-4">

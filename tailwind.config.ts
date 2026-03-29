@@ -7,8 +7,8 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
-        sans: ['Inter', 'Space Grotesk', 'sans-serif'],
+        serif: ['var(--font-eb-garamond)', 'serif'],
+        sans: ['var(--font-space-grotesk)', 'sans-serif'],
         handwriting: ['var(--font-gluten)', 'cursive'],
       },
       colors: {
