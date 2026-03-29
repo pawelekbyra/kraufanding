@@ -9,7 +9,7 @@ const config = {
       fontFamily: {
         serif: ['Georgia', 'serif'],
         sans: ['Inter', 'Space Grotesk', 'sans-serif'],
-        handwriting: ['var(--font-shadows-into-light)', 'cursive'],
+        handwriting: ['var(--font-gloria-hallelujah)', 'cursive'],
       },
       colors: {
         cream: '#FDFBF7',
