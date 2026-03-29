@@ -91,15 +91,14 @@ export default async function ChannelPage({ params }: { params: { slug: string }
           <div className={cn(
              "shrink-0 flex items-center justify-center",
              creator.slug === 'polutek'
-               ? "w-28 h-28 md:w-44 md:h-44"
+               ? "h-28 md:h-44 w-auto"
                : "w-24 h-24 md:w-40 md:h-40 overflow-hidden rounded-full border border-black/10 bg-[#1a1a1a]/5 shadow-sm"
            )}>
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
                className={cn(
-                 "w-full h-full",
-                 creator.slug === 'polutek' ? "object-contain" : "object-cover"
+                 creator.slug === 'polutek' ? "h-full w-auto object-contain" : "w-full h-full object-cover"
                )}
              />
           </div>

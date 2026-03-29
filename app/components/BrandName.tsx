@@ -11,7 +11,7 @@ const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, varian
   const isClassic = variant === 'classic';
   return (
     <span className={cn(
-      isClassic ? "font-sans font-black tracking-tighter uppercase" : "font-handwriting font-bold tracking-tighter uppercase",
+      isClassic ? "font-sans font-black tracking-tighter uppercase" : "font-handwriting font-bold uppercase",
       className
     )}>
       POLUTEK<span className={cn("text-[#086f7a]", dotPlClassName)}>.PL</span>

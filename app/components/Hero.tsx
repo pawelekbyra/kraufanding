@@ -173,7 +173,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  className={cn(
                    "shrink-0 hover:opacity-80 transition-opacity flex items-center justify-center",
                    video.creator?.slug === 'polutek'
-                     ? "w-11 h-11"
+                     ? "h-11 w-auto"
                      : "w-10 h-10 overflow-hidden rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10"
                  )}
                >
@@ -181,8 +181,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     src={video.creator?.slug === 'polutek' ? "/logo-wektorowe.svg" : (video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`)}
                     alt={video.creator?.name}
                     className={cn(
-                      "w-full h-full",
-                      video.creator?.slug === 'polutek' ? "object-contain" : "object-cover"
+                      video.creator?.slug === 'polutek' ? "h-full w-auto object-contain" : "w-full h-full object-cover"
                     )}
                   />
                </Link>
