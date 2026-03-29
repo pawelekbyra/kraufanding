@@ -8,7 +8,7 @@ interface BrandNameProps {
 
 const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName }) => {
   return (
-    <span className={cn("font-black tracking-tighter uppercase", className)}>
+    <span className={cn("font-handwriting font-bold tracking-tighter uppercase", className)}>
       POLUTEK<span className={cn("text-[#1f7b88]", dotPlClassName)}>.PL</span>
     </span>
   );
