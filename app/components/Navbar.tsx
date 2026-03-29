@@ -54,7 +54,6 @@ const Navbar = () => {
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center">
-              <img src="/logo-wektorowe.svg" alt="Logo Icon" className="h-11 w-auto object-contain -mr-[5px]" />
               <BrandName className="text-lg md:text-xl" />
             </Link>
           </div>

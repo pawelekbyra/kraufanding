@@ -173,7 +173,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
-                    src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
+                    src={video.creator?.slug === 'polutek' ? "/logo-wektorowe.svg" : (video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`)}
                     alt={video.creator?.name}
                     className="w-full h-full object-cover"
                   />
