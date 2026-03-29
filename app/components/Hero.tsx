@@ -161,7 +161,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
           <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
             {video.slug === 'independency-2024'
               ? (userId ? (
-                <>WITAJ NA <BrandName /></>
+                <>{t.welcomeOn} <BrandName /></>
               ) : t.independencyTitle)
               : video.title}
           </h2>
