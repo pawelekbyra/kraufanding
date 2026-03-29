@@ -13,11 +13,19 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home({ searchParams }: { searchParams: { v?: string, q?: string } }) {
   const query = searchParams.q?.trim().toLowerCase();
+  const { userId } = auth();
 
-  // 0. Try to fetch the admin user to get the latest data for 'polutek' fallback
+  // 0. Trigger user sync immediately if logged in.
+  // This ensures that if the admin is visiting, their Clerk profile (avatar) is synced BEFORE we fetch adminData.
+  let userDb = null;
+  if (userId) {
+      userDb = await UserService.getOrCreateUser(userId).catch(() => null);
+  }
+
+  // 1. Try to fetch the admin user to get the latest data for 'polutek' fallback
   const adminData = await ContentService.getAdminData();
 
-  // 1. Fetch all videos from DB
+  // 2. Fetch all videos from DB
   let allVideosDb = await prisma.video.findMany({
     include: {
       creator: {
@@ -66,18 +74,13 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
   const selectedVideo = allVideos.find(v => v.id === searchParams.v) || mainVideo;
 
-  const { userId } = auth();
   const user = await currentUser();
 
-  let userDb = null;
   let initialInteraction = { liked: false, disliked: false };
   let initialIsSubscribed = false;
 
   try {
       if (userId) {
-          // Trigger sync and fetch user record
-          userDb = await UserService.getOrCreateUser(userId);
-
           // Fetch interaction status and subscription in parallel
           const [interaction, subscribed] = await Promise.all([
               UserService.getVideoInteraction(userId, selectedVideo.id),
@@ -116,6 +119,9 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
 
 function mapDbToVideo(v: any, adminData?: { imageUrl?: string | null, email?: string | null } | null): Video {
   const isPolutek = v.creator?.slug?.toLowerCase() === 'polutek';
+
+  // For 'polutek' channel, prioritize the fetched admin data (image and email)
+  // Ensure we at least have the admin email for Dicebear fallback if image is null
   const resolvedEmail = (isPolutek && adminData?.email) ? adminData.email : (v.creator?.user?.email || null);
   const resolvedImageUrl = (isPolutek && adminData?.imageUrl) ? adminData.imageUrl : (v.creator?.user?.imageUrl || v.creator?.imageUrl || null);
 
