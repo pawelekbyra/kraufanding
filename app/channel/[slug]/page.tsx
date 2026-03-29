@@ -33,6 +33,11 @@ export default async function ChannelPage({ params }: { params: { slug: string }
   const { userId } = auth();
   const userDb = userId ? await UserService.getOrCreateUser(userId).catch(() => null) : null;
 
+  // Check if current user is the owner of this channel
+  const isOwner = userDb && userDb.id === creator.userId;
+  const ownerAvatar = isOwner ? userDb.imageUrl : (creator.user?.imageUrl || creator.imageUrl || null);
+  const ownerEmail = isOwner ? userDb.email : (creator.user?.email || null);
+
   const allVideos: Video[] = (creator.videos || []).map((v: any) => ({
     ...v,
     creator: {
@@ -40,8 +45,8 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       name: creator.slug === 'polutek' ? 'POLUTEK.PL' : creator.name,
       slug: creator.slug,
       bio: creator.bio,
-      imageUrl: creator.user?.imageUrl || creator.imageUrl || null,
-      email: creator.user?.email || null,
+      imageUrl: ownerAvatar,
+      email: ownerEmail,
       bannerUrl: creator.bannerUrl,
       subscribersCount: creator.subscribersCount || 0
     }
@@ -77,7 +82,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-white shrink-0 shadow-sm">
              <img
-               src={creator.user?.imageUrl || creator.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.user?.email || creator.email || displayName}`}
+               src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
                className="w-full h-full object-cover"
              />

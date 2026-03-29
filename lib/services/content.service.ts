@@ -17,7 +17,7 @@ export class ContentService {
           creator: {
             include: {
               user: {
-                select: { imageUrl: true }
+                select: { imageUrl: true, email: true }
               }
             }
           }
@@ -40,19 +40,30 @@ export class ContentService {
    */
   static async getAdminData() {
     try {
-      const adminUser = await prisma.user.findFirst({
+      // Step 1: Try to find the specific admin user by email (most reliable)
+      let adminUser = await prisma.user.findFirst({
         where: {
-          OR: [
-            { role: 'ADMIN' },
-            { email: { equals: ADMIN_EMAIL, mode: 'insensitive' } }
-          ]
+          email: { equals: ADMIN_EMAIL, mode: 'insensitive' }
         },
         orderBy: [
             { imageUrl: 'desc' }, // Not null first
-            { createdAt: 'desc' }
+            { updatedAt: 'desc' }
         ],
         select: { imageUrl: true, email: true }
       });
+
+      // Step 2: Try to find any other admin user if first lookup failed
+      if (!adminUser) {
+        adminUser = await prisma.user.findFirst({
+          where: { role: 'ADMIN' },
+          orderBy: [
+              { imageUrl: 'desc' },
+              { updatedAt: 'desc' }
+          ],
+          select: { imageUrl: true, email: true }
+        });
+      }
+
       return adminUser || { imageUrl: null, email: ADMIN_EMAIL };
     } catch {
       return { imageUrl: null, email: ADMIN_EMAIL };
@@ -69,7 +80,7 @@ export class ContentService {
         where: { slug },
         include: {
           user: {
-            select: { imageUrl: true }
+            select: { imageUrl: true, email: true }
           },
           videos: {
             orderBy: { createdAt: 'desc' }

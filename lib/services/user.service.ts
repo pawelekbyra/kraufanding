@@ -50,7 +50,7 @@ export class UserService {
 
   static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string) {
     try {
-      const role = email === ADMIN_EMAIL ? 'ADMIN' : 'USER';
+      const role = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
       return await prisma.$transaction(async (tx) => {
         // 1. Check if user already exists by ID
@@ -59,7 +59,7 @@ export class UserService {
         // 2. Check for email conflict (existing user with same email but different ID)
         const existingByEmail = await tx.user.findFirst({
             where: {
-                email,
+                email: { equals: email, mode: 'insensitive' },
                 id: { not: id }
             }
         });
