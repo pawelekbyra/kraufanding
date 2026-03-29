@@ -32,6 +32,10 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .crisp-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
 }
 
 /* Custom Scrollbar for better UI */
