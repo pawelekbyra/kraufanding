@@ -89,15 +89,18 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className={cn(
-             "w-24 h-24 md:w-40 md:h-40 overflow-hidden shrink-0",
+             "shrink-0 flex items-center justify-center",
              creator.slug === 'polutek'
-               ? "rounded-[50%_50%_50%_50%_/_60%_60%_40%_40%]"
-               : "rounded-full border border-black/10 bg-[#1a1a1a]/5 shadow-sm"
+               ? "w-28 h-28 md:w-44 md:h-44"
+               : "w-24 h-24 md:w-40 md:h-40 overflow-hidden rounded-full border border-black/10 bg-[#1a1a1a]/5 shadow-sm"
            )}>
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
-               className="w-full h-full object-cover"
+               className={cn(
+                 "w-full h-full",
+                 creator.slug === 'polutek' ? "object-contain" : "object-cover"
+               )}
              />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">

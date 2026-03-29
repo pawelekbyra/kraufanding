@@ -171,16 +171,19 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                  className={cn(
-                   "w-10 h-10 overflow-hidden shrink-0 hover:opacity-80 transition-opacity",
+                   "shrink-0 hover:opacity-80 transition-opacity flex items-center justify-center",
                    video.creator?.slug === 'polutek'
-                     ? "rounded-[50%_50%_50%_50%_/_60%_60%_40%_40%]"
-                     : "rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10"
+                     ? "w-11 h-11"
+                     : "w-10 h-10 overflow-hidden rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a]/10"
                  )}
                >
                   <img
                     src={video.creator?.slug === 'polutek' ? "/logo-wektorowe.svg" : (video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`)}
                     alt={video.creator?.name}
-                    className="w-full h-full object-cover"
+                    className={cn(
+                      "w-full h-full",
+                      video.creator?.slug === 'polutek' ? "object-contain" : "object-cover"
+                    )}
                   />
                </Link>
                <div className="min-w-0 pr-1 flex flex-col">
