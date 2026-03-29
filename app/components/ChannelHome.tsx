@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow, format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useLanguage } from './LanguageContext';
+import BrandName from './BrandName';
 
 interface ChannelHomeProps {
   mainVideo: Video;
@@ -137,7 +138,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               >
                 <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
                    {video.slug === 'independency-2024'
-                    ? (isLoggedIn ? t.independencyTitleLoggedIn : t.independencyTitle)
+                    ? (isLoggedIn ? (
+                        <>WITAJ NA <BrandName /></>
+                    ) : t.independencyTitle)
                     : video.title}
                 </h4>
               </Link>
@@ -146,7 +149,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                    className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
                  >
-                   {video.creator?.slug === 'polutek' ? 'POLUTEK.PL' : (video.creator?.name || 'Anonimowy Twórca')}
+                   {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || 'Anonimowy Twórca')}
                  </Link>
                  <div className="flex items-center gap-1">
                     <span>{mounted ? video.views?.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}</span>

@@ -10,6 +10,7 @@ import { ContentService } from '@/lib/services/content.service';
 import { UserService } from '@/lib/services/user.service';
 import ChannelVideoCard from '@/app/components/ChannelVideoCard';
 import SubscribeButton from '@/app/components/SubscribeButton';
+import BrandName from '@/app/components/BrandName';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,7 +71,11 @@ export default async function ChannelPage({ params }: { params: { slug: string }
              <>
                <div className="absolute inset-0 bg-gradient-to-r from-neutral-300 to-neutral-400 opacity-50" />
                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-                  <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{displayName}</span>
+                  {creator.slug === 'polutek' ? (
+                    <BrandName className="text-[10vw] rotate-2" dotPlClassName="text-primary" />
+                  ) : (
+                    <span className="text-[10vw] font-black uppercase tracking-tighter rotate-2">{displayName}</span>
+                  )}
                </div>
              </>
            )}
@@ -88,7 +93,9 @@ export default async function ChannelPage({ params }: { params: { slug: string }
              />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">
-            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">{displayName}</h1>
+            <h1 className="text-[36px] font-black leading-tight tracking-tight uppercase mb-1">
+              {creator.slug === 'polutek' ? <BrandName /> : displayName}
+            </h1>
             <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
                <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
                <span>•</span>

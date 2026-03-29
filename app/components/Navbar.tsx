@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Globe, LogIn, Trophy, Star, X, Bell } from "lucide-react";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
+import BrandName from './BrandName';
 
 const Navbar = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -52,7 +53,9 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">POLUTEK<span className="text-primary">.PL</span></Link>
+            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-10">
+              <BrandName className="text-lg md:text-xl" />
+            </Link>
           </div>
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">

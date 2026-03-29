@@ -10,6 +10,7 @@ import VideoPlayer from './VideoPlayer';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useLanguage } from './LanguageContext';
+import BrandName from './BrandName';
 
 interface ChannelVideoCardProps {
     video: Video;
@@ -65,7 +66,9 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
                             <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
                                 {video.slug === 'independency-2024'
-                                    ? (isLoggedIn ? t.independencyTitleLoggedIn : t.independencyTitle)
+                                    ? (isLoggedIn ? (
+                                        <>WITAJ NA <BrandName /></>
+                                    ) : t.independencyTitle)
                                     : video.title}
                             </h3>
                         </Link>
