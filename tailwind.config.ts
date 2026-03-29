@@ -7,19 +7,21 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Georgia', 'serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
       colors: {
+        linen: '#F5F2ED',
+        bone: '#EBE7E0',
+        ink: '#1A1A1A',
+        oxblood: '#6B1D1D',
         cream: '#FDFBF7',
         charcoal: '#1a1a1a',
-        primary: {
-          DEFAULT: '#3b82f6',
-          dark: '#1d4ed8',
-        },
-        secondary: {
-          DEFAULT: '#8b5cf6',
-          dark: '#6d28d9',
-        },
+      },
+      boxShadow: {
+        'brutalist': '4px 4px 0px 0px #1A1A1A',
+        'brutalist-sm': '2px 2px 0px 0px #1A1A1A',
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
@@ -45,11 +47,11 @@ const config = {
     themes: [
       {
         polutek: {
-          "primary": "#3b82f6",
-          "secondary": "#8b5cf6",
-          "accent": "#f59e0b",
-          "neutral": "#1a1a1a",
-          "base-100": "#FDFBF7",
+          "primary": "#1A1A1A",
+          "secondary": "#6B1D1D",
+          "accent": "#6B1D1D",
+          "neutral": "#1A1A1A",
+          "base-100": "#F5F2ED",
           "info": "#3abff8",
           "success": "#36d399",
           "warning": "#fbbd23",
