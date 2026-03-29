@@ -31,10 +31,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const minAmount = getMinAmount(selectedCurrency);
   const [amount, setAmount] = useState<number | ''>(getSuggestedAmount(t.currency));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [receiptNo, setReceiptNo] = useState<string | null>(null);
 
   useEffect(() => {
     setSelectedCurrency(t.currency);
     setAmount(getSuggestedAmount(t.currency));
+    setCurrentYear(new Date().getFullYear());
+    setReceiptNo(Math.floor(Math.random() * 1000000).toString().padStart(6, '0'));
   }, [t.currency]);
 
   const handleCurrencyChange = (curr: string) => {
@@ -109,95 +113,120 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#FDFBF7] border-2 border-black p-6 pb-10 shadow-brutalist relative overflow-hidden">
-          <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-black rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
+        <div className="bg-linen border-2 border-ink p-6 pb-12 shadow-brutalist relative overflow-hidden">
+          {/* Authentic-looking archival stamp */}
+          <div className="absolute top-2 right-2 w-28 h-28 border-4 border-oxblood/20 rounded-full flex items-center justify-center -rotate-12 pointer-events-none select-none">
+            <div className="border-2 border-oxblood/20 rounded-full w-24 h-24 flex items-center justify-center">
+              <span className="font-mono text-[10px] font-black text-center uppercase leading-none text-oxblood/40">
+                OFFICIAL<br/>ARCHIVE<br/>{currentYear || '....'}
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.supportArtist}
-            </h3>
-
-            <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
-                {t.donationDescription}
-              </p>
-
-              <div className="space-y-2 pt-2">
-                <label className="block font-mono text-xs font-bold uppercase tracking-widest text-black/50 text-center">
-                  {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${selectedCurrency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 flex items-center">
-                    {language === 'pl' ? (
-                      <div className="pr-6 font-mono text-xl font-bold text-black/20 select-none pointer-events-none">
-                        {selectedCurrency}
-                      </div>
-                    ) : (
-                      <select
-                        value={selectedCurrency}
-                        onChange={(e) => handleCurrencyChange(e.target.value)}
-                        className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-black/40 focus:text-black focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
-                        aria-label="Select Currency"
-                      >
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="CHF">CHF</option>
-                        <option value="JPY">JPY</option>
-                      </select>
-                    )}
-                    {language !== 'pl' && (
-                      <div className="absolute right-4 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
-                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="square"/>
-                         </svg>
-                      </div>
-                    )}
-                  </div>
-                  <input
-                    type="number"
-                    min={minAmount}
-                    step="1"
-                    value={amount}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setAmount(val === '' ? '' : parseInt(val));
-                    }}
-                    className="w-full bg-white border-2 border-black rounded-none py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
-                    placeholder={String(minAmount)}
-                  />
-                </div>
-                {typeof amount === 'number' && amount < minAmount && (
-                  <p className="font-mono text-[10px] text-red-600 font-bold uppercase animate-pulse text-center">
-                    {language === 'pl' ? `Błąd: Nie osiągnięto minimum (${minAmount} ${selectedCurrency})` : `Error: Minimum amount not met (${minAmount} ${selectedCurrency})`}
-                  </p>
-                )}
+          <div className="space-y-6 relative z-10">
+            <div className="flex justify-between items-start border-b border-ink/10 pb-4">
+              <div>
+                <h3 className="text-2xl font-serif font-black text-ink uppercase tracking-tight">
+                  {t.supportArtist}
+                </h3>
+                <p className="font-mono text-[10px] uppercase text-ink/40 tracking-widest mt-1">
+                  FORM NO. PTK-DON-001 / {selectedCurrency}
+                </p>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={onSupport}
-              disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
-            >
-              {isLoading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {language === 'pl' ? "PRZETWARZANIE..." : "LOADING..."}
-                </>
-              ) : (
-                language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
-              )}
-            </button>
+            <div className="space-y-4">
+              <p className="font-serif text-base leading-relaxed text-ink italic">
+                &ldquo;{t.donationDescription}&rdquo;
+              </p>
+
+              <div className="bg-bone/50 border border-ink/10 p-4 space-y-4">
+                <div className="space-y-2">
+                  <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-ink/60">
+                    {language === 'pl' ? `DEKLAROWANA KWOTA (MIN ${minAmount}.00 ${selectedCurrency})` : `DECLARED AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 right-0 flex items-center">
+                      {language === 'pl' ? (
+                        <div className="pr-6 font-mono text-xl font-bold text-ink/30 select-none pointer-events-none">
+                          {selectedCurrency}
+                        </div>
+                      ) : (
+                        <div className="relative group">
+                          <select
+                            value={selectedCurrency}
+                            onChange={(e) => handleCurrencyChange(e.target.value)}
+                            className="h-full bg-transparent border-none pr-10 pl-4 font-mono text-xl font-bold text-ink/40 focus:text-ink focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                            aria-label="Select Currency"
+                          >
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">JPY</option>
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
+                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="square"/>
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      type="number"
+                      min={minAmount}
+                      step="1"
+                      value={amount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setAmount(val === '' ? '' : parseInt(val));
+                      }}
+                      className="w-full bg-white border-2 border-ink rounded-none py-4 px-6 font-mono text-3xl font-black text-ink focus:ring-0 outline-none transition-all placeholder:opacity-10"
+                      placeholder={String(minAmount)}
+                    />
+                  </div>
+                  {typeof amount === 'number' && amount < minAmount && (
+                    <p className="font-mono text-[10px] text-oxblood font-bold uppercase animate-pulse">
+                      {language === 'pl' ? `! BŁĄD: KWOTA PONIŻEJ MINIMUM` : `! ERROR: AMOUNT BELOW MINIMUM`}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={onSupport}
+                disabled={isLoading || amount === '' || amount < minAmount}
+                className={`w-full bg-oxblood text-linen py-5 font-mono font-bold text-sm tracking-[0.3em] uppercase transition-all flex items-center justify-center gap-3 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-linen/30 border-t-linen rounded-full animate-spin" />
+                    {language === 'pl' ? "AUTORYZACJA..." : "AUTHORIZING..."}
+                  </>
+                ) : (
+                  <>
+                    {language === 'pl' ? 'POTWIERDŹ WSPARCIE' : 'CONFIRM SUPPORT'}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </>
+                )}
+              </button>
+              <div className="mt-4 flex justify-between items-center opacity-30 font-mono text-[9px] uppercase tracking-widest border-t border-ink/10 pt-4">
+                <span>SECURE ARCHIVAL TRANSFER</span>
+                <span>NO. {receiptNo || '------'}</span>
+              </div>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-            className="absolute bottom-1 right-1 text-black/50 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors px-2 py-1 z-20"
+            className="absolute bottom-2 right-2 text-ink/40 hover:text-oxblood font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors px-2 py-1 z-20 underline decoration-dotted"
           >
             {t.noMoney}
           </button>

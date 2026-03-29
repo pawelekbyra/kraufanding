@@ -4,21 +4,27 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --background-start-rgb: 245, 242, 237;
+  --background-end-rgb: 245, 242, 237;
 }
 
 body {
   color: #1a1a1a;
-  background-color: #FDFBF7;
+  background-color: #F5F2ED;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.04;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 @layer utilities {
@@ -36,18 +42,36 @@ body {
 
 /* Custom Scrollbar for better UI */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #F5F2ED;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: #1A1A1A;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: #6B1D1D;
+}
+
+.shadow-brutalist {
+  box-shadow: 4px 4px 0px 0px #1A1A1A;
+}
+
+.shadow-brutalist-sm {
+  box-shadow: 2px 2px 0px 0px #1A1A1A;
+}
+
+.glass-panel {
+  background: rgba(245, 242, 237, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.brutalist-card {
+  border: 1px solid rgba(26, 26, 26, 0.1);
+  border-radius: 0px;
 }
