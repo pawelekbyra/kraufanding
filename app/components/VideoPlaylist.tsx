@@ -5,6 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
+import { ChevronDown } from './icons';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -151,9 +152,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     )}
                     {language !== 'pl' && (
                       <div className="absolute right-4 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
-                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="square"/>
-                         </svg>
+                         <ChevronDown size={14} />
                       </div>
                     )}
                   </div>
