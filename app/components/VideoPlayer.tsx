@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
 import { Video } from '@/app/types/video';
 import { cn } from '@/lib/utils';
+import { Play } from './icons';
 
 interface VideoPlayerProps {
     video: Video;
@@ -62,9 +63,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                         ? "w-16 h-16 md:w-24 md:h-24 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
                         : "w-10 h-10 shadow-lg group-hover/player:scale-110 opacity-60 group-hover/player:opacity-100"
                 )}>
-                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-8 h-8 md:w-12 md:h-12 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <Play
+                        size={variant === 'hero' ? 48 : 24}
+                        className={cn("text-white fill-current", variant === 'hero' ? "ml-1" : "ml-0.5")}
+                    />
                 </div>
             </div>
             {!videoUrl && (
