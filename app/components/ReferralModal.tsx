@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { X, Copy, Check } from 'lucide-react';
+import { X, Copy, Check } from './icons';
 
 interface ReferralModalProps {
   isOpen: boolean;

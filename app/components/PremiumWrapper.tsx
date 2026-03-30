@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton, useClerk } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Star, Gem } from 'lucide-react';
+import { Star, Gem } from './icons';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
 

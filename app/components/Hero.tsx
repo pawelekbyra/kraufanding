@@ -2,7 +2,7 @@
 
 import React, { useOptimistic, useState, useEffect, useTransition } from 'react';
 import { Video } from '../types/video';
-import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from './icons';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';

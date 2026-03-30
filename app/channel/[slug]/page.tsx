@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import { Video } from '@/app/types/video';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search } from '@/app/components/icons';
 import { ContentService } from '@/lib/services/content.service';
 import { UserService } from '@/lib/services/user.service';
 import ChannelVideoCard from '@/app/components/ChannelVideoCard';
