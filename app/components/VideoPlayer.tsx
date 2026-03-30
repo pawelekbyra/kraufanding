@@ -1,22 +1,42 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
-import { Video } from '@/app/types/video';
+import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
+import {
+    Play,
+    Pause,
+    VolumeUp,
+    VolumeDown,
+    Mute,
+    Maximize,
+    Minimize,
+    FastForward,
+    FastRewind,
+    X
+} from './icons';
 
 interface VideoPlayerProps {
-    video: Video;
+    video: VideoType;
     variant?: 'hero' | 'thumbnail';
 }
 
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
-    const [isPlaying, setIsPlaying] = React.useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(1);
+    const [isMuted, setIsMuted] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [showControls, setShowControls] = useState(true);
 
-    // Auto-play when video URL is available and it's the main player
-    // This effect handles both the initial load and video changes in the hero player
-    React.useEffect(() => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
         if (variant === 'hero' && videoUrl) {
             setIsPlaying(true);
         } else if (!videoUrl) {
@@ -24,56 +44,233 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         }
     }, [videoUrl, variant, video.id]);
 
-    if (videoUrl && isPlaying) {
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const togglePlay = (e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
+        if (!videoRef.current) return;
+
+        if (isPlaying) {
+            videoRef.current.pause();
+        } else {
+            videoRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    const handleTimeUpdate = () => {
+        if (videoRef.current) {
+            setCurrentTime(videoRef.current.currentTime);
+        }
+    };
+
+    const handleLoadedMetadata = () => {
+        if (videoRef.current) {
+            setDuration(videoRef.current.duration);
+        }
+    };
+
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const time = parseFloat(e.target.value);
+        setCurrentTime(time);
+        if (videoRef.current) {
+            videoRef.current.currentTime = time;
+        }
+    };
+
+    const toggleMute = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !isMuted;
+            setIsMuted(!isMuted);
+        }
+    };
+
+    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = parseFloat(e.target.value);
+        setVolume(val);
+        if (videoRef.current) {
+            videoRef.current.volume = val;
+            videoRef.current.muted = val === 0;
+            setIsMuted(val === 0);
+        }
+    };
+
+    const toggleFullscreen = () => {
+        if (!containerRef.current) return;
+
+        if (!isFullscreen) {
+            if (containerRef.current.requestFullscreen) {
+                containerRef.current.requestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    };
+
+    const skip = (seconds: number) => {
+        if (videoRef.current) {
+            videoRef.current.currentTime += seconds;
+        }
+    };
+
+    const formatTime = (time: number) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+    const handleMouseMove = () => {
+        setShowControls(true);
+        if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        controlsTimeoutRef.current = setTimeout(() => {
+            if (isPlaying) setShowControls(false);
+        }, 3000);
+    };
+
+    if (variant === 'thumbnail' || (!videoUrl && !isPlaying)) {
         return (
-            <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-            />
+            <div
+                className={cn(
+                    "relative w-full h-full group/player overflow-hidden bg-neutral-900",
+                    variant === 'hero' ? "cursor-pointer" : "cursor-default"
+                )}
+                onClick={() => {
+                    if (variant === 'hero' && videoUrl) setIsPlaying(true);
+                }}
+            >
+                {variant === 'hero' && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 opacity-0 group-hover/player:opacity-100 transition-opacity duration-500" />
+                )}
+
+                <img
+                    src={video.thumbnailUrl}
+                    alt={video.title}
+                    className="w-full h-full object-cover opacity-90 transition duration-700 group-hover/player:scale-105"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className={cn(
+                        "bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10 transition-all duration-500",
+                        variant === 'hero'
+                            ? "w-16 h-16 md:w-24 md:h-24 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
+                            : "w-10 h-10 shadow-lg group-hover/player:scale-110 opacity-60 group-hover/player:opacity-100"
+                    )}>
+                        <Play className={cn("text-white", variant === 'hero' ? "w-8 h-8 md:w-12 md:h-12 ml-1" : "w-5 h-5 ml-0.5")} />
+                    </div>
+                </div>
+                {!videoUrl && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-opacity">
+                        <span className="text-white font-mono text-[10px] uppercase tracking-widest bg-black/60 px-4 py-2 border border-white/20">
+                            Access Restricted
+                        </span>
+                    </div>
+                )}
+            </div>
         );
     }
 
     return (
         <div
-            className={cn(
-                "relative w-full h-full group/player overflow-hidden bg-neutral-900",
-                variant === 'hero' ? "cursor-pointer" : "cursor-default"
-            )}
-            onClick={() => {
-                if (variant === 'hero' && videoUrl) setIsPlaying(true);
-            }}
+            ref={containerRef}
+            className="relative w-full h-full bg-black group/custom-player overflow-hidden flex items-center justify-center"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => isPlaying && setShowControls(false)}
         >
-            {/* Ambient background glow for hero */}
-            {variant === 'hero' && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 opacity-0 group-hover/player:opacity-100 transition-opacity duration-500" />
-            )}
-
-            <img
-                src={video.thumbnailUrl}
-                alt={video.title}
-                className="w-full h-full object-cover opacity-90 transition duration-700 group-hover/player:scale-105"
+            <video
+                ref={videoRef}
+                src={videoUrl || undefined}
+                className="w-full h-full object-contain"
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onClick={togglePlay}
+                autoPlay={variant === 'hero'}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
             />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className={cn(
-                    "bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10 transition-all duration-500",
-                    variant === 'hero'
-                        ? "w-16 h-16 md:w-24 md:h-24 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
-                        : "w-10 h-10 shadow-lg group-hover/player:scale-110 opacity-60 group-hover/player:opacity-100"
-                )}>
-                    <svg className={cn("text-white fill-current", variant === 'hero' ? "w-8 h-8 md:w-12 md:h-12 ml-1" : "w-5 h-5 ml-0.5")} viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
+
+            {/* CUSTOM CONTROLS OVERLAY */}
+            <div className={cn(
+                "absolute inset-0 z-20 flex flex-col justify-end transition-opacity duration-300",
+                showControls ? "opacity-100" : "opacity-0 pointer-events-none"
+            )}>
+                {/* Big play/pause indicator in center on click/toggle */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className={cn(
+                        "bg-black/40 rounded-full p-6 transition-transform duration-300 scale-0",
+                        !isPlaying && "scale-100"
+                    )}>
+                        <Play size={48} className="text-white" />
+                    </div>
+                </div>
+
+                {/* BOTTOM CONTROL BAR */}
+                <div className="bg-gradient-to-t from-black/90 to-transparent p-4 pt-12">
+                    {/* PROGRESS BAR */}
+                    <div className="relative group/progress mb-4">
+                        <input
+                            type="range"
+                            min="0"
+                            max={duration || 0}
+                            value={currentTime}
+                            onChange={handleSeek}
+                            className="w-full h-1 bg-white/20 rounded-none appearance-none cursor-pointer accent-primary group-hover/progress:h-2 transition-all"
+                        />
+                        <div
+                            className="absolute top-0 left-0 h-1 bg-primary pointer-events-none group-hover/progress:h-2 transition-all"
+                            style={{ width: `${(currentTime / duration) * 100}%` }}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button onClick={togglePlay} className="text-white hover:text-primary transition-colors">
+                                {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+                            </button>
+
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => skip(-10)} className="text-white/70 hover:text-white transition-colors">
+                                    <FastRewind size={20} />
+                                </button>
+                                <button onClick={() => skip(10)} className="text-white/70 hover:text-white transition-colors">
+                                    <FastForward size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex items-center gap-2 group/volume">
+                                <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
+                                    {isMuted || volume === 0 ? <Mute size={20} /> : volume < 0.5 ? <VolumeDown size={20} /> : <VolumeUp size={20} />}
+                                </button>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.01"
+                                    value={isMuted ? 0 : volume}
+                                    onChange={handleVolumeChange}
+                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-1 appearance-none bg-white/20 accent-white cursor-pointer"
+                                />
+                            </div>
+
+                            <div className="text-white font-mono text-xs">
+                                {formatTime(currentTime)} / {formatTime(duration)}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
+                                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {!videoUrl && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-opacity">
-                    <span className="text-white font-mono text-[10px] uppercase tracking-widest bg-black/60 px-4 py-2 border border-white/20">
-                        Access Restricted
-                    </span>
-                </div>
-            )}
         </div>
     );
 }
