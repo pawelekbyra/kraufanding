@@ -201,11 +201,11 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
             <div className="mb-4 md:mb-8 transition-all duration-700 group-hover:scale-110">
                {isVIPGated ? (
-                 <Gem className="w-16 h-16 md:w-24 md:h-24 text-amber-500 opacity-20" strokeWidth={1} />
+                 <Gem className="w-16 h-16 md:w-24 md:h-24 text-amber-500 opacity-20" />
                ) : (
                  <CustomAuthTrigger>
                     <button className="hover:opacity-40 opacity-20 transition-opacity cursor-pointer">
-                      <Star className="w-16 h-16 md:w-24 md:h-24 text-blue-400" strokeWidth={1} />
+                      <Star className="w-16 h-16 md:w-24 md:h-24 text-blue-400" />
                     </button>
                  </CustomAuthTrigger>
                )}
