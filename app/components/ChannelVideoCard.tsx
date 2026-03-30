@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical } from '@/app/components/icons';
 import { cn } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 import { Video } from '@/app/types/video';

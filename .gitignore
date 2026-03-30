@@ -15,3 +15,4 @@ test-results/
 *.log
 
 /app/generated/prisma
+doodle_icons_extracted/

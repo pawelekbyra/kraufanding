@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock } from 'lucide-react';
+import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock } from '@/app/components/icons';
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '../LanguageContext';
