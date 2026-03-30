@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, LogIn, Trophy, Star, X, Bell } from "lucide-react";
+import { Search, Globe, LogIn, Trophy, Star, X, Bell } from "@/app/components/icons";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';

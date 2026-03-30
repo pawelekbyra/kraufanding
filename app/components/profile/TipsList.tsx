@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getUserTips } from '@/lib/actions/tips';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Loader2, Coins } from 'lucide-react';
+import { Loader2, Coins } from '@/app/components/icons';
 
 export default function TipsList() {
   const [tips, setTips] = useState<any[]>([]);
