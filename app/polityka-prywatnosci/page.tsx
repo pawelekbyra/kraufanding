@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import Link from 'next/link';
+import { ArrowLeft } from '@/app/components/icons';
 
 export default function PolitykaPrywatnosciPage() {
   return (
@@ -55,9 +56,7 @@ export default function PolitykaPrywatnosciPage() {
 
         <div className="mt-24 pt-12 border-t border-[#1a1a1a]/5">
            <Link href="/" className="group flex items-center gap-3 text-sm font-black uppercase tracking-widest hover:text-primary transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:-translate-x-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-              </svg>
+              <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-2" />
               Wróć do strony głównej
            </Link>
         </div>
