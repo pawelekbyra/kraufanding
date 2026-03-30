@@ -12,8 +12,6 @@ import {
     Mute,
     Maximize,
     Minimize,
-    FastForward,
-    FastRewind,
     X
 } from './icons';
 
@@ -115,12 +113,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         }
     };
 
-    const skip = (seconds: number) => {
-        if (videoRef.current) {
-            videoRef.current.currentTime += seconds;
-        }
-    };
-
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
@@ -131,7 +123,9 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         setShowControls(true);
         if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
         controlsTimeoutRef.current = setTimeout(() => {
-            if (isPlaying) setShowControls(false);
+            if (videoRef.current && !videoRef.current.paused) {
+                setShowControls(false);
+            }
         }, 3000);
     };
 
@@ -196,35 +190,40 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
             />
 
             {/* CUSTOM CONTROLS OVERLAY */}
-            <div className={cn(
-                "absolute inset-0 z-20 flex flex-col justify-end transition-opacity duration-300",
-                showControls ? "opacity-100" : "opacity-0 pointer-events-none"
-            )}>
-                {/* Big play/pause indicator in center on click/toggle */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className={cn(
-                        "bg-black/40 rounded-full p-6 transition-transform duration-300 scale-0",
-                        !isPlaying && "scale-100"
-                    )}>
-                        <Play size={48} className="text-white" />
+            <div
+                className={cn(
+                    "absolute inset-0 z-20 flex flex-col justify-end transition-opacity duration-300 bg-black/5",
+                    showControls || !isPlaying ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+                onClick={togglePlay}
+            >
+                {/* Big play button in center when paused */}
+                {!isPlaying && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full p-8 border-2 border-white/20 transition-all transform hover:scale-110 shadow-2xl cursor-pointer">
+                            <Play size={64} className="text-white ml-2" />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* BOTTOM CONTROL BAR */}
-                <div className="bg-gradient-to-t from-black/90 to-transparent p-4 pt-12">
+                <div
+                    className="bg-gradient-to-t from-black/90 to-transparent p-4 pt-12"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     {/* PROGRESS BAR */}
-                    <div className="relative group/progress mb-4">
+                    <div className="relative mb-4 h-1.5 bg-white/20 cursor-pointer group/progress border border-white/5">
+                        <div
+                            className="absolute top-0 left-0 h-full bg-primary transition-all duration-100 ease-out"
+                            style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                        />
                         <input
                             type="range"
                             min="0"
                             max={duration || 0}
                             value={currentTime}
                             onChange={handleSeek}
-                            className="w-full h-1 bg-white/20 rounded-none appearance-none cursor-pointer accent-primary group-hover/progress:h-2 transition-all"
-                        />
-                        <div
-                            className="absolute top-0 left-0 h-1 bg-primary pointer-events-none group-hover/progress:h-2 transition-all"
-                            style={{ width: `${(currentTime / duration) * 100}%` }}
+                            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
                         />
                     </div>
 
@@ -233,15 +232,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                             <button onClick={togglePlay} className="text-white hover:text-primary transition-colors">
                                 {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                             </button>
-
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => skip(-10)} className="text-white/70 hover:text-white transition-colors">
-                                    <FastRewind size={20} />
-                                </button>
-                                <button onClick={() => skip(10)} className="text-white/70 hover:text-white transition-colors">
-                                    <FastForward size={20} />
-                                </button>
-                            </div>
 
                             <div className="flex items-center gap-2 group/volume">
                                 <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">

@@ -115,7 +115,7 @@ const Navbar = () => {
         <SignedOut>
           <SignInButton mode="modal">
             <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
-              <LogIn size={18} strokeWidth={2.5} />
+              <LogIn size={18} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>
           </SignInButton>
@@ -123,7 +123,7 @@ const Navbar = () => {
         <SignedIn>
           <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
             <button className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors relative group">
-              <Bell size={20} strokeWidth={2.5} className="text-[#1a1a1a] transition-colors" />
+              <Bell size={20} className="text-[#1a1a1a] transition-colors" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-[#1a1a1a] rounded-full border-2 border-base-100" />
             </button>
             <div className="flex flex-col items-center pb-0.5">
