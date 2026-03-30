@@ -200,9 +200,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 {/* Big play button in center when paused */}
                 {!isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full p-8 border-2 border-white/20 transition-all transform hover:scale-110 shadow-2xl cursor-pointer">
-                            <Play size={64} className="text-white ml-2" />
-                        </div>
+                        <Play size={80} className="text-white drop-shadow-2xl transition-all transform hover:scale-110 cursor-pointer" />
                     </div>
                 )}
 
@@ -244,7 +242,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                                     step="0.01"
                                     value={isMuted ? 0 : volume}
                                     onChange={handleVolumeChange}
-                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-1 appearance-none bg-white/20 accent-white cursor-pointer"
+                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-1 appearance-none bg-white/20 accent-white cursor-pointer [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-moz-range-thumb]:w-2 [&::-moz-range-thumb]:h-2"
                                 />
                             </div>
 
