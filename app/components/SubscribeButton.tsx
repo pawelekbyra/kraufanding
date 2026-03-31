@@ -5,6 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
 import { useLanguage } from './LanguageContext';
+import DoodleWrapper from './DoodleWrapper';
 
 interface SubscribeButtonProps {
     creatorId: string;
@@ -98,20 +99,24 @@ export default function SubscribeButton({
 
     return (
         <>
-        <button
-            onClick={handleSubscribe}
-            disabled={isPending}
-            className={cn(
-                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px]",
-                isSubscribed
-                    ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                    : "bg-[#0f0f0f] text-white hover:bg-[#272727]",
-                isPending && "opacity-50 cursor-wait",
-                className
-            )}
-        >
-            {isSubscribed ? t.subscribed : t.subscribe}
-        </button>
+        <div className="flex items-center">
+            <DoodleWrapper padding={[4, 12]} strokeWidth={1.5}>
+                <button
+                    onClick={handleSubscribe}
+                    disabled={isPending}
+                    className={cn(
+                        "text-[14px] font-bold px-4 h-8 flex items-center justify-center transition-all uppercase tracking-widest min-w-[140px]",
+                        isSubscribed
+                            ? "text-[#0f0f0f] opacity-60 hover:opacity-100"
+                            : "text-[#0f0f0f] hover:opacity-70",
+                        isPending && "opacity-50 cursor-wait",
+                        className
+                    )}
+                >
+                    {isSubscribed ? t.subscribed : t.subscribe}
+                </button>
+            </DoodleWrapper>
+        </div>
 
         {showConfirm && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
