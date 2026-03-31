@@ -210,13 +210,13 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* PROGRESS BAR */}
-                    <div className="relative mb-4 h-[1px] bg-white/20 cursor-pointer group/progress">
+                    <div className="relative mb-4 h-[3px] bg-white/20 cursor-pointer group/progress">
                         <div
                             className="absolute top-0 left-0 h-full bg-white transition-all duration-100 ease-out"
                             style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
                         >
                             {/* Seek handle appearing on hover */}
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full scale-0 group-hover/progress:scale-100 transition-transform shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full scale-0 group-hover/progress:scale-100 transition-transform shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
                         </div>
                         <input
                             type="range"
@@ -245,7 +245,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                                     step="0.01"
                                     value={isMuted ? 0 : volume}
                                     onChange={handleVolumeChange}
-                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-[1px] appearance-none bg-white/20 accent-white cursor-pointer [&::-webkit-slider-thumb]:w-1 [&::-webkit-slider-thumb]:h-1 [&::-moz-range-thumb]:w-1 [&::-moz-range-thumb]:h-1 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full shadow-sm"
+                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-[2px] appearance-none bg-white/20 accent-white cursor-pointer [&::-webkit-slider-thumb]:w-1 [&::-webkit-slider-thumb]:h-1 [&::-moz-range-thumb]:w-1 [&::-moz-range-thumb]:h-1 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full shadow-sm"
                                 />
                             </div>
 
@@ -255,8 +255,8 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
-                                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
+                            <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors flex items-center justify-center">
+                                {isFullscreen ? <Minimize size={22} className="text-white" /> : <Maximize size={22} className="text-white" />}
                             </button>
                         </div>
                     </div>
