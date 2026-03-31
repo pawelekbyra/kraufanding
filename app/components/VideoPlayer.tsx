@@ -14,6 +14,8 @@ import {
     Minimize,
     X
 } from './icons';
+import RoughProgress from './RoughProgress';
+import RoughCircle from './RoughCircle';
 
 interface VideoPlayerProps {
     video: VideoType;
@@ -200,7 +202,9 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 {/* Big play button in center when paused */}
                 {!isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Play size={80} className="text-white drop-shadow-2xl transition-all transform hover:scale-110 cursor-pointer" />
+                        <RoughCircle show={!isPlaying} padding={20} strokeWidth={2}>
+                            <Play size={80} className="text-white drop-shadow-2xl transition-all transform hover:scale-110 cursor-pointer ml-2" />
+                        </RoughCircle>
                     </div>
                 )}
 
@@ -210,10 +214,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* PROGRESS BAR */}
-                    <div className="relative mb-4 h-1.5 bg-white/20 cursor-pointer group/progress border border-white/5">
-                        <div
-                            className="absolute top-0 left-0 h-full bg-primary transition-all duration-100 ease-out"
-                            style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                    <div className="relative mb-4 h-8 cursor-pointer group/progress">
+                        <RoughProgress
+                            progress={currentTime / (duration || 1)}
+                            className="absolute inset-0 z-0"
                         />
                         <input
                             type="range"
