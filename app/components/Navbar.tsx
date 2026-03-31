@@ -9,6 +9,7 @@ import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';
 import DoodleBox from './DoodleBox';
+import DoodleDivider from './DoodleDivider';
 
 const Navbar = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -31,7 +32,8 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="relative w-full sticky top-0 z-50">
+    <div className="navbar bg-base-100/80 backdrop-blur-md px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
@@ -74,6 +76,7 @@ const Navbar = () => {
                   className="w-full h-9 bg-white px-4 text-sm focus:outline-none placeholder:text-[#888]"
                 />
               </div>
+              <DoodleDivider orientation="vertical" className="h-6 opacity-40 mx-1" color="#1a1a1a" />
               <button type="submit" className="h-9 bg-[#f8f8f8] px-5 hover:bg-[#f0f0f0] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
                 <Search size={18} className="text-[#1a1a1a]/70" />
               </button>
@@ -119,9 +122,11 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
-              <LogIn size={18} />
-              <span className="hidden sm:inline">{t.signIn}</span>
+            <button className="group/login">
+              <DoodleBox className="flex items-center gap-2 px-3 py-1.5 transition-all group-hover/login:bg-[#1a1a1a]/5" color="#1a1a1a" strokeWidth={1} padding={2}>
+                 <LogIn size={18} className="text-[#1a1a1a]" />
+                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a] hidden sm:inline">{t.signIn}</span>
+              </DoodleBox>
             </button>
           </SignInButton>
         </SignedOut>
@@ -141,6 +146,8 @@ const Navbar = () => {
       </div>
       </>
       )}
+    </div>
+    <DoodleDivider orientation="horizontal" className="absolute bottom-0 left-0 w-full opacity-30" color="#1a1a1a" strokeWidth={1} />
     </div>
   );
 };
