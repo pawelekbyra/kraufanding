@@ -8,6 +8,7 @@ import { Search, Globe, LogIn, Trophy, Star, X, Bell } from "./icons";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';
+import DoodleBox from './DoodleBox';
 
 const Navbar = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -39,15 +40,17 @@ const Navbar = () => {
            >
               <X size={20} />
            </button>
-           <form onSubmit={handleSearch} className="flex-1 flex">
-              <input
-                type="text"
-                autoFocus
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
-              />
+           <form onSubmit={handleSearch} className="flex-1 flex px-2">
+              <DoodleBox className="w-full" color="#1a1a1a" strokeWidth={1} padding={2}>
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-9 bg-white px-4 text-sm focus:outline-none"
+                />
+              </DoodleBox>
            </form>
         </div>
       ) : (
@@ -60,20 +63,22 @@ const Navbar = () => {
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
         <div className="relative w-full group">
-          <form onSubmit={handleSearch} className="flex w-full">
-            <div className="relative flex-1 flex items-center min-w-0">
-              <input
-                type="text"
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
-              />
-            </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
-            </button>
-          </form>
+          <DoodleBox className="w-full" color="#1a1a1a" strokeWidth={1} padding={2}>
+            <form onSubmit={handleSearch} className="flex w-full">
+              <div className="relative flex-1 flex items-center min-w-0">
+                <input
+                  type="text"
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-9 bg-white px-4 text-sm focus:outline-none placeholder:text-[#888]"
+                />
+              </div>
+              <button type="submit" className="h-9 bg-[#f8f8f8] px-5 hover:bg-[#f0f0f0] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+                <Search size={18} className="text-[#1a1a1a]/70" />
+              </button>
+            </form>
+          </DoodleBox>
         </div>
       </div>
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
