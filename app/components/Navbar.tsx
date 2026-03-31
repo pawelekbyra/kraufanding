@@ -8,6 +8,7 @@ import { Search, Globe, LogIn, Trophy, Star, X, Bell } from "./icons";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';
+import DoodleWrapper from './DoodleWrapper';
 
 const Navbar = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -32,22 +33,24 @@ const Navbar = () => {
   return (
     <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
-        <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
+        <div className="flex-1 flex items-center gap-3 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
              onClick={() => setIsMobileSearchOpen(false)}
              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0"
            >
               <X size={20} />
            </button>
-           <form onSubmit={handleSearch} className="flex-1 flex">
-              <input
-                type="text"
-                autoFocus
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
-              />
+           <form onSubmit={handleSearch} className="flex-1 flex py-1">
+              <DoodleWrapper wrapperClassName="w-full" padding={[2, 4]} strokeWidth={1.5}>
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-8 bg-transparent px-2 text-sm focus:outline-none placeholder:text-[#888]"
+                />
+              </DoodleWrapper>
            </form>
         </div>
       ) : (
@@ -59,21 +62,23 @@ const Navbar = () => {
           </div>
 
           <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
-        <div className="relative w-full group">
-          <form onSubmit={handleSearch} className="flex w-full">
-            <div className="relative flex-1 flex items-center min-w-0">
-              <input
-                type="text"
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
-              />
-            </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
-            </button>
-          </form>
+        <div className="relative w-full group py-1">
+          <DoodleWrapper wrapperClassName="w-full" padding={[2, 2]} strokeWidth={1.5}>
+            <form onSubmit={handleSearch} className="flex w-full items-center">
+              <div className="relative flex-1 flex items-center min-w-0">
+                <input
+                  type="text"
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-8 bg-transparent px-3 text-sm focus:outline-none transition-all placeholder:text-[#888]"
+                />
+              </div>
+              <button type="submit" className="h-8 bg-transparent px-4 hover:opacity-70 transition-opacity shrink-0 flex items-center justify-center border-l border-ink/5" title="Szukaj">
+                <Search size={18} className="text-[#1a1a1a]/70" />
+              </button>
+            </form>
+          </DoodleWrapper>
         </div>
       </div>
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
@@ -114,9 +119,13 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
-              <LogIn size={18} />
-              <span className="hidden sm:inline">{t.signIn}</span>
+            <button className="group/login p-1">
+              <DoodleWrapper padding={[4, 12]} strokeWidth={1.5}>
+                <div className="font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-1 transition-colors">
+                  <LogIn size={18} />
+                  <span className="hidden sm:inline">{t.signIn}</span>
+                </div>
+              </DoodleWrapper>
             </button>
           </SignInButton>
         </SignedOut>
