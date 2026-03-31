@@ -249,14 +249,14 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                                 />
                             </div>
 
-                            <div className="text-white font-handwriting text-sm tracking-widest opacity-90 select-none">
-                                {formatTime(currentTime)} <span className="opacity-30 mx-1">/</span> {formatTime(duration)}
+                            <div className="text-white font-handwriting text-[13px] tracking-widest opacity-90 select-none">
+                                {formatTime(currentTime)}<span className="opacity-90 mx-0.5">/</span>{formatTime(duration)}
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4">
                             <button onClick={toggleFullscreen} className="text-white hover:opacity-80 transition-opacity flex items-center justify-center">
-                                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
+                                {isFullscreen ? <Minimize size={25} /> : <Maximize size={25} />}
                             </button>
                         </div>
                     </div>
