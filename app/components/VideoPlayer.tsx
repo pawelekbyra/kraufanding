@@ -210,30 +210,33 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* PROGRESS BAR */}
-                    <div className="relative mb-4 h-1.5 bg-white/20 cursor-pointer group/progress border border-white/5">
+                    <div className="relative mb-4 h-[4px] bg-white/10 cursor-pointer group/progress">
                         <div
-                            className="absolute top-0 left-0 h-full bg-primary transition-all duration-100 ease-out"
+                            className="absolute top-0 left-0 h-full bg-white transition-all duration-100 ease-out"
                             style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
-                        />
+                        >
+                            {/* Seek handle appearing on hover */}
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full scale-0 group-hover/progress:scale-100 transition-transform shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
+                        </div>
                         <input
                             type="range"
                             min="0"
                             max={duration || 0}
                             value={currentTime}
                             onChange={handleSeek}
-                            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            className="absolute -top-2 left-0 w-full h-5 opacity-0 cursor-pointer z-10"
                         />
                     </div>
 
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <button onClick={togglePlay} className="text-white hover:text-primary transition-colors">
+                        <div className="flex items-center gap-6">
+                            <button onClick={togglePlay} className="text-white hover:opacity-70 transition-opacity">
                                 {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                             </button>
 
-                            <div className="flex items-center gap-2 group/volume">
-                                <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
-                                    {isMuted || volume === 0 ? <Mute size={20} /> : volume < 0.5 ? <VolumeDown size={20} /> : <VolumeUp size={20} />}
+                            <div className="flex items-center gap-3 group/volume">
+                                <button onClick={toggleMute} className="text-white hover:opacity-70 transition-opacity">
+                                    {isMuted || volume === 0 ? <Mute size={22} /> : volume < 0.5 ? <VolumeDown size={22} /> : <VolumeUp size={22} />}
                                 </button>
                                 <input
                                     type="range"
@@ -242,18 +245,18 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                                     step="0.01"
                                     value={isMuted ? 0 : volume}
                                     onChange={handleVolumeChange}
-                                    className="w-0 group-hover/volume:w-20 transition-all duration-300 h-1 appearance-none bg-white/20 accent-white cursor-pointer [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-moz-range-thumb]:w-2 [&::-moz-range-thumb]:h-2"
+                                    className="w-0 group-hover/volume:w-24 transition-all duration-300 h-[2px] appearance-none bg-white/20 accent-white cursor-pointer [&::-webkit-slider-thumb]:w-1 [&::-webkit-slider-thumb]:h-1 [&::-moz-range-thumb]:w-1 [&::-moz-range-thumb]:h-1 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full shadow-md"
                                 />
                             </div>
 
-                            <div className="text-white font-mono text-xs">
-                                {formatTime(currentTime)} / {formatTime(duration)}
+                            <div className="text-white font-handwriting text-[13px] tracking-widest opacity-90 select-none">
+                                {formatTime(currentTime)}<span className="opacity-90 mx-0.5">/</span>{formatTime(duration)}
                             </div>
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
-                                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
+                            <button onClick={toggleFullscreen} className="text-white hover:opacity-80 transition-opacity flex items-center justify-center">
+                                {isFullscreen ? <Minimize size={25} /> : <Maximize size={25} />}
                             </button>
                         </div>
                     </div>
