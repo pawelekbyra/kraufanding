@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-none px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-none px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] border-l-0 rounded-none px-5 hover:bg-[#1a1a1a]/10 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#1a1a1a]/10 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-[#1a1a1a]/70" />
             </button>
           </form>
@@ -79,7 +79,14 @@ const Navbar = () => {
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
         {/* Language Switcher - Mobile only as requested */}
         <div className="flex items-center gap-1 md:hidden">
-            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-none px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
+            >
+                <Search size={20} />
+            </button>
+
+            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -99,13 +106,6 @@ const Navbar = () => {
                   EN
                 </button>
             </div>
-
-            <button
-              onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
-            >
-                <Search size={20} />
-            </button>
         </div>
 
         {isAdmin && (
@@ -117,7 +117,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 bg-[#1a1a1a]/5 rounded-none border border-[#1a1a1a] transition-all">
+            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 bg-[#1a1a1a]/5 rounded-full border border-[#1a1a1a] transition-all">
               <LogIn size={18} />
               <span className="hidden md:inline">{t.signIn}</span>
             </button>
