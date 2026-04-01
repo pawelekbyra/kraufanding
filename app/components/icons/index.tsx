@@ -11,6 +11,7 @@ const BaseIcon = ({ children, size = 24, viewBox, className, ...props }: IconPro
     className={className}
     {...props}
   >
+    <rect width="100%" height="100%" fill="white" rx="20%" />
     {children}
   </svg>
 );
