@@ -7,7 +7,7 @@ export const DEFAULT_CREATOR = {
   slug: "polutek",
   bio: "Oficjalny kanał Pawła Polutka. Ekskluzywne materiały VOD i niezależne śledztwa.",
   bannerUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
-  subscribersCount: 1200000,
+  subscribersCount: 400,
 };
 
 export const INITIAL_VIDEOS: Video[] = [
