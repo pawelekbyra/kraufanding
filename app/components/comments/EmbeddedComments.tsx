@@ -218,7 +218,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
       {/* Input Area */}
       <div className="flex gap-4 items-start mb-10">
-        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]/10">
+        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
            <img
              src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
              alt="Avatar"
@@ -282,7 +282,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         {comments.map((comment: any) => (
           <div key={comment.id} className="space-y-3">
             <div className="flex gap-3 items-start group/comment">
-               <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]/5">
+               <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
                   <img
                     src={comment.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.email}`}
                     alt="Avatar"
@@ -347,7 +347,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start">
-                    <div className="w-6 h-6 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]/5">
+                    <div className="w-6 h-6 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
                        <img
                          src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.authorName || 'Guest'}`}
                          alt="Avatar"

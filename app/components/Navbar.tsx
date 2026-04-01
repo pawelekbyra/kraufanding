@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#ccc] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#ccc] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors border-r-[#ccc] shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-[#1a1a1a]/70" />
             </button>
           </form>
@@ -114,7 +114,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-[#1a1a1a]">
               <LogIn size={18} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>
@@ -122,12 +122,12 @@ const Navbar = () => {
         </SignedOut>
         <SignedIn>
           <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
-            <button className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors relative group">
+            <button className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors relative group border border-[#1a1a1a]">
               <Bell size={20} className="text-[#1a1a1a] transition-colors" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-[#1a1a1a] rounded-full border-2 border-base-100" />
             </button>
             <div className="flex flex-col items-center pb-0.5">
-               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square">
+               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border border-[#1a1a1a] overflow-hidden">
                   <UserButton afterSignOutUrl="/" />
                </div>
             </div>

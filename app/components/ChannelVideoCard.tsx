@@ -39,7 +39,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
         <div className="group cursor-pointer flex flex-col">
             <div className="block relative">
                 <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10 border border-[#1a1a1a]">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -56,7 +56,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                     )}
                     {/* Access Indicator Badge on Thumbnail */}
                     {mounted && !hasAccess && (
-                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/10 tracking-widest">
+                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-[#1a1a1a] tracking-widest">
                             {video.tier === 'LOGGED_IN' ? t.loginReq : t.patronOnly}
                         </div>
                     )}
@@ -98,7 +98,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0">
+                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-[#1a1a1a]">
                         <MoreVertical size={20} />
                     </button>
                 </div>
