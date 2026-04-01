@@ -86,7 +86,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       {/* CHANNEL HEADER */}
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-black/10 overflow-hidden bg-[#1a1a1a]/5 shrink-0 shadow-sm">
+          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-[#1a1a1a] overflow-hidden bg-[#1a1a1a]/5 shrink-0 shadow-sm">
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
@@ -110,7 +110,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
                  creatorId={creator.id}
                  initialSubscribersCount={creator.subscribersCount || 0}
                />
-               <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5">Wspieraj</Link>
+               <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5 border border-[#1a1a1a]">Wspieraj</Link>
             </div>
           </div>
         </div>

@@ -102,7 +102,7 @@ export default function SubscribeButton({
             onClick={handleSubscribe}
             disabled={isPending}
             className={cn(
-                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px] border-2",
+                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px] border",
                 isSubscribed
                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10 border-transparent"
                     : "bg-[#3b82f6] text-white border-[#1a1a1a] hover:bg-[#1d4ed8]",
@@ -116,7 +116,7 @@ export default function SubscribeButton({
         {showConfirm && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
                 <div
-                    className="bg-[#FDFBF7] border-2 border-black p-8 max-w-sm w-full shadow-brutalist animate-in zoom-in-95 duration-300"
+                    className="bg-[#FDFBF7] border border-[#1a1a1a] p-8 max-w-sm w-full shadow-brutalist animate-in zoom-in-95 duration-300"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <h3 className="text-xl font-serif font-black text-black uppercase tracking-tighter mb-4">
@@ -131,13 +131,13 @@ export default function SubscribeButton({
                                 setShowConfirm(false);
                                 executeSubscribe();
                             }}
-                            className="bg-black text-white py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                            className="bg-black text-white py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all border border-[#1a1a1a]"
                         >
                             {t.yes}
                         </button>
                         <button
                             onClick={() => setShowConfirm(false)}
-                            className="bg-white border-2 border-black text-black py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                            className="bg-white border border-[#1a1a1a] text-black py-3 font-mono font-bold text-xs tracking-widest uppercase hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] transition-all"
                         >
                             {t.no}
                         </button>

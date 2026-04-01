@@ -192,7 +192,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative">
-      <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative group border-4 border-black h-full w-full shadow-2xl flex items-center justify-center">
+      <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative group border border-[#1a1a1a] h-full w-full shadow-2xl flex items-center justify-center">
 
          {/* Minimalist Grid Pattern Background */}
          <div className="absolute inset-0 opacity-[0.03] pointer-events-none"

@@ -115,7 +115,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-xl bg-black relative z-10 group/thumb">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-xl bg-black relative z-10 group/thumb border border-[#1a1a1a]">
               <Link
                 href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
                 scroll={false}
@@ -236,7 +236,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                       <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
                         <Link
                           href="/"
-                          className="btn btn-sm btn-block rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
+                          className="btn btn-sm btn-block rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
                         >
                           {language === 'pl' ? '← Wróć do wszystkich' : '← Back to all'}
                         </Link>
@@ -289,7 +289,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
                       <Link
                         href="/"
-                        className="btn btn-sm btn-block rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
+                        className="btn btn-sm btn-block rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
                       >
                         {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
                       </Link>
@@ -303,7 +303,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </p>
                     <Link
                       href="/"
-                      className="btn btn-sm rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic px-6"
+                      className="btn btn-sm rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic px-6"
                     >
                       {t.showAll}
                     </Link>
