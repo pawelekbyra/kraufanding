@@ -77,14 +77,9 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
-        <div className="md:hidden flex items-center gap-1">
-            <button
-              onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors"
-            >
-                <Search size={20} />
-            </button>
-            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-full px-3 py-1 mr-1 border border-[#1a1a1a]">
+        {/* Language Switcher - Mobile only as requested */}
+        <div className="flex items-center gap-1 md:hidden">
+            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -104,6 +99,13 @@ const Navbar = () => {
                   EN
                 </button>
             </div>
+
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
+            >
+                <Search size={20} />
+            </button>
         </div>
 
         {isAdmin && (
@@ -117,7 +119,7 @@ const Navbar = () => {
           <SignInButton mode="modal">
             <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 rounded-full transition-colors border border-[#1a1a1a]">
               <LogIn size={18} />
-              <span className="hidden sm:inline">{t.signIn}</span>
+              <span>{t.signIn}</span>
             </button>
           </SignInButton>
         </SignedOut>

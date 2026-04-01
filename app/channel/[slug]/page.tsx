@@ -37,7 +37,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
 
   // Check if current user is the owner of this channel
   const isOwner = userDb && userDb.id === creator.userId;
-  const ownerAvatar = isOwner ? userDb.imageUrl : (creator.user?.imageUrl || creator.imageUrl || null);
+  const ownerAvatar = (params.slug === 'polutek') ? '/nowe.png' : (isOwner ? userDb.imageUrl : (creator.user?.imageUrl || creator.imageUrl || null));
   const ownerEmail = isOwner ? userDb.email : (creator.user?.email || null);
 
   const allVideos: Video[] = (creator.videos || []).map((v: any) => ({
