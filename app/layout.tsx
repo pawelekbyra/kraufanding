@@ -1,7 +1,7 @@
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
 import { Suspense } from 'react';
-import { Inter, Outfit, Plus_Jakarta_Sans, Gluten } from 'next/font/google';
+import { Inter, Outfit, Plus_Jakarta_Sans, Gluten, Space_Grotesk } from 'next/font/google';
 import "./globals.css";
 
 
@@ -23,6 +23,12 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+});
+
 const gluten = Gluten({
   weight: '400',
   subsets: ['latin'],
@@ -41,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="polutek" className={`${inter.variable} ${outfit.variable} ${jakarta.variable} ${gluten.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="polutek" className={`${inter.variable} ${outfit.variable} ${jakarta.variable} ${gluten.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <body className="font-sans bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
         <Suspense>
           <Providers>

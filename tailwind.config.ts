@@ -10,6 +10,7 @@ const config = {
         serif: ['var(--font-outfit)', 'sans-serif'],
         sans: ['var(--font-jakarta)', 'sans-serif'],
         heading: ['var(--font-outfit)', 'sans-serif'],
+        brand: ['var(--font-space-grotesk)', 'sans-serif'],
         handwriting: ['var(--font-gluten)', 'cursive'],
       },
       colors: {
