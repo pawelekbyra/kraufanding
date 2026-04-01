@@ -68,7 +68,7 @@ export const translations = {
     showMore: '...więcej',
     showLess: 'Pokaż mniej',
     subscribe: 'Subskrajb',
-    subscribeMobile: 'Subuj',
+    subscribeMobile: 'Subskrajb',
     subscribed: 'Subskrajbd',
     subscribers: 'subskrypcji',
     share: 'Szeruj',
