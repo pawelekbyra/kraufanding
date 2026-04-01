@@ -119,7 +119,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
 
             <style jsx global>{`
                 .plyr-cyber-archive {
-                    --plyr-color-main: #3b82f6;
+                    --plyr-color-main: #1F7A88;
                     --plyr-video-background: #000;
                     --plyr-font-family: var(--font-space-grotesk), sans-serif;
                 }
@@ -134,10 +134,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     justify-content: center;
                 }
                 .plyr--full-ui.plyr--video .plyr__control--overlaid {
-                    background: rgba(59, 130, 246, 0.8);
+                    background: #1F7A88;
                 }
                 .plyr--full-ui input[type=range] {
-                    color: #3b82f6;
+                    color: #1F7A88;
                 }
                 .plyr__poster {
                     background-size: cover;
