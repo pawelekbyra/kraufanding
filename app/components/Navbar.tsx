@@ -117,9 +117,9 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 rounded-none border border-[#1a1a1a] transition-all">
+            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 bg-[#1a1a1a]/5 rounded-none border border-[#1a1a1a] transition-all">
               <LogIn size={18} />
-              <span>{t.signIn}</span>
+              <span className="hidden md:inline">{t.signIn}</span>
             </button>
           </SignInButton>
         </SignedOut>
