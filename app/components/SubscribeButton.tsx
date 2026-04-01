@@ -105,7 +105,7 @@ export default function SubscribeButton({
                 "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px]",
                 isSubscribed
                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10"
-                    : "bg-[#FF5E00] text-white hover:bg-[#E65500]",
+                    : "bg-[#FF5E00] text-[#3b82f6] hover:bg-[#E65500]",
                 isPending && "opacity-50 cursor-wait",
                 className
             )}
