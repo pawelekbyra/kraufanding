@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,7 +67,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
             <button type="submit" className="h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#1a1a1a]/10 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
@@ -79,7 +79,7 @@ const Navbar = () => {
       <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
         {/* Language Switcher - Mobile only as requested */}
         <div className="flex items-center gap-1 md:hidden">
-            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
+            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-none px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -117,7 +117,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 rounded-full transition-colors border border-[#1a1a1a]">
+            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 rounded-none border border-[#1a1a1a] transition-all">
               <LogIn size={18} />
               <span>{t.signIn}</span>
             </button>

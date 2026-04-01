@@ -90,7 +90,10 @@ export default async function ChannelPage({ params }: { params: { slug: string }
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
-               className="w-full h-full object-cover"
+               className={cn(
+                 "w-full h-full",
+                 params.slug === 'polutek' ? "object-contain p-2" : "object-cover"
+               )}
              />
           </div>
           <div className="flex-1 text-center md:text-left space-y-1">
