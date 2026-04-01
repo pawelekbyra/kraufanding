@@ -7,7 +7,7 @@ interface BrandNameProps {
   variant?: 'handwriting' | 'classic';
 }
 
-const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, variant = 'classic' }) => {
+const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, variant = 'handwriting' }) => {
   const isClassic = variant === 'classic';
   return (
     <span className={cn(
