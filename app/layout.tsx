@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { Inter, EB_Garamond, Space_Grotesk, Gluten } from 'next/font/google';
 import "./globals.css";
 
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
