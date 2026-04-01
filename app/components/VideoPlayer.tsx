@@ -92,6 +92,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     const plyrOptions = {
         autoplay: variant === 'hero',
         muted: true, // Force muted for reliable initialization
+        clickToPlay: true,
         controls: [
             'play-large',
             'play',
@@ -118,7 +119,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
 
             <style jsx global>{`
                 .plyr-cyber-archive {
-                    --plyr-color-main: #086f7a;
+                    --plyr-color-main: #3b82f6;
                     --plyr-video-background: #000;
                     --plyr-font-family: var(--font-space-grotesk), sans-serif;
                 }
@@ -133,10 +134,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     justify-content: center;
                 }
                 .plyr--full-ui.plyr--video .plyr__control--overlaid {
-                    background: rgba(8, 111, 122, 0.8);
+                    background: rgba(59, 130, 246, 0.8);
                 }
                 .plyr--full-ui input[type=range] {
-                    color: #086f7a;
+                    color: #3b82f6;
                 }
                 .plyr__poster {
                     background-size: cover;
