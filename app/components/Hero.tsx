@@ -189,14 +189,24 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
                   </span>
                </div>
-               <SubscribeButton
-                 creatorId={video.creatorId}
-                 initialSubscribersCount={video.creator?.subscribersCount || 0}
-                 initialIsSubscribed={initialIsSubscribed}
-               />
+               <div className="hidden sm:block">
+                  <SubscribeButton
+                    creatorId={video.creatorId}
+                    initialSubscribersCount={video.creator?.subscribersCount || 0}
+                    initialIsSubscribed={initialIsSubscribed}
+                  />
+               </div>
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
+            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-visible no-scrollbar">
+               <div className="sm:hidden flex-1">
+                  <SubscribeButton
+                    creatorId={video.creatorId}
+                    initialSubscribersCount={video.creator?.subscribersCount || 0}
+                    initialIsSubscribed={initialIsSubscribed}
+                    className="w-full"
+                  />
+               </div>
                <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0 overflow-hidden border border-[#1a1a1a]">
                   <button
                     onClick={handleLike}

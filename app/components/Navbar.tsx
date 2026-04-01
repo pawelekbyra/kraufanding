@@ -70,7 +70,7 @@ const Navbar = () => {
                 className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#f8f8f8] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#f0f0f0] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#1a1a1a]/5 border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#1a1a1a]/10 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-[#1a1a1a]/70" />
             </button>
           </form>
@@ -84,7 +84,7 @@ const Navbar = () => {
             >
                 <Search size={20} />
             </button>
-            <div className="flex gap-4 items-center bg-neutral/5 rounded-full px-3 py-1 mr-1 border border-neutral/10">
+            <div className="flex gap-4 items-center bg-[#1a1a1a]/5 rounded-full px-3 py-1 mr-1 border border-[#1a1a1a]">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -114,7 +114,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-[#1a1a1a]">
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors border border-[#1a1a1a]">
               <LogIn size={18} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>
