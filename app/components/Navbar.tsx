@@ -105,6 +105,28 @@ const Navbar = () => {
                 </button>
             </div>
         </div>
+
+        <div className="hidden md:flex items-center gap-4 bg-[#1a1a1a]/5 rounded-full px-3 py-1 border border-[#1a1a1a]">
+            <button
+                onClick={() => { if (setLanguage) setLanguage('pl'); }}
+                className={cn(
+                    "text-[10px] font-black tracking-widest uppercase transition-all",
+                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/30"
+                )}
+            >
+                PL
+            </button>
+            <button
+                onClick={() => { if (setLanguage) setLanguage('en'); }}
+                className={cn(
+                    "text-[10px] font-black tracking-widest uppercase transition-all",
+                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/30"
+                )}
+            >
+                EN
+            </button>
+        </div>
+
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-bold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
             Admin
@@ -114,7 +136,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors border border-[#1a1a1a]">
+            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 rounded-full transition-colors border border-[#1a1a1a]">
               <LogIn size={18} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>
