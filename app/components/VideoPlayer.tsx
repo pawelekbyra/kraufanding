@@ -7,8 +7,6 @@ import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
 // Vidstack Imports
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
 import { MediaPlayer, MediaProvider } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
 
@@ -64,22 +62,48 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         );
     }
 
-    if (!isMounted) return <div className="w-full h-full bg-black" />;
+    if (!isMounted) return (
+        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center cursor-pointer">
+            <img
+                src={video.thumbnailUrl}
+                alt={video.title}
+                className="w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+                 <div className="w-16 h-16 md:w-24 md:h-24 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10">
+                    <Play className="text-white w-8 h-8 md:w-12 md:h-12 ml-1" />
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
             <MediaPlayer
                 title={video.title}
                 src={videoUrl}
+                poster={video.thumbnailUrl}
                 playsInline
                 autoPlay={variant === 'hero'}
-                className="w-full h-full"
+                muted={variant === 'hero'}
+                viewType="video"
+                streamType="on-demand"
+                logLevel="warn"
                 crossOrigin
+                load="visible"
+                className="w-full h-full bg-black"
+                onCanPlay={() => console.log('[VideoPlayer] Media can play')}
+                onError={(detail) => console.error('[VideoPlayer] Media error:', detail)}
             >
-                <MediaProvider />
+                <MediaProvider>
+                    <img
+                        className="vds-poster"
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                    />
+                </MediaProvider>
                 <DefaultVideoLayout
                     icons={defaultLayoutIcons}
-                    noScrubGesture={false}
                 />
             </MediaPlayer>
 

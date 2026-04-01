@@ -4,6 +4,10 @@ import { Suspense } from 'react';
 import { Inter, EB_Garamond, Space_Grotesk, Gluten } from 'next/font/google';
 import "./globals.css";
 
+// Vidstack Player Styles
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
