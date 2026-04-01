@@ -5,6 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
 import { useLanguage } from './LanguageContext';
+import { UserAdd } from './icons';
 
 interface SubscribeButtonProps {
     creatorId: string;
@@ -102,7 +103,7 @@ export default function SubscribeButton({
             onClick={handleSubscribe}
             disabled={isPending}
             className={cn(
-                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest min-w-[154px] border",
+                "text-[14px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all tracking-widest min-w-[154px] border",
                 isSubscribed
                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10 border-transparent"
                     : "bg-[#3b82f6] text-white border-[#1a1a1a] hover:bg-[#1d4ed8]",
@@ -110,6 +111,7 @@ export default function SubscribeButton({
                 className
             )}
         >
+            {!isSubscribed && <UserAdd size={20} className="mr-2" />}
             {isSubscribed ? t.subscribed : t.subscribe}
         </button>
 
