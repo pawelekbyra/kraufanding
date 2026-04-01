@@ -175,7 +175,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
                     alt={video.creator?.name}
-                    className="w-full h-full object-cover"
+                    className={cn(
+                      "w-full h-full",
+                      video.creator?.slug === 'polutek' ? "object-contain p-1.5" : "object-cover"
+                    )}
                   />
                </Link>
                <div className="min-w-0 flex flex-col flex-1 lg:flex-none">
@@ -198,12 +201,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#1a1a1a]/5 rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#000000]/10 transition-colors border-r border-[#1a1a1a] relative",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#1a1a1a]/10 transition-colors border-r border-[#1a1a1a] relative",
                         optimisticState.isLiked && "text-primary",
                         isPending && "opacity-50"
                     )}
@@ -216,7 +219,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#000000]/10 transition-colors",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#1a1a1a]/10 transition-colors",
                         optimisticState.isDisliked && "text-red-500",
                         isPending && "opacity-50"
                     )}
@@ -227,12 +230,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#1a1a1a]/5 hover:bg-[#1a1a1a]/10 rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
                   <MoreHorizontal size={16} />
                </button>
             </div>
@@ -240,7 +243,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#000000]/5 rounded-2xl p-4 hover:bg-[#000000]/10 transition-colors cursor-pointer border border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-[#1a1a1a]/5 rounded-2xl p-4 hover:bg-[#1a1a1a]/10 transition-colors cursor-pointer border border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
               <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.views.toLocaleString('pl-PL')} {t.views}
