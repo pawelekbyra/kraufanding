@@ -193,7 +193,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  creatorId={video.creatorId}
                  initialSubscribersCount={video.creator?.subscribersCount || 0}
                  initialIsSubscribed={initialIsSubscribed}
-                 className="shrink-0"
+                 className="flex-1 sm:flex-none"
                />
             </div>
 

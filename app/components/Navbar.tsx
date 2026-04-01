@@ -106,27 +106,6 @@ const Navbar = () => {
             </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 bg-[#1a1a1a]/5 rounded-full px-3 py-1 border border-[#1a1a1a]">
-            <button
-                onClick={() => { if (setLanguage) setLanguage('pl'); }}
-                className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/30"
-                )}
-            >
-                PL
-            </button>
-            <button
-                onClick={() => { if (setLanguage) setLanguage('en'); }}
-                className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/30"
-                )}
-            >
-                EN
-            </button>
-        </div>
-
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-bold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
             Admin

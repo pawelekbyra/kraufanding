@@ -103,7 +103,7 @@ export default function SubscribeButton({
             onClick={handleSubscribe}
             disabled={isPending}
             className={cn(
-                "text-[14px] font-bold rounded-full px-4 sm:px-6 h-9 flex items-center justify-center transition-all tracking-widest sm:min-w-[154px] border",
+                "text-[14px] font-bold rounded-full px-4 sm:px-6 h-9 flex items-center justify-center transition-all tracking-widest sm:min-w-[154px] border w-full sm:w-auto",
                 isSubscribed
                     ? "bg-[#000000]/5 text-[#0f0f0f] hover:bg-[#000000]/10 border-transparent"
                     : "bg-[#3b82f6] text-white border-[#1a1a1a] hover:bg-[#1d4ed8]",
