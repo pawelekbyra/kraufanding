@@ -7,8 +7,9 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['var(--font-eb-garamond)', 'serif'],
-        sans: ['var(--font-space-grotesk)', 'sans-serif'],
+        serif: ['var(--font-outfit)', 'sans-serif'],
+        sans: ['var(--font-jakarta)', 'sans-serif'],
+        heading: ['var(--font-outfit)', 'sans-serif'],
         handwriting: ['var(--font-gluten)', 'cursive'],
       },
       colors: {

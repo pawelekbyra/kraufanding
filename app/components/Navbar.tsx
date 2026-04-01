@@ -30,7 +30,7 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-serif flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-sans flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
@@ -53,7 +53,7 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-black tracking-tighter uppercase shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center">
+            <Link href="/" className="btn btn-ghost text-lg md:text-xl font-semibold tracking-tight shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center normal-case hover:bg-transparent">
               <BrandName className="text-lg md:text-xl" />
             </Link>
           </div>
@@ -106,7 +106,7 @@ const Navbar = () => {
             </div>
         </div>
         {isAdmin && (
-          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
+          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-bold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
             Admin
           </Link>
         )}
@@ -114,7 +114,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
+            <button className="btn btn-ghost btn-sm font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 px-3 hover:bg-[#1a1a1a]/5 rounded-full transition-colors border border-black/10">
               <LogIn size={18} />
               <span className="hidden sm:inline">{t.signIn}</span>
             </button>

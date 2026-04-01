@@ -104,7 +104,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   } : null;
 
   return (
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-serif">
+      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-sans">
           <Navbar />
           <ChannelHome
             mainVideo={mainVideo}
@@ -144,7 +144,7 @@ function mapDbToVideo(v: any, adminData?: { imageUrl?: string | null, email?: st
     updatedAt: v.updatedAt,
     creator: v.creator ? {
       id: v.creator.id,
-      name: isPolutek ? 'POLUTEK.PL' : v.creator.name,
+      name: isPolutek ? 'Paweł Polutek' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
       imageUrl: resolvedImageUrl,

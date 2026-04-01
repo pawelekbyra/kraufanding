@@ -106,7 +106,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             key={video.id}
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
-              "group flex gap-2 p-0.5 rounded-lg transition-colors relative",
+              "group flex gap-2 p-1 rounded-xl transition-colors relative",
               isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
             )}
           >
@@ -115,7 +115,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-lg bg-black relative z-10 group/thumb">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-xl bg-black relative z-10 group/thumb">
               <Link
                 href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
                 scroll={false}
@@ -136,7 +136,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 scroll={false}
                 className="hover:opacity-80 transition-opacity"
               >
-                <h4 className="text-[14px] font-bold text-[#0f0f0f] line-clamp-2 leading-[1.2] uppercase tracking-tight">
+                <h4 className="text-[14px] font-semibold text-[#0f0f0f] line-clamp-2 leading-[1.2] tracking-tight">
                    {video.slug === 'independency-2024'
                     ? (isLoggedIn ? (
                         <>{t.welcomeOn} <BrandName /></>
@@ -149,7 +149,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                    className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
                  >
-                   {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || 'Anonimowy Twórca')}
+                   {video.creator?.name || 'Anonimowy Twórca'}
                  </Link>
                  <div className="flex items-center gap-1">
                     <span>{mounted ? video.views?.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}</span>
@@ -206,7 +206,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                <button
                  onClick={() => setActiveTab('comments')}
                  className={cn(
-                   "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
+                   "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
                    activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
@@ -215,7 +215,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                <button
                  onClick={() => setActiveTab('videos')}
                  className={cn(
-                   "flex-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2",
+                   "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
                    activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
@@ -230,13 +230,13 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    userProfile={userProfile}
                  />
                ) : (
-                 <div className="space-y-3">
+                 <div className="space-y-2">
                     {playlistItems}
                     {searchQuery && (
                       <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
                         <Link
                           href="/"
-                          className="btn btn-sm btn-block rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
+                          className="btn btn-sm btn-block rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
                         >
                           {language === 'pl' ? '← Wróć do wszystkich' : '← Back to all'}
                         </Link>
@@ -254,10 +254,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             </div>
           </div>
 
-          <aside className="hidden lg:block lg:col-span-4 space-y-3">
+          <aside className="hidden lg:block lg:col-span-4 space-y-2">
             <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
               <div className="flex items-center gap-3">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
+                <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
                 </h3>
               </div>
@@ -265,7 +265,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
-                    "text-xs font-black tracking-widest uppercase transition-all",
+                    "text-xs font-bold tracking-widest uppercase transition-all",
                     language === 'pl' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
@@ -274,7 +274,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <button
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
-                    "text-xs font-black tracking-widest uppercase transition-all",
+                    "text-xs font-bold tracking-widest uppercase transition-all",
                     language === 'en' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
@@ -289,7 +289,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
                       <Link
                         href="/"
-                        className="btn btn-sm btn-block rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm"
+                        className="btn btn-sm btn-block rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
                       >
                         {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
                       </Link>
@@ -303,7 +303,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </p>
                     <Link
                       href="/"
-                      className="btn btn-sm rounded-none border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-black uppercase tracking-widest italic shadow-brutalist-sm px-6"
+                      className="btn btn-sm rounded-xl border-2 border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic px-6"
                     >
                       {t.showAll}
                     </Link>

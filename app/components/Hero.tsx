@@ -150,7 +150,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
     <section className="bg-[#FDFBF7]">
       <div className="w-full">
         {/* FEATURED MEDIA */}
-        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
+        <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-sm border border-[#1a1a1a]/5 mb-3 group bg-black">
           <PremiumWrapper videoId={video.id} videoUrl={video.videoUrl} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             <VideoPlayer video={video} />
           </PremiumWrapper>
@@ -158,7 +158,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
         {/* INFO SECTION */}
         <div className="space-y-3 pt-3">
-          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2] uppercase">
+          <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2]">
             {video.slug === 'independency-2024'
               ? (userId ? (
                 <>{t.welcomeOn} <BrandName /></>
@@ -183,7 +183,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                     className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
                   >
-                    {video.creator?.slug === 'polutek' ? <BrandName /> : (video.creator?.name || <BrandName />)}
+                    {video.creator?.name || 'Anonimowy Twórca'}
                   </Link>
                   <span className="text-[12px] text-[#606060] whitespace-nowrap">
                      {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
@@ -197,39 +197,39 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0 overflow-hidden">
+               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 shrink-0 overflow-hidden border border-black/5">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
                         "flex items-center gap-2 pl-4 pr-3 h-full hover:bg-[#000000]/10 transition-colors border-r border-black/10 relative",
-                        optimisticState.isLiked && "text-black",
+                        optimisticState.isLiked && "text-primary",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-black")} />
-                     <span className="text-[14px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-primary")} />
+                     <span className="text-[14px] font-semibold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
                         "flex items-center px-4 h-full hover:bg-[#000000]/10 transition-colors",
-                        optimisticState.isDisliked && "text-black",
+                        optimisticState.isDisliked && "text-red-500",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                   >
-                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-black")} />
+                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-red-500")} />
                   </button>
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0"
+                 className="flex items-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0 border border-black/5"
                >
                   <Share2 size={16} />
-                  <span className="text-[13px] font-bold">{t.share}</span>
+                  <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
                <button className="w-9 h-9 flex items-center justify-center bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors shrink-0">
                   <MoreHorizontal size={16} />
@@ -239,25 +239,25 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#000000]/5 rounded-xl p-3 hover:bg-[#000000]/10 transition-colors cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-[#000000]/5 rounded-2xl p-4 hover:bg-[#000000]/10 transition-colors cursor-pointer border border-black/5" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+              <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
-              <span className="text-[14px] font-bold text-[#0f0f0f]">
+              <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
            <div className={cn(
-              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap font-sans",
+              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap",
               !isExpanded && "line-clamp-2"
            )}>
               {video.description || t.noDescription}
            </div>
 
            <button
-             className="text-[14px] font-bold text-[#0f0f0f] mt-1 hover:underline block"
+             className="text-[14px] font-semibold text-[#0f0f0f] mt-1 hover:underline block"
              onClick={(e) => {
                e.stopPropagation();
                setIsExpanded(!isExpanded);
