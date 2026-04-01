@@ -7,11 +7,11 @@ interface BrandNameProps {
   variant?: 'handwriting' | 'classic';
 }
 
-const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, variant = 'handwriting' }) => {
+const BrandName: React.FC<BrandNameProps> = ({ className, dotPlClassName, variant = 'classic' }) => {
   const isClassic = variant === 'classic';
   return (
     <span className={cn(
-      isClassic ? "font-sans font-black tracking-tighter uppercase" : "font-handwriting font-bold uppercase",
+      isClassic ? "font-brand font-black tracking-tighter uppercase" : "font-handwriting font-bold uppercase",
       className
     )}>
       POLUTEK<span className={cn("text-primary", dotPlClassName)}>.PL</span>
