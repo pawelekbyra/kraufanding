@@ -166,8 +166,8 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
               : video.title}
           </h2>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-            <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
+            <div className="flex items-center gap-2 md:gap-3 min-w-0 w-full lg:w-auto">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                  className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
@@ -178,7 +178,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     className="w-full h-full object-cover"
                   />
                </Link>
-               <div className="min-w-0 pr-1 flex flex-col flex-1 sm:flex-none">
+               <div className="min-w-0 flex flex-col flex-1 lg:flex-none">
                   <Link
                     href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                     className="font-bold text-[#0f0f0f] text-[16px] leading-tight truncate block hover:underline"
@@ -193,12 +193,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  creatorId={video.creatorId}
                  initialSubscribersCount={video.creator?.subscribersCount || 0}
                  initialIsSubscribed={initialIsSubscribed}
-                 className="flex-1 sm:flex-none"
+                 className="flex-1 lg:flex-none"
                />
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-visible no-scrollbar">
-               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 flex-[2] sm:flex-none overflow-hidden border border-[#1a1a1a]">
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+               <div className="flex items-center bg-[#000000]/5 rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
@@ -227,7 +227,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors flex-1 sm:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>

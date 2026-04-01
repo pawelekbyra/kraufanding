@@ -123,7 +123,7 @@ function mapDbToVideo(v: any, adminData?: { imageUrl?: string | null, email?: st
   // For 'polutek' channel, prioritize the fetched admin data (image and email)
   // Ensure we at least have the admin email for Dicebear fallback if image is null
   const resolvedEmail = (isPolutek && adminData?.email) ? adminData.email : (v.creator?.user?.email || null);
-  const resolvedImageUrl = (isPolutek && adminData?.imageUrl) ? adminData.imageUrl : (v.creator?.user?.imageUrl || v.creator?.imageUrl || null);
+  const resolvedImageUrl = isPolutek ? '/nowe.png' : (v.creator?.user?.imageUrl || v.creator?.imageUrl || null);
 
   return {
     id: v.id,
