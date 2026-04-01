@@ -6,9 +6,9 @@ import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
-// Vidstack Imports
-import { MediaPlayer, MediaProvider } from '@vidstack/react';
-import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
+// Plyr Imports
+import { Plyr } from 'plyr-react';
+import 'plyr/dist/plyr.css';
 
 interface VideoPlayerProps {
     video: VideoType;
@@ -77,70 +77,69 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         </div>
     );
 
+    const plyrSource: any = {
+        type: 'video',
+        title: video.title,
+        sources: [
+            {
+                src: videoUrl,
+                type: 'video/mp4',
+            },
+        ],
+        poster: video.thumbnailUrl,
+    };
+
+    const plyrOptions = {
+        autoplay: variant === 'hero',
+        muted: true, // Force muted for reliable initialization
+        controls: [
+            'play-large',
+            'play',
+            'progress',
+            'current-time',
+            'mute',
+            'volume',
+            'captions',
+            'settings',
+            'pip',
+            'airplay',
+            'fullscreen',
+        ],
+        ratio: '16:9',
+        keyboard: { focused: true, global: true },
+        tooltips: { controls: true, seek: true },
+    };
+
     return (
-        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
-            <MediaPlayer
-                title={video.title}
-                src={videoUrl}
-                poster={video.thumbnailUrl}
-                playsInline
-                autoPlay={variant === 'hero'}
-                muted={variant === 'hero'}
-                viewType="video"
-                streamType="on-demand"
-                logLevel="warn"
-                crossOrigin
-                load="visible"
-                className="w-full h-full bg-black"
-                onCanPlay={() => console.log('[VideoPlayer] Media can play')}
-                onError={(detail) => console.error('[VideoPlayer] Media error:', detail)}
-            >
-                <MediaProvider>
-                    <img
-                        className="vds-poster"
-                        src={video.thumbnailUrl}
-                        alt={video.title}
-                    />
-                </MediaProvider>
-                <DefaultVideoLayout
-                    icons={defaultLayoutIcons}
-                />
-            </MediaPlayer>
+        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center plyr-cyber-archive">
+            <div className="w-full max-w-full h-full flex items-center justify-center">
+                 <Plyr source={plyrSource} options={plyrOptions} />
+            </div>
 
             <style jsx global>{`
-                media-player {
-                    /* Project accent color - teal */
-                    --video-brand: #086f7a;
-                    /* Project cream color */
-                    --video-controls-color: #FDFBF7;
-                    /* Match layout font */
-                    --video-font-family: var(--font-space-grotesk), sans-serif;
-                    --video-border-radius: 0;
+                .plyr-cyber-archive {
+                    --plyr-color-main: #086f7a;
+                    --plyr-video-background: #000;
+                    --plyr-font-family: var(--font-space-grotesk), sans-serif;
                 }
-
-                /* Customizing the seek bar and other elements to feel more brutalist/cyber archive */
-                .vds-video-layout {
-                    --video-font-family: var(--font-space-grotesk), sans-serif;
+                .plyr--video {
+                    height: 100%;
+                    width: 100%;
                 }
-
-                /* Ensure controls have high contrast and fit the theme */
-                .vds-controls {
-                    --video-controls-bg: rgba(26, 26, 26, 0.7);
-                    backdrop-filter: blur(8px);
+                .plyr__video-wrapper {
+                    height: 100% !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
-
-                .vds-slider-track {
-                    background-color: rgba(253, 251, 247, 0.2) !important;
+                .plyr--full-ui.plyr--video .plyr__control--overlaid {
+                    background: rgba(8, 111, 122, 0.8);
                 }
-
-                .vds-slider-track-fill {
-                    background-color: #086f7a !important;
+                .plyr--full-ui input[type=range] {
+                    color: #086f7a;
                 }
-
-                .vds-slider-thumb {
-                    background-color: #FDFBF7 !important;
-                    border: 1px solid #1a1a1a;
-                    border-radius: 0 !important; /* Brutalist sharp edges */
+                .plyr__poster {
+                    background-size: cover;
                 }
             `}</style>
         </div>

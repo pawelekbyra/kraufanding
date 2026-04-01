@@ -20,7 +20,6 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.94.5",
     "@vercel/blob": "^2.3.1",
-    "@vidstack/react": "^1.12.13",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "daisyui": "^5.5.19",
@@ -28,6 +27,8 @@
     "dotenv": "^17.3.1",
     "lucide-react": "^0.577.0",
     "next": "^14.2.35",
+    "plyr": "^3.8.4",
+    "plyr-react": "^6.0.0",
     "postcss": "^8.5.6",
     "react": "^18",
     "react-dom": "^18",
@@ -37,8 +38,7 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.4.5",
-    "vidstack": "^1.12.13"
+    "typescript": "^5.4.5"
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"
