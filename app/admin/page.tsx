@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { Settings, Video, Edit, Save, BarChart3, Plus, Trash2, X, Globe, Lock, ShieldCheck, Star, Clock, ImageIcon, Mail, ArrowLeft } from "@/app/components/icons";
+import { formatCount } from "@/lib/utils";
 
 export default function AdminPanel() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -346,7 +347,7 @@ export default function AdminPanel() {
           <StatCard title="Wszystkie Filmy" value={stats?.totalVideos?.toString() || videos.length.toString()} icon={<Video size={20} />} />
           <StatCard title="Użytkownicy" value={stats?.totalUsers?.toString() || "0"} icon={<Plus size={20} />} />
           <StatCard title="Przychód" value={`${stats?.totalRevenue?.toFixed(2) || "0.00"} PLN`} icon={<BarChart3 size={20} />} />
-          <StatCard title="Subskrypcje" value={mounted ? (creator?.subscribersCount?.toLocaleString() || "0") : "0"} icon={<Star size={20} />} />
+          <StatCard title="Subskrypcje" value={mounted ? (formatCount(creator?.subscribersCount || 0)) : "0"} icon={<Star size={20} />} />
         </section>
 
         <div className="flex border-b-2 border-[#1a1a1a]/10">
