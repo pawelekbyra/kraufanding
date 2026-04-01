@@ -15,12 +15,14 @@ const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-outfit',
+  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-jakarta',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 const spaceGrotesk = Space_Grotesk({
