@@ -11,7 +11,7 @@ import { UserService } from '@/lib/services/user.service';
 import ChannelVideoCard from '@/app/components/ChannelVideoCard';
 import SubscribeButton from '@/app/components/SubscribeButton';
 import BrandName from '@/app/components/BrandName';
-import { cn } from '@/lib/utils';
+import { cn, formatCount } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,7 +103,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
             <div className="text-[14px] text-[#606060] flex flex-wrap justify-center md:justify-start gap-x-1.5 font-sans">
                <span className="font-bold text-[#0f0f0f]">@{creator.slug}</span>
                <span>•</span>
-               <span>{allVideos.length} filmów</span>
+               <span>{formatCount(allVideos.length)} filmów</span>
             </div>
             <p className="text-[14px] text-[#606060] line-clamp-1 max-w-2xl font-sans mt-1">
                {displayBio}

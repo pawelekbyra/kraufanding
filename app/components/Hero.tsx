@@ -4,7 +4,7 @@ import React, { useOptimistic, useState, useEffect, useTransition } from 'react'
 import { Video } from '../types/video';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from './icons';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { cn } from '@/lib/utils';
+import { cn, formatCount } from '@/lib/utils';
 import PremiumWrapper from './PremiumWrapper';
 import Link from 'next/link';
 import SubscribeButton from './SubscribeButton';
@@ -189,7 +189,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     {video.creator?.name || 'Anonimowy Twórca'}
                   </Link>
                   <span className="text-[12px] text-[#606060] whitespace-nowrap">
-                     {mounted ? (video.creator?.subscribersCount || 0).toLocaleString('pl-PL') : (video.creator?.subscribersCount || 0)} {t.subscribers}
+                     {mounted ? formatCount(video.creator?.subscribersCount || 0) : (video.creator?.subscribersCount || 0)} {t.subscribers}
                   </span>
                </div>
                <SubscribeButton
