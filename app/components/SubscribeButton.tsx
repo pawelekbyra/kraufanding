@@ -5,7 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { toggleSubscriptionAction, getSubscriptionStatusAction } from '@/app/actions/subscription';
 import { useLanguage } from './LanguageContext';
-import { UserAdd } from './icons';
+import { BellSimple } from './icons';
 
 interface SubscribeButtonProps {
     creatorId: string;
@@ -111,7 +111,7 @@ export default function SubscribeButton({
                 className
             )}
         >
-            {!isSubscribed && <UserAdd size={20} className="mr-1 sm:mr-2" />}
+            {!isSubscribed && <BellSimple size={18} className="mr-1 sm:mr-2" />}
             <span className="hidden sm:inline">
                 {isSubscribed ? t.subscribed : t.subscribe}
             </span>
