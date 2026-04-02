@@ -53,7 +53,7 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
+            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0.5 hover:bg-transparent">
               <Youtube size={28} className="shrink-0" />
               <BrandName className="text-lg md:text-xl" variant="handwriting" />
             </Link>
