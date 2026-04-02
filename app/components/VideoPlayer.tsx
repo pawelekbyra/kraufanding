@@ -45,10 +45,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     <div className={cn(
                         "bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10 transition-all duration-500",
                         variant === 'hero'
-                            ? "w-16 h-16 md:w-24 md:h-24 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
+                            ? "w-32 h-32 md:w-48 md:h-48 shadow-2xl group-hover/player:scale-110 group-hover/player:bg-black/90"
                             : "w-10 h-10 shadow-lg group-hover/player:scale-110 opacity-60 group-hover/player:opacity-100"
                     )}>
-                        <Play className={cn("text-white", variant === 'hero' ? "w-8 h-8 md:w-12 md:h-12 ml-1" : "w-5 h-5 ml-0.5")} />
+                        <Play className={cn("text-white", variant === 'hero' ? "w-16 h-16 md:w-24 md:h-24 ml-2" : "w-5 h-5 ml-0.5")} />
                     </div>
                 </div>
                 {!videoUrl && (
@@ -70,8 +70,8 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 className="w-full h-full object-cover opacity-60"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-                 <div className="w-16 h-16 md:w-24 md:h-24 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10">
-                    <Play className="text-white w-8 h-8 md:w-12 md:h-12 ml-1" />
+                 <div className="w-32 h-32 md:w-48 md:h-48 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10">
+                    <Play className="text-white w-16 h-16 md:w-24 md:h-24 ml-2" />
                 </div>
             </div>
         </div>
@@ -135,6 +135,11 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 }
                 .plyr--full-ui.plyr--video .plyr__control--overlaid {
                     background: #3b82f6;
+                    padding: 40px;
+                }
+                .plyr--full-ui.plyr--video .plyr__control--overlaid svg {
+                    width: 64px;
+                    height: 64px;
                 }
                 .plyr--full-ui input[type=range] {
                     color: #3b82f6;
