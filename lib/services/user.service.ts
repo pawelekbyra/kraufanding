@@ -10,10 +10,10 @@ export class UserService {
    * RESILIENCE: If Clerk API fails (e.g. handshake mismatch), it tries to find the user locally first.
    */
   static async getOrCreateUser(id: string) {
+    let clerkUser = null;
     try {
       console.log(`[UserService] Syncing user for ID: ${id}`);
 
-      let clerkUser = null;
       try {
           clerkUser = await currentUser();
       } catch (ce) {
@@ -40,6 +40,30 @@ export class UserService {
       return await this.syncUser(id, email, name, imageUrl);
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
+
+      // AUTO-HEALING: If database columns are missing, try to add them
+      if (e.message?.includes("column User.referralCount does not exist") ||
+          e.message?.includes("column User.totalPaid does not exist") ||
+          e.message?.includes("column User.referredById does not exist") ||
+          e.message?.includes("column \"referralCount\" does not exist")) {
+
+          console.log("[UserService] Detected missing DB columns. Attempting Auto-Healing...");
+          try {
+              // Execute raw SQL to ensure columns exist
+              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referralCount" INTEGER DEFAULT 0;`);
+              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "totalPaid" DOUBLE PRECISION DEFAULT 0;`);
+              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referredById" TEXT;`);
+              console.log("[UserService] Auto-Healing complete. Retrying sync...");
+
+              // Retry the entire operation once after healing
+              const retryEmail = clerkUser?.primaryEmailAddress?.emailAddress || `user_${id}@polutek.pl`;
+              const retryName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim() || null;
+              return await this.syncUser(id, retryEmail, retryName, clerkUser?.imageUrl || null);
+          } catch (he) {
+              console.error("[UserService] Auto-Healing failed:", he);
+          }
+      }
+
       // P2021: Table missing - this is the error the user is seeing!
       if (e.code === 'P2021') {
           throw new Error("DATABASE_TABLES_MISSING: Run 'npx prisma db push' in your environment.");
@@ -64,27 +88,7 @@ export class UserService {
             }
         });
 
-        if (existingByEmail) {
-            console.log(`[UserService] Email conflict detected for ${email}. Migrating data from ${existingByEmail.id} to ${id}`);
-
-            // Reassign relations to new ID
-            await tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } });
-            await tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } });
-
-            // Inherit stats and referrer if not already provided
-            if (!referrerId) referrerId = existingByEmail.referredById || undefined;
-
-            // Delete old user record
-            await tx.user.delete({ where: { id: existingByEmail.id } });
-        }
-
+        // 1. MUST ENSURE NEW USER EXISTS FIRST to avoid FK violations on relation updates
         const user = await tx.user.upsert({
           where: { id },
           update: {
@@ -107,6 +111,25 @@ export class UserService {
             referralCount: existingByEmail?.referralCount || 0,
           }
         });
+
+        // 2. Perform Migration if needed AFTER creating the target user
+        if (existingByEmail) {
+            console.log(`[UserService] Email conflict detected for ${email}. Migrating data from ${existingByEmail.id} to ${id}`);
+
+            // Reassign relations to new ID (target record 'id' now exists)
+            await tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } });
+            await tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } });
+
+            // Delete old user record
+            await tx.user.delete({ where: { id: existingByEmail.id } });
+        }
 
         // 3. If this is the admin, ensure the 'polutek' creator profile is synced with their profile
         if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
