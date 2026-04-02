@@ -82,9 +82,12 @@ export async function toggleVideoLike(videoId: string) {
     await ensureContentExists(videoId);
 
     // 1. Sync/Fetch user record
-    await UserService.getOrCreateUser(userId).catch(err => {
-        console.warn("[Interaction] UserService sync issue:", err.message);
-    });
+    try {
+        await UserService.getOrCreateUser(userId);
+    } catch (err: any) {
+        console.error("[Interaction] UserService sync issue:", err.message);
+        return { error: "USER_SYNC_FAILED", message: "Błąd synchronizacji profilu użytkownika. Spróbuj zalogować się ponownie." };
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       const existingDislike = await tx.videoDislike.findUnique({
@@ -148,9 +151,12 @@ export async function toggleVideoDislike(videoId: string) {
 
   try {
     await ensureContentExists(videoId);
-    await UserService.getOrCreateUser(userId).catch(err => {
-        console.warn("[Interaction] UserService sync issue:", err.message);
-    });
+    try {
+        await UserService.getOrCreateUser(userId);
+    } catch (err: any) {
+        console.error("[Interaction] UserService sync issue:", err.message);
+        return { error: "USER_SYNC_FAILED", message: "Błąd synchronizacji profilu użytkownika. Spróbuj zalogować się ponownie." };
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       const existingLike = await tx.videoLike.findUnique({
