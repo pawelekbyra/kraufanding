@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, LogIn, Trophy, Star, X, Bell, Youtube } from "./icons";
+import { Search, Globe, LogIn, Trophy, Star, X, Youtube } from "./icons";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';
@@ -53,7 +53,7 @@ const Navbar = () => {
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0.5 hover:bg-transparent">
+            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
               <Youtube size={28} className="shrink-0" />
               <BrandName className="text-lg md:text-xl" variant="handwriting" />
             </Link>
@@ -126,10 +126,6 @@ const Navbar = () => {
         </SignedOut>
         <SignedIn>
           <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
-            <button className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors relative group border border-[#1a1a1a]">
-              <Bell size={20} className="text-[#1a1a1a] transition-colors" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-[#1a1a1a] rounded-full border-2 border-base-100" />
-            </button>
             <div className="flex flex-col items-center pb-0.5">
                <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border border-[#1a1a1a] overflow-hidden">
                   <UserButton afterSignOutUrl="/" />
