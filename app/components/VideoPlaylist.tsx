@@ -111,14 +111,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#FDFBF7] border border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden">
+        <div className="bg-[#1a1a1a]/[0.03] border border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="absolute -top-4 -right-4 w-24 h-24 border border-[#1a1a1a] rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
             <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
           </div>
 
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-serif font-black text-[#1a1a1a] uppercase tracking-tighter">
-              {t.supportBrand} <BrandName variant="classic" />
+            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight">
+              {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
             </h3>
 
             <div className="space-y-4">
@@ -127,8 +127,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-mono text-xs font-bold uppercase tracking-widest text-black/50 text-center">
-                  {language === 'pl' ? `KWOTA WSPARCIA (MIN ${minAmount}.00 ${selectedCurrency})` : `TRANSACTION AMOUNT (MIN ${minAmount}.00 ${selectedCurrency})`}
+                <label className="block font-serif text-sm text-[#1a1a1a]/60 text-center">
+                  {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center">
