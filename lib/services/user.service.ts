@@ -211,10 +211,8 @@ export class UserService {
 
   static async toggleSubscription(id: string, creatorId: string) {
     try {
-      // Lazy sync
-      await this.getOrCreateUser(id).catch(err => {
-          console.warn("[UserService] ToggleSub could not sync user provider data, continuing with DB lookup.", err.message);
-      });
+      // Lazy sync - but now mandatory for database consistency
+      await this.getOrCreateUser(id);
 
       return await prisma.$transaction(async (tx) => {
         const existing = await tx.subscription.findUnique({
