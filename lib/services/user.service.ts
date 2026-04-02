@@ -1,10 +1,12 @@
 import { prisma } from '@/lib/prisma';
 import { currentUser } from '@clerk/nextjs/server';
 import crypto from 'crypto';
+import { SchemaService } from './schema.service';
 
 const ADMIN_EMAIL = "pawel.perfect@gmail.com";
 
 export class UserService {
+
   /**
    * Retrieves or creates a user record in the database using the Clerk ID.
    * RESILIENCE: If Clerk API fails (e.g. handshake mismatch), it tries to find the user locally first.
@@ -41,30 +43,21 @@ export class UserService {
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
 
-      // AUTO-HEALING: If database columns are missing, try to add them
-      if (e.message?.includes("column User.referralCount does not exist") ||
-          e.message?.includes("column User.totalPaid does not exist") ||
-          e.message?.includes("column User.referredById does not exist") ||
-          e.message?.includes("column \"referralCount\" does not exist")) {
+      // AUTO-HEALING: If database columns are missing or table is missing, try to heal
+      if (e.message?.includes("does not exist") || e.code === 'P2021') {
+          console.log("[UserService] Detected missing DB schema elements. Attempting Auto-Healing...");
+          await SchemaService.ensureSchema();
 
-          console.log("[UserService] Detected missing DB columns. Attempting Auto-Healing...");
           try {
-              // Execute raw SQL to ensure columns exist
-              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referralCount" INTEGER DEFAULT 0;`);
-              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "totalPaid" DOUBLE PRECISION DEFAULT 0;`);
-              await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referredById" TEXT;`);
-              console.log("[UserService] Auto-Healing complete. Retrying sync...");
-
               // Retry the entire operation once after healing
               const retryEmail = clerkUser?.primaryEmailAddress?.emailAddress || `user_${id}@polutek.pl`;
               const retryName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim() || null;
               return await this.syncUser(id, retryEmail, retryName, clerkUser?.imageUrl || null);
-          } catch (he) {
-              console.error("[UserService] Auto-Healing failed:", he);
+          } catch (retryError) {
+              console.error("[UserService] Retry after Auto-Healing failed:", retryError);
           }
       }
 
-      // P2021: Table missing - this is the error the user is seeing!
       if (e.code === 'P2021') {
           throw new Error("DATABASE_TABLES_MISSING: Run 'npx prisma db push' in your environment.");
       }
@@ -238,6 +231,18 @@ export class UserService {
       await this.getOrCreateUser(id);
 
       return await prisma.$transaction(async (tx) => {
+        // Ensure user exists within the transaction to prevent FK violations
+        await tx.user.upsert({
+            where: { id },
+            update: {},
+            create: {
+                id,
+                email: `user_${id}@polutek.pl`,
+                preferredLanguage: "pl",
+                role: "USER"
+            }
+        });
+
         const existing = await tx.subscription.findUnique({
           where: {
             userId_creatorId: {
