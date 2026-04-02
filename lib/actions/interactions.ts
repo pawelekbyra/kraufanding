@@ -90,6 +90,19 @@ export async function toggleVideoLike(videoId: string) {
     }
 
     const result = await prisma.$transaction(async (tx) => {
+      // 0. Double-check user exists WITHIN the transaction to prevent race conditions
+      // and guarantee foreign key availability at the exact time of record creation.
+      await tx.user.upsert({
+          where: { id: userId! },
+          update: {}, // No updates needed, just ensure existence
+          create: {
+              id: userId!,
+              email: `user_${userId}@polutek.pl`, // Fallback email
+              preferredLanguage: "pl",
+              role: "USER"
+          }
+      });
+
       const existingDislike = await tx.videoDislike.findUnique({
         where: { userId_videoId: { userId: userId!, videoId } }
       });
@@ -159,6 +172,18 @@ export async function toggleVideoDislike(videoId: string) {
     }
 
     const result = await prisma.$transaction(async (tx) => {
+      // 0. Double-check user exists WITHIN the transaction
+      await tx.user.upsert({
+          where: { id: userId! },
+          update: {},
+          create: {
+              id: userId!,
+              email: `user_${userId}@polutek.pl`,
+              preferredLanguage: "pl",
+              role: "USER"
+          }
+      });
+
       const existingLike = await tx.videoLike.findUnique({
         where: { userId_videoId: { userId: userId!, videoId } }
       });
