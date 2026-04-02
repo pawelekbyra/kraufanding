@@ -55,7 +55,7 @@ const Navbar = () => {
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-1 hover:bg-transparent">
               <Youtube size={36} className="shrink-0" />
-              <BrandName className="text-lg md:text-xl" variant="handwriting" />
+              <BrandName className="text-[36px] leading-none" variant="handwriting" />
             </Link>
           </div>
 
