@@ -5,7 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
-import { ChevronDown } from './icons';
+import { ChevronDown, PiggyBank } from './icons';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -112,13 +112,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   return (
     <div className="space-y-4 px-2" id="donations">
         <div className="bg-[#1a1a1a]/[0.03] border border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
-          <div className="absolute -top-4 -right-4 w-24 h-24 border border-[#1a1a1a] rounded-full flex items-center justify-center rotate-12 opacity-10 pointer-events-none">
-            <span className="font-mono text-[12px] font-bold text-center uppercase leading-tight text-red-600">THANK<br/>YOU!</span>
-          </div>
-
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight">
+            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight flex items-center gap-2">
               {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
+              <PiggyBank size={24} className="text-[#1a1a1a]" />
             </h3>
 
             <div className="space-y-4">
