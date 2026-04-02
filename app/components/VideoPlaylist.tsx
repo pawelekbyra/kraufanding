@@ -5,7 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
-import { ChevronDown, Coin2 } from './icons';
+import { ChevronDown, Coin2, Coin } from './icons';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -113,9 +113,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     <div className="space-y-4 px-2" id="donations">
         <div className="bg-[#1a1a1a]/[0.03] border border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight flex items-center gap-2">
+            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight flex flex-wrap items-center gap-2">
               {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
-              <Coin2 size={42} className="text-[#3b82f6]/20" />
+              <span className="inline-flex items-center gap-2">
+                <Coin size={32} className="text-[#3b82f6]" />
+                <Coin2 size={42} className="text-[#3b82f6]" />
+              </span>
             </h3>
 
             <div className="space-y-4">
