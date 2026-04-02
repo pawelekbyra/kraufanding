@@ -62,7 +62,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         ) : (
                             video.tier === 'PUBLIC' && (
-                                <div className="absolute top-2 right-2 bg-white/10 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-white/20 tracking-widest">
+                                <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-black uppercase px-2 py-1 rounded-md border border-[#1a1a1a] tracking-widest">
                                     {t.public}
                                 </div>
                             )
