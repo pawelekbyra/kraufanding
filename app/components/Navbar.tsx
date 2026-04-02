@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Globe, LogIn, Trophy, Star, X, Youtube } from "./icons";
+import { Search, Globe, LogIn, Trophy, Star, X } from "./icons";
 import { useLanguage } from './LanguageContext';
 import { cn } from '@/lib/utils';
 import BrandName from './BrandName';
@@ -54,7 +54,6 @@ const Navbar = () => {
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
-              <Youtube size={28} className="shrink-0" />
               <BrandName className="text-lg md:text-xl" variant="handwriting" />
             </Link>
           </div>
