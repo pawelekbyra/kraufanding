@@ -106,7 +106,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-[#1a1a1a]">
+                    <button className="h-fit p-1 hover:bg-[#FEF08A] rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-[#1a1a1a]">
                         <MoreVertical size={20} />
                     </button>
                 </div>
