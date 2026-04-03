@@ -5,7 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
-import { ChevronDown, Coin, Coin2 } from './icons';
+import { ChevronDown, Coin2, Star } from './icons';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -112,9 +112,16 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   return (
     <div className="space-y-4 px-2" id="donations">
         <div className="bg-[#eff6ff] border border-[#3b82f6] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
+          {/* Background Star Watermarks */}
+          <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
+            <Star size={160} className="absolute -top-12 -left-12 text-[#3b82f6]/[0.05] -rotate-12" />
+            <Star size={120} className="absolute top-1/2 -right-8 text-[#3b82f6]/[0.03] rotate-45" />
+            <Star size={80} className="absolute -bottom-6 left-1/4 text-[#3b82f6]/[0.04] -rotate-6" />
+            <Star size={140} className="absolute top-1/4 left-1/2 text-[#3b82f6]/[0.02] rotate-12" />
+          </div>
+
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e40af] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
-              <Coin size={32} className="text-black" />
               {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
               <Coin2 size={32} className="text-black" />
             </h3>
