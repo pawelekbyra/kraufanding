@@ -125,7 +125,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-serif text-sm text-black font-bold text-center">
+                <label className="block font-serif text-sm text-[#1e3a8a] font-bold text-center">
                   {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
@@ -163,7 +163,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border border-[#1a1a1a] rounded-none py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-white border border-[#3b82f6]/30 rounded-lg py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder={String(minAmount)}
                   />
                 </div>
@@ -179,7 +179,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-[#3b82f6] text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-[#1e3a8a] text-white py-4 rounded-lg font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
