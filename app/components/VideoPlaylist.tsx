@@ -111,21 +111,21 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#1a1a1a]/[0.03] border border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-[#eff6ff] border border-[#3b82f6] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-sans font-black text-[#1a1a1a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
-              <Coin size={32} className="text-[#3b82f6]" />
+            <h3 className="text-xl font-sans font-black text-[#1e40af] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
+              <Coin size={32} className="text-black" />
               {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
-              <Coin2 size={32} className="text-[#3b82f6]" />
+              <Coin2 size={32} className="text-black" />
             </h3>
 
             <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1a1a1a]">
+              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a]">
                 {t.donationDescription}
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-serif text-sm text-[#1a1a1a]/60 text-center">
+                <label className="block font-serif text-sm text-black font-bold text-center">
                   {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
@@ -179,7 +179,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-black text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-[#3b82f6] text-white py-4 font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
