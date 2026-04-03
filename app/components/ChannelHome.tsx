@@ -106,8 +106,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             key={video.id}
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
-              "group flex gap-2 p-1 rounded-xl transition-colors relative",
-              isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+              "group flex gap-2 p-1 rounded-xl transition-all relative border border-transparent",
+              isCurrent ? "bg-[#1a1a1a] shadow-brutalist border-[#1a1a1a]" : "hover:bg-[#1a1a1a]/5"
             )}
           >
             <Link
@@ -134,20 +134,29 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               <Link
                 href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
                 scroll={false}
-                className="hover:opacity-80 transition-opacity"
+                className={cn(
+                  "hover:opacity-80 transition-opacity",
+                  isCurrent ? "text-white" : "text-[#0f0f0f]"
+                )}
               >
-                <h4 className="text-[14px] font-semibold text-[#0f0f0f] line-clamp-2 leading-[1.2] tracking-tight">
+                <h4 className="text-[14px] font-semibold line-clamp-2 leading-[1.2] tracking-tight">
                    {video.slug === 'independency-2024'
                     ? (isLoggedIn ? (
-                        <>{t.welcomeOn} <BrandName /></>
+                        <>{t.welcomeOn} <BrandName dotPlClassName={isCurrent ? "text-white" : "text-primary"} /></>
                     ) : t.independencyTitle)
                     : video.title}
                 </h4>
               </Link>
-              <div className="text-[12px] text-[#606060] flex flex-col mt-0.5">
+              <div className={cn(
+                "text-[12px] flex flex-col mt-0.5",
+                isCurrent ? "text-white/70" : "text-[#606060]"
+              )}>
                  <Link
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                   className="hover:text-[#0f0f0f] transition-colors hover:underline w-fit relative z-20"
+                   className={cn(
+                     "transition-colors hover:underline w-fit relative z-20",
+                     isCurrent ? "hover:text-white text-white/90" : "hover:text-[#0f0f0f]"
+                   )}
                  >
                    {video.creator?.name || 'Anonimowy Twórca'}
                  </Link>
@@ -163,11 +172,20 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               </div>
               {mounted && (
                 hasAccess ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">{t.available}</span>
+                  <span className={cn(
+                    "text-[9px] font-black uppercase tracking-widest mt-0.5",
+                    isCurrent ? "text-white" : "text-primary"
+                  )}>{t.available}</span>
                 ) : video.tier === 'LOGGED_IN' ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{t.loginToWatchShort}</span>
+                  <span className={cn(
+                    "text-[9px] font-black uppercase tracking-widest mt-0.5",
+                    isCurrent ? "text-white" : "text-blue-500"
+                  )}>{t.loginToWatchShort}</span>
                 ) : (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">{t.becomePatron}</span>
+                  <span className={cn(
+                    "text-[9px] font-black uppercase tracking-widest mt-0.5",
+                    isCurrent ? "text-white/40" : "text-[#1a1a1a]/30"
+                  )}>{t.becomePatron}</span>
                 )
               )}
             </div>
@@ -207,7 +225,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('comments')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'comments' ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
                  {t.comments}
@@ -216,7 +234,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('videos')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'videos' ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
                  Video
@@ -266,7 +284,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
                     "text-xs font-bold tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'pl' ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a] pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
                   PL
@@ -275,7 +293,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
                     "text-xs font-bold tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary border-b-2 border-primary pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'en' ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a] pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
                   )}
                 >
                   EN
