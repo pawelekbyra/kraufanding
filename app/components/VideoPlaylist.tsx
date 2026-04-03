@@ -112,12 +112,32 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   return (
     <div className="space-y-4 px-2" id="donations">
         <div className="bg-[#eff6ff] border border-[#3b82f6] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
-          {/* Background Star Watermarks */}
+          {/* Background Star Watermarks - Starry Sky Effect */}
           <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
-            <Star size={160} className="absolute -top-12 -left-12 text-[#3b82f6]/[0.05] -rotate-12" />
-            <Star size={120} className="absolute top-1/2 -right-8 text-[#3b82f6]/[0.03] rotate-45" />
-            <Star size={80} className="absolute -bottom-6 left-1/4 text-[#3b82f6]/[0.04] -rotate-6" />
-            <Star size={140} className="absolute top-1/4 left-1/2 text-[#3b82f6]/[0.02] rotate-12" />
+            {[
+              { top: '10%', left: '5%', size: 12, rotate: 0 },
+              { top: '25%', left: '85%', size: 18, rotate: 45 },
+              { top: '40%', left: '15%', size: 14, rotate: -12 },
+              { top: '15%', left: '50%', size: 10, rotate: 15 },
+              { top: '60%', left: '80%', size: 22, rotate: 30 },
+              { top: '80%', left: '10%', size: 16, rotate: -45 },
+              { top: '70%', left: '40%', size: 12, rotate: 10 },
+              { top: '5%', left: '90%', size: 14, rotate: -20 },
+              { top: '45%', left: '60%', size: 20, rotate: 180 },
+              { top: '90%', left: '70%', size: 12, rotate: 90 },
+              { top: '35%', left: '30%', size: 15, rotate: 60 },
+              { top: '55%', left: '5%', size: 10, rotate: -30 },
+              { top: '20%', left: '20%', size: 8, rotate: 0 },
+              { top: '85%', left: '95%', size: 14, rotate: 45 },
+              { top: '50%', left: '90%', size: 11, rotate: -15 },
+            ].map((star, i) => (
+              <Star
+                key={i}
+                size={star.size}
+                style={{ top: star.top, left: star.left, transform: `rotate(${star.rotate}deg)` }}
+                className="absolute text-[#3b82f6]/[0.1]"
+              />
+            ))}
           </div>
 
           <div className="space-y-2 relative z-10">
