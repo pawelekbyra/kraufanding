@@ -107,7 +107,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
               "group flex gap-2 p-1 rounded-xl transition-all relative border border-transparent",
-              isCurrent ? "bg-[#1a1a1a] shadow-brutalist border-[#1a1a1a]" : "hover:bg-[#1a1a1a]/5"
+              isCurrent ? "bg-[#dcfce7] shadow-brutalist-sm border-[#22c55e]" : "hover:bg-[#f0fdf4]"
             )}
           >
             <Link
@@ -136,26 +136,26 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 scroll={false}
                 className={cn(
                   "hover:opacity-80 transition-opacity",
-                  isCurrent ? "text-white" : "text-[#0f0f0f]"
+                  isCurrent ? "text-[#15803d]" : "text-[#0f0f0f]"
                 )}
               >
                 <h4 className="text-[14px] font-semibold line-clamp-2 leading-[1.2] tracking-tight">
                    {video.slug === 'independency-2024'
                     ? (isLoggedIn ? (
-                        <>{t.welcomeOn} <BrandName dotPlClassName={isCurrent ? "text-white" : "text-primary"} /></>
+                        <>{t.welcomeOn} <BrandName dotPlClassName={isCurrent ? "text-[#15803d]" : "text-primary"} /></>
                     ) : t.independencyTitle)
                     : video.title}
                 </h4>
               </Link>
               <div className={cn(
                 "text-[12px] flex flex-col mt-0.5",
-                isCurrent ? "text-white/70" : "text-[#606060]"
+                isCurrent ? "text-[#15803d]/70" : "text-[#166534]/60"
               )}>
                  <Link
                    href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
                    className={cn(
                      "transition-colors hover:underline w-fit relative z-20",
-                     isCurrent ? "hover:text-white text-white/90" : "hover:text-[#0f0f0f]"
+                     isCurrent ? "hover:text-[#166534] text-[#15803d]/90" : "hover:text-[#0f0f0f]"
                    )}
                  >
                    {video.creator?.name || 'Anonimowy Twórca'}
@@ -174,17 +174,17 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 hasAccess ? (
                   <span className={cn(
                     "text-[9px] font-black uppercase tracking-widest mt-0.5",
-                    isCurrent ? "text-white" : "text-primary"
+                    isCurrent ? "text-[#16a34a]" : "text-primary"
                   )}>{t.available}</span>
                 ) : video.tier === 'LOGGED_IN' ? (
                   <span className={cn(
                     "text-[9px] font-black uppercase tracking-widest mt-0.5",
-                    isCurrent ? "text-white" : "text-blue-500"
+                    isCurrent ? "text-[#15803d]" : "text-blue-500"
                   )}>{t.loginToWatchShort}</span>
                 ) : (
                   <span className={cn(
                     "text-[9px] font-black uppercase tracking-widest mt-0.5",
-                    isCurrent ? "text-white/40" : "text-[#1a1a1a]/30"
+                    isCurrent ? "text-[#15803d]/40" : "text-[#1a1a1a]/30"
                   )}>{t.becomePatron}</span>
                 )
               )}
@@ -225,7 +225,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('comments')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'comments' ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'comments' ? "border-[#22c55e] text-[#15803d]" : "border-transparent text-[#166534]/40 hover:text-[#15803d]/70"
                  )}
                >
                  {t.comments}
@@ -234,7 +234,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('videos')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'videos' ? "border-[#1a1a1a] text-[#1a1a1a]" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'videos' ? "border-[#22c55e] text-[#15803d]" : "border-transparent text-[#166534]/40 hover:text-[#15803d]/70"
                  )}
                >
                  Video
@@ -273,9 +273,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-2">
-            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+            <div className="flex justify-between items-end border-b border-[#22c55e]/20 pb-1 mb-1.5">
               <div className="flex items-center gap-3">
-                <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">
+                <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#064e3b]">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
                 </h3>
               </div>
@@ -284,7 +284,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
                     "text-xs font-bold tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a] pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'pl' ? "text-[#15803d] border-b-2 border-[#22c55e] pb-0.5" : "text-[#166534]/30 hover:text-[#15803d]/60"
                   )}
                 >
                   PL
@@ -293,7 +293,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
                     "text-xs font-bold tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-[#1a1a1a] border-b-2 border-[#1a1a1a] pb-0.5" : "text-[#1a1a1a]/30 hover:text-[#1a1a1a]/60"
+                    language === 'en' ? "text-[#15803d] border-b-2 border-[#22c55e] pb-0.5" : "text-[#166534]/30 hover:text-[#15803d]/60"
                   )}
                 >
                   EN
