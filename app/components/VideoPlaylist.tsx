@@ -115,27 +115,40 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           {/* Background Star Watermarks - Starry Sky Effect */}
           <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
             {[
-              { top: '10%', left: '5%', size: 32, rotate: 0 },
-              { top: '25%', left: '85%', size: 48, rotate: 45 },
-              { top: '40%', left: '15%', size: 36, rotate: -12 },
+              { top: '5%', left: '10%', size: 32, rotate: 0 },
+              { top: '12%', left: '85%', size: 42, rotate: 45 },
+              { top: '40%', left: '5%', size: 36, rotate: -12 },
               { top: '15%', left: '50%', size: 28, rotate: 15 },
-              { top: '60%', left: '80%', size: 56, rotate: 30 },
-              { top: '80%', left: '10%', size: 40, rotate: -45 },
-              { top: '70%', left: '40%', size: 32, rotate: 10 },
-              { top: '5%', left: '90%', size: 36, rotate: -20 },
-              { top: '45%', left: '60%', size: 52, rotate: 180 },
+              { top: '65%', left: '90%', size: 48, rotate: 30 },
+              { top: '85%', left: '10%', size: 40, rotate: -45 },
+              { top: '75%', left: '40%', size: 32, rotate: 10 },
+              { top: '5%', left: '92%', size: 36, rotate: -20 },
+              { top: '45%', left: '65%', size: 52, rotate: 180 },
               { top: '90%', left: '70%', size: 32, rotate: 90 },
               { top: '35%', left: '30%', size: 38, rotate: 60 },
-              { top: '55%', left: '5%', size: 28, rotate: -30 },
-              { top: '20%', left: '20%', size: 24, rotate: 0 },
-              { top: '85%', left: '95%', size: 36, rotate: 45 },
-              { top: '50%', left: '90%', size: 30, rotate: -15 },
+              { top: '55%', left: '15%', size: 28, rotate: -30 },
+              { top: '20%', left: '25%', size: 24, rotate: 0 },
+              { top: '80%', left: '95%', size: 36, rotate: 45 },
+              { top: '50%', left: '85%', size: 30, rotate: -15 },
+              { top: '10%', left: '30%', size: 20, rotate: 15 },
+              { top: '25%', left: '5%', size: 24, rotate: -30 },
+              { top: '60%', left: '50%', size: 32, rotate: 45 },
+              { top: '30%', left: '70%', size: 28, rotate: -10 },
+              { top: '70%', left: '20%', size: 22, rotate: 20 },
+              { top: '95%', left: '45%', size: 26, rotate: -5 },
+              { top: '40%', left: '95%', size: 30, rotate: 75 },
+              { top: '5%', left: '65%', size: 24, rotate: -45 },
+              { top: '85%', left: '80%', size: 34, rotate: 120 },
+              { top: '55%', left: '40%', size: 28, rotate: 10 },
+              { top: '20%', left: '90%', size: 20, rotate: 30 },
+              { top: '45%', left: '45%', size: 18, rotate: -15 },
+              { top: '75%', left: '60%', size: 24, rotate: 60 },
             ].map((star, i) => (
               <Star
                 key={i}
                 size={star.size}
                 style={{ top: star.top, left: star.left, transform: `rotate(${star.rotate}deg)` }}
-                className="absolute text-[#3b82f6]/[0.15]"
+                className="absolute text-[#3b82f6]/[0.12]"
               />
             ))}
           </div>
