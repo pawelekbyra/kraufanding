@@ -14,7 +14,7 @@ async function ensureCreatorExists(creatorId: string) {
         const creator = await prisma.creator.findUnique({ where: { id: creatorId } });
         if (!creator && creatorId === DEFAULT_CREATOR.id) {
             console.log(`[Subscription] Auto-healing: Creator ${creatorId} missing. Creating from fallback.`);
-            const adminUser = await UserService.getOrCreateUser("user_admin_001").catch(() => null);
+            const adminUser = await UserService.ensureAdminUser().catch(() => null);
             if (!adminUser) return;
 
             await prisma.creator.create({
