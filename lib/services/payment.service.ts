@@ -20,11 +20,13 @@ export class PaymentService {
   }) {
     if (!stripe) throw new Error("Stripe not configured");
 
+    const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card'];
+    if (params.currency?.toLowerCase() === 'pln') {
+      paymentMethodTypes.push('blik', 'p24');
+    }
+
     const session = await stripe.checkout.sessions.create({
-      // @ts-ignore - automatic_payment_methods is supported but might not be in the local type definitions
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: paymentMethodTypes,
       line_items: [
         {
           price_data: {
