@@ -170,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-2 md:gap-3 min-w-0 w-full lg:w-auto">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#EFF6FF] border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-10 h-10 rounded-full bg-[#F0FDF4] border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
@@ -201,12 +201,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#EFF6FF] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#F0FDF4] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#DBEAFE] transition-colors border-r border-[#1a1a1a] relative",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#DCFCE7] transition-colors border-r border-[#1a1a1a] relative",
                         optimisticState.isLiked && "text-primary",
                         isPending && "opacity-50"
                     )}
@@ -219,7 +219,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#DBEAFE] transition-colors",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#DCFCE7] transition-colors",
                         optimisticState.isDisliked && "text-red-500",
                         isPending && "opacity-50"
                     )}
@@ -235,7 +235,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#EFF6FF] hover:bg-[#DBEAFE] rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#F5F3FF] hover:bg-[#EDE9FE] rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
                   <MoreHorizontal size={16} />
                </button>
             </div>
