@@ -170,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-2 md:gap-3 min-w-0 w-full lg:w-auto">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#D9F99D] border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-10 h-10 rounded-full bg-[#E7BC91] border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
@@ -201,7 +201,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#D9F99D] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#E7BC91] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
@@ -230,12 +230,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#BFDBFE] hover:bg-black/5 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#E7BC91] hover:bg-black/5 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#E9D5FF] hover:bg-black/5 rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#E7BC91] hover:bg-black/5 rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
                   <MoreHorizontal size={16} />
                </button>
             </div>
