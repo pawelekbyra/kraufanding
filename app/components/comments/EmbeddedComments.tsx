@@ -213,7 +213,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   return (
     <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-serif">
       <div className="flex items-center gap-6 mb-4">
-         <h3 className="text-[18px] font-bold text-[#1e40af] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
+         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
       </div>
 
       {/* Input Area */}
@@ -228,7 +228,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#1e40af] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#3b82f6]/40">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#3b82f6]/40">
                 <CornerDownRight size={12} />
                 {t.replying}
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
@@ -239,7 +239,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={replyTo ? t.addReply : t.addComment}
-              className="w-full bg-transparent text-[#1e3a8a] focus:outline-none text-[14px] border-b border-[#3b82f6]/20 focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#3b82f6]/20 focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
 
@@ -247,7 +247,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
                <button
                  onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                 className="text-[14px] font-bold text-[#1e40af] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
                >
                    {t.cancel}
                </button>
@@ -260,7 +260,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
                         newComment.trim()
                             ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
-                            : "bg-[#eff6ff] text-[#1e40af]/40 cursor-not-allowed border border-[#3b82f6]/20"
+                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#3b82f6]/20"
                     )}
                   >
                     {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
@@ -295,8 +295,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="flex-1 space-y-0.5 min-w-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#1e40af] text-[12px]">@{comment.authorName}</span>
-                        <span className="text-[11px] text-[#1e40af]/60">
+                        <span className="font-bold text-[#0f0f0f] text-[12px]">@{comment.authorName}</span>
+                        <span className="text-[11px] text-[#606060]">
                             {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                             ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                             : isClient ? 'niedawno' : ''}
@@ -311,7 +311,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         </button>
                     )}
                 </div>
-                <p className="text-[#1e3a8a] text-[13px] leading-relaxed">
+                <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
                   {comment.text}
                 </p>
                 <div className="flex items-center gap-3 pt-0.5">
@@ -319,25 +319,25 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     onClick={() => userProfile && likeMutation.mutate(comment.id)}
                     className={cn(
                       "flex items-center gap-1 transition-all group",
-                      comment.isLiked ? "text-[#1e40af]" : "text-[#1e40af]/60 hover:text-[#1e40af]"
+                      comment.isLiked ? "text-primary" : "text-[#606060] hover:text-[#0f0f0f]"
                     )}
                   >
-                    <ThumbsUp size={13} className={cn(comment.isLiked && "fill-[#1e40af]")} />
+                    <ThumbsUp size={13} className={cn(comment.isLiked && "fill-primary")} />
                     <span className="text-[11px] font-normal">{comment._count?.likes || 0}</span>
                   </button>
                   <button
                     onClick={() => userProfile && dislikeMutation.mutate(comment.id)}
                     className={cn(
                         "flex items-center gap-1 transition-all group",
-                        comment.isDisliked ? "text-red-500" : "text-[#1e40af]/60 hover:text-[#1e40af]"
+                        comment.isDisliked ? "text-black" : "text-[#606060] hover:text-[#0f0f0f]"
                     )}
                   >
-                    <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-red-500")} />
+                    <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-black")} />
                     <span className="text-[11px] font-normal">{comment._count?.dislikes || 0}</span>
                   </button>
                   <button
                       onClick={() => userProfile && setReplyTo(comment.id)}
-                      className="text-[11px] font-bold text-[#1e40af] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                      className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-full ml-1 transition-all"
                   >
                       {t.reply}
                   </button>
@@ -362,14 +362,14 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     </div>
                     <div className="flex-1 space-y-0.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#1e40af] text-[11px]">@{reply.authorName}</span>
-                        <span className="text-[10px] text-[#1e40af]/60">
+                        <span className="font-bold text-[#0f0f0f] text-[11px]">@{reply.authorName}</span>
+                        <span className="text-[10px] text-[#606060]">
                           {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
                             ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
                             : t.justNow}
                         </span>
                       </div>
-                      <p className="text-[#1e3a8a] text-[13px] leading-relaxed">
+                      <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
                         {reply.text}
                       </p>
                     </div>
