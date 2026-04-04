@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-white border-2 border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-white border-2 border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#bfdbfe] border-2 border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-black" />
             </button>
           </form>
