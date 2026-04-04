@@ -218,7 +218,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
       {/* Input Area */}
       <div className="flex gap-4 items-start mb-10">
-        <div className="w-10 h-10 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#3b82f6]/40">
+        <div className="w-10 h-10 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
            <img
              src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
              alt="Avatar"
@@ -228,7 +228,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#3b82f6]/40">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
                 <CornerDownRight size={12} />
                 {t.replying}
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
@@ -239,7 +239,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={replyTo ? t.addReply : t.addComment}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#3b82f6]/20 focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
+              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
 
@@ -260,7 +260,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
                         newComment.trim()
                             ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
-                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#3b82f6]/20"
+                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
                     )}
                   >
                     {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
@@ -282,7 +282,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         {comments.map((comment: any) => (
           <div key={comment.id} className="space-y-3">
             <div className="flex gap-3 items-start group/comment">
-               <div className="w-9 h-9 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#3b82f6]/40">
+               <div className="w-9 h-9 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
                   <img
                     src={comment.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.email}`}
                     alt="Avatar"
@@ -350,7 +350,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start">
-                    <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#3b82f6]/40">
+                    <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
                        <img
                          src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.authorName || 'Guest'}`}
                          alt="Avatar"
