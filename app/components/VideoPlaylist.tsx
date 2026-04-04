@@ -5,7 +5,7 @@ import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
-import { ChevronDown, Coin2, Star } from './icons';
+import { ChevronDown, Coin2, Dollar, Euro, Pound } from './icons';
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -18,19 +18,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(t.currency);
 
-  const getMinAmount = (curr: string) => {
-    if (curr === 'PLN') return 10;
-    if (curr === 'JPY') return 1000;
-    return 5;
-  };
+  const minAmount = 10;
 
   const getSuggestedAmount = (curr: string) => {
     if (curr === 'PLN') return 25;
-    if (curr === 'JPY') return 5000;
     return 10;
   };
 
-  const minAmount = getMinAmount(selectedCurrency);
   const [amount, setAmount] = useState<number | ''>(getSuggestedAmount(t.currency));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -43,6 +37,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     setSelectedCurrency(curr);
     setAmount(getSuggestedAmount(curr));
   };
+
+  const availableCurrencies = ['PLN', 'USD', 'EUR', 'GBP', 'CHF'].filter(curr => {
+    if (language === 'en' && curr === 'PLN') return false;
+    return true;
+  });
   const [referralCount, setReferralCount] = useState(0);
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
@@ -111,7 +110,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2" id="donations">
-        <div className="bg-[#eff6ff] border border-[#3b82f6] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-white border border-[#3b82f6] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           {/* Background Star Watermarks - Starry Sky Effect */}
           <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
             {[
@@ -143,14 +142,18 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               { top: '20%', left: '90%', size: 20, rotate: 30 },
               { top: '45%', left: '45%', size: 18, rotate: -15 },
               { top: '75%', left: '60%', size: 24, rotate: 60 },
-            ].map((star, i) => (
-              <Star
-                key={i}
-                size={star.size}
-                style={{ top: star.top, left: star.left, transform: `rotate(${star.rotate}deg)` }}
-                className="absolute text-[#3b82f6]/[0.12]"
-              />
-            ))}
+            ].map((star, i) => {
+              const CurrencyIcons = [Dollar, Euro, Pound];
+              const Icon = CurrencyIcons[i % CurrencyIcons.length];
+              return (
+                <Icon
+                  key={i}
+                  size={star.size}
+                  style={{ top: star.top, left: star.left, transform: `rotate(${star.rotate}deg)` }}
+                  className="absolute text-[#3b82f6]/[0.12]"
+                />
+              );
+            })}
           </div>
 
           <div className="space-y-2 relative z-10">
@@ -170,29 +173,19 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center">
-                    {language === 'pl' ? (
-                      <div className="pr-6 font-mono text-xl font-bold text-[#1e40af]/30 select-none pointer-events-none">
-                        {selectedCurrency}
-                      </div>
-                    ) : (
-                      <select
-                        value={selectedCurrency}
-                        onChange={(e) => handleCurrencyChange(e.target.value)}
-                        className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e40af]/50 focus:text-[#1e40af] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
-                        aria-label="Select Currency"
-                      >
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="CHF">CHF</option>
-                        <option value="JPY">JPY</option>
-                      </select>
-                    )}
-                    {language !== 'pl' && (
-                      <div className="absolute right-4 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
-                         <ChevronDown size={14} />
-                      </div>
-                    )}
+                    <select
+                      value={selectedCurrency}
+                      onChange={(e) => handleCurrencyChange(e.target.value)}
+                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e40af]/50 focus:text-[#1e40af] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                      aria-label="Select Currency"
+                    >
+                      {availableCurrencies.map(curr => (
+                        <option key={curr} value={curr}>{curr}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">
+                       <ChevronDown size={14} />
+                    </div>
                   </div>
                   <input
                     type="number"
@@ -203,7 +196,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border border-[#3b82f6]/30 rounded-lg py-4 px-12 font-mono text-3xl font-black text-[#1e40af] text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-[#eff6ff] border border-[#3b82f6]/30 rounded-lg py-4 px-12 font-mono text-3xl font-black text-[#1e40af] text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder={String(minAmount)}
                   />
                 </div>
