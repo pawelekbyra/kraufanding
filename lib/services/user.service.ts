@@ -3,9 +3,8 @@ import { currentUser } from '@clerk/nextjs/server';
 import crypto from 'crypto';
 import { SchemaService } from './schema.service';
 
-const ADMIN_EMAIL = "pawel.perfect@gmail.com";
-
 export class UserService {
+  static readonly ADMIN_EMAIL = "pawel.perfect@gmail.com";
 
   /**
    * Retrieves or creates a user record in the database using the Clerk ID.
@@ -67,7 +66,7 @@ export class UserService {
 
   static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string) {
     try {
-      const role = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
+      const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
       return await prisma.$transaction(async (tx) => {
         // 1. Check if user already exists by ID
@@ -80,6 +79,19 @@ export class UserService {
                 id: { not: id }
             }
         });
+
+        // 2.5 PREVENT UNIQUE CONSTRAINT VIOLATION:
+        // If we found a user with the same email but different ID, we must rename their email
+        // and clear their stripeCustomerId before we can upsert the new user record.
+        if (existingByEmail) {
+            await tx.user.update({
+                where: { id: existingByEmail.id },
+                data: {
+                    email: `migrating_${existingByEmail.id}_${Date.now()}@internal.temp`,
+                    stripeCustomerId: null // Also clear this to prevent unique constraint failure if it exists
+                }
+            });
+        }
 
         // 1. MUST ENSURE NEW USER EXISTS FIRST to avoid FK violations on relation updates
         const user = await tx.user.upsert({
@@ -125,7 +137,7 @@ export class UserService {
         }
 
         // 3. If this is the admin, ensure the 'polutek' creator profile is synced with their profile
-        if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        if (email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase()) {
             await tx.creator.updateMany({
                 where: { slug: 'polutek' },
                 data: {
@@ -222,6 +234,33 @@ export class UserService {
     } catch (e) {
         console.error("[GET_VIDEO_INTERACTION_ERROR]", e);
         return { liked: false, disliked: false };
+    }
+  }
+
+  /**
+   * Specifically ensures the Admin user exists using their known email.
+   * This is used for auto-healing when Clerk's currentUser() might not be reliable
+   * or when we need to link content to the admin without a real Clerk session.
+   */
+  static async ensureAdminUser() {
+    try {
+        return await prisma.user.upsert({
+            where: { email: UserService.ADMIN_EMAIL },
+            update: {
+                role: 'ADMIN',
+                name: "POLUTEK.PL"
+            },
+            create: {
+                id: `admin_${Date.now()}`, // Unique ID to avoid P2002 if 'user_admin_001' is taken
+                email: UserService.ADMIN_EMAIL,
+                name: "POLUTEK.PL",
+                role: 'ADMIN',
+                preferredLanguage: "pl"
+            }
+        });
+    } catch (e: any) {
+        console.error("[ENSURE_ADMIN_USER_ERROR]", e);
+        throw e;
     }
   }
 

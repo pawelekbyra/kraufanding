@@ -22,7 +22,7 @@ async function ensureContentExists(videoId: string) {
         let creator = await prisma.creator.findUnique({ where: { slug: DEFAULT_CREATOR.slug } });
         if (!creator) {
             // Find or create admin user to link the creator to
-            const adminUser = await UserService.getOrCreateUser("user_admin_001").catch(() => null);
+            const adminUser = await UserService.ensureAdminUser().catch(() => null);
             if (!adminUser) throw new Error("Could not create admin user for auto-healing.");
 
             creator = await prisma.creator.create({
