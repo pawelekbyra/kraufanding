@@ -118,7 +118,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             </h3>
 
             <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a]">
+              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
                 {t.donationDescription}
               </p>
 
