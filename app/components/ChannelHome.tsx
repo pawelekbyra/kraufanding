@@ -178,7 +178,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       if (i === 1) {
         acc.push(
           <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]/40 mb-1.5 px-2">{t.donate}</h3>
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-black mb-1.5 px-2">{t.donate}</h3>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
               />
