@@ -218,7 +218,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
       {/* Input Area */}
       <div className="flex gap-4 items-start mb-10">
-        <div className="w-10 h-10 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
+        <div className="w-10 h-10 rounded-full bg-[#FFFBEB] flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
            <img
              src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
              alt="Avatar"
@@ -228,7 +228,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#000000]/5 px-3 py-1 rounded-full w-fit mb-2">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#FEF9C3] px-3 py-1 rounded-full w-fit mb-2">
                 <CornerDownRight size={12} />
                 {t.replying}
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
@@ -247,7 +247,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
                <button
                  onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-4 py-2 rounded-full transition-all"
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#FEF08A] px-4 py-2 rounded-full transition-all"
                >
                    {t.cancel}
                </button>
@@ -260,7 +260,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
                         newComment.trim()
                             ? "bg-[#065fd4] text-white hover:bg-[#0556bf]"
-                            : "bg-[#000000]/5 text-[#606060] cursor-not-allowed"
+                            : "bg-[#FEF9C3] text-[#606060] cursor-not-allowed"
                     )}
                   >
                     {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
@@ -282,7 +282,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         {comments.map((comment: any) => (
           <div key={comment.id} className="space-y-3">
             <div className="flex gap-3 items-start group/comment">
-               <div className="w-9 h-9 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
+               <div className="w-9 h-9 rounded-full bg-[#FFFBEB] flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
                   <img
                     src={comment.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.email}`}
                     alt="Avatar"
@@ -337,7 +337,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   </button>
                   <button
                       onClick={() => userProfile && setReplyTo(comment.id)}
-                      className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#000000]/10 px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                      className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#FEF08A] px-2.5 py-0.5 rounded-full ml-1 transition-all"
                   >
                       {t.reply}
                   </button>
@@ -350,7 +350,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start">
-                    <div className="w-6 h-6 rounded-full bg-[#1a1a1a]/5 flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
+                    <div className="w-6 h-6 rounded-full bg-[#FFFBEB] flex items-center justify-center shrink-0 overflow-hidden border border-[#1a1a1a]">
                        <img
                          src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.authorName || 'Guest'}`}
                          alt="Avatar"
