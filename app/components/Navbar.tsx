@@ -71,7 +71,7 @@ const Navbar = () => {
               />
             </div>
             <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-[#1a1a1a]/70" />
+              <Search size={18} className="text-black" />
             </button>
           </form>
         </div>
@@ -83,7 +83,7 @@ const Navbar = () => {
               onClick={() => setIsMobileSearchOpen(true)}
               className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
             >
-                <Search size={20} />
+                <Search size={20} className="text-black" />
             </button>
 
             <div className="flex gap-4 items-center bg-[#1a1a1a]/[0.02] rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
@@ -117,7 +117,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border border-[#1a1a1a] transition-all">
+            <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border-2 border-[#1a1a1a] transition-all">
               <LogIn size={18} />
               <span className="hidden md:inline">{t.signIn}</span>
             </button>
