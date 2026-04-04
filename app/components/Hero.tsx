@@ -201,12 +201,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#bfdbfe] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#bfdbfe] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border-2 border-[#1a1a1a]">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#93c5fd] transition-colors border-r border-[#1a1a1a] relative",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#93c5fd] transition-colors border-r-2 border-[#1a1a1a] relative",
                         optimisticState.isLiked && "text-primary",
                         isPending && "opacity-50"
                     )}
@@ -230,12 +230,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#bfdbfe] hover:bg-[#93c5fd] rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#bfdbfe] hover:bg-[#93c5fd] rounded-full transition-colors flex-[2] lg:flex-none border-2 border-[#1a1a1a]"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#bfdbfe] hover:bg-[#93c5fd] rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#bfdbfe] hover:bg-[#93c5fd] rounded-full transition-colors shrink-0 border-2 border-[#1a1a1a]">
                   <MoreHorizontal size={16} />
                </button>
             </div>
@@ -243,7 +243,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#bfdbfe] rounded-2xl p-4 transition-colors cursor-pointer border border-[#e9eef6]" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-[#bfdbfe] rounded-2xl p-4 transition-colors cursor-pointer border-2 border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
               <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.views.toLocaleString('pl-PL')} {t.views}
