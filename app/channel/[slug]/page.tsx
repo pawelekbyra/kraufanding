@@ -34,6 +34,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
 
   const { userId } = auth();
   const userDb = userId ? await UserService.getOrCreateUser(userId).catch(() => null) : null;
+  const isSubscribed = (userId && creator) ? await UserService.isSubscribed(userId, creator.id).catch(() => false) : false;
 
   // Check if current user is the owner of this channel
   const isOwner = userDb && userDb.id === creator.userId;
@@ -112,6 +113,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
                <SubscribeButton
                  creatorId={creator.id}
                  initialSubscribersCount={creator.subscribersCount || 0}
+                 initialIsSubscribed={isSubscribed}
                />
                <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5 border border-[#1a1a1a]">Wspieraj</Link>
             </div>
