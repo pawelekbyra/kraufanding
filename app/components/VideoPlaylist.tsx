@@ -171,14 +171,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center">
                     {language === 'pl' ? (
-                      <div className="pr-6 font-mono text-xl font-bold text-black/20 select-none pointer-events-none">
+                      <div className="pr-6 font-mono text-xl font-bold text-[#1e40af]/30 select-none pointer-events-none">
                         {selectedCurrency}
                       </div>
                     ) : (
                       <select
                         value={selectedCurrency}
                         onChange={(e) => handleCurrencyChange(e.target.value)}
-                        className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-black/40 focus:text-black focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                        className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e40af]/50 focus:text-[#1e40af] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
                         aria-label="Select Currency"
                       >
                         <option value="USD">USD</option>
@@ -203,7 +203,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border border-[#3b82f6]/30 rounded-lg py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
+                    className="w-full bg-white border border-[#3b82f6]/30 rounded-lg py-4 px-12 font-mono text-3xl font-black text-[#1e40af] text-center focus:ring-0 outline-none transition-all placeholder:opacity-20"
                     placeholder={String(minAmount)}
                   />
                 </div>
