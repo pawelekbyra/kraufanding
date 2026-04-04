@@ -207,13 +207,13 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     disabled={isPending}
                     className={cn(
                         "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#dbeafe] transition-colors border-r border-[#3b82f6]/40 relative",
-                        optimisticState.isLiked && "text-[#1e40af]",
+                        optimisticState.isLiked && "text-primary",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-[#1e40af]")} />
-                     <span className="text-[14px] font-semibold text-[#1e40af]">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-primary")} />
+                     <span className="text-[14px] font-semibold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
@@ -232,11 +232,11 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  onClick={handleShare}
                  className="flex items-center justify-center gap-2 px-3 h-9 bg-[#eff6ff] hover:bg-[#dbeafe] rounded-full transition-colors flex-[2] lg:flex-none border border-[#3b82f6]/40"
                >
-                  <Share2 size={16} className="text-[#1e40af]" />
-                  <span className="text-[13px] font-semibold text-[#1e40af]">{t.share}</span>
+                  <Share2 size={16} />
+                  <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
                <button className="w-9 h-9 flex items-center justify-center bg-[#eff6ff] hover:bg-[#dbeafe] rounded-full transition-colors shrink-0 border border-[#3b82f6]/40">
-                  <MoreHorizontal size={16} className="text-[#1e40af]" />
+                  <MoreHorizontal size={16} />
                </button>
             </div>
           </div>
@@ -245,23 +245,23 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         {/* DESCRIPTION BOX */}
         <div className="mt-3 bg-[#eff6ff] rounded-2xl p-4 hover:bg-[#dbeafe] transition-colors cursor-pointer border border-[#3b82f6]/40" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-semibold text-[#1e40af]">
+              <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
-              <span className="text-[14px] font-semibold text-[#1e40af]">
+              <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
            <div className={cn(
-              "text-[14px] text-[#1e3a8a] leading-relaxed whitespace-pre-wrap",
+              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap",
               !isExpanded && "line-clamp-2"
            )}>
               {video.description || t.noDescription}
            </div>
 
            <button
-             className="text-[14px] font-semibold text-[#1e40af] mt-1 hover:underline block"
+             className="text-[14px] font-semibold text-[#0f0f0f] mt-1 hover:underline block"
              onClick={(e) => {
                e.stopPropagation();
                setIsExpanded(!isExpanded);
