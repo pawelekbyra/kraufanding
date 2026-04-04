@@ -170,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-2 md:gap-3 min-w-0 w-full lg:w-auto">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#E7BC91] border border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-10 h-10 rounded-full bg-[#eff6ff] border border-[#3b82f6]/40 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
@@ -201,25 +201,25 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#E7BC91] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#eff6ff] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#3b82f6]/40">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-black/5 transition-colors border-r border-[#1a1a1a] relative",
-                        optimisticState.isLiked && "text-primary",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#dbeafe] transition-colors border-r border-[#3b82f6]/40 relative",
+                        optimisticState.isLiked && "text-[#1e40af]",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-primary")} />
-                     <span className="text-[14px] font-semibold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-[#1e40af]")} />
+                     <span className="text-[14px] font-semibold text-[#1e40af]">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-black/5 transition-colors",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#dbeafe] transition-colors",
                         optimisticState.isDisliked && "text-red-500",
                         isPending && "opacity-50"
                     )}
@@ -230,38 +230,38 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#E7BC91] hover:bg-black/5 rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#eff6ff] hover:bg-[#dbeafe] rounded-full transition-colors flex-[2] lg:flex-none border border-[#3b82f6]/40"
                >
-                  <Share2 size={16} />
-                  <span className="text-[13px] font-semibold">{t.share}</span>
+                  <Share2 size={16} className="text-[#1e40af]" />
+                  <span className="text-[13px] font-semibold text-[#1e40af]">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#E7BC91] hover:bg-black/5 rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
-                  <MoreHorizontal size={16} />
+               <button className="w-9 h-9 flex items-center justify-center bg-[#eff6ff] hover:bg-[#dbeafe] rounded-full transition-colors shrink-0 border border-[#3b82f6]/40">
+                  <MoreHorizontal size={16} className="text-[#1e40af]" />
                </button>
             </div>
           </div>
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#FEF08A] rounded-2xl p-4 hover:bg-[#FEF08A]/80 transition-colors cursor-pointer border border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-[#eff6ff] rounded-2xl p-4 hover:bg-[#dbeafe] transition-colors cursor-pointer border border-[#3b82f6]/40" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-semibold text-[#0f0f0f]">
+              <span className="text-[14px] font-semibold text-[#1e40af]">
                  {video.views.toLocaleString('pl-PL')} {t.views}
               </span>
-              <span className="text-[14px] font-semibold text-[#0f0f0f]">
+              <span className="text-[14px] font-semibold text-[#1e40af]">
                  {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
            <div className={cn(
-              "text-[14px] text-[#0f0f0f] leading-relaxed whitespace-pre-wrap",
+              "text-[14px] text-[#1e3a8a] leading-relaxed whitespace-pre-wrap",
               !isExpanded && "line-clamp-2"
            )}>
               {video.description || t.noDescription}
            </div>
 
            <button
-             className="text-[14px] font-semibold text-[#0f0f0f] mt-1 hover:underline block"
+             className="text-[14px] font-semibold text-[#1e40af] mt-1 hover:underline block"
              onClick={(e) => {
                e.stopPropagation();
                setIsExpanded(!isExpanded);
