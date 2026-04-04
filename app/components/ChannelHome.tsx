@@ -177,8 +177,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       // Rule: Donate section always appears after the 2nd item (index 1) in the visual list
       if (i === 1) {
         acc.push(
-          <div key="donate" className="py-2 border-y border-[#1a1a1a]/5">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-black mb-1.5 px-2">{t.donate}</h3>
+          <div key="donate" className="pt-4 pb-2">
+              <div className="border-b border-[#1a1a1a]/5 pb-1 mb-3">
+                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a] px-2">{t.donate}</h3>
+              </div>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
               />
@@ -285,6 +287,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             {playlistItems.length > 0 ? (
                 <>
                   {playlistItems}
+                  <div className="pt-6">
+                    <div className="border-b border-[#1a1a1a]/5 pb-1 mb-3">
+                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a] px-2">{t.patronZone}</h3>
+                    </div>
+                  </div>
                   {searchQuery && (
                     <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
                       <Link
