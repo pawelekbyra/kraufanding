@@ -35,7 +35,7 @@ const Navbar = () => {
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
              onClick={() => setIsMobileSearchOpen(false)}
-             className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0"
+             className="p-2 hover:bg-[#FEF08A] rounded-full transition-colors shrink-0"
            >
               <X size={20} />
            </button>
@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-[#1a1a1a]/[0.02] border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-[#FFFBEB] border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-[#1a1a1a]/[0.02] border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-[#FFFBEB] border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#1a1a1a]/[0.02] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#1a1a1a]/10 transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#FFFBEB] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#FEF08A] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-[#1a1a1a]/70" />
             </button>
           </form>
@@ -81,12 +81,12 @@ const Navbar = () => {
         <div className="flex items-center gap-1 md:hidden">
             <button
               onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
+              className="p-2 hover:bg-[#FEF08A] rounded-full transition-colors md:hidden"
             >
                 <Search size={20} />
             </button>
 
-            <div className="flex gap-4 items-center bg-[#1a1a1a]/[0.02] rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
+            <div className="flex gap-4 items-center bg-[#FFFBEB] rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -117,7 +117,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="hover:bg-[#1a1a1a]/10 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 bg-[#1a1a1a]/[0.02] rounded-full border border-[#1a1a1a] transition-all">
+            <button className="hover:bg-[#FEF08A] font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 bg-[#FFFBEB] rounded-full border border-[#1a1a1a] transition-all">
               <LogIn size={18} />
               <span className="hidden md:inline">{t.signIn}</span>
             </button>

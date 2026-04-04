@@ -107,7 +107,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
               "group flex gap-2 p-1 rounded-xl transition-colors relative",
-              isCurrent ? "bg-[#1a1a1a]/10" : "hover:bg-[#1a1a1a]/5"
+              isCurrent ? "bg-[#FEF08A]" : "hover:bg-[#FFFBEB]"
             )}
           >
             <Link
@@ -207,7 +207,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('comments')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'comments' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'comments' ? "border-primary text-primary bg-[#FFFBEB]" : "border-transparent text-[#1a1a1a]/60 hover:bg-[#FFFBEB]/50"
                  )}
                >
                  {t.comments}
@@ -216,7 +216,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  onClick={() => setActiveTab('videos')}
                  className={cn(
                    "flex-1 py-3 text-sm font-semibold uppercase tracking-widest transition-all border-b-2",
-                   activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
+                   activeTab === 'videos' ? "border-primary text-primary bg-[#FFFBEB]" : "border-transparent text-[#1a1a1a]/60 hover:bg-[#FFFBEB]/50"
                  )}
                >
                  Video
