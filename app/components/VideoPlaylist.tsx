@@ -156,7 +156,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e40af] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {language === 'pl' ? "WSPIERAJ POLUTEK.PL" : "SUPPORT POLUTEK.PL"}
-              <Coin2 size={32} className="text-primary" />
+              <Coin2 size={32} className="text-[#1e40af]" />
             </h3>
 
             <div className="space-y-4">
