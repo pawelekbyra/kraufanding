@@ -17,13 +17,13 @@ interface SubscribeButtonProps {
 export default function SubscribeButton({
     creatorId,
     initialSubscribersCount,
-    initialIsSubscribed = false,
+    initialIsSubscribed,
     className
 }: SubscribeButtonProps) {
     const { t } = useLanguage();
     const { userId } = useAuth();
     const { openSignIn } = useClerk();
-    const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
+    const [isSubscribed, setIsSubscribed] = useState(() => initialIsSubscribed ?? false);
     const [subscribersCount, setSubscribersCount] = useState(initialSubscribersCount);
     const [isPending, startTransition] = useTransition();
     const [mounted, setMounted] = useState(false);
@@ -31,6 +31,13 @@ export default function SubscribeButton({
 
     useEffect(() => {
         setMounted(true);
+
+        // Sync with props if they change (e.g. navigation)
+        if (initialIsSubscribed !== undefined) {
+            setIsSubscribed(initialIsSubscribed);
+        }
+        setSubscribersCount(initialSubscribersCount);
+
         if (userId && creatorId && initialIsSubscribed === undefined) {
             getSubscriptionStatusAction(creatorId)
                 .then(data => setIsSubscribed(data.isSubscribed))
@@ -41,7 +48,7 @@ export default function SubscribeButton({
         if (!userId && mounted) {
             setIsSubscribed(false);
         }
-    }, [userId, creatorId, initialIsSubscribed, mounted]);
+    }, [userId, creatorId, initialIsSubscribed, initialSubscribersCount, mounted]);
 
     const handleSubscribe = async () => {
         if (!userId) {
