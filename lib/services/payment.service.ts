@@ -21,7 +21,13 @@ export class PaymentService {
     if (!stripe) throw new Error("Stripe not configured");
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: (params.currency?.toLowerCase() === 'eur') ? ['card'] : ['blik', 'p24', 'card'],
+      // We always include 'card' as it's universally supported.
+      // 'blik' and 'p24' are specific to PLN and must be enabled in the Stripe dashboard.
+      // If Stripe returns an error for any of these, it's usually because they aren't activated for the account.
+      payment_method_types: ['card', 'blik', 'p24'].filter(type => {
+        if (params.currency?.toLowerCase() !== 'pln' && (type === 'blik' || type === 'p24')) return false;
+        return true;
+      }) as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
       line_items: [
         {
           price_data: {
