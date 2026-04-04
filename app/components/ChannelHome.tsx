@@ -178,8 +178,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       if (i === 1) {
         acc.push(
           <div key="donate" className="pt-4 pb-2">
-              <div className="border-b border-[#1a1a1a]/5 pb-1 mb-3">
-                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a] px-2">{t.donate}</h3>
+              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.donate}</h3>
               </div>
               <VideoPlaylist
                  videoTitle={selectedVideo.title}
@@ -234,6 +234,11 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                ) : (
                  <div className="space-y-2">
                     {playlistItems}
+                    <div className="pt-6">
+                      <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+                         <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.patronZone}</h3>
+                      </div>
+                    </div>
                     {searchQuery && (
                       <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
                         <Link
@@ -288,8 +293,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <>
                   {playlistItems}
                   <div className="pt-6">
-                    <div className="border-b border-[#1a1a1a]/5 pb-1 mb-3">
-                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a] px-2">{t.patronZone}</h3>
+                    <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.patronZone}</h3>
                     </div>
                   </div>
                   {searchQuery && (
