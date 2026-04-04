@@ -54,7 +54,7 @@ const Navbar = () => {
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
-              <BrandName className="text-lg md:text-xl" variant="handwriting" />
+              <BrandName className="text-xl md:text-2xl" variant="handwriting" />
             </Link>
           </div>
 
@@ -126,7 +126,7 @@ const Navbar = () => {
         <SignedIn>
           <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
             <div className="flex flex-col items-center pb-0.5">
-               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border border-[#1a1a1a] overflow-hidden">
+               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border-2 border-[#1a1a1a] overflow-hidden">
                   <UserButton afterSignOutUrl="/" />
                </div>
             </div>

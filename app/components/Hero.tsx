@@ -170,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             <div className="flex items-center gap-2 md:gap-3 min-w-0 w-full lg:w-auto">
                <Link
                  href={video.creator?.slug ? `/channel/${video.creator.slug}` : "#"}
-                 className="w-10 h-10 rounded-full bg-[#eff6ff] border border-[#e9eef6] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                 className="w-10 h-10 rounded-full bg-[#eff6ff] border-2 border-[#1a1a1a] overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                >
                   <img
                     src={video.creator?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creator?.email || video.creator?.name || 'POLUTEK'}`}
