@@ -4,28 +4,37 @@ import { ClerkProvider, useUser } from '@clerk/nextjs';
 import { plPL } from '@clerk/localizations';
 import { useLanguage } from './LanguageContext';
 import { updateUserLanguage } from '@/lib/actions/user';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function LocalizationLogic({ children }: { children: React.ReactNode }) {
   const { language, setLanguage, isInitialized } = useLanguage();
   const { user, isLoaded } = useUser();
+  const [syncedOnce, setSyncedOnce] = useState(false);
 
   // Sync DB preference to Context ONLY ONCE on login
   useEffect(() => {
-    if (isLoaded && user && isInitialized) {
-      const dbLang = (user.publicMetadata.language || user.publicMetadata.preferredLanguage) as 'pl' | 'en';
-      if (dbLang && dbLang !== language) {
-        setLanguage(dbLang, true); // skipSync to avoid infinite loop or redundant calls
+    if (isLoaded && user && isInitialized && !syncedOnce) {
+      try {
+        const metadata = user.publicMetadata as any;
+        const dbLang = (metadata.language || metadata.preferredLanguage) as 'pl' | 'en';
+        if (dbLang && dbLang !== language) {
+          setLanguage(dbLang, true);
+        }
+        setSyncedOnce(true);
+      } catch (e) {
+        console.error("[ClerkLocalizationProvider] Error syncing metadata:", e);
       }
     }
-  }, [user, isLoaded, isInitialized, language, setLanguage]);
+  }, [user, isLoaded, isInitialized, language, setLanguage, syncedOnce]);
 
   // Sync Context to DB/Metadata on change
   useEffect(() => {
-    if (isLoaded && user && isInitialized) {
-       updateUserLanguage(language);
+    if (isLoaded && user && isInitialized && syncedOnce) {
+       updateUserLanguage(language).catch(err => {
+         console.warn("[ClerkLocalizationProvider] Failed to persist language choice:", err);
+       });
     }
-  }, [language, user, isLoaded, isInitialized]);
+  }, [language, user, isLoaded, isInitialized, syncedOnce]);
 
   return <>{children}</>;
 }
