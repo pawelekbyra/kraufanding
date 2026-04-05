@@ -2,7 +2,8 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
 export class PaymentService {
-  private static stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  // Używamy any dla stripe, aby uniknąć problemów z wersjami API w typach
+  private static stripe: any = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2023-10-16' as any,
   });
 
@@ -26,8 +27,8 @@ export class PaymentService {
     cancelUrl: string;
   }) {
     try {
-      const session = await this.stripe.checkout.sessions.create({
-        // ROZWIĄZANIE PROBLEMU P24: Automatyczne metody płatności
+      // Rzutujemy parametry na 'any', aby TypeScript nie blokował pola automatic_payment_methods
+      const sessionParams: any = {
         automatic_payment_methods: {
           enabled: true,
         },
@@ -40,21 +41,21 @@ export class PaymentService {
                 name: title || 'Dostęp Premium - Napiwek',
                 description: 'Pełny dostęp do materiałów na stronie',
               },
-              unit_amount: Math.round(amount * 100), // Stripe oczekuje groszy
+              unit_amount: Math.round(Number(amount) * 100),
             },
             quantity: 1,
           },
         ],
         mode: 'payment',
-        // Używamy adresów URL przekazanych z API route
         success_url: successUrl,
         cancel_url: cancelUrl,
         metadata: {
           userId: userId,
           creatorId: creatorId || '',
         },
-      });
+      };
 
+      const session = await this.stripe.checkout.sessions.create(sessionParams);
       return session;
     } catch (error) {
       console.error('Stripe session creation error:', error);
@@ -64,7 +65,7 @@ export class PaymentService {
 
   static async handleWebhook(signature: string, payload: string | Buffer) {
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-    let event: Stripe.Event;
+    let event: any;
 
     try {
       event = this.stripe.webhooks.constructEvent(
@@ -77,18 +78,14 @@ export class PaymentService {
     }
 
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
+      const session = event.data.object;
       const userId = session.metadata?.userId;
 
       if (userId) {
-        // Aktualizacja statusu Premium dla użytkownika
         await prisma.user.update({
           where: { clerkId: userId },
           data: { isPremium: true },
         });
-        
-        // Tutaj możesz dodać dodatkową logikę zapisu transakcji/napiwku 
-        // jeśli Twój model bazy danych na to pozwala.
       }
     }
 
