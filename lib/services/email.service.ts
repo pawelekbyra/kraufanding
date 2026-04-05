@@ -7,9 +7,10 @@ function getResendClient() {
   if (!resendClient) {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
-      console.warn('[EmailService] RESEND_API_KEY is missing.');
+      console.warn('[EmailService] RESEND_API_KEY is missing. Emails will not be sent.');
       return null;
     }
+    console.log('[EmailService] Initializing Resend client.');
     resendClient = new Resend(apiKey);
   }
   return resendClient;
@@ -17,9 +18,13 @@ function getResendClient() {
 
 export class EmailService {
   private static async sendEmail(toEmail: string, templateName: string, language: 'pl' | 'en' = 'pl', variables?: Record<string, string>) {
+    console.log(`[EmailService] Attempting to send ${templateName} to ${toEmail} (${language})`);
     try {
       const resend = getResendClient();
-      if (!resend) return;
+      if (!resend) {
+        console.warn('[EmailService] Resend client not available. Aborting send.');
+        return;
+      }
 
       const template = await prisma.emailTemplate.findUnique({
         where: { name: templateName }

@@ -53,6 +53,7 @@ export async function POST(req: Request) {
       console.log(`User ${id} synced via webhook. Referrer: ${referrerId || 'None'}, Language: ${preferredLanguage || 'Default'}`);
 
       if (eventType === 'user.created') {
+        console.log(`[ClerkWebhook] New user created: ${email}. Triggering welcome email.`);
         // Send welcome email in user's preferred language (defaults to "pl" if not set)
         await EmailService.sendWelcomeEmail(email, user.preferredLanguage as 'pl' | 'en' || 'pl');
       }
