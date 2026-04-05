@@ -5,11 +5,10 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="footer py-4 px-8 bg-base-100 text-base-content border-t border-neutral/10 flex justify-end items-center">
-      <nav className="flex flex-row gap-8">
-        <Link href="/regulamin" className="hover:opacity-100 font-serif text-[10px] uppercase tracking-[0.2em] opacity-30 transition-opacity">Regulamin</Link>
-        <Link href="/polityka-prywatnosci" className="hover:opacity-100 font-serif text-[10px] uppercase tracking-[0.2em] opacity-30 transition-opacity">Polityka prywatności</Link>
-      </nav>
+    <footer className="footer py-4 px-8 bg-base-100 text-base-content border-t border-neutral/10 flex justify-center items-center">
+      <span className="font-brand font-black text-[12px] uppercase tracking-[0.3em] opacity-40">
+        WWW.POLUTEK.PL
+      </span>
     </footer>
   );
 };

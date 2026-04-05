@@ -93,7 +93,9 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             <div className="mt-0.5">
                                 {mounted && (
                                     hasAccess ? (
-                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">{t.available}</span>
+                                        <span className="text-[11px] font-black uppercase tracking-widest text-primary">
+                                            {video.tier === 'PUBLIC' ? t.publicStatus : t.unlockedStatus}
+                                        </span>
                                     ) : (
                                         <span className={cn(
                                             "text-[11px] font-black uppercase tracking-widest",
