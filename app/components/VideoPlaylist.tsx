@@ -19,6 +19,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [selectedCurrency, setSelectedCurrency] = useState(t.currency);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
+  const [isRegulaminOpen, setIsRegulaminOpen] = useState(false);
+  const [isPolitykaOpen, setIsPolitykaOpen] = useState(false);
 
   const minAmount = 10;
 
@@ -192,24 +194,38 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 language === 'pl' ? 'WYŚLIJ NAPIWEK' : 'TIP THE GUY'
               )}
             </button>
-          </div>
 
-          {/* Terms on the right, checkbox on the left of text */}
-          <div className="absolute bottom-[2.75rem] right-4 z-20">
-            <label className="flex items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
-               <input
-                 type="checkbox"
-                 checked={isTermsAccepted}
-                 onChange={(e) => {
-                   setIsTermsAccepted(e.target.checked);
-                   if (e.target.checked) setShowTermsError(false);
-                 }}
-                 className="checkbox checkbox-xs border-2 border-[#1e3a8a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
-               />
-               <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
-                 {t.acceptTerms}
-               </span>
-            </label>
+            {/* Terms below the button, no absolute positioning */}
+            <div className="pt-2 flex justify-center">
+              <label className="flex items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+                <input
+                  type="checkbox"
+                  checked={isTermsAccepted}
+                  onChange={(e) => {
+                    setIsTermsAccepted(e.target.checked);
+                    if (e.target.checked) setShowTermsError(false);
+                  }}
+                  className="checkbox checkbox-xs border-2 border-[#1e3a8a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                />
+                <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
+                  {language === 'pl' ? (
+                    <>
+                      Akceptuję{' '}
+                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-black">Regulamin</button>
+                      {' '}i{' '}
+                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-black">Politykę Prywatności</button>
+                    </>
+                  ) : (
+                    <>
+                      I accept the{' '}
+                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-black">Terms</button>
+                      {' '}and{' '}
+                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-black">Privacy Policy</button>
+                    </>
+                  )}
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -217,7 +233,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <button
           type="button"
           onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-          className="absolute -bottom-5 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
+          className="absolute -bottom-6 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
         >
           {t.noMoney}
         </button>
@@ -229,6 +245,54 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             userId={userId}
             referralCount={referralCount}
           />
+        )}
+
+        {/* Regulamin Modal */}
+        {isRegulaminOpen && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-brutalist relative animate-in zoom-in-95 duration-300">
+                <button
+                  onClick={() => setIsRegulaminOpen(false)}
+                  className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"
+                >
+                  [ Zamknij ]
+                </button>
+                <div className="prose prose-sm prose-neutral">
+                  <h1 className="text-2xl font-black uppercase tracking-tighter mb-8 border-b-2 border-[#1a1a1a]/10 pb-4">Regulamin Serwisu POLUTEK.PL</h1>
+                  <section className="space-y-4">
+                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Charakter platformy</h2>
+                    <p>Serwis POLUTEK.PL jest prywatną, autorską platformą wideo. Platforma działa w modelu dożywotniego patronatu.</p>
+                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">2. Model wsparcia</h2>
+                    <p>Wsparcie finansowe przekazywane przez użytkowników ma charakter dobrowolnej wpłaty (napiwku).</p>
+                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">3. Płatności</h2>
+                    <p>Wszelkie wpłaty są procesowane przez Stripe i mają charakter bezzwrotny.</p>
+                  </section>
+                </div>
+             </div>
+          </div>
+        )}
+
+        {/* Polityka Prywatnosci Modal */}
+        {isPolitykaOpen && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-brutalist relative animate-in zoom-in-95 duration-300">
+                <button
+                  onClick={() => setIsPolitykaOpen(false)}
+                  className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"
+                >
+                  [ Zamknij ]
+                </button>
+                <div className="prose prose-sm prose-neutral">
+                  <h1 className="text-2xl font-black uppercase tracking-tighter mb-8 border-b-2 border-[#1a1a1a]/10 pb-4">Polityka Prywatności</h1>
+                  <section className="space-y-4">
+                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Dane osobowe</h2>
+                    <p>Dla bezpieczeństwa i wygody użytkowników, POLUTEK.PL korzysta z zewnętrznego systemu uwierzytelniania Clerk.</p>
+                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">2. Płatności</h2>
+                    <p>Wszystkie operacje finansowe są procesowane wyłącznie przez Stripe.</p>
+                  </section>
+                </div>
+             </div>
+          </div>
         )}
     </div>
   );

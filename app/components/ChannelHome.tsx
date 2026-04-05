@@ -163,7 +163,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               </div>
               {mounted && (
                 hasAccess ? (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">{t.available}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary mt-0.5">
+                    {video.tier === 'PUBLIC' ? t.publicStatus : t.unlockedStatus}
+                  </span>
                 ) : video.tier === 'LOGGED_IN' ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{t.loginToWatchShort}</span>
                 ) : (
