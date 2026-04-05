@@ -18,6 +18,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(t.currency);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [showTermsError, setShowTermsError] = useState(false);
 
   const minAmount = 10;
 
@@ -71,9 +72,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     }
 
     if (!isTermsAccepted) {
-      alert(t.pleaseAcceptTerms);
+      setShowTermsError(true);
       return;
     }
+    setShowTermsError(false);
 
     if (!amount || amount < minAmount) {
       alert(language === 'pl' ? `Minimalna kwota wsparcia to ${minAmount} ${selectedCurrency}` : `Minimum support amount is ${minAmount} ${selectedCurrency}`);
@@ -127,6 +129,12 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
                 {t.donationDescription}
               </p>
+
+              {showTermsError && (
+                <p className="text-red-600 font-sans font-bold text-[10px] text-center uppercase tracking-widest animate-bounce">
+                  {t.pleaseAcceptTerms}
+                </p>
+              )}
 
               <div className="space-y-2 pt-2">
                 <label className="block font-serif text-sm text-[#1e3a8a] font-bold text-center">
@@ -192,10 +200,13 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                <input
                  type="checkbox"
                  checked={isTermsAccepted}
-                 onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                 onChange={(e) => {
+                   setIsTermsAccepted(e.target.checked);
+                   if (e.target.checked) setShowTermsError(false);
+                 }}
                  className="checkbox checkbox-xs border-2 border-[#1a1a1a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                />
-               <span className="text-black/30 group-hover:text-black font-sans font-medium text-[10px] tracking-tight transition-colors">
+               <span className="text-[#1e3a8a] font-sans font-black text-[10px] tracking-tight transition-colors uppercase">
                  {t.acceptTerms}
                </span>
             </label>
@@ -206,7 +217,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <button
           type="button"
           onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-          className="absolute -bottom-2 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
+          className="absolute -bottom-5 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
         >
           {t.noMoney}
         </button>
