@@ -27,7 +27,6 @@ export class PaymentService {
     cancelUrl: string;
   }) {
     try {
-      // Rzutujemy parametry na 'any', aby TypeScript nie blokował pola automatic_payment_methods
       const sessionParams: any = {
         automatic_payment_methods: {
           enabled: true,
@@ -82,9 +81,14 @@ export class PaymentService {
       const userId = session.metadata?.userId;
 
       if (userId) {
-        await prisma.user.update({
-          where: { clerkId: userId },
-          data: { isPremium: true },
+        // ZAMIANA update NA updateMany (to rozwiązuje Twój ostatni błąd)
+        await prisma.user.updateMany({
+          where: { 
+            clerkId: userId 
+          },
+          data: { 
+            isPremium: true 
+          },
         });
       }
     }
