@@ -6,6 +6,13 @@ import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
 import { ChevronDown, Trophy } from './icons';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import CheckoutForm from './CheckoutForm';
+
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  : null;
 
 interface VideoPlaylistProps {
   videoId?: string;
@@ -21,6 +28,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [showTermsError, setShowTermsError] = useState(false);
   const [isRegulaminOpen, setIsRegulaminOpen] = useState(false);
   const [isPolitykaOpen, setIsPolitykaOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   const minAmount = 10;
 
@@ -91,7 +100,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     try {
       setIsLoading(true);
 
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/api/checkout/create-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -104,8 +113,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
       const data = await response.json();
 
-      if (data?.url) {
-        window.location.href = data.url;
+      if (data?.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setIsCheckoutModalOpen(true);
       } else if (data?.error) {
         if (response.status === 401 || data.error.includes("AUTH_REQUIRED")) {
           alert(language === 'pl' ? "Twoja sesja wygasła. Zaloguj się ponownie." : "Your session has expired. Please sign in again.");
@@ -249,6 +259,30 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             referralCode={referralData.code || userId}
             referralPoints={referralData.points}
           />
+        )}
+
+        {/* Checkout Modal */}
+        {isCheckoutModalOpen && clientSecret && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-lg w-full shadow-brutalist relative animate-in zoom-in-95 duration-300">
+                <button
+                  onClick={() => setIsCheckoutModalOpen(false)}
+                  className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"
+                >
+                  [ Zamknij ]
+                </button>
+                <h3 className="text-xl font-black uppercase tracking-tight mb-6 text-[#1e3a8a] text-center">
+                  Finalizacja wsparcia
+                </h3>
+                {stripePromise ? (
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckoutForm />
+                  </Elements>
+                ) : (
+                  <p className="text-red-500 font-mono text-center">Błąd ładowania Stripe</p>
+                )}
+             </div>
+          </div>
         )}
 
         {/* Regulamin Modal */}
