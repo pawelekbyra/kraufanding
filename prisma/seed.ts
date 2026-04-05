@@ -145,6 +145,44 @@ async function main() {
     });
   }
 
+  // 4. Define Email Templates
+  const templates = [
+    {
+      name: 'WELCOME',
+      subjectPl: 'Witaj w POLUTEK.PL!',
+      bodyPl: '<h1>Siema!</h1><p>Dzięki za dołączenie do naszej społeczności. Cieszymy się, że tu jesteś.</p><p>Ekipa POLUTEK.PL</p>',
+      subjectEn: 'Welcome to POLUTEK.PL!',
+      bodyEn: '<h1>Hey there!</h1><p>Thanks for joining our community. We are glad to have you here.</p><p>POLUTEK.PL Team</p>'
+    },
+    {
+      name: 'ACCOUNT_DELETED',
+      subjectPl: 'Twoje konto zostało usunięte - POLUTEK.PL',
+      bodyPl: '<h1>Cześć,</h1><p>Potwierdzamy, że Twoje konto w POLUTEK.PL zostało pomyślnie usunięte. Przykro nam, że odchodzisz.</p><p>Ekipa POLUTEK.PL</p>',
+      subjectEn: 'Your account has been deleted - POLUTEK.PL',
+      bodyEn: '<h1>Hi,</h1><p>We confirm that your account at POLUTEK.PL has been successfully deleted. We are sorry to see you go.</p><p>POLUTEK.PL Team</p>'
+    },
+    {
+      name: 'PASSWORD_CHANGED',
+      subjectPl: 'Twoje hasło zostało zmienione - POLUTEK.PL',
+      bodyPl: '<h1>Cześć,</h1><p>Twoje hasło do konta POLUTEK.PL zostało właśnie zmienione. Jeśli to nie Ty, skontaktuj się z nami jak najszybciej.</p><p>Ekipa POLUTEK.PL</p>',
+      subjectEn: 'Your password has been changed - POLUTEK.PL',
+      bodyEn: '<h1>Hi,</h1><p>Your POLUTEK.PL account password has just been changed. If this wasn\'t you, please contact us immediately.</p><p>POLUTEK.PL Team</p>'
+    }
+  ];
+
+  for (const t of templates) {
+    await prisma.emailTemplate.upsert({
+      where: { name: t.name },
+      update: {
+        subjectPl: t.subjectPl,
+        bodyPl: t.bodyPl,
+        subjectEn: t.subjectEn,
+        bodyEn: t.bodyEn,
+      },
+      create: t,
+    });
+  }
+
   console.log('Seeding finished successfully.');
 }
 

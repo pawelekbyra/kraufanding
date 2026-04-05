@@ -16,17 +16,17 @@ function getResendClient() {
 }
 
 export class EmailService {
-  static async sendWelcomeEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
+  private static async sendEmail(toEmail: string, templateName: string, language: 'pl' | 'en' = 'pl') {
     try {
       const resend = getResendClient();
       if (!resend) return;
 
       const template = await prisma.emailTemplate.findUnique({
-        where: { name: 'WELCOME' }
+        where: { name: templateName }
       });
 
       if (!template) {
-        console.warn('[EmailService] Welcome template not found in DB. Skipping email.');
+        console.warn(`[EmailService] ${templateName} template not found in DB. Skipping email.`);
         return;
       }
 
@@ -41,12 +41,24 @@ export class EmailService {
       });
 
       if (error) {
-        console.error('[EmailService] Error sending email via Resend:', error);
+        console.error(`[EmailService] Error sending ${templateName} email via Resend:`, error);
       } else {
-        console.log(`[EmailService] Welcome email sent to ${toEmail} (${language})`);
+        console.log(`[EmailService] ${templateName} email sent to ${toEmail} (${language})`);
       }
     } catch (e) {
-      console.error('[EmailService] Unexpected error:', e);
+      console.error(`[EmailService] Unexpected error sending ${templateName} email:`, e);
     }
+  }
+
+  static async sendWelcomeEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
+    await this.sendEmail(toEmail, 'WELCOME', language);
+  }
+
+  static async sendAccountDeletedEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
+    await this.sendEmail(toEmail, 'ACCOUNT_DELETED', language);
+  }
+
+  static async sendPasswordChangedEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
+    await this.sendEmail(toEmail, 'PASSWORD_CHANGED', language);
   }
 }

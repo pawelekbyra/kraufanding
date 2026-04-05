@@ -64,7 +64,7 @@ export class UserService {
     }
   }
 
-  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string) {
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, preferredLanguage?: string) {
     try {
       const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
@@ -101,6 +101,7 @@ export class UserService {
             name,
             imageUrl,
             role,
+            preferredLanguage: preferredLanguage || undefined,
             totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
             referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
           },
@@ -110,7 +111,7 @@ export class UserService {
             name,
             imageUrl,
             role,
-            preferredLanguage: "en",
+            preferredLanguage: (preferredLanguage as "pl" | "en") || "en",
             referredById: referrerId || null,
             totalPaid: existingByEmail?.totalPaid || 0,
             referralCount: existingByEmail?.referralCount || 0,
