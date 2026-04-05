@@ -131,7 +131,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     <select
                       value={selectedCurrency}
                       onChange={(e) => handleCurrencyChange(e.target.value)}
-                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e40af]/50 focus:text-[#1e40af] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e3a8a]/50 focus:text-[#1e3a8a] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
                       aria-label="Select Currency"
                     >
                       {availableCurrencies.map(curr => (
@@ -151,7 +151,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-[#eff6ff] border border-[#e9eef6] rounded-lg py-4 px-12 font-mono text-3xl font-black text-black text-center focus:ring-0 outline-none transition-all placeholder:text-black/20"
+                    className="w-full bg-[#eff6ff] border border-[#e9eef6] rounded-lg py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
                     placeholder={String(minAmount)}
                   />
                 </div>

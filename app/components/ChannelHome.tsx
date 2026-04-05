@@ -177,8 +177,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       // Rule: Donate section always appears after the 2nd item (index 1) in the visual list
       if (i === 1) {
         acc.push(
-          <div key="donate" className="pt-4 pb-2">
-              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+          <div key="donate" className="pt-4 pb-0">
+              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-2">
                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.donate}</h3>
               </div>
               <VideoPlaylist
@@ -187,8 +187,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
         );
         acc.push(
-          <div key="patron-header" className="pt-4 pb-0.5">
-              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+          <div key="patron-header" className="pt-4">
+              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-0">
                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.patronZone}</h3>
               </div>
           </div>
@@ -264,7 +264,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-2">
-            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-1.5">
+            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-0">
               <div className="flex items-center gap-3">
                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
