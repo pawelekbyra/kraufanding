@@ -82,16 +82,13 @@ export async function POST(req: Request) {
   }
 
   if (eventType === 'user.updated') {
-      // Checking for password update in 'user.updated'
-      // Note: This requires 'Password updated' to be included in the user update payload or separate events.
-      // Clerk sometimes includes 'password_enabled' or similar in the payload.
-      // For now, let's also handle 'user.updated' for password change if the 'password' field was modified.
-      // This is a bit tricky with Clerk's default webhook payload.
+      // Logic for password changes or other updates
   }
 
-  // Handle password updates specifically if enabled in Clerk Dashboard
-  // The event name is actually 'user.updated' but we can check the payload for password changes
-  // or use the dedicated 'email_address.created' etc if necessary.
+  // Specifically handle password updates if the event is enabled in Clerk dashboard
+  // The event 'email_address.updated' or 'user.updated' can carry metadata about security changes.
+  // Many developers use the 'user.updated' event and check if password hash changed (if available)
+  // or simply notify on any update if security is a concern.
 
   // Specifically handle password updates if the event is enabled in Clerk dashboard
   if (eventType === 'session.created') {

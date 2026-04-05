@@ -159,7 +159,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         {/* INFO SECTION */}
         <div className="space-y-3 pt-3">
           <h2 className="text-[20px] font-bold text-[#0f0f0f] tracking-tight leading-[1.2]">
-            {video.slug === 'independency-2024'
+             {video.slug === 'independency-2024'
               ? (userId ? (
                 <>{t.welcomeOn} <BrandName /></>
               ) : t.independencyTitle)
@@ -246,10 +246,10 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         <div className="mt-3 bg-[#f3f4f6] rounded-2xl p-4 transition-colors cursor-pointer border border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
               <span className="text-[14px] font-semibold text-[#0f0f0f]">
-                 {video.views.toLocaleString('pl-PL')} {t.views}
+                 {mounted ? video.views.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}
               </span>
               <span className="text-[14px] font-semibold text-[#0f0f0f]">
-                 {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
+                 {video.publishedAt ? new Date(video.publishedAt).toLocaleDateString(language === 'pl' ? 'pl-PL' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : t.noDate}
               </span>
            </div>
 
