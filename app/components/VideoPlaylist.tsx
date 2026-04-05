@@ -115,7 +115,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   };
 
   return (
-    <div className="space-y-4 px-2" id="donations">
+    <div className="space-y-4 px-2 relative" id="donations">
         <div className="bg-white border-2 border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
@@ -186,28 +186,30 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             </button>
           </div>
 
-          <div className="absolute bottom-1 left-0 right-0 px-4 flex flex-row-reverse justify-between items-center z-20">
+          {/* Terms on the right, checkbox on the left of text */}
+          <div className="absolute bottom-2 right-4 z-20">
             <label className="flex items-center gap-2 cursor-pointer group">
-               <span className="text-black/50 group-hover:text-black font-sans font-bold text-[10px] tracking-tight transition-colors py-1">
-                 {t.acceptTerms}
-               </span>
                <input
                  type="checkbox"
                  checked={isTermsAccepted}
                  onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                 className="checkbox checkbox-sm border-2 border-[#1a1a1a] rounded-md checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                 className="checkbox checkbox-xs border-2 border-[#1a1a1a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                />
+               <span className="text-black/30 group-hover:text-black font-sans font-medium text-[10px] tracking-tight transition-colors">
+                 {t.acceptTerms}
+               </span>
             </label>
-
-            <button
-              type="button"
-              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-              className="text-black/50 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1"
-            >
-              {t.noMoney}
-            </button>
           </div>
         </div>
+
+        {/* "Nie mam hajsu" outside the box, positioned to not add height */}
+        <button
+          type="button"
+          onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+          className="absolute -bottom-2 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
+        >
+          {t.noMoney}
+        </button>
 
         {userId && (
           <ReferralModal
