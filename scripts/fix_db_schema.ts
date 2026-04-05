@@ -12,10 +12,17 @@ async function fix() {
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referredById" TEXT;`,
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "isDeleted" BOOLEAN DEFAULT false;`,
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "language" TEXT DEFAULT 'en';`,
-    `UPDATE "User" SET "language" = "preferredLanguage" WHERE "preferredLanguage" IS NOT NULL AND "language" = 'en';`,
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "role" TEXT DEFAULT 'USER';`,
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "imageUrl" TEXT;`,
     `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "stripeCustomerId" TEXT;`,
+    `DO $$
+     BEGIN
+       IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='preferredLanguage') THEN
+         UPDATE "User" SET "language" = "preferredLanguage" WHERE "language" = 'en' AND "preferredLanguage" IS NOT NULL;
+       END IF;
+       UPDATE "User" SET "referralCode" = substring(md5(random()::text), 1, 8) WHERE "referralCode" IS NULL;
+     END $$;`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "User_referralCode_key" ON "User"("referralCode");`
   ];
 
   for (const cmd of commands) {

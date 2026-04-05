@@ -1,5 +1,6 @@
 import Providers from "@/app/components/Providers";
 import ClerkLocalizationProvider from "@/app/components/ClerkLocalizationProvider";
+import ReferralTracker from "@/app/components/ReferralTracker";
 import { Suspense } from 'react';
 import { Inter, Outfit, Plus_Jakarta_Sans, Gluten, Space_Grotesk } from 'next/font/google';
 import "./globals.css";
@@ -54,6 +55,9 @@ export default function RootLayout({
         <Suspense>
           <Providers>
             <ClerkLocalizationProvider>
+              <Suspense fallback={null}>
+                <ReferralTracker />
+              </Suspense>
               {children}
             </ClerkLocalizationProvider>
           </Providers>
