@@ -72,9 +72,13 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     );
   }
 
-  const selectedVideo = allVideos.find(v => v.id === searchParams.v) || mainVideo;
+  const selectedVideoRaw = allVideos.find(v => v.id === searchParams.v) || mainVideo;
 
   const user = await currentUser();
+
+  // No title overrides here, we'll handle it consistently in client components
+  // to avoid ReferenceErrors and logic duplication.
+  const selectedVideo = selectedVideoRaw;
 
   let initialInteraction = { liked: false, disliked: false };
   let initialIsSubscribed = false;
@@ -144,7 +148,7 @@ function mapDbToVideo(v: any, adminData?: { imageUrl?: string | null, email?: st
     updatedAt: v.updatedAt,
     creator: v.creator ? {
       id: v.creator.id,
-      name: isPolutek ? 'Paweł Polutek' : v.creator.name,
+      name: isPolutek ? 'POLUTEK.PL' : v.creator.name,
       slug: v.creator.slug,
       bio: v.creator.bio,
       imageUrl: resolvedImageUrl,

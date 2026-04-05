@@ -82,11 +82,11 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                         </Link>
                         <div className="text-[12px] text-[#606060] font-sans leading-relaxed">
                             <div className="flex items-center gap-1">
-                                <span>{mounted ? video.views.toLocaleString('pl-PL') : video.views} wyświetleń</span>
+                                <span>{mounted ? video.views.toLocaleString(t.currency === 'PLN' ? 'pl-PL' : 'en-US') : video.views} {t.views}</span>
                                 {video.publishedAt && (
                                     <>
                                         <span>•</span>
-                                        <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: pl }) : ''}</span>
+                                        <span>{mounted ? formatDistanceToNow(new Date(video.publishedAt), { addSuffix: true, locale: t.currency === 'PLN' ? pl : undefined }) : ''}</span>
                                     </>
                                 )}
                             </div>
