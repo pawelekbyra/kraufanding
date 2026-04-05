@@ -2,18 +2,25 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
 export class PaymentService {
-  private stripe: Stripe;
+  private static stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2023-10-16' as any,
+  });
 
-  constructor() {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2023-10-16', // lub Twoja aktualna wersja
-    });
-  }
-
-  async createCheckoutSession(userId: string, userEmail: string) {
+  // Metoda statyczna, aby pasowała do Twojego API route
+  static async createCheckoutSession({
+    userId,
+    amount,
+    currency = 'pln',
+    userEmail,
+  }: {
+    userId: string;
+    amount: number;
+    currency?: string;
+    userEmail?: string;
+  }) {
     try {
       const session = await this.stripe.checkout.sessions.create({
-        // ZAMIANA NA AUTOMATYCZNE METODY PŁATNOŚCI (OPCJA B)
+        // OPCJA B: Automatyczne metody płatności (rozwiązuje błąd P24)
         automatic_payment_methods: {
           enabled: true,
         },
@@ -21,12 +28,12 @@ export class PaymentService {
         line_items: [
           {
             price_data: {
-              currency: 'pln',
+              currency: currency.toLowerCase(),
               product_data: {
                 name: 'Dostęp Premium - Napiwek',
                 description: 'Pełny dostęp do materiałów na stronie',
               },
-              unit_amount: 5000, // Kwota w groszach (50.00 PLN)
+              unit_amount: Math.round(amount * 100), // Przeliczenie na grosze
             },
             quantity: 1,
           },
@@ -39,19 +46,23 @@ export class PaymentService {
         },
       });
 
-      return session.url;
+      return session;
     } catch (error) {
       console.error('Stripe session creation error:', error);
-      throw new Error('Błąd podczas inicjowania płatności');
+      throw error;
     }
   }
 
-  async handleWebhook(signature: string, payload: Buffer) {
+  static async handleWebhook(signature: string, payload: string | Buffer) {
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
     let event: Stripe.Event;
 
     try {
-      event = this.stripe.webhooks.constructEvent(payload, signature, endpointSecret);
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        endpointSecret
+      );
     } catch (err: any) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
@@ -61,7 +72,6 @@ export class PaymentService {
       const userId = session.metadata?.userId;
 
       if (userId) {
-        // Aktualizacja statusu użytkownika w bazie danych
         await prisma.user.update({
           where: { clerkId: userId },
           data: { isPremium: true },
@@ -72,5 +82,3 @@ export class PaymentService {
     return { received: true };
   }
 }
-
-export const paymentService = new PaymentService();
