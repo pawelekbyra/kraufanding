@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
-import { Resend } from 'resend';
+import { EmailService } from './email.service';
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -81,10 +81,10 @@ export class PaymentService {
 
     if (!userId) return;
 
-    const user = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const localUser = await tx.user.findUnique({
         where: { id: userId },
-        select: { id: true, email: true, totalPaid: true }
+        select: { id: true, email: true, totalPaid: true, preferredLanguage: true }
       });
 
       if (!localUser) throw new Error(`User with ID ${userId} not found.`);
@@ -93,7 +93,7 @@ export class PaymentService {
         where: { stripeSessionId: session.id }
       });
 
-      if (existingTx) return localUser;
+      if (existingTx) return { user: localUser, isNewPatron: false };
 
       await tx.transaction.create({
         data: {
@@ -106,44 +106,34 @@ export class PaymentService {
         }
       });
 
-      return await tx.user.update({
+      const updatedUser = await tx.user.update({
         where: { id: localUser.id },
         data: {
           totalPaid: { increment: amountPaid },
           stripeCustomerId: session.customer as string,
         },
       });
+
+      // Threshold for becoming a patron is 5 EUR/PLN/GBP/CHF
+      const PATRON_THRESHOLD = 5;
+      const wasPatron = localUser.totalPaid >= PATRON_THRESHOLD;
+      const isNowPatron = updatedUser.totalPaid >= PATRON_THRESHOLD;
+      const isNewPatron = !wasPatron && isNowPatron;
+
+      return { user: updatedUser, isNewPatron };
     });
 
-    if (user.email && process.env.RESEND_API_KEY) {
-      await this.sendThankYouEmail(user.email, amountPaid, user.totalPaid, currency);
-    }
-  }
+    const { user, isNewPatron } = result;
 
-  private static async sendThankYouEmail(email: string, amountPaid: number, totalPaid: number, currency: string) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const currencyLabel = currency === 'PLN' ? 'PLN' : currency;
+    if (user.email) {
+      const language = user.preferredLanguage as 'pl' | 'en' || 'pl';
+      // Always send thank you for donation
+      await EmailService.sendDonationThankYouEmail(user.email, amountPaid, currency, language);
 
-    try {
-      await resend.emails.send({
-        from: 'polutek.pl <no-reply@polutek.pl>',
-        to: email,
-        subject: 'Dziękujemy za wsparcie POLUTEK.PL!',
-        html: `
-          <div style="font-family: serif; color: #1a1a1a; background-color: #FDFBF7; padding: 40px; line-height: 1.6; border: 1px solid #1a1a1a;">
-            <h1 style="text-transform: uppercase; letter-spacing: -0.05em; border-bottom: 2px solid #1a1a1a; pb-4;">Dziękujemy za Twoje wsparcie</h1>
-            <p>Witaj!</p>
-            <p>Pomyślnie przetworzyliśmy Twoją wpłatę w wysokości <strong>${amountPaid.toFixed(2)} ${currencyLabel}</strong>.</p>
-            <p>Twoja łączna suma wsparcia wynosi teraz <strong>${totalPaid.toFixed(2)} ${currencyLabel}</strong>.</p>
-            <p>Na podstawie Twojej sumy wpłat odblokowujesz dożywotni dostęp do materiałów premium w Strefie Patrona.</p>
-            <p>Odwiedź <a href="https://polutek.pl" style="color: #1a1a1a; font-weight: bold;">POLUTEK.PL</a>, aby zobaczyć swoje odblokowane treści.</p>
-            <br />
-            <p style="font-style: italic; border-top: 1px solid #1a1a1a; pt-4;">Z wyrazami szacunku,<br />POLUTEK.PL</p>
-          </div>
-        `,
-      });
-    } catch (err) {
-      console.error('[EMAIL_ERROR]', err);
+      // If they just became a patron, send the congrats email
+      if (isNewPatron) {
+          await EmailService.sendBecomePatronEmail(user.email, language);
+      }
     }
   }
 }

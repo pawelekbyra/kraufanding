@@ -167,6 +167,20 @@ async function main() {
       bodyPl: '<h1>Cześć,</h1><p>Twoje hasło do konta POLUTEK.PL zostało właśnie zmienione. Jeśli to nie Ty, skontaktuj się z nami jak najszybciej.</p><p>Ekipa POLUTEK.PL</p>',
       subjectEn: 'Your password has been changed - POLUTEK.PL',
       bodyEn: '<h1>Hi,</h1><p>Your POLUTEK.PL account password has just been changed. If this wasn\'t you, please contact us immediately.</p><p>POLUTEK.PL Team</p>'
+    },
+    {
+      name: 'THANK_YOU_DONATION',
+      subjectPl: 'Dziękujemy za wsparcie {{amount}} {{currency}}!',
+      bodyPl: '<h1>Dziękujemy za Twoje wsparcie!</h1><p>Otrzymaliśmy Twoją wpłatę w wysokości {{amount}} {{currency}}.</p><p>Dzięki Tobie możemy tworzyć więcej niezależnych materiałów.</p><p>Pozdrawiamy,<br/>Zespół POLUTEK.PL</p>',
+      subjectEn: 'Thank you for your support {{amount}} {{currency}}!',
+      bodyEn: '<h1>Thank you for your support!</h1><p>We have received your donation of {{amount}} {{currency}}.</p><p>Thanks to you, we can create more independent content.</p><p>Best regards,<br/>POLUTEK.PL Team</p>'
+    },
+    {
+      name: 'BECOME_PATRON',
+      subjectPl: 'Witaj w gronie Patronów POLUTEK.PL!',
+      bodyPl: '<h1>Gratulacje!</h1><p>Twoje łączne wsparcie przekroczyło próg i właśnie zostałeś Patronem POLUTEK.PL.</p><p>Od teraz masz dostęp do ekskluzywnych materiałów w Strefie Patrona.</p><p>Dziękujemy za Twoje zaufanie,<br/>Zespół POLUTEK.PL</p>',
+      subjectEn: 'Welcome to the Patrons of POLUTEK.PL!',
+      bodyEn: '<h1>Congratulations!</h1><p>Your total support has exceeded the threshold and you have just become a Patron of POLUTEK.PL.</p><p>You now have access to exclusive content in the Patrons\' Zone.</p><p>Thank you for your trust,<br/>POLUTEK.PL Team</p>'
     }
   ];
 
