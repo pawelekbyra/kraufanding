@@ -228,7 +228,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
-                 Video
+                 {t.materials}
                </button>
             </div>
 
@@ -240,6 +240,9 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  />
                ) : (
                  <div className="space-y-2">
+                    <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-2">
+                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.materials}</h3>
+                    </div>
                     {playlistItems}
                     {searchQuery && (
                       <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
