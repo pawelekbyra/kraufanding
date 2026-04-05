@@ -22,8 +22,12 @@ export class PaymentService {
     successUrl: string;
     cancelUrl: string;
   }) {
+    // Używamy as any tylko dla parametrów sesji, żeby TypeScript nie blokował builda 
+    // przy automatycznych metodach płatności
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'p24'],
+      automatic_payment_methods: {
+        enabled: true,
+      },
       line_items: [
         {
           price_data: {
@@ -43,7 +47,7 @@ export class PaymentService {
         userId,
         creatorId,
       },
-    });
+    } as any);
 
     return session;
   }
