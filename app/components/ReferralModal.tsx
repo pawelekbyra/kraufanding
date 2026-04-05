@@ -7,16 +7,16 @@ import { X, Copy, Check } from './icons';
 interface ReferralModalProps {
   isOpen: boolean;
   onClose: () => void;
-  userId: string;
-  referralCount: number;
+  referralCode: string;
+  referralPoints: number;
 }
 
-export default function ReferralModal({ isOpen, onClose, userId, referralCount }: ReferralModalProps) {
+export default function ReferralModal({ isOpen, onClose, referralCode, referralPoints }: ReferralModalProps) {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
-  const referralLink = `https://polutek.pl/?ref=${userId}`;
-  const progress = Math.min((referralCount / 5) * 100, 100);
-  const missingCount = Math.max(5 - referralCount, 0);
+  const referralLink = `https://polutek.pl/?ref=${referralCode}`;
+  const progress = Math.min((referralPoints / 5) * 100, 100);
+  const missingCount = Math.max(5 - referralPoints, 0);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -97,7 +97,7 @@ export default function ReferralModal({ isOpen, onClose, userId, referralCount }
                 <h3 className="font-mono font-black uppercase text-sm tracking-widest text-black/40">
                 {t.noMoneyProgress}
                 </h3>
-                <span className="font-mono font-black text-lg">{referralCount} / 5</span>
+                <span className="font-mono font-black text-lg">{referralPoints} / 5</span>
             </div>
 
             <div className="h-6 w-full border border-[#1a1a1a] bg-white overflow-hidden p-0.5">

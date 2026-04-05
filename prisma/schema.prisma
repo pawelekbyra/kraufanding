@@ -16,6 +16,8 @@ model User {
   role             SystemRole          @default(USER)
   language         String              @default("en")
   totalPaid        Float               @default(0) // Lifetime sum of all payments
+  referralCode     String              @unique @default(cuid())
+  referralPoints   Int                 @default(0)
   referralCount    Int                 @default(0)
   referredById     String?
   referredBy       User?               @relation("UserReferrals", fields: [referredById], references: [id])
