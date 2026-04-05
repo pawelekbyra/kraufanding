@@ -32,13 +32,11 @@ export class PaymentService {
     cancelUrl: string;
   }) {
     const stripe = getStripe();
-    const paymentMethodTypes = ['card'];
-    if (currency.toLowerCase() === 'pln') {
-      paymentMethodTypes.push('blik', 'p24');
-    }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: paymentMethodTypes as any,
+      automatic_payment_methods: {
+        enabled: true,
+      },
       line_items: [
         {
           price_data: {
@@ -58,14 +56,19 @@ export class PaymentService {
         userId,
         creatorId,
       },
-    });
+    } as any);
 
     return session;
   }
 
   static async handleWebhook(body: string, sig: string) {
     const stripe = getStripe();
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!endpointSecret) {
+      throw new Error('STRIPE_WEBHOOK_SECRET is missing');
+    }
+
     let event: Stripe.Event;
 
     try {
