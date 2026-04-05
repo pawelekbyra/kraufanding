@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
   if (!process.env.DATABASE_URL) {
-    console.error('DATABASE_URL is missing in environment variables.');
+    console.warn('[PRISMA] DATABASE_URL is not set. Prisma might fail during runtime.');
   }
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],

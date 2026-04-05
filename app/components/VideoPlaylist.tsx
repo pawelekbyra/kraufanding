@@ -120,7 +120,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a] p-6 py-5 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-white border-2 border-[#1a1a1a] px-6 py-4 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
@@ -128,7 +128,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             </h3>
 
             <div className="space-y-3">
-              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap pt-1">
+              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
                 {t.donationDescription}
               </p>
 
@@ -196,7 +196,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
             </button>
 
             {/* Terms below the button, no absolute positioning */}
-            <div className="pt-2 flex justify-center">
+            <div className="flex justify-center">
               <label className="flex items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
                 <input
                   type="checkbox"
@@ -233,7 +233,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <button
           type="button"
           onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-          className="absolute -bottom-5 right-4 text-[#1a1a1a]/20 hover:text-primary font-brand font-black text-[10px] uppercase tracking-[0.3em] transition-all px-3 py-1.5 z-30 hover:bg-[#1a1a1a]/[0.02] rounded-full"
+          className="absolute -bottom-5 right-6 text-[#1a1a1a]/20 hover:text-black hover:bg-[#1a1a1a]/5 px-2 py-1 rounded font-brand font-black text-[9px] uppercase tracking-[0.25em] transition-all z-30"
         >
           {t.noMoney}
         </button>

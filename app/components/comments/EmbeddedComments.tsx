@@ -295,7 +295,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="flex-1 space-y-0.5 min-w-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[12px]">@{comment.authorName}</span>
+                        <span className="font-bold text-[#0f0f0f] text-[12px]">{comment.authorName}</span>
                         <span className="text-[11px] text-[#606060]">
                             {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                             ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
@@ -362,7 +362,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     </div>
                     <div className="flex-1 space-y-0.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[11px]">@{reply.authorName}</span>
+                        <span className="font-bold text-[#0f0f0f] text-[11px]">{reply.authorName}</span>
                         <span className="text-[10px] text-[#606060]">
                           {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
                             ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })

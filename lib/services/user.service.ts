@@ -37,8 +37,9 @@ export class UserService {
                     `user_${id}@polutek.pl`;
       const imageUrl = clerkUser.imageUrl || null;
       const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null;
+      const username = clerkUser.username || null;
 
-      return await this.syncUser(id, email, name, imageUrl);
+      return await this.syncUser(id, email, name, imageUrl, undefined, undefined, username);
     } catch (e: any) {
       console.error("[GET_OR_CREATE_USER_ERROR]", e);
 
@@ -64,7 +65,7 @@ export class UserService {
     }
   }
 
-  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, preferredLanguage?: string) {
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, preferredLanguage?: string, username?: string | null) {
     try {
       const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
@@ -99,6 +100,7 @@ export class UserService {
           update: {
             email,
             name,
+            username: username || undefined,
             imageUrl,
             role,
             preferredLanguage: preferredLanguage || undefined,
@@ -109,6 +111,7 @@ export class UserService {
             id,
             email,
             name,
+            username,
             imageUrl,
             role,
             preferredLanguage: (preferredLanguage as "pl" | "en") || "en",

@@ -42,14 +42,14 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { id, email_addresses, image_url, first_name, last_name, unsafe_metadata, public_metadata } = evt.data;
+    const { id, email_addresses, image_url, first_name, last_name, username, unsafe_metadata, public_metadata } = evt.data;
     const email = email_addresses[0]?.email_address;
     const name = `${first_name || ''} ${last_name || ''}`.trim() || null;
     const referrerId = unsafe_metadata?.referrerId as string | undefined;
     const preferredLanguage = public_metadata?.preferredLanguage as string | undefined;
 
     if (id && email) {
-      const user = await UserService.syncUser(id, email, name, image_url, referrerId, preferredLanguage);
+      const user = await UserService.syncUser(id, email, name, image_url, referrerId, preferredLanguage, username);
       console.log(`User ${id} synced via webhook. Referrer: ${referrerId || 'None'}, Language: ${preferredLanguage || 'Default'}`);
 
       if (eventType === 'user.created') {
