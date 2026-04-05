@@ -228,7 +228,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                    activeTab === 'videos' ? "border-primary text-primary" : "border-transparent text-[#1a1a1a]/40"
                  )}
                >
-                 {t.materials}
+                 {t.videosTab}
                </button>
             </div>
 
