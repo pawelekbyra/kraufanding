@@ -1,20 +1,14 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { UserService } from '@/lib/services/user.service';
 
 export async function GET() {
   const { userId } = auth();
-
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { referralCount: true, referralPoints: true, referralCode: true }
-    });
-
+    const user = await UserService.getOrCreateUser(userId);
     return NextResponse.json({
       referralCount: user?.referralCount || 0,
       referralPoints: user?.referralPoints || 0,
