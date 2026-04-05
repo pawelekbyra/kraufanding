@@ -1,17 +1,14 @@
 import Stripe from 'stripe';
-import { prisma } from '@/lib/prisma';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-04-10',
+});
 
 export class PaymentService {
-  // Używamy any dla stripe, aby uniknąć problemów z wersjami API w typach
-  private static stripe: any = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2023-10-16' as any,
-  });
-
   static async createCheckoutSession({
     userId,
     amount,
-    currency = 'pln',
-    userEmail,
+    currency,
     title,
     creatorId,
     successUrl,
@@ -19,80 +16,35 @@ export class PaymentService {
   }: {
     userId: string;
     amount: number;
-    currency?: string;
-    userEmail?: string;
-    title?: string;
-    creatorId?: string;
+    currency: string;
+    title: string;
+    creatorId: string;
     successUrl: string;
     cancelUrl: string;
   }) {
-    try {
-      const sessionParams: any = {
-        automatic_payment_methods: {
-          enabled: true,
-        },
-        customer_email: userEmail,
-        line_items: [
-          {
-            price_data: {
-              currency: currency.toLowerCase(),
-              product_data: {
-                name: title || 'Dostęp Premium - Napiwek',
-                description: 'Pełny dostęp do materiałów na stronie',
-              },
-              unit_amount: Math.round(Number(amount) * 100),
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: currency,
+            product_data: {
+              name: title,
             },
-            quantity: 1,
+            unit_amount: Math.round(amount * 100),
           },
-        ],
-        mode: 'payment',
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        metadata: {
-          userId: userId,
-          creatorId: creatorId || '',
+          quantity: 1,
         },
-      };
+      ],
+      mode: 'payment',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: {
+        userId,
+        creatorId,
+      },
+    });
 
-      const session = await this.stripe.checkout.sessions.create(sessionParams);
-      return session;
-    } catch (error) {
-      console.error('Stripe session creation error:', error);
-      throw error;
-    }
-  }
-
-  static async handleWebhook(signature: string, payload: string | Buffer) {
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-    let event: any;
-
-    try {
-      event = this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        endpointSecret
-      );
-    } catch (err: any) {
-      throw new Error(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const userId = session.metadata?.userId;
-
-      if (userId) {
-        // ZAMIANA update NA updateMany (to rozwiązuje Twój ostatni błąd)
-        await prisma.user.updateMany({
-          where: { 
-            clerkId: userId 
-          },
-          data: { 
-            isPremium: true 
-          },
-        });
-      }
-    }
-
-    return { received: true };
+    return session;
   }
 }
