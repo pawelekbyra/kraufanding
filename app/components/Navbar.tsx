@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border-2 border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border-2 border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#bfdbfe] border-2 border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-black" />
             </button>
           </form>
@@ -117,7 +117,7 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border-2 border-[#1a1a1a] transition-all">
+            <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border border-[#1a1a1a] transition-all">
               <LogIn size={18} />
               <span className="hidden md:inline">{t.signIn}</span>
             </button>
@@ -126,7 +126,7 @@ const Navbar = () => {
         <SignedIn>
           <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
             <div className="flex flex-col items-center pb-0.5">
-               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border-2 border-[#1a1a1a] overflow-hidden">
+               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border border-[#1a1a1a] overflow-hidden">
                   <UserButton afterSignOutUrl="/" />
                </div>
             </div>
