@@ -1,8 +1,17 @@
 import Stripe from 'stripe';
+import { prisma } from '@/lib/prisma';
+import { EmailService } from './email.service';
+import { getClerkClient } from '@/lib/clerk';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10',
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error('STRIPE_SECRET_KEY is missing');
+  }
+  return new Stripe(key, {
+    apiVersion: '2024-04-10' as any,
+  });
+}
 
 export class PaymentService {
   static async createCheckoutSession({
@@ -22,16 +31,18 @@ export class PaymentService {
     successUrl: string;
     cancelUrl: string;
   }) {
-    // Używamy as any tylko dla parametrów sesji, żeby TypeScript nie blokował builda 
-    // przy automatycznych metodach płatności
+    const stripe = getStripe();
+    const paymentMethodTypes = ['card'];
+    if (currency.toLowerCase() === 'pln') {
+      paymentMethodTypes.push('blik', 'p24');
+    }
+
     const session = await stripe.checkout.sessions.create({
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: paymentMethodTypes as any,
       line_items: [
         {
           price_data: {
-            currency: currency,
+            currency: currency.toLowerCase(),
             product_data: {
               name: title,
             },
@@ -47,8 +58,100 @@ export class PaymentService {
         userId,
         creatorId,
       },
-    } as any);
+    });
 
     return session;
+  }
+
+  static async handleWebhook(body: string, sig: string) {
+    const stripe = getStripe();
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+    let event: Stripe.Event;
+
+    try {
+      event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    } catch (err: any) {
+      throw new Error(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      await this.fulfillOrder(session);
+    }
+  }
+
+  private static async fulfillOrder(session: Stripe.Checkout.Session) {
+    const userId = session.metadata?.userId;
+    const creatorId = session.metadata?.creatorId;
+    const amount = (session.amount_total || 0) / 100;
+    const currency = session.currency?.toUpperCase() || 'EUR';
+    const stripeSessionId = session.id;
+
+    if (!userId) {
+      console.error('[PaymentService] Missing userId in session metadata');
+      return;
+    }
+
+    try {
+      await prisma.$transaction(async (tx) => {
+        // 1. Create transaction record
+        await tx.transaction.create({
+          data: {
+            userId,
+            creatorId,
+            amount,
+            currency,
+            stripeSessionId,
+            status: 'COMPLETED',
+          },
+        });
+
+        // 2. Update user's total paid
+        const user = await tx.user.update({
+          where: { id: userId },
+          data: {
+            totalPaid: { increment: amount },
+          },
+        });
+
+        // 3. Sync VIP status to Clerk
+        await this.syncClerkVipStatus(user.id, user.totalPaid);
+
+        // 4. Send emails
+        const language = (user.language as 'pl' | 'en') || 'pl';
+        await EmailService.sendDonationThankYouEmail(user.email, amount, currency, language);
+
+        // If they just became a Patron (crossed VIP1 threshold)
+        if (user.totalPaid >= 5 && (user.totalPaid - amount) < 5) {
+          await EmailService.sendBecomePatronEmail(user.email, language);
+        }
+      });
+      console.log(`[PaymentService] Order fulfilled for user ${userId}: ${amount} ${currency}`);
+    } catch (error) {
+      console.error('[PaymentService] Error fulfilling order:', error);
+      throw error;
+    }
+  }
+
+  private static async syncClerkVipStatus(userId: string, totalPaid: number) {
+    try {
+      const client = await getClerkClient();
+      let role = 'USER';
+      if (totalPaid >= 10) {
+        role = 'VIP2';
+      } else if (totalPaid >= 5) {
+        role = 'VIP1';
+      }
+
+      await client.users.updateUserMetadata(userId, {
+        publicMetadata: {
+          role,
+          totalPaid,
+        },
+      });
+      console.log(`[PaymentService] Synced Clerk VIP status for ${userId}: ${role} (${totalPaid})`);
+    } catch (error) {
+      console.error('[PaymentService] Error syncing VIP status to Clerk:', error);
+    }
   }
 }
