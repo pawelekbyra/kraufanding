@@ -188,14 +188,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
           <div className="absolute bottom-1 left-0 right-0 px-4 flex flex-row-reverse justify-between items-center z-20">
             <label className="flex items-center gap-2 cursor-pointer group">
-               <span className="text-black/50 group-hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1">
+               <span className="text-black/50 group-hover:text-black font-sans font-bold text-[10px] tracking-tight transition-colors py-1">
                  {t.acceptTerms}
                </span>
                <input
                  type="checkbox"
                  checked={isTermsAccepted}
                  onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                 className="checkbox checkbox-xs border-[#1a1a1a] rounded-sm checked:bg-[#1e3a8a]"
+                 className="checkbox checkbox-sm border-2 border-[#1a1a1a] rounded-md checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                />
             </label>
 
