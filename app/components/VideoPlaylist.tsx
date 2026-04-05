@@ -120,7 +120,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-white border-2 border-[#1a1a1a] p-6 pb-4 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-2 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
@@ -259,13 +259,23 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </button>
                 <div className="prose prose-sm prose-neutral">
                   <h1 className="text-2xl font-black uppercase tracking-tighter mb-8 border-b-2 border-[#1a1a1a]/10 pb-4">Regulamin Serwisu POLUTEK.PL</h1>
-                  <section className="space-y-4">
-                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Charakter platformy</h2>
-                    <p>Serwis POLUTEK.PL jest prywatną, autorską platformą wideo. Platforma działa w modelu dożywotniego patronatu.</p>
-                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">2. Model wsparcia</h2>
-                    <p>Wsparcie finansowe przekazywane przez użytkowników ma charakter dobrowolnej wpłaty (napiwku).</p>
-                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">3. Płatności</h2>
-                    <p>Wszelkie wpłaty są procesowane przez Stripe i mają charakter bezzwrotny.</p>
+                  <section className="space-y-6 text-[#1a1a1a]">
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">1. Charakter platformy</h2>
+                      <p>Serwis POLUTEK.PL jest prywatną, autorską platformą wideo. Platforma działa w modelu dożywotniego patronatu. Dostęp do treści cyfrowych jest uzależniony od łącznej kwoty wsparcia przekazanego twórcy.</p>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">2. Model wsparcia i dostęp do treści</h2>
+                      <p>Wsparcie finansowe przekazywane przez użytkowników ma charakter dobrowolnej wpłaty (napiwku). Użytkownicy odblokowują kolejne poziomy dostępu (Tiers) na podstawie swojej historycznej sumy wpłat (Lifetime Total).</p>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">3. Płatności i brak zwrotów</h2>
+                      <p>Wszelkie wpłaty są procesowane przez Stripe i mają charakter bezzwrotny. Raz odblokowany poziom dostępu jest przypisany do konta użytkownika na stałe (Lifetime Access).</p>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">4. Prywatność i konto użytkownika</h2>
+                      <p>Autoryzacja w serwisie odbywa się za pośrednictwem systemu Clerk. Użytkownik zobowiązuje się do korzystania z serwisu w sposób zgodny z prawem.</p>
+                    </div>
                   </section>
                 </div>
              </div>
@@ -284,11 +294,19 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </button>
                 <div className="prose prose-sm prose-neutral">
                   <h1 className="text-2xl font-black uppercase tracking-tighter mb-8 border-b-2 border-[#1a1a1a]/10 pb-4">Polityka Prywatności</h1>
-                  <section className="space-y-4">
-                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">1. Dane osobowe</h2>
-                    <p>Dla bezpieczeństwa i wygody użytkowników, POLUTEK.PL korzysta z zewnętrznego systemu uwierzytelniania Clerk.</p>
-                    <h2 className="text-lg font-black uppercase tracking-tight text-[#1a1a1a]">2. Płatności</h2>
-                    <p>Wszystkie operacje finansowe są procesowane wyłącznie przez Stripe.</p>
+                  <section className="space-y-6 text-[#1a1a1a]">
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">1. Dane osobowe i logowanie</h2>
+                      <p>Dla bezpieczeństwa i wygody użytkowników, POLUTEK.PL korzysta z zewnętrznego systemu uwierzytelniania <strong>Clerk</strong>. Clerk zarządza procesem rejestracji, logowania oraz danymi profilowymi użytkowników.</p>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">2. Płatności i bezpieczeństwo finansowe</h2>
+                      <p>Wszystkie operacje finansowe (darowizny, napiwki) są procesowane wyłącznie przez <strong>Stripe</strong>. POLUTEK.PL nie przechowuje ani nie ma bezpośredniego dostępu do danych kart płatniczych.</p>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black uppercase tracking-tight">3. Przetwarzanie i wykorzystanie danych</h2>
+                      <p>Twoje dane są wykorzystywane wyłącznie w celu zapewnienia prawidłowego funkcjonowania serwisu i personalizacji dostępu do materiałów.</p>
+                    </div>
                   </section>
                 </div>
              </div>

@@ -6,8 +6,17 @@ import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
-// Plyr Imports
-import { Plyr } from 'plyr-react';
+import dynamic from 'next/dynamic';
+
+// Plyr Imports - Use dynamic import with SSR disabled to avoid document is not defined error
+const Plyr = dynamic(() => import('plyr-react').then((mod) => mod.Plyr), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-black flex items-center justify-center">
+       <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+});
 import 'plyr/dist/plyr.css';
 
 interface VideoPlayerProps {
