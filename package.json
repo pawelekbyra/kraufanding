@@ -17,6 +17,8 @@
     "@clerk/localizations": "^4.2.4",
     "@clerk/nextjs": "^5.7.5",
     "@prisma/client": "^6.4.1",
+    "@stripe/react-stripe-js": "^6.1.0",
+    "@stripe/stripe-js": "^9.0.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.94.5",
     "@vercel/blob": "^2.3.1",

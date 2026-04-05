@@ -59,6 +59,37 @@ export class PaymentService {
     return session;
   }
 
+  static async createPaymentIntent({
+    userId,
+    amount,
+    currency,
+    title,
+    creatorId,
+  }: {
+    userId: string;
+    amount: number;
+    currency: string;
+    title: string;
+    creatorId: string;
+  }) {
+    const stripe = getStripe();
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100),
+      currency: currency.toLowerCase(),
+      description: title,
+      metadata: {
+        userId,
+        creatorId,
+      },
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    return paymentIntent;
+  }
+
   static async handleWebhook(body: string, sig: string) {
     const stripe = getStripe();
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -77,16 +108,38 @@ export class PaymentService {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      await this.fulfillOrder(session);
+      await this.fulfillOrder({
+        userId: session.metadata?.userId,
+        creatorId: session.metadata?.creatorId,
+        amount: (session.amount_total || 0) / 100,
+        currency: session.currency?.toUpperCase() || 'EUR',
+        stripeId: session.id,
+      });
+    } else if (event.type === 'payment_intent.succeeded') {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      await this.fulfillOrder({
+        userId: paymentIntent.metadata?.userId,
+        creatorId: paymentIntent.metadata?.creatorId,
+        amount: (paymentIntent.amount_received || 0) / 100,
+        currency: paymentIntent.currency?.toUpperCase() || 'EUR',
+        stripeId: paymentIntent.id,
+      });
     }
   }
 
-  private static async fulfillOrder(session: Stripe.Checkout.Session) {
-    const userId = session.metadata?.userId;
-    const creatorId = session.metadata?.creatorId;
-    const amount = (session.amount_total || 0) / 100;
-    const currency = session.currency?.toUpperCase() || 'EUR';
-    const stripeSessionId = session.id;
+  private static async fulfillOrder({
+    userId,
+    creatorId,
+    amount,
+    currency,
+    stripeId,
+  }: {
+    userId?: string;
+    creatorId?: string;
+    amount: number;
+    currency: string;
+    stripeId: string;
+  }) {
 
     if (!userId) {
       console.error('[PaymentService] Missing userId in session metadata');
@@ -96,13 +149,23 @@ export class PaymentService {
     try {
       await prisma.$transaction(async (tx) => {
         // 1. Create transaction record
+        // Prevent duplicate fulfillment by checking stripeId
+        const existing = await tx.transaction.findFirst({
+            where: { stripeSessionId: stripeId }
+        });
+
+        if (existing) {
+            console.log(`[PaymentService] Transaction ${stripeId} already fulfilled.`);
+            return;
+        }
+
         await tx.transaction.create({
           data: {
             userId,
             creatorId,
             amount,
             currency,
-            stripeSessionId,
+            stripeSessionId: stripeId,
             status: 'COMPLETED',
           },
         });
