@@ -52,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="polutek" className={`${inter.variable} ${outfit.variable} ${jakarta.variable} ${gluten.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <body className="font-sans bg-base-100 text-neutral min-h-screen relative" suppressHydrationWarning>
-        <Suspense>
+        <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7]" />}>
           <Providers>
             <ClerkLocalizationProvider>
               <Suspense fallback={null}>
