@@ -54,7 +54,7 @@ const Navbar = () => {
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
             <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
-              <BrandName className="text-[1.1rem] md:text-[1.3rem] translate-y-[2.5px]" variant="handwriting" />
+              <BrandName className="text-[1.02rem] md:text-[1.2rem] translate-y-[4.5px]" variant="handwriting" />
             </Link>
           </div>
 
