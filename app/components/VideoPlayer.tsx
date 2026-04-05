@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
 // Plyr Imports
-import { Plyr } from 'plyr-react';
+import PlyrReact from 'plyr-react';
 import 'plyr/dist/plyr.css';
 
 interface VideoPlayerProps {
@@ -18,6 +18,7 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
     const [isMounted, setIsMounted] = useState(false);
+    const plyrRef = React.useRef<any>(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -111,10 +112,24 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         tooltips: { controls: true, seek: true },
     };
 
+    const handlePlayerClick = (e: React.MouseEvent) => {
+        // Only toggle play if clicking on the video area or the overlay,
+        // but NOT on the controls. Plyr controls are usually inside .plyr__controls
+        const target = e.target as HTMLElement;
+        if (target.closest('.plyr__controls')) return;
+
+        if (plyrRef.current?.plyr) {
+            plyrRef.current.plyr.togglePlay();
+        }
+    };
+
     return (
-        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center plyr-cyber-archive">
+        <div
+            className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center plyr-cyber-archive cursor-pointer"
+            onClick={handlePlayerClick}
+        >
             <div className="w-full max-w-full h-full flex items-center justify-center">
-                 <Plyr source={plyrSource} options={plyrOptions} />
+                 <PlyrReact ref={plyrRef} source={plyrSource} options={plyrOptions} />
             </div>
 
             <style jsx global>{`

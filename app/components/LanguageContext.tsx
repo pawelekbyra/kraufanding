@@ -129,7 +129,9 @@ export const translations = {
     confirmSubscribeTitle: 'CZY CHCESZ SUBSKRYBOWAĆ?',
     confirmSubscribeText: 'Subskrypcja oznacza zgodę na otrzymywanie powiadomień mailowych o nowościach.',
     yes: 'TAK',
-    no: 'NIE'
+    no: 'NIE',
+    acceptTerms: 'Akceptuję Regulamin i Politykę Prywatności',
+    pleaseAcceptTerms: 'Proszę zaakceptować Regulamin i Politykę Prywatności, aby kontynuować.'
   },
   en: {
     views: 'views',
@@ -197,7 +199,9 @@ export const translations = {
     confirmSubscribeTitle: 'DO YOU WANT TO SUBSCRIBE?',
     confirmSubscribeText: 'Subscribing means you agree to receive email notifications about news.',
     yes: 'YES',
-    no: 'NO'
+    no: 'NO',
+    acceptTerms: 'I accept the Terms and Privacy Policy',
+    pleaseAcceptTerms: 'Please accept the Terms and Privacy Policy to continue.'
   }
 };
 
