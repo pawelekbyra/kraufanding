@@ -195,8 +195,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           </div>
 
           {/* Terms on the right, checkbox on the left of text */}
-          <div className="absolute bottom-2 right-4 z-20">
-            <label className="flex items-center gap-2 cursor-pointer group">
+          <div className="absolute bottom-[2.75rem] right-4 z-20">
+            <label className="flex items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
                <input
                  type="checkbox"
                  checked={isTermsAccepted}
@@ -204,9 +204,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                    setIsTermsAccepted(e.target.checked);
                    if (e.target.checked) setShowTermsError(false);
                  }}
-                 className="checkbox checkbox-xs border-2 border-[#1a1a1a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                 className="checkbox checkbox-xs border-2 border-[#1e3a8a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                />
-               <span className="text-[#1e3a8a] font-sans font-black text-[10px] tracking-tight transition-colors uppercase">
+               <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
                  {t.acceptTerms}
                </span>
             </label>

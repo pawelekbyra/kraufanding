@@ -69,7 +69,7 @@ export const translations = {
     showLess: 'Pokaż mniej',
     subscribe: 'Subskrajb',
     subscribeMobile: 'Subskrajb',
-    subscribed: 'Subskrajbd',
+    subscribed: 'Subskrajbd ✓',
     subscribers: 'subskrajberów',
     share: 'Szeruj',
     noDate: 'Świeża sprawa',
@@ -87,6 +87,7 @@ export const translations = {
     noDescription: 'Cisza w eterze.',
     support: 'Mecenat',
     materials: 'Publiczne',
+    videosTab: 'Filmy',
     donate: 'Bramka Napiwkowa',
     available: 'Odblokowane',
     loginToWatch: 'Pokaż dowód (zaloguj się)',
@@ -131,7 +132,7 @@ export const translations = {
     yes: 'TAK',
     no: 'NIE',
     acceptTerms: 'Akceptuję Regulamin i Politykę Prywatności',
-    pleaseAcceptTerms: 'Proszę zaakceptować Regulamin i Politykę Prywatności, aby kontynuować.'
+    pleaseAcceptTerms: 'Zapraszam do Strefy Patronów (zaakceptuj regulamin)'
   },
   en: {
     views: 'views',
@@ -139,7 +140,7 @@ export const translations = {
     showLess: 'Show less',
     subscribe: 'Subscribe',
     subscribeMobile: 'Subscribe',
-    subscribed: 'Subscribed',
+    subscribed: 'Subscribed ✓',
     subscribers: 'subscribers',
     share: 'Share',
     noDate: 'No date',
@@ -157,6 +158,7 @@ export const translations = {
     noDescription: 'No description provided.',
     support: 'Support',
     materials: 'Public',
+    videosTab: 'Video',
     donate: 'Tipping Gateway',
     available: 'Available',
     loginToWatch: 'Log in to watch',
@@ -201,7 +203,7 @@ export const translations = {
     yes: 'YES',
     no: 'NO',
     acceptTerms: 'I accept the Terms and Privacy Policy',
-    pleaseAcceptTerms: 'Please accept the Terms and Privacy Policy to continue.'
+    pleaseAcceptTerms: 'I invite you to the Patrons\' Zone (please accept terms)'
   }
 };
 
