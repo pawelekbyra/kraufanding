@@ -7,10 +7,10 @@ import { EmailService } from '@/lib/services/email.service';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET || process.env.CLERK_SIGNINING_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    throw new Error('Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local');
+    throw new Error('Please add CLERK_WEBHOOK_SECRET or CLERK_SIGNINING_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local');
   }
 
   const headerPayload = headers();
