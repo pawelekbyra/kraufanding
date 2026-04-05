@@ -19,6 +19,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'videoId is required' }, { status: 400 });
   }
 
+  // Check DB availability to prevent 500 crashes
+  if (!process.env.DATABASE_URL) {
+    console.error("[GET_COMMENTS] DATABASE_URL is not defined.");
+    return NextResponse.json({ success: true, comments: [], nextCursor: null, warning: "System offline." });
+  }
+
   let userId: string | null = null;
   try {
       const authData = auth();

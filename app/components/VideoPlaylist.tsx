@@ -120,15 +120,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a] p-6 pb-4 shadow-brutalist relative overflow-hidden rounded-2xl">
-          <div className="space-y-2 relative z-10">
+        <div className="bg-white border-2 border-[#1a1a1a] p-6 py-5 shadow-brutalist relative overflow-hidden rounded-2xl">
+          <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
               <Trophy size={32} className="text-[#1e3a8a]" />
             </h3>
 
-            <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
+            <div className="space-y-3">
+              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap pt-1">
                 {t.donationDescription}
               </p>
 
@@ -233,7 +233,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         <button
           type="button"
           onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-          className="absolute -bottom-6 left-4 text-black/20 hover:text-black font-mono font-bold text-[9px] uppercase tracking-tighter transition-colors py-1 z-30"
+          className="absolute -bottom-5 right-4 text-[#1a1a1a]/20 hover:text-primary font-brand font-black text-[10px] uppercase tracking-[0.3em] transition-all px-3 py-1.5 z-30 hover:bg-[#1a1a1a]/[0.02] rounded-full"
         >
           {t.noMoney}
         </button>
