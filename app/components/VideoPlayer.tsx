@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
 // Plyr Imports
-import PlyrReact from 'plyr-react';
+import { Plyr } from 'plyr-react';
 import 'plyr/dist/plyr.css';
 
 interface VideoPlayerProps {
@@ -129,7 +129,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
             onClick={handlePlayerClick}
         >
             <div className="w-full max-w-full h-full flex items-center justify-center">
-                 <PlyrReact ref={plyrRef} source={plyrSource} options={plyrOptions} />
+                 <Plyr ref={plyrRef} source={plyrSource} options={plyrOptions} />
             </div>
 
             <style jsx global>{`
