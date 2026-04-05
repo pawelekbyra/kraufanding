@@ -112,18 +112,18 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     <div className="space-y-4 px-2" id="donations">
         <div className="bg-white border-2 border-[#1a1a1a] p-6 pb-10 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-2 relative z-10">
-            <h3 className="text-xl font-sans font-black text-black uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
+            <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
-              <Trophy size={32} className="text-black" />
+              <Trophy size={32} className="text-[#1e3a8a]" />
             </h3>
 
             <div className="space-y-4">
-              <p className="font-serif text-sm leading-relaxed text-black whitespace-pre-wrap">
+              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
                 {t.donationDescription}
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="block font-serif text-sm text-black font-bold text-center">
+                <label className="block font-serif text-sm text-[#1e3a8a] font-bold text-center">
                   {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
