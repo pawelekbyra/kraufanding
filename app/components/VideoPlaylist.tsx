@@ -261,26 +261,88 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           />
         )}
 
-        {/* Checkout Modal */}
+        {/* Checkout Full-Screen Takeover */}
         {isCheckoutModalOpen && clientSecret && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-lg w-full shadow-brutalist relative animate-in zoom-in-95 duration-300">
+          <div className="fixed inset-0 z-[999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col overflow-y-auto">
+             {/* Header bar */}
+             <div className="w-full max-w-4xl mx-auto px-6 py-8 flex justify-between items-center border-b border-[#1a1a1a]/10">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-[#1e3a8a] rounded-full flex items-center justify-center text-white font-black text-xl">
+                    P
+                  </div>
+                  <h3 className="text-2xl font-brand font-black uppercase tracking-tighter">
+                    POLUTEK<span className="text-[#1e3a8a]">.PL</span>
+                  </h3>
+                </div>
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"
+                  className="group flex items-center gap-2 px-4 py-2 border-2 border-[#1a1a1a] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all shadow-brutalist-sm active:translate-y-1"
                 >
-                  [ Zamknij ]
+                  <span>Wróć</span>
+                  <span className="text-lg">×</span>
                 </button>
-                <h3 className="text-xl font-black uppercase tracking-tight mb-6 text-[#1e3a8a] text-center">
-                  Finalizacja wsparcia
-                </h3>
-                {stripePromise ? (
-                  <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <CheckoutForm />
-                  </Elements>
-                ) : (
-                  <p className="text-red-500 font-mono text-center">Błąd ładowania Stripe</p>
-                )}
+             </div>
+
+             {/* Main Content Area */}
+             <div className="flex-1 w-full max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-12">
+                {/* Left Side: Summary */}
+                <div className="space-y-8">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1e3a8a]/40">Podsumowanie wsparcia</span>
+                    <h1 className="text-4xl font-brand font-black uppercase tracking-tighter leading-none">
+                      Zostajesz Patronem
+                    </h1>
+                  </div>
+
+                  <div className="p-6 bg-white border-2 border-[#1a1a1a] shadow-brutalist-sm rounded-2xl space-y-4">
+                    <div className="flex justify-between items-end pb-4 border-b border-[#1a1a1a]/5">
+                      <div className="space-y-1">
+                        <p className="text-xs font-bold uppercase text-[#1a1a1a]/40">Kwota</p>
+                        <p className="text-4xl font-mono font-black">{amount} {selectedCurrency}</p>
+                      </div>
+                      <div className="text-right">
+                         <p className="text-[10px] font-bold uppercase text-[#1e3a8a]">Lifetime Access</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                       <p className="text-xs font-medium italic text-[#1a1a1a]/60">
+                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
+                       </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 border border-[#1a1a1a]/10 rounded-xl">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#1e3a8a]">Bezpieczeństwo</p>
+                      <p className="text-xs text-[#1a1a1a]/60 mt-1">Szyfrowane połączenie SSL przez Stripe.</p>
+                    </div>
+                    <div className="p-4 border border-[#1a1a1a]/10 rounded-xl">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#1e3a8a]">Prywatność</p>
+                      <p className="text-xs text-[#1a1a1a]/60 mt-1">Twoje dane są u nas bezpieczne.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Payment Form */}
+                <div className="bg-white border-2 border-[#1a1a1a] p-8 rounded-3xl shadow-brutalist h-fit">
+                   {stripePromise ? (
+                      <Elements stripe={stripePromise} options={{ clientSecret }}>
+                        <CheckoutForm />
+                      </Elements>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                        <span className="w-8 h-8 border-4 border-[#1e3a8a]/20 border-t-[#1e3a8a] rounded-full animate-spin" />
+                        <p className="text-sm font-mono text-[#1a1a1a]/40">Inicjalizacja bezpiecznych płatności...</p>
+                      </div>
+                    )}
+                </div>
+             </div>
+
+             {/* Footer space */}
+             <div className="w-full py-8 text-center border-t border-[#1a1a1a]/5 mt-auto">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/20">
+                  Powered by Stripe & POLUTEK.PL
+                </p>
              </div>
           </div>
         )}
