@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser, clerkClient } from '@clerk/nextjs/server';
 import crypto from 'crypto';
 import { SchemaService } from './schema.service';
 
@@ -7,328 +7,203 @@ export class UserService {
   static readonly ADMIN_EMAIL = "pawel.perfect@gmail.com";
 
   /**
-   * Retrieves or creates a user record in the database using the Clerk ID.
-   * RESILIENCE: If Clerk API fails (e.g. handshake mismatch), it tries to find the user locally first.
+   * Primary entry point for ensuring a user exists and is up to date.
+   * Handles Clerk integration, ID mapping, and local DB sync.
    */
-  static async getOrCreateUser(id: string) {
-    let clerkUser = null;
+  static async getOrCreateUser(clerkUserId: string) {
     try {
-      console.log(`[UserService] Syncing user for ID: ${id}`);
+      const clerkUser = await currentUser();
 
-      try {
-          clerkUser = await currentUser();
-      } catch (ce) {
-          console.error("[UserService] Clerk Handshake Failed. Attempting local lookup only.", ce);
+      // Fallback if Clerk API is unavailable but we have an ID
+      if (!clerkUser || clerkUser.id !== clerkUserId) {
+          const local = await prisma.user.findUnique({ where: { id: clerkUserId } });
+          if (local) return local;
+          if (!clerkUser) throw new Error("CLERK_USER_NOT_FOUND");
       }
 
-      // If Clerk is down or misconfigured, try finding existing user by ID
-      if (!clerkUser) {
-          const existing = await prisma.user.findUnique({ where: { id } });
-          if (existing) {
-              console.log(`[UserService] Recovered user ${id} from local DB after auth provider issue.`);
-              return existing;
-          }
-          // If no local user and no provider data, we can't create a real record.
-          throw new Error("AUTH_HANDSHAKE_FAILED_NO_LOCAL_DATA");
-      }
+      const email = clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress;
+      if (!email) throw new Error("USER_HAS_NO_EMAIL");
 
-      const email = clerkUser.primaryEmailAddress?.emailAddress ||
-                    clerkUser.emailAddresses[0]?.emailAddress ||
-                    `user_${id}@polutek.pl`;
-      const imageUrl = clerkUser.imageUrl || null;
       const name = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || null;
+      const imageUrl = clerkUser.imageUrl || null;
       const username = clerkUser.username || null;
 
-      return await this.syncUser(id, email, name, imageUrl, undefined, undefined, username);
-    } catch (e: any) {
-      console.error("[GET_OR_CREATE_USER_ERROR]", e);
+      // Metadata extraction
+      const publicMeta = clerkUser.publicMetadata as any;
+      const unsafeMeta = clerkUser.unsafeMetadata as any;
+      const language = publicMeta.language || publicMeta.preferredLanguage || unsafeMeta.language || unsafeMeta.preferredLanguage || 'en';
+      const referrerId = unsafeMeta.referrerId || null;
 
-      // AUTO-HEALING: If database columns are missing or table is missing, try to heal
+      return await this.syncUser(clerkUserId, email, name, imageUrl, referrerId, language, username);
+    } catch (e: any) {
+      console.error("[UserService.getOrCreateUser]", e.message);
+
+      // Auto-healing for schema issues
       if (e.message?.includes("does not exist") || e.code === 'P2021') {
-          console.log("[UserService] Detected missing DB schema elements. Attempting Auto-Healing...");
           await SchemaService.ensureSchema();
-
-          try {
-              // Retry the entire operation once after healing
-              const retryEmail = clerkUser?.primaryEmailAddress?.emailAddress || `user_${id}@polutek.pl`;
-              const retryName = `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim() || null;
-              return await this.syncUser(id, retryEmail, retryName, clerkUser?.imageUrl || null);
-          } catch (retryError) {
-              console.error("[UserService] Retry after Auto-Healing failed:", retryError);
-          }
-      }
-
-      if (e.code === 'P2021') {
-          throw new Error("DATABASE_TABLES_MISSING: Run 'npx prisma db push' in your environment.");
+          // One-time retry
+          return await prisma.user.findUnique({ where: { id: clerkUserId } });
       }
       throw e;
-    }
-  }
-
-  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, language?: string, username?: string | null) {
-    try {
-      const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
-
-      return await prisma.$transaction(async (tx) => {
-        // 1. Check if user already exists by ID
-        const existingById = await tx.user.findUnique({ where: { id } });
-
-        // 2. Check for email conflict (existing user with same email but different ID)
-        const existingByEmail = await tx.user.findFirst({
-            where: {
-                email: { equals: email, mode: 'insensitive' },
-                id: { not: id }
-            }
-        });
-
-        // 2.5 PREVENT UNIQUE CONSTRAINT VIOLATION:
-        // If we found a user with the same email but different ID, we must rename their email
-        // and clear their stripeCustomerId before we can upsert the new user record.
-        if (existingByEmail) {
-            await tx.user.update({
-                where: { id: existingByEmail.id },
-                data: {
-                    email: `migrating_${existingByEmail.id}_${Date.now()}@internal.temp`,
-                    stripeCustomerId: null // Also clear this to prevent unique constraint failure if it exists
-                }
-            });
-        }
-
-        // 1. MUST ENSURE NEW USER EXISTS FIRST to avoid FK violations on relation updates
-        const user = await tx.user.upsert({
-          where: { id },
-          update: {
-            email,
-            name,
-            username: username || undefined,
-            imageUrl,
-            role,
-            language: language || undefined,
-            totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
-            referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
-            referralPoints: existingByEmail ? { increment: existingByEmail.referralPoints } : undefined,
-          },
-          create: {
-            id,
-            email,
-            name,
-            username,
-            imageUrl,
-            role,
-            language: (language as "pl" | "en") || "en",
-            referralCode: Math.random().toString(36).substring(2, 10),
-            referralPoints: existingByEmail?.referralPoints || 0,
-            referredById: referrerId || null,
-            totalPaid: existingByEmail?.totalPaid || 0,
-            referralCount: existingByEmail?.referralCount || 0,
-          }
-        });
-
-        // 2. Perform Migration if needed AFTER creating the target user
-        if (existingByEmail) {
-            console.log(`[UserService] Email conflict detected for ${email}. Migrating data from ${existingByEmail.id} to ${id}`);
-
-            // Reassign relations to new ID (target record 'id' now exists)
-            await tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } });
-            await tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
-            await tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } });
-
-            // Delete old user record
-            await tx.user.delete({ where: { id: existingByEmail.id } });
-        }
-
-        // 3. If this is the admin, ensure the 'polutek' creator profile is synced with their profile
-        if (email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase()) {
-            await tx.creator.updateMany({
-                where: { slug: 'polutek' },
-                data: {
-                    name: 'POLUTEK.PL',
-                    userId: id // Ensure it points to the correct current Clerk ID
-                }
-            });
-        }
-
-        // Only increment referralCount if this is a brand new user (no existing ID, no migration)
-        if (!existingById && !existingByEmail && referrerId) {
-          try {
-            await tx.user.update({
-              where: { id: referrerId },
-              data: { referralCount: { increment: 1 } }
-            });
-            console.log(`[UserService] Incremented referralCount for ${referrerId}`);
-          } catch (err) {
-            console.warn(`[UserService] Failed to increment referralCount for ${referrerId}. Referrer might not exist in DB yet.`);
-          }
-        }
-
-        return user;
-      });
-    } catch (e: any) {
-      console.error("[SYNC_USER_ERROR]", e);
-      throw e;
-    }
-  }
-
-  static async softDeleteUser(id: string) {
-    try {
-      const anonymousId = crypto.randomUUID();
-      return await prisma.user.update({
-        where: { id },
-        data: {
-          email: `deleted_${anonymousId}@deleted.com`,
-          name: "Usunięty Użytkownik",
-          imageUrl: null,
-          stripeCustomerId: null,
-          isDeleted: true
-        }
-      });
-    } catch (e: any) {
-      console.error("[SOFT_DELETE_USER_ERROR]", e);
-      throw e;
-    }
-  }
-
-  static async getUserTotalPaid(id: string) {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id },
-        select: { totalPaid: true }
-      });
-      return user?.totalPaid || 0;
-    } catch (e: any) {
-      console.error("[GET_USER_TOTAL_PAID_ERROR]", e);
-      return 0;
-    }
-  }
-
-  static async isSubscribed(id: string, creatorId: string) {
-    try {
-      const sub = await prisma.subscription.findUnique({
-        where: {
-          userId_creatorId: {
-            userId: id,
-            creatorId
-          }
-        }
-      });
-      return !!sub;
-    } catch (e: any) {
-      console.error("[IS_SUBSCRIBED_ERROR]", e);
-      return false;
-    }
-  }
-
-  static async getVideoInteraction(userId: string, videoId: string) {
-    try {
-        const [like, dislike] = await Promise.all([
-            prisma.videoLike.findUnique({
-                where: { userId_videoId: { userId, videoId } }
-            }).catch(() => null),
-            prisma.videoDislike.findUnique({
-                where: { userId_videoId: { userId, videoId } }
-            }).catch(() => null)
-        ]);
-        return {
-            liked: !!like,
-            disliked: !!dislike
-        };
-    } catch (e) {
-        console.error("[GET_VIDEO_INTERACTION_ERROR]", e);
-        return { liked: false, disliked: false };
     }
   }
 
   /**
-   * Specifically ensures the Admin user exists using their known email.
-   * This is used for auto-healing when Clerk's currentUser() might not be reliable
-   * or when we need to link content to the admin without a real Clerk session.
+   * Atomic synchronization logic. Handles upserts and email conflict migrations.
    */
-  static async ensureAdminUser() {
-    try {
-        return await prisma.user.upsert({
-            where: { email: UserService.ADMIN_EMAIL },
-            update: {
-                role: 'ADMIN',
-                name: "POLUTEK.PL"
-            },
-            create: {
-                id: `admin_${Date.now()}`, // Unique ID to avoid P2002 if 'user_admin_001' is taken
-                email: UserService.ADMIN_EMAIL,
-                name: "POLUTEK.PL",
-                role: 'ADMIN',
-                language: "pl"
-            }
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string | null, language?: string, username?: string | null) {
+    const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
+
+    return await prisma.$transaction(async (tx) => {
+      // 1. Resolve potential email conflicts (Clerk ID change or duplicate accounts)
+      const existingByEmail = await tx.user.findFirst({
+        where: { email: { equals: email, mode: 'insensitive' }, id: { not: id } }
+      });
+
+      if (existingByEmail) {
+        console.log(`[UserService] Migrating data for ${email} from ${existingByEmail.id} to ${id}`);
+        // Temporarily rename conflict to free up the email unique constraint
+        await tx.user.update({
+          where: { id: existingByEmail.id },
+          data: { email: `old_${existingByEmail.id}_${Date.now()}@temp.temp`, stripeCustomerId: null }
         });
-    } catch (e: any) {
-        console.error("[ENSURE_ADMIN_USER_ERROR]", e);
-        throw e;
-    }
+      }
+
+      // 2. Main Upsert
+      const user = await tx.user.upsert({
+        where: { id },
+        update: {
+          email,
+          name,
+          username,
+          imageUrl,
+          role,
+          language,
+          totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
+          referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
+          referralPoints: existingByEmail ? { increment: existingByEmail.referralPoints } : undefined,
+        },
+        create: {
+          id,
+          email,
+          name,
+          username,
+          imageUrl,
+          role,
+          language: language || 'en',
+          referralCode: Math.random().toString(36).substring(2, 10),
+          referredById: referrerId,
+          totalPaid: existingByEmail?.totalPaid || 0,
+          referralCount: existingByEmail?.referralCount || 0,
+          referralPoints: existingByEmail?.referralPoints || 0,
+        }
+      });
+
+      // 3. Migrate relations if conflict existed
+      if (existingByEmail) {
+        const refs = [
+            tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } }),
+            tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
+            tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } }),
+        ];
+        await Promise.all(refs);
+        await tx.user.delete({ where: { id: existingByEmail.id } });
+      }
+
+      // 4. Admin specific profile sync
+      if (role === 'ADMIN') {
+          await tx.creator.updateMany({
+              where: { slug: 'polutek' },
+              data: { name: 'POLUTEK.PL', userId: id }
+          });
+      }
+
+      // 5. Handle referral point increment for NEW referrals only
+      if (!existingByEmail && referrerId) {
+          try {
+              await tx.user.update({
+                  where: { id: referrerId },
+                  data: { referralCount: { increment: 1 } }
+              });
+          } catch (re) {}
+      }
+
+      return user;
+    });
   }
 
-  static async toggleSubscription(id: string, creatorId: string) {
+  static async toggleSubscription(userId: string, creatorId: string) {
     try {
-      // Lazy sync - but now mandatory for database consistency
-      await this.getOrCreateUser(id);
+      await this.getOrCreateUser(userId);
 
       return await prisma.$transaction(async (tx) => {
-        // Ensure user exists within the transaction to prevent FK violations
-        await tx.user.upsert({
-            where: { id },
-            update: {},
-            create: {
-                id,
-                email: `user_${id}@polutek.pl`,
-                language: "pl",
-                role: "USER"
-            }
-        });
-
         const existing = await tx.subscription.findUnique({
-          where: {
-            userId_creatorId: {
-              userId: id,
-              creatorId
-            }
-          }
+          where: { userId_creatorId: { userId, creatorId } }
         });
 
         if (existing) {
-          await tx.subscription.delete({
-            where: { id: existing.id }
-          });
-
-          await tx.creator.update({
-            where: { id: creatorId },
-            data: { subscribersCount: { decrement: 1 } }
-          });
-
+          await tx.subscription.delete({ where: { id: existing.id } });
+          await tx.creator.update({ where: { id: creatorId }, data: { subscribersCount: { decrement: 1 } } });
           return { isSubscribed: false };
         } else {
-          await tx.subscription.create({
-            data: {
-              userId: id,
-              creatorId: creatorId
-            }
-          });
-
-          await tx.creator.update({
-            where: { id: creatorId },
-            data: { subscribersCount: { increment: 1 } }
-          });
-
+          await tx.subscription.create({ data: { userId, creatorId } });
+          await tx.creator.update({ where: { id: creatorId }, data: { subscribersCount: { increment: 1 } } });
           return { isSubscribed: true };
         }
       });
     } catch (e: any) {
       console.error("[TOGGLE_SUBSCRIPTION_ERROR]", e);
-      if (e.code === 'P2021') throw new Error("DATABASE_TABLES_MISSING");
       throw e;
     }
+  }
+
+  static async softDeleteUser(id: string) {
+    const anonymousId = crypto.randomUUID();
+    return await prisma.user.update({
+      where: { id },
+      data: {
+        email: `deleted_${anonymousId}@deleted.com`,
+        name: "Usunięty Użytkownik",
+        imageUrl: null,
+        stripeCustomerId: null,
+        isDeleted: true
+      }
+    });
+  }
+
+  static async isSubscribed(userId: string, creatorId: string) {
+    const sub = await prisma.subscription.findUnique({
+      where: { userId_creatorId: { userId, creatorId } }
+    });
+    return !!sub;
+  }
+
+  static async getVideoInteraction(userId: string, videoId: string) {
+    const [like, dislike] = await Promise.all([
+        prisma.videoLike.findUnique({ where: { userId_videoId: { userId, videoId } } }).catch(() => null),
+        prisma.videoDislike.findUnique({ where: { userId_videoId: { userId, videoId } } }).catch(() => null)
+    ]);
+    return { liked: !!like, disliked: !!dislike };
+  }
+
+  static async ensureAdminUser() {
+    return await prisma.user.upsert({
+        where: { email: UserService.ADMIN_EMAIL },
+        update: { role: 'ADMIN', name: "POLUTEK.PL" },
+        create: {
+            id: `admin_${Date.now()}`,
+            email: UserService.ADMIN_EMAIL,
+            name: "POLUTEK.PL",
+            role: 'ADMIN',
+            language: "pl",
+            referralCode: 'admin'
+        }
+    });
   }
 }
