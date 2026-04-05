@@ -6,21 +6,28 @@ export class PaymentService {
     apiVersion: '2023-10-16' as any,
   });
 
-  // Metoda statyczna, aby pasowała do Twojego API route
   static async createCheckoutSession({
     userId,
     amount,
     currency = 'pln',
     userEmail,
+    title,
+    creatorId,
+    successUrl,
+    cancelUrl,
   }: {
     userId: string;
     amount: number;
     currency?: string;
     userEmail?: string;
+    title?: string;
+    creatorId?: string;
+    successUrl: string;
+    cancelUrl: string;
   }) {
     try {
       const session = await this.stripe.checkout.sessions.create({
-        // OPCJA B: Automatyczne metody płatności (rozwiązuje błąd P24)
+        // ROZWIĄZANIE PROBLEMU P24: Automatyczne metody płatności
         automatic_payment_methods: {
           enabled: true,
         },
@@ -30,19 +37,21 @@ export class PaymentService {
             price_data: {
               currency: currency.toLowerCase(),
               product_data: {
-                name: 'Dostęp Premium - Napiwek',
+                name: title || 'Dostęp Premium - Napiwek',
                 description: 'Pełny dostęp do materiałów na stronie',
               },
-              unit_amount: Math.round(amount * 100), // Przeliczenie na grosze
+              unit_amount: Math.round(amount * 100), // Stripe oczekuje groszy
             },
             quantity: 1,
           },
         ],
         mode: 'payment',
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
+        // Używamy adresów URL przekazanych z API route
+        success_url: successUrl,
+        cancel_url: cancelUrl,
         metadata: {
           userId: userId,
+          creatorId: creatorId || '',
         },
       });
 
@@ -72,10 +81,14 @@ export class PaymentService {
       const userId = session.metadata?.userId;
 
       if (userId) {
+        // Aktualizacja statusu Premium dla użytkownika
         await prisma.user.update({
           where: { clerkId: userId },
           data: { isPremium: true },
         });
+        
+        // Tutaj możesz dodać dodatkową logikę zapisu transakcji/napiwku 
+        // jeśli Twój model bazy danych na to pozwala.
       }
     }
 
