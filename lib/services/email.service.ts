@@ -1,19 +1,13 @@
 import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 
-let resendClient: Resend | null = null;
-
 function getResendClient() {
-  if (!resendClient) {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.warn('[EmailService] RESEND_API_KEY is missing. Emails will not be sent.');
-      return null;
-    }
-    console.log('[EmailService] Initializing Resend client.');
-    resendClient = new Resend(apiKey);
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('[EmailService] RESEND_API_KEY is missing. Emails will not be sent.');
+    return null;
   }
-  return resendClient;
+  return new Resend(apiKey);
 }
 
 const EMAIL_DICTIONARY: Record<string, {
