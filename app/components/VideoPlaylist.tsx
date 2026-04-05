@@ -31,6 +31,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (isCheckoutModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isCheckoutModalOpen]);
+
   const minAmount = 10;
 
   const getSuggestedAmount = (curr: string) => {
@@ -263,9 +272,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
         {/* Checkout Full-Screen Takeover */}
         {isCheckoutModalOpen && clientSecret && (
-          <div className="fixed inset-0 z-[999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col overflow-y-auto">
+          <div className="fixed inset-0 z-[9999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col overflow-hidden">
              {/* Header bar */}
-             <div className="w-full max-w-4xl mx-auto px-6 py-8 flex justify-between items-center border-b border-[#1a1a1a]/10">
+             <div className="w-full max-w-6xl mx-auto px-6 py-6 flex justify-between items-center border-b border-[#1a1a1a]/10 shrink-0">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-[#1e3a8a] rounded-full flex items-center justify-center text-white font-black text-xl">
                     P
@@ -284,7 +293,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
              </div>
 
              {/* Main Content Area */}
-             <div className="flex-1 w-full max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-12">
+             <div className="flex-1 w-full max-w-6xl mx-auto px-6 py-8 md:py-12 grid md:grid-cols-2 gap-8 lg:gap-16 items-center overflow-y-auto">
                 {/* Left Side: Summary */}
                 <div className="space-y-8">
                   <div className="space-y-2">
@@ -326,7 +335,18 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 {/* Right Side: Payment Form */}
                 <div className="bg-white border-2 border-[#1a1a1a] p-8 rounded-3xl shadow-brutalist h-fit">
                    {stripePromise ? (
-                      <Elements stripe={stripePromise} options={{ clientSecret }}>
+                  <Elements stripe={stripePromise} options={{
+                    clientSecret,
+                    appearance: {
+                      theme: 'stripe',
+                      variables: {
+                        colorPrimary: '#1e3a8a',
+                        colorBackground: '#ffffff',
+                        colorText: '#1a1a1a',
+                        borderRadius: '12px',
+                      }
+                    }
+                  }}>
                         <CheckoutForm />
                       </Elements>
                     ) : (
