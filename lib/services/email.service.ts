@@ -16,7 +16,7 @@ function getResendClient() {
 }
 
 export class EmailService {
-  private static async sendEmail(toEmail: string, templateName: string, language: 'pl' | 'en' = 'pl') {
+  private static async sendEmail(toEmail: string, templateName: string, language: 'pl' | 'en' = 'pl', variables?: Record<string, string>) {
     try {
       const resend = getResendClient();
       if (!resend) return;
@@ -30,8 +30,17 @@ export class EmailService {
         return;
       }
 
-      const subject = language === 'pl' ? template.subjectPl : template.subjectEn;
-      const html = language === 'pl' ? template.bodyPl : template.bodyEn;
+      let subject = language === 'pl' ? template.subjectPl : template.subjectEn;
+      let html = language === 'pl' ? template.bodyPl : template.bodyEn;
+
+      // Simple variable replacement
+      if (variables) {
+        Object.entries(variables).forEach(([key, value]) => {
+          const placeholder = new RegExp(`{{${key}}}`, 'g');
+          subject = subject.replace(placeholder, value);
+          html = html.replace(placeholder, value);
+        });
+      }
 
       const { data, error } = await resend.emails.send({
         from: 'POLUTEK.PL <no-reply@polutek.pl>',
@@ -60,5 +69,16 @@ export class EmailService {
 
   static async sendPasswordChangedEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
     await this.sendEmail(toEmail, 'PASSWORD_CHANGED', language);
+  }
+
+  static async sendDonationThankYouEmail(toEmail: string, amount: number, currency: string, language: 'pl' | 'en' = 'pl') {
+    await this.sendEmail(toEmail, 'THANK_YOU_DONATION', language, {
+      amount: amount.toFixed(2),
+      currency: currency
+    });
+  }
+
+  static async sendBecomePatronEmail(toEmail: string, language: 'pl' | 'en' = 'pl') {
+    await this.sendEmail(toEmail, 'BECOME_PATRON', language);
   }
 }
