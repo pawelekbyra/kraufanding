@@ -38,10 +38,11 @@ export class UserService {
     } catch (e: any) {
       console.error("[UserService.getOrCreateUser]", e.message);
 
-      // Auto-healing for schema issues
+      // AUTO-HEALING: If database columns are missing, trigger a comprehensive heal
       if (e.message?.includes("does not exist") || e.code === 'P2021') {
+          console.log("[UserService] Missing columns detected. Healing database schema...");
           await SchemaService.ensureSchema();
-          // One-time retry
+          // One-time retry after healing
           return await prisma.user.findUnique({ where: { id: clerkUserId } });
       }
       throw e;
@@ -54,88 +55,97 @@ export class UserService {
   static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string | null, language?: string, username?: string | null) {
     const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
-    return await prisma.$transaction(async (tx) => {
-      // 1. Resolve potential email conflicts (Clerk ID change or duplicate accounts)
-      const existingByEmail = await tx.user.findFirst({
-        where: { email: { equals: email, mode: 'insensitive' }, id: { not: id } }
-      });
-
-      if (existingByEmail) {
-        console.log(`[UserService] Migrating data for ${email} from ${existingByEmail.id} to ${id}`);
-        // Temporarily rename conflict to free up the email unique constraint
-        await tx.user.update({
-          where: { id: existingByEmail.id },
-          data: { email: `old_${existingByEmail.id}_${Date.now()}@temp.temp`, stripeCustomerId: null }
+    try {
+      return await prisma.$transaction(async (tx) => {
+        // 1. Resolve potential email conflicts (Clerk ID change or duplicate accounts)
+        const existingByEmail = await tx.user.findFirst({
+          where: { email: { equals: email, mode: 'insensitive' }, id: { not: id } }
         });
-      }
 
-      // 2. Main Upsert
-      const user = await tx.user.upsert({
-        where: { id },
-        update: {
-          email,
-          name,
-          username,
-          imageUrl,
-          role,
-          language,
-          totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
-          referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
-          referralPoints: existingByEmail ? { increment: existingByEmail.referralPoints } : undefined,
-        },
-        create: {
-          id,
-          email,
-          name,
-          username,
-          imageUrl,
-          role,
-          language: language || 'en',
-          referralCode: Math.random().toString(36).substring(2, 10),
-          referredById: referrerId,
-          totalPaid: existingByEmail?.totalPaid || 0,
-          referralCount: existingByEmail?.referralCount || 0,
-          referralPoints: existingByEmail?.referralPoints || 0,
-        }
-      });
-
-      // 3. Migrate relations if conflict existed
-      if (existingByEmail) {
-        const refs = [
-            tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } }),
-            tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } }),
-            tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } }),
-        ];
-        await Promise.all(refs);
-        await tx.user.delete({ where: { id: existingByEmail.id } });
-      }
-
-      // 4. Admin specific profile sync
-      if (role === 'ADMIN') {
-          await tx.creator.updateMany({
-              where: { slug: 'polutek' },
-              data: { name: 'POLUTEK.PL', userId: id }
+        if (existingByEmail) {
+          console.log(`[UserService] Migrating data for ${email} from ${existingByEmail.id} to ${id}`);
+          // Temporarily rename conflict to free up the email unique constraint
+          await tx.user.update({
+            where: { id: existingByEmail.id },
+            data: {
+              email: `old_${existingByEmail.id}_${Date.now()}@temp.temp`,
+              stripeCustomerId: null
+            }
           });
-      }
+        }
 
-      // 5. Handle referral point increment for NEW referrals only
-      if (!existingByEmail && referrerId) {
-          try {
-              await tx.user.update({
-                  where: { id: referrerId },
-                  data: { referralCount: { increment: 1 } }
-              });
-          } catch (re) {}
-      }
+        // 2. Main Upsert
+        const user = await tx.user.upsert({
+          where: { id },
+          update: {
+            email,
+            name,
+            username,
+            imageUrl,
+            role,
+            language,
+            totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
+            referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
+            referralPoints: existingByEmail ? { increment: existingByEmail.referralPoints } : undefined,
+          },
+          create: {
+            id,
+            email,
+            name,
+            username,
+            imageUrl,
+            role,
+            language: language || 'en',
+            referralCode: Math.random().toString(36).substring(2, 10),
+            referredById: referrerId,
+            totalPaid: existingByEmail?.totalPaid || 0,
+            referralCount: existingByEmail?.referralCount || 0,
+            referralPoints: existingByEmail?.referralPoints || 0,
+          }
+        });
 
-      return user;
-    });
+        // 3. Migrate relations if conflict existed
+        if (existingByEmail) {
+            await tx.creator.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.comment.updateMany({ where: { authorId: existingByEmail.id }, data: { authorId: id } });
+            await tx.subscription.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.transaction.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.videoDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentLike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.commentDislike.updateMany({ where: { userId: existingByEmail.id }, data: { userId: id } });
+            await tx.user.updateMany({ where: { referredById: existingByEmail.id }, data: { referredById: id } });
+
+            // Delete old record after re-linking everything
+            await tx.user.delete({ where: { id: existingByEmail.id } });
+        }
+
+        // 4. Admin specific profile sync
+        if (role === 'ADMIN') {
+            await tx.creator.updateMany({
+                where: { slug: 'polutek' },
+                data: { name: 'POLUTEK.PL', userId: id }
+            });
+        }
+
+        // 5. Handle referral counter for NEW registrations
+        if (!existingByEmail && referrerId) {
+            try {
+                await tx.user.update({
+                    where: { id: referrerId },
+                    data: { referralCount: { increment: 1 } }
+                });
+            } catch (re: any) {
+              console.warn("[UserService] Failed to increment referral counter", re.message);
+            }
+        }
+
+        return user;
+      }, { timeout: 15000 }); // Extended timeout for migrations
+    } catch (err: any) {
+       console.error("[UserService.syncUser] Error:", err.message);
+       throw err;
+    }
   }
 
   static async toggleSubscription(userId: string, creatorId: string) {
