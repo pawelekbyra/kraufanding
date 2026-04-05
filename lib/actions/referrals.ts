@@ -1,0 +1,54 @@
+'use server';
+
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+
+export async function checkReferralStatus() {
+  const { userId } = auth();
+  if (!userId) return { error: "AUTH_REQUIRED" };
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { referredById: true }
+    });
+
+    return {
+      isLoggedIn: true,
+      hasReferrer: !!user?.referredById
+    };
+  } catch (error) {
+    console.error("[CHECK_REFERRAL_STATUS_ERROR]", error);
+    return { error: "DB_ERROR" };
+  }
+}
+
+export async function getReferralData() {
+  const { userId } = auth();
+  if (!userId) return { error: "AUTH_REQUIRED" };
+
+  try {
+    let user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { referralCode: true, referralPoints: true, id: true }
+    });
+
+    // If for some reason referralCode is missing (old user without auto-healing yet)
+    if (user && !user.referralCode) {
+        user = await prisma.user.update({
+            where: { id: userId },
+            data: { referralCode: Math.random().toString(36).substring(2, 10) },
+            select: { referralCode: true, referralPoints: true, id: true }
+        });
+    }
+
+    return {
+      referralCode: user?.referralCode || userId,
+      referralPoints: user?.referralPoints || 0,
+      userId: user?.id
+    };
+  } catch (error) {
+    console.error("[GET_REFERRAL_DATA_ERROR]", error);
+    return { error: "DB_ERROR" };
+  }
+}

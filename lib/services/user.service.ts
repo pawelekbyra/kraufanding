@@ -106,6 +106,7 @@ export class UserService {
             language: language || undefined,
             totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
             referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
+            referralPoints: existingByEmail ? { increment: existingByEmail.referralPoints } : undefined,
           },
           create: {
             id,
@@ -115,6 +116,8 @@ export class UserService {
             imageUrl,
             role,
             language: (language as "pl" | "en") || "en",
+            referralCode: Math.random().toString(36).substring(2, 10),
+            referralPoints: existingByEmail?.referralPoints || 0,
             referredById: referrerId || null,
             totalPaid: existingByEmail?.totalPaid || 0,
             referralCount: existingByEmail?.referralCount || 0,

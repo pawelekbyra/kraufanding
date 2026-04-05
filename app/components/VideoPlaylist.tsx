@@ -46,7 +46,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
     if (language === 'en' && curr === 'PLN') return false;
     return true;
   });
-  const [referralCount, setReferralCount] = useState(0);
+  const [referralData, setReferralData] = useState<{ count: number, points: number, code: string | null }>({ count: 0, points: 0, code: null });
   const { userId } = useAuth();
   const { openSignIn } = useClerk();
 
@@ -57,10 +57,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           const response = await fetch(`/api/user/referrals`);
           if (response.ok) {
             const data = await response.json();
-            setReferralCount(data.referralCount || 0);
+            setReferralData({
+              count: data.referralCount || 0,
+              points: data.referralPoints || 0,
+              code: data.referralCode || userId
+            });
           }
         } catch (error) {
-          console.error("[VideoPlaylist] Failed to fetch referral count:", error);
+          console.error("[VideoPlaylist] Failed to fetch referral data:", error);
         }
       };
       fetchReferralData();
@@ -242,8 +246,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <ReferralModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            userId={userId}
-            referralCount={referralCount}
+            referralCode={referralData.code || userId}
+            referralPoints={referralData.points}
           />
         )}
 

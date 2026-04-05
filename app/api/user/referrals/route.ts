@@ -12,10 +12,14 @@ export async function GET() {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { referralCount: true }
+      select: { referralCount: true, referralPoints: true, referralCode: true }
     });
 
-    return NextResponse.json({ referralCount: user?.referralCount || 0 });
+    return NextResponse.json({
+      referralCount: user?.referralCount || 0,
+      referralPoints: user?.referralPoints || 0,
+      referralCode: user?.referralCode || userId
+    });
   } catch (error) {
     console.error("[REFERRALS_API_ERROR]", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
