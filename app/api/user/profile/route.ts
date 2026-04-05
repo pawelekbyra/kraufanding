@@ -11,7 +11,7 @@ export async function GET() {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { preferredLanguage: true }
+      select: { language: true }
     });
     return NextResponse.json(user);
   } catch (error) {

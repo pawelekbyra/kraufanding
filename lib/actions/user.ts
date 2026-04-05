@@ -11,7 +11,7 @@ export async function updateUserLanguage(language: 'en' | 'pl') {
   try {
     await prisma.user.update({
       where: { id: userId },
-      data: { preferredLanguage: language }
+      data: { language: language }
     });
     revalidatePath('/', 'layout');
     return { success: true };

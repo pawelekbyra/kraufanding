@@ -16,6 +16,62 @@ function getResendClient() {
   return resendClient;
 }
 
+const EMAIL_DICTIONARY: Record<string, {
+    pl: { subject: string, html: string },
+    en: { subject: string, html: string }
+}> = {
+  WELCOME: {
+    pl: {
+      subject: 'Witaj w POLUTEK.PL!',
+      html: '<h1>Siema!</h1><p>Dzięki za dołączenie do naszej społeczności. Cieszymy się, że tu jesteś!</p>'
+    },
+    en: {
+      subject: 'Welcome to POLUTEK.PL!',
+      html: '<h1>Hey!</h1><p>Thanks for joining our community. We are glad to have you here!</p>'
+    }
+  },
+  ACCOUNT_DELETED: {
+    pl: {
+      subject: 'Twoje konto zostało usunięte - POLUTEK.PL',
+      html: '<h1>Potwierdzenie usunięcia konta</h1><p>Twoje dane zostały pomyślnie usunięte z naszego systemu. Będzie nam Cię brakować!</p>'
+    },
+    en: {
+      subject: 'Your account has been deleted - POLUTEK.PL',
+      html: '<h1>Account Deletion Confirmation</h1><p>Your data has been successfully removed from our system. We will miss you!</p>'
+    }
+  },
+  PASSWORD_CHANGED: {
+    pl: {
+      subject: 'Hasło zostało zmienione - POLUTEK.PL',
+      html: '<h1>Bezpieczeństwo konta</h1><p>Twoje hasło zostało właśnie zaktualizowane. Jeśli to nie Ty, skontaktuj się z nami natychmiast.</p>'
+    },
+    en: {
+      subject: 'Password Changed - POLUTEK.PL',
+      html: '<h1>Account Security</h1><p>Your password has just been updated. If this was not you, please contact us immediately.</p>'
+    }
+  },
+  THANK_YOU_DONATION: {
+    pl: {
+      subject: 'Dziękujemy za wsparcie! - POLUTEK.PL',
+      html: '<h1>Wielkie dzięki!</h1><p>Otrzymaliśmy Twój napiwek w wysokości {{amount}} {{currency}}. Twoje wsparcie pozwala nam tworzyć więcej treści!</p>'
+    },
+    en: {
+      subject: 'Thank you for your support! - POLUTEK.PL',
+      html: '<h1>Big thanks!</h1><p>We received your tip of {{amount}} {{currency}}. Your support allows us to create more content!</p>'
+    }
+  },
+  BECOME_PATRON: {
+    pl: {
+      subject: 'Zostałeś Patronem! - POLUTEK.PL',
+      html: '<h1>Witaj w gronie Patronów!</h1><p>Dziękujemy za zaufanie. Masz teraz dostęp do ekskluzywnych materiałów w Strefie Patronów.</p>'
+    },
+    en: {
+      subject: 'You are now a Patron! - POLUTEK.PL',
+      html: '<h1>Welcome to the Patrons circle!</h1><p>Thank you for your trust. You now have access to exclusive materials in the Patrons Zone.</p>'
+    }
+  }
+};
+
 export class EmailService {
   private static async sendEmail(toEmail: string, templateName: string, language: 'pl' | 'en' = 'pl', variables?: Record<string, string>) {
     console.log(`[EmailService] Attempting to send ${templateName} to ${toEmail} (${language})`);
@@ -39,15 +95,13 @@ export class EmailService {
       let html: string;
 
       if (!template) {
-        console.warn(`[EmailService] ${templateName} template not found in DB. Using fallback content.`);
-        // Fallback content for critical emails
-        if (templateName === 'WELCOME') {
-          subject = language === 'pl' ? 'Witaj w POLUTEK.PL!' : 'Welcome to POLUTEK.PL!';
-          html = language === 'pl'
-            ? '<h1>Siema!</h1><p>Dzięki za dołączenie do naszej społeczności.</p>'
-            : '<h1>Hey!</h1><p>Thanks for joining our community.</p>';
+        console.warn(`[EmailService] ${templateName} template not found in DB. Using dictionary fallback.`);
+        const fallback = EMAIL_DICTIONARY[templateName];
+        if (fallback) {
+          subject = language === 'pl' ? fallback.pl.subject : fallback.en.subject;
+          html = language === 'pl' ? fallback.pl.html : fallback.en.html;
         } else {
-          console.warn(`[EmailService] No fallback for ${templateName}. Skipping.`);
+          console.warn(`[EmailService] No fallback found for ${templateName}. Skipping.`);
           return;
         }
       } else {

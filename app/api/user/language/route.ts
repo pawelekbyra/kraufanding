@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: Request) {
+export async function PATCH(req: Request) {
   const { userId } = auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,9 +16,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid language" }, { status: 400 });
     }
 
+    // 1. Update Database
     await prisma.user.update({
       where: { id: userId },
-      data: { preferredLanguage: language }
+      data: { language: language }
+    });
+
+    // 2. Update Clerk Metadata for persistence and webhook use
+    const client = await clerkClient();
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        language: language
+      }
     });
 
     return NextResponse.json({ success: true });
@@ -26,4 +35,10 @@ export async function POST(req: Request) {
     console.error('[LANGUAGE_UPDATE_ERROR]', err);
     return NextResponse.json({ error: "Failed to update language" }, { status: 500 });
   }
+}
+
+// Keep POST for backward compatibility during migration if needed,
+// but it should also use the new field and logic.
+export async function POST(req: Request) {
+    return PATCH(req);
 }

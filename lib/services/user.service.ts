@@ -65,7 +65,7 @@ export class UserService {
     }
   }
 
-  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, preferredLanguage?: string, username?: string | null) {
+  static async syncUser(id: string, email: string, name?: string | null, imageUrl?: string | null, referrerId?: string, language?: string, username?: string | null) {
     try {
       const role = email.toLowerCase() === UserService.ADMIN_EMAIL.toLowerCase() ? 'ADMIN' : 'USER';
 
@@ -103,7 +103,7 @@ export class UserService {
             username: username || undefined,
             imageUrl,
             role,
-            preferredLanguage: preferredLanguage || undefined,
+            language: language || undefined,
             totalPaid: existingByEmail ? { increment: existingByEmail.totalPaid } : undefined,
             referralCount: existingByEmail ? { increment: existingByEmail.referralCount } : undefined,
           },
@@ -114,7 +114,7 @@ export class UserService {
             username,
             imageUrl,
             role,
-            preferredLanguage: (preferredLanguage as "pl" | "en") || "en",
+            language: (language as "pl" | "en") || "en",
             referredById: referrerId || null,
             totalPaid: existingByEmail?.totalPaid || 0,
             referralCount: existingByEmail?.referralCount || 0,
@@ -259,7 +259,7 @@ export class UserService {
                 email: UserService.ADMIN_EMAIL,
                 name: "POLUTEK.PL",
                 role: 'ADMIN',
-                preferredLanguage: "pl"
+                language: "pl"
             }
         });
     } catch (e: any) {
@@ -281,7 +281,7 @@ export class UserService {
             create: {
                 id,
                 email: `user_${id}@polutek.pl`,
-                preferredLanguage: "pl",
+                language: "pl",
                 role: "USER"
             }
         });

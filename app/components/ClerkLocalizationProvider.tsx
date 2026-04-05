@@ -13,9 +13,9 @@ function LocalizationLogic({ children }: { children: React.ReactNode }) {
   // Sync DB preference to Context ONLY ONCE on login
   useEffect(() => {
     if (isLoaded && user && isInitialized) {
-      const dbLang = user.publicMetadata.preferredLanguage as 'pl' | 'en';
+      const dbLang = (user.publicMetadata.language || user.publicMetadata.preferredLanguage) as 'pl' | 'en';
       if (dbLang && dbLang !== language) {
-        setLanguage(dbLang);
+        setLanguage(dbLang, true); // skipSync to avoid infinite loop or redundant calls
       }
     }
   }, [user, isLoaded, isInitialized, language, setLanguage]);

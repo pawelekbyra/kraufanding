@@ -18,7 +18,7 @@ export class SchemaService {
             "name" TEXT,
             "isDeleted" BOOLEAN NOT NULL DEFAULT false,
             "role" TEXT NOT NULL DEFAULT 'USER',
-            "preferredLanguage" TEXT NOT NULL DEFAULT 'en',
+            "language" TEXT NOT NULL DEFAULT 'en',
             "totalPaid" DOUBLE PRECISION NOT NULL DEFAULT 0,
             "referralCount" INTEGER NOT NULL DEFAULT 0,
             "referredById" TEXT,
@@ -34,7 +34,8 @@ export class SchemaService {
         `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "referredById" TEXT;`,
         `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "isDeleted" BOOLEAN DEFAULT false;`,
         `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "role" TEXT DEFAULT 'USER';`,
-        `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "preferredLanguage" TEXT DEFAULT 'en';`,
+        `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "language" TEXT DEFAULT 'en';`,
+        `UPDATE "User" SET "language" = "preferredLanguage" WHERE "preferredLanguage" IS NOT NULL AND "language" = 'en';`,
         `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "imageUrl" TEXT;`,
         `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "stripeCustomerId" TEXT;`
       ];

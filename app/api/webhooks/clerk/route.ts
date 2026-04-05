@@ -46,16 +46,18 @@ export async function POST(req: Request) {
     const email = email_addresses[0]?.email_address;
     const name = `${first_name || ''} ${last_name || ''}`.trim() || null;
     const referrerId = unsafe_metadata?.referrerId as string | undefined;
-    const preferredLanguage = public_metadata?.preferredLanguage as string | undefined;
+
+    // Extract language from metadata (public takes precedence, then unsafe, then default 'en')
+    const userLanguage = (public_metadata?.language || public_metadata?.preferredLanguage || unsafe_metadata?.language || unsafe_metadata?.preferredLanguage || 'en') as string;
 
     if (id && email) {
-      const user = await UserService.syncUser(id, email, name, image_url, referrerId, preferredLanguage, username);
-      console.log(`User ${id} synced via webhook. Referrer: ${referrerId || 'None'}, Language: ${preferredLanguage || 'Default'}`);
+      const user = await UserService.syncUser(id, email, name, image_url, referrerId, userLanguage, username);
+      console.log(`User ${id} synced via webhook. Referrer: ${referrerId || 'None'}, Language: ${userLanguage}`);
 
       if (eventType === 'user.created') {
         console.log(`[ClerkWebhook] New user created: ${email}. Triggering welcome email.`);
-        // Send welcome email in user's preferred language (defaults to "pl" if not set)
-        await EmailService.sendWelcomeEmail(email, user.preferredLanguage as 'pl' | 'en' || 'pl');
+        // Send welcome email in user's language
+        await EmailService.sendWelcomeEmail(email, user.language as 'pl' | 'en' || 'pl');
       }
     }
   }
@@ -67,33 +69,19 @@ export async function POST(req: Request) {
               // Try to find user before soft-deleting to get their email and language
               const user = await prisma.user.findUnique({
                   where: { id },
-                  select: { email: true, preferredLanguage: true }
+                  select: { email: true, language: true }
               });
 
               await UserService.softDeleteUser(id);
               console.log(`User ${id} soft-deleted/anonymized via webhook.`);
 
               if (user && user.email && !user.email.startsWith('deleted_')) {
-                  await EmailService.sendAccountDeletedEmail(user.email, user.preferredLanguage as 'pl' | 'en' || 'pl');
+                  await EmailService.sendAccountDeletedEmail(user.email, user.language as 'pl' | 'en' || 'pl');
               }
           } catch (e) {
               console.error(`Error soft-deleting user ${id}:`, e);
           }
       }
-  }
-
-  if (eventType === 'user.updated') {
-    const { id, email_addresses, password_enabled, public_metadata } = evt.data;
-    const email = email_addresses[0]?.email_address;
-
-    // Note: Clerk's 'user.updated' doesn't explicitly flag 'password_changed'.
-    // However, if password_enabled is true, we send a generic security update email
-    // when the user is updated, or specifically when 'password.updated' event is used.
-    // To satisfy the user's specific request for password changes:
-    if (id && email && password_enabled) {
-       // Only send if this wasn't a sync triggered by us (though sync doesn't change password)
-       // console.log(`User ${id} security/profile updated. Sending notification.`);
-    }
   }
 
   // Use the dedicated password update event if configured in Clerk
@@ -103,10 +91,10 @@ export async function POST(req: Request) {
       if (userId) {
           const user = await prisma.user.findUnique({
               where: { id: userId },
-              select: { email: true, preferredLanguage: true }
+              select: { email: true, language: true }
           });
           if (user?.email) {
-              await EmailService.sendPasswordChangedEmail(user.email, user.preferredLanguage as 'pl' | 'en' || 'pl');
+              await EmailService.sendPasswordChangedEmail(user.email, user.language as 'pl' | 'en' || 'pl');
           }
       }
   }
