@@ -26,17 +26,34 @@ export class EmailService {
         return;
       }
 
-      const template = await prisma.emailTemplate.findUnique({
-        where: { name: templateName }
-      });
-
-      if (!template) {
-        console.warn(`[EmailService] ${templateName} template not found in DB. Skipping email.`);
-        return;
+      let template = null;
+      try {
+        template = await prisma.emailTemplate.findUnique({
+          where: { name: templateName }
+        });
+      } catch (dbError) {
+        console.error(`[EmailService] DB error fetching ${templateName} template:`, dbError);
       }
 
-      let subject = language === 'pl' ? template.subjectPl : template.subjectEn;
-      let html = language === 'pl' ? template.bodyPl : template.bodyEn;
+      let subject: string;
+      let html: string;
+
+      if (!template) {
+        console.warn(`[EmailService] ${templateName} template not found in DB. Using fallback content.`);
+        // Fallback content for critical emails
+        if (templateName === 'WELCOME') {
+          subject = language === 'pl' ? 'Witaj w POLUTEK.PL!' : 'Welcome to POLUTEK.PL!';
+          html = language === 'pl'
+            ? '<h1>Siema!</h1><p>Dzięki za dołączenie do naszej społeczności.</p>'
+            : '<h1>Hey!</h1><p>Thanks for joining our community.</p>';
+        } else {
+          console.warn(`[EmailService] No fallback for ${templateName}. Skipping.`);
+          return;
+        }
+      } else {
+        subject = language === 'pl' ? template.subjectPl : template.subjectEn;
+        html = language === 'pl' ? template.bodyPl : template.bodyEn;
+      }
 
       // Simple variable replacement
       if (variables) {
