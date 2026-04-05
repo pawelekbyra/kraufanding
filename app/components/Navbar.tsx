@@ -117,7 +117,14 @@ const Navbar = () => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border border-[#1a1a1a] transition-all">
+            <button
+              onClick={() => {
+                // Pre-set language in unsafeMetadata via a custom trigger if needed,
+                // but SignInButton doesn't support unsafeMetadata directly in props here easily.
+                // However, our ClerkLocalizationProvider handles sync.
+              }}
+              className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border border-[#1a1a1a] transition-all"
+            >
               <LogIn size={18} />
               <span className="hidden md:inline">{t.signIn}</span>
             </button>

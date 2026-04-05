@@ -84,7 +84,7 @@ export class PaymentService {
     const result = await prisma.$transaction(async (tx) => {
       const localUser = await tx.user.findUnique({
         where: { id: userId },
-        select: { id: true, email: true, totalPaid: true, preferredLanguage: true }
+        select: { id: true, email: true, totalPaid: true, language: true }
       });
 
       if (!localUser) throw new Error(`User with ID ${userId} not found.`);
@@ -126,7 +126,7 @@ export class PaymentService {
     const { user, isNewPatron } = result;
 
     if (user.email) {
-      const language = user.preferredLanguage as 'pl' | 'en' || 'pl';
+      const language = user.language as 'pl' | 'en' || 'pl';
       // Always send thank you for donation
       await EmailService.sendDonationThankYouEmail(user.email, amountPaid, currency, language);
 

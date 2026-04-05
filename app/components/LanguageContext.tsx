@@ -6,7 +6,7 @@ type Language = 'pl' | 'en';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (lang: Language, skipSync?: boolean) => void;
   isInitialized: boolean;
 }
 
@@ -31,6 +31,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const browserLang = window.navigator.language.toLowerCase();
         if (browserLang.startsWith('pl')) {
           setLanguageState('pl');
+        } else {
+          setLanguageState('en');
         }
       }
       setIsInitialized(true);
@@ -39,19 +41,24 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     initializeLanguage();
   }, []);
 
-  const setLanguage = async (lang: Language) => {
+  const setLanguage = async (lang: Language, skipSync: boolean = false) => {
+    const prevLang = language;
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
 
-    // Sync with database if user is logged in
-    try {
-      await fetch('/api/user/language', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language: lang })
-      });
-    } catch (e) {
-      console.warn('[LanguageContext] Failed to sync language with DB:', e);
+    // Sync with database if requested and changed
+    if (!skipSync && lang !== prevLang && isInitialized) {
+      try {
+        const res = await fetch('/api/user/language', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ language: lang })
+        });
+
+        // No need to alert on 401, user just might not be logged in
+      } catch (e) {
+        console.warn('[LanguageContext] Failed to sync language with DB:', e);
+      }
     }
   };
 

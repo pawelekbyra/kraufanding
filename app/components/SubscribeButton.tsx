@@ -20,7 +20,7 @@ export default function SubscribeButton({
     initialIsSubscribed,
     className
 }: SubscribeButtonProps) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const { userId } = useAuth();
     const { openSignIn } = useClerk();
     const [isSubscribed, setIsSubscribed] = useState(() => initialIsSubscribed ?? false);

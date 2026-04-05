@@ -98,7 +98,7 @@ export async function toggleVideoLike(videoId: string) {
           create: {
               id: userId!,
               email: `user_${userId}@polutek.pl`, // Fallback email
-              preferredLanguage: "pl",
+              language: "pl",
               role: "USER"
           }
       });
@@ -179,7 +179,7 @@ export async function toggleVideoDislike(videoId: string) {
           create: {
               id: userId!,
               email: `user_${userId}@polutek.pl`,
-              preferredLanguage: "pl",
+              language: "pl",
               role: "USER"
           }
       });

@@ -121,6 +121,7 @@ export default function PremiumWrapper({
 
 function CustomAuthTrigger({ children }: { children: React.ReactNode }) {
   const { openSignUp } = useClerk();
+  const { language } = useLanguage();
 
   const handleAuth = () => {
     // Check for referral cookie
@@ -128,15 +129,12 @@ function CustomAuthTrigger({ children }: { children: React.ReactNode }) {
     const refCookie = cookies.find(row => row.startsWith('clerk_referrer_id='));
     const referrerId = refCookie ? refCookie.split('=')[1] : undefined;
 
-    if (referrerId) {
-      openSignUp({
-        unsafeMetadata: {
-          referrerId
-        }
-      });
-    } else {
-      openSignUp();
-    }
+    openSignUp({
+      unsafeMetadata: {
+        referrerId,
+        language: language
+      }
+    });
   };
 
   return (
