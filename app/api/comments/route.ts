@@ -19,9 +19,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'videoId is required' }, { status: 400 });
   }
 
-  // Check DB availability to prevent 500 crashes
   if (!process.env.DATABASE_URL) {
-    console.error("[GET_COMMENTS] DATABASE_URL is not defined.");
+    console.error("[GET_COMMENTS] DATABASE_URL is missing.");
     return NextResponse.json({ success: true, comments: [], nextCursor: null, warning: "System offline." });
   }
 
@@ -50,11 +49,11 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: 'desc' },
         include: {
             author: {
-                select: { id: true, email: true, name: true, imageUrl: true }
+                select: { id: true, email: true, name: true, username: true, imageUrl: true }
             },
             replies: {
                 include: {
-                    author: { select: { id: true, email: true, name: true, imageUrl: true } },
+                    author: { select: { id: true, email: true, name: true, username: true, imageUrl: true } },
                     _count: { select: { likes: true, dislikes: true } }
                 },
                 orderBy: { createdAt: 'asc' }
@@ -101,7 +100,7 @@ export async function GET(request: NextRequest) {
                 ...r,
                 isLiked: rLiked,
                 isDisliked: rDisliked,
-                authorName: r.author?.name || r.author?.email?.split('@')[0] || "Użytkownik",
+                authorName: r.author?.username || r.author?.name || r.author?.email?.split('@')[0] || "Użytkownik",
             };
         })) : [];
 
@@ -109,7 +108,7 @@ export async function GET(request: NextRequest) {
             ...c,
             isLiked,
             isDisliked,
-            authorName: c.author?.name || c.author?.email?.split('@')[0] || "Użytkownik",
+            authorName: c.author?.username || c.author?.name || c.author?.email?.split('@')[0] || "Użytkownik",
             replies,
         };
     };
@@ -164,7 +163,7 @@ export async function POST(request: NextRequest) {
             imageUrl: imageUrl || null,
         },
         include: {
-            author: { select: { id: true, email: true, name: true, imageUrl: true } },
+            author: { select: { id: true, email: true, name: true, username: true, imageUrl: true } },
             _count: { select: { likes: true, dislikes: true, replies: true } }
         }
     });
@@ -175,7 +174,7 @@ export async function POST(request: NextRequest) {
             ...newComment,
             isLiked: false,
             isDisliked: false,
-            authorName: newComment.author?.name || newComment.author?.email?.split('@')[0] || "Użytkownik",
+            authorName: newComment.author?.username || newComment.author?.name || newComment.author?.email?.split('@')[0] || "Użytkownik",
             replies: [],
         }
     }, { status: 201 });

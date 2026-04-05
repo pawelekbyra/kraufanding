@@ -10,6 +10,7 @@ datasource db {
 model User {
   id               String              @id // This is now the clerkUserId directly
   email            String              @unique
+  username         String?
   name             String?
   isDeleted        Boolean             @default(false)
   role             SystemRole          @default(USER)
