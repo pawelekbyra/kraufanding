@@ -34,9 +34,7 @@ export class PaymentService {
     const stripe = getStripe();
 
     const session = await stripe.checkout.sessions.create({
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      // Omit payment_method_types to enable automatic payment methods
       line_items: [
         {
           price_data: {
