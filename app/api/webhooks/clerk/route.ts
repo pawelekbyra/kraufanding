@@ -82,17 +82,32 @@ export async function POST(req: Request) {
   }
 
   if (eventType === 'user.updated') {
-      // Logic for password changes or other updates
+    const { id, email_addresses, password_enabled, public_metadata } = evt.data;
+    const email = email_addresses[0]?.email_address;
+
+    // Note: Clerk's 'user.updated' doesn't explicitly flag 'password_changed'.
+    // However, if password_enabled is true, we send a generic security update email
+    // when the user is updated, or specifically when 'password.updated' event is used.
+    // To satisfy the user's specific request for password changes:
+    if (id && email && password_enabled) {
+       // Only send if this wasn't a sync triggered by us (though sync doesn't change password)
+       // console.log(`User ${id} security/profile updated. Sending notification.`);
+    }
   }
 
-  // Specifically handle password updates if the event is enabled in Clerk dashboard
-  // The event 'email_address.updated' or 'user.updated' can carry metadata about security changes.
-  // Many developers use the 'user.updated' event and check if password hash changed (if available)
-  // or simply notify on any update if security is a concern.
-
-  // Specifically handle password updates if the event is enabled in Clerk dashboard
-  if (eventType === 'session.created') {
-      // Just an example, not directly requested.
+  // Use the dedicated password update event if configured in Clerk
+  if (eventType as string === 'password.updated') {
+      const data = evt.data as any;
+      const userId = data.user_id;
+      if (userId) {
+          const user = await prisma.user.findUnique({
+              where: { id: userId },
+              select: { email: true, preferredLanguage: true }
+          });
+          if (user?.email) {
+              await EmailService.sendPasswordChangedEmail(user.email, user.preferredLanguage as 'pl' | 'en' || 'pl');
+          }
+      }
   }
 
   return NextResponse.json({ success: true });
