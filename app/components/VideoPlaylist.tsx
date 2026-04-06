@@ -348,26 +348,26 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
              </div>
 
              {/* Right Column (Form Area) */}
-             <div className="flex-1 bg-[#FDFBF7] flex flex-col relative overflow-hidden h-full">
+             <div className="flex-1 bg-[#FDFBF7] flex flex-col relative h-full">
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="hidden md:flex absolute top-12 right-12 z-30 group items-center gap-3 px-6 py-3 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-xl"
+                  className="hidden md:flex absolute top-8 right-8 z-30 group items-center gap-3 px-6 py-3 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-xl"
                 >
                   <span>Zamknij</span>
                   <span className="text-xl leading-none">×</span>
                 </button>
 
                 {/* Mobile Header Overlap */}
-                <div className="md:hidden w-full px-8 py-8 flex justify-between items-center shrink-0 relative z-20">
-                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg">P</div>
-                      <h3 className="text-xl font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-[#1a1a1a]/40">.PL</span></h3>
+                <div className="md:hidden w-full px-6 py-6 flex justify-between items-center shrink-0 relative z-20 border-b border-[#1a1a1a]/5 bg-[#FDFBF7]">
+                   <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-xs">P</div>
+                      <h3 className="text-lg font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-[#1a1a1a]/40">.PL</span></h3>
                    </div>
 
                    <button
                      onClick={() => setIsCheckoutModalOpen(false)}
-                     className="ml-auto group flex items-center gap-2 px-4 py-2 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-sm"
+                     className="group flex items-center gap-1.5 px-3 py-1.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-sm"
                    >
                      <span>Wróć</span>
                      <span className="text-base leading-none">×</span>
@@ -375,14 +375,14 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex items-center justify-center p-6 lg:p-16 relative z-10 overflow-y-auto">
-                   <div className="w-full max-w-[480px] space-y-12">
+                <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[480px] space-y-8 md:space-y-12">
                       {/* Mobile-only summary head */}
-                      <div className="md:hidden text-center space-y-4">
+                      <div className="md:hidden text-center space-y-3">
                          <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">Bezpieczna płatność</span>
-                         <h1 className="text-4xl font-brand font-black uppercase tracking-tighter leading-tight">Zostajesz Patronem</h1>
-                         <div className="py-8 border-y border-[#1a1a1a]/5">
-                            <p className="text-6xl font-mono font-black tracking-tighter">{amount} <span className="text-2xl align-top opacity-20">{selectedCurrency}</span></p>
+                         <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">Zostajesz Patronem</h1>
+                         <div className="py-6 border-y border-[#1a1a1a]/5">
+                            <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
                          </div>
                       </div>
 
@@ -393,8 +393,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       </div>
 
                       {/* Stripe form card */}
-                      <div className="bg-white border border-[#1a1a1a]/5 p-2 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem] overflow-hidden">
-                         <div className="p-8 lg:p-12">
+                      <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem]">
+                         <div className="p-6 md:p-8 lg:p-10">
                             {stripePromise ? (
                               <Elements stripe={stripePromise} options={{
                                 clientSecret,
