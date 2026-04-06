@@ -85,7 +85,7 @@ export const translations = {
     addComment: 'Zostaw ślad...',
     addReply: 'Odpowiedź...',
     signInToComment: 'Zaloguj się, aby dodać komentarz',
-    becomePatronToComment: 'Zostań Patronem, aby dodać komentarz',
+    becomePatronToComment: 'Zostań Patronę, aby dodać komentarz',
     cancel: 'Odpuść',
     comment: 'Wyślij',
     reply: 'Odpowiedz',

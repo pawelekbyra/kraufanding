@@ -2,6 +2,7 @@
 
 import { useAuth, SignInButton, useClerk } from "@clerk/nextjs";
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 import { Star, Gem, Lock } from './icons';
 import { AccessTier } from "@prisma/client";
 import { useLanguage } from './LanguageContext';
@@ -158,93 +159,90 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
     </div>
   );
 
-  if (variant === 'thumbnail') {
-    return (
-      <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg border border-white/10">
-         {sharedBg}
-         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 gap-1.5 italic">
-            {isVIPGated ? (
-              <Gem className="w-5 h-5 text-amber-500 mb-0.5" />
-            ) : (
-              <Lock className="w-5 h-5 text-blue-400 mb-0.5" />
-            )}
-            <div className="flex flex-col leading-[1] text-center font-brand font-black">
-               {isVIPGated ? (
-                 <>
-                   <span className="text-[10px] text-amber-500 uppercase tracking-tighter">
-                     {t.patronZone}
-                   </span>
-                   <span className="text-[8px] text-amber-500/60 uppercase tracking-tight mt-0.5">
-                     {t.paywallUnlock}
-                   </span>
-                 </>
-               ) : (
-                 <>
-                   <span className="text-[10px] text-white/90 uppercase tracking-tighter">
-                      {t.paywallText}
-                   </span>
-                   <span className="text-[10px] text-blue-400 uppercase tracking-tighter">
-                      {t.paywallAction}
-                   </span>
-                 </>
-               )}
-            </div>
-            <span className="text-[6px] font-brand font-black text-white/20 uppercase tracking-[0.2em] mt-1 pt-1 border-t border-white/5 w-12">
-               {requiredTier}
-            </span>
-         </div>
-      </div>
-    );
-  }
-
   return (
     <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative group">
-      <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative border border-[#1a1a1a] h-full w-full shadow-2xl flex items-center justify-center">
+      <div className={cn(
+          "aspect-video bg-[#0a0a0a] overflow-hidden relative border flex items-center justify-center h-full w-full shadow-2xl",
+          variant === 'thumbnail' ? "rounded-lg border-white/10" : "rounded-2xl border-[#1a1a1a]"
+      )}>
 
          {sharedBg}
 
-         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
-            <div className="mb-4 md:mb-8 transition-all duration-700 group-hover:scale-110">
+         <div className="relative z-10 flex flex-col items-center text-center px-4 md:px-6 max-w-4xl">
+            <div className={cn(
+                "transition-all duration-700 group-hover:scale-110",
+                variant === 'thumbnail' ? "mb-2" : "mb-4 md:mb-8"
+            )}>
                {isVIPGated ? (
-                 <Gem className="w-16 h-16 md:w-24 md:h-24 text-amber-500" />
+                 <Gem className={cn(
+                    "text-amber-500",
+                    variant === 'thumbnail' ? "w-10 h-10" : "w-16 h-16 md:w-24 md:h-24"
+                 )} />
                ) : (
                  <CustomAuthTrigger>
                     <button className="hover:opacity-40 transition-opacity cursor-pointer">
-                      <Lock className="w-16 h-16 md:w-24 md:h-24 text-blue-400" />
+                      <Lock className={cn(
+                        "text-blue-400",
+                        variant === 'thumbnail' ? "w-10 h-10" : "w-16 h-16 md:w-24 md:h-24"
+                      )} />
                     </button>
                  </CustomAuthTrigger>
                )}
             </div>
 
-            <div className="flex flex-col gap-4 md:gap-6 items-center font-brand font-black">
+            <div className="flex flex-col gap-2 md:gap-6 items-center font-brand font-black">
                 <div className="flex flex-col items-center italic">
-                    <span className={`text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
+                    <span className={cn(
+                        "uppercase tracking-tighter leading-[0.8] text-center max-w-[90vw]",
+                        isVIPGated ? 'text-amber-500' : 'text-white',
+                        variant === 'thumbnail' ? "text-lg md:text-xl lg:text-2xl" : "text-[clamp(2rem,8vw,5rem)]"
+                    )}>
                         {isVIPGated ? t.patronZone : t.paywallText}
                     </span>
                     {!isVIPGated && (
-                         <span className="text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-blue-400">
+                         <span className={cn(
+                            "uppercase tracking-tighter leading-[0.8] text-blue-400",
+                            variant === 'thumbnail' ? "text-lg md:text-xl lg:text-2xl" : "text-[clamp(2rem,8vw,5rem)]"
+                         )}>
                             {t.paywallAction}
                         </span>
                     )}
                 </div>
 
-                {isVIPGated ? (
-                    <a href="#donations" className="group flex flex-col items-center gap-2 mt-4 md:mt-6">
-                        <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                            <span className="text-[8px] md:text-[10px] font-brand font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-amber-500 transition-colors">
+                <div className={cn(
+                    "group flex flex-col items-center gap-1.5 md:gap-2",
+                    variant === 'thumbnail' ? "mt-2" : "mt-4 md:mt-6"
+                )}>
+                    {isVIPGated ? (
+                        <a href="#donations" className="contents">
+                            <div className={cn(
+                                "h-px bg-white/10 group-hover:w-48 transition-all duration-500",
+                                variant === 'thumbnail' ? "w-8" : "w-16 md:w-24"
+                            )} />
+                            <span className={cn(
+                                "font-brand font-black uppercase tracking-[0.3em] text-white/30 group-hover:text-amber-500 transition-colors",
+                                variant === 'thumbnail' ? "text-[7px]" : "text-[8px] md:text-[10px] md:tracking-[0.5em]"
+                            )}>
                                 {t.paywallUnlock}
                             </span>
                         </a>
                     ) : (
                         <CustomAuthTrigger>
-                            <button className="group flex flex-col items-center gap-2 mt-4 md:mt-6">
-                                <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                                <span className="text-[8px] md:text-[10px] font-brand font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
+                            <button className="contents">
+                                <div className={cn(
+                                    "h-px bg-white/10 group-hover:w-48 transition-all duration-500",
+                                    variant === 'thumbnail' ? "w-8" : "w-16 md:w-24"
+                                )} />
+                                <span className={cn(
+                                    "font-brand font-black uppercase tracking-[0.3em] text-white/30 group-hover:text-primary transition-colors",
+                                    variant === 'thumbnail' ? "text-[7px]" : "text-[8px] md:text-[10px] md:tracking-[0.5em]"
+                                )}>
                                     {t.loginGatedText}
                                 </span>
                             </button>
                         </CustomAuthTrigger>
                     )}
+                </div>
             </div>
          </div>
       </div>
