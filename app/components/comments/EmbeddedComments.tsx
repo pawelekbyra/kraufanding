@@ -259,52 +259,54 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={
-                !hasAccess && (effectiveTier === 'VIP1' || effectiveTier === 'VIP2')
-                ? (language === 'pl' ? 'Zostań Patronem, aby dodać komentarz' : 'Become a Patron to comment')
-                : (replyTo ? t.addReply : t.addComment)
+                !userProfile
+                ? t.signInToComment
+                : !hasAccess
+                  ? t.becomePatronToComment
+                  : (replyTo ? t.addReply : t.addComment)
               }
-              readOnly={!hasAccess && (effectiveTier === 'VIP1' || effectiveTier === 'VIP2')}
+              readOnly={!userProfile || !hasAccess}
               className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
 
-          {(isInputFocused || newComment.trim() || replyTo) && (
+          {(isInputFocused || newComment.trim() || replyTo || !userProfile || !hasAccess) && (
             <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-               <button
-                 onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
-               >
-                   {t.cancel}
-               </button>
+               {userProfile && hasAccess && (
+                 <button
+                   onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
+                   className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
+                 >
+                     {t.cancel}
+                 </button>
+               )}
 
-                {userProfile ? (
-                  !hasAccess && (effectiveTier === 'VIP1' || effectiveTier === 'VIP2') ? (
-                    <a
-                      href="#donations"
-                      className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all"
-                    >
-                      {t.becomePatron}
-                    </a>
-                  ) : (
-                    <button
-                      onClick={handleSubmit}
-                      disabled={!newComment.trim() || postMutation.isPending}
-                      className={cn(
-                          "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
-                          newComment.trim()
-                              ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
-                              : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
-                      )}
-                    >
-                      {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
-                    </button>
-                  )
-                ) : (
+                {!userProfile ? (
                   <SignInButton mode="modal">
                     <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
                       {t.signIn}
                     </button>
                   </SignInButton>
+                ) : !hasAccess ? (
+                  <a
+                    href="#donations"
+                    className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all"
+                  >
+                    {t.becomePatron}
+                  </a>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!newComment.trim() || postMutation.isPending}
+                    className={cn(
+                        "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
+                        newComment.trim()
+                            ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
+                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
+                    )}
+                  >
+                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
+                  </button>
                 )}
             </div>
           )}
@@ -383,7 +385,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             {comment.replies && comment.replies.length > 0 && (
               <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
-                  <div key={reply.id} className="flex gap-2.5 items-start">
+                  <div key={reply.id} className="flex gap-2.5 items-start group/reply">
                     <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
                        <img
                          src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.authorName || 'Guest'}`}
@@ -395,13 +397,23 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                        />
                     </div>
                     <div className="flex-1 space-y-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[11px]">{reply.authorName}</span>
-                        <span className="text-[10px] text-[#606060]">
-                          {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
-                            ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
-                            : t.justNow}
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-[#0f0f0f] text-[11px]">{reply.authorName}</span>
+                          <span className="text-[10px] text-[#606060]">
+                            {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
+                              ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
+                              : t.justNow}
+                          </span>
+                        </div>
+                        {userProfile?.id === reply.authorId && (
+                            <button
+                              onClick={() => confirm(t.deleteComment) && deleteMutation.mutate(reply.id)}
+                              className="opacity-0 group-hover/reply:opacity-40 hover:!opacity-100 transition-opacity p-1"
+                            >
+                                <Trash2 size={10} className="text-error" />
+                            </button>
+                        )}
                       </div>
                       <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
                         {reply.text}
