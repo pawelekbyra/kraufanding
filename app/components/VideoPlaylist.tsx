@@ -186,7 +186,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   };
 
   return (
-    <div className="space-y-4 px-2 relative" id="donations">
+    <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
         <div className="bg-white border-2 border-[#1a1a1a] px-6 py-4 shadow-brutalist relative overflow-hidden rounded-2xl">
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
