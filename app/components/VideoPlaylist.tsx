@@ -274,94 +274,91 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         {isCheckoutModalOpen && clientSecret && (
           <div className="fixed inset-0 z-[9999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col overflow-hidden">
              {/* Header bar */}
-             <div className="w-full max-w-6xl mx-auto px-6 py-6 flex justify-between items-center border-b border-[#1a1a1a]/10 shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#1e3a8a] rounded-full flex items-center justify-center text-white font-black text-xl">
+             <div className="w-full max-w-4xl mx-auto px-6 py-6 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm">
                     P
                   </div>
-                  <h3 className="text-2xl font-brand font-black uppercase tracking-tighter">
-                    POLUTEK<span className="text-[#1e3a8a]">.PL</span>
+                  <h3 className="text-lg font-brand font-black uppercase tracking-tighter">
+                    POLUTEK<span className="text-[#1a1a1a]/40">.PL</span>
                   </h3>
                 </div>
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="group flex items-center gap-2 px-4 py-2 border-2 border-[#1a1a1a] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all shadow-brutalist-sm active:translate-y-1"
+                  className="group flex items-center gap-1.5 px-3 py-1.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all"
                 >
                   <span>Wróć</span>
-                  <span className="text-lg">×</span>
+                  <span className="text-base leading-none">×</span>
                 </button>
              </div>
 
              {/* Main Content Area */}
-             <div className="flex-1 w-full max-w-6xl mx-auto px-6 py-8 md:py-12 grid md:grid-cols-2 gap-8 lg:gap-16 items-center overflow-y-auto">
-                {/* Left Side: Summary */}
-                <div className="space-y-8">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1e3a8a]/40">Podsumowanie wsparcia</span>
-                    <h1 className="text-4xl font-brand font-black uppercase tracking-tighter leading-none">
-                      Zostajesz Patronem
-                    </h1>
-                  </div>
-
-                  <div className="p-6 bg-white border-2 border-[#1a1a1a] shadow-brutalist-sm rounded-2xl space-y-4">
-                    <div className="flex justify-between items-end pb-4 border-b border-[#1a1a1a]/5">
-                      <div className="space-y-1">
-                        <p className="text-xs font-bold uppercase text-[#1a1a1a]/40">Kwota</p>
-                        <p className="text-4xl font-mono font-black">{amount} {selectedCurrency}</p>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-[10px] font-bold uppercase text-[#1e3a8a]">Lifetime Access</p>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                       <p className="text-xs font-medium italic text-[#1a1a1a]/60">
-                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
-                       </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 border border-[#1a1a1a]/10 rounded-xl">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#1e3a8a]">Bezpieczeństwo</p>
-                      <p className="text-xs text-[#1a1a1a]/60 mt-1">Szyfrowane połączenie SSL przez Stripe.</p>
-                    </div>
-                    <div className="p-4 border border-[#1a1a1a]/10 rounded-xl">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#1e3a8a]">Prywatność</p>
-                      <p className="text-xs text-[#1a1a1a]/60 mt-1">Twoje dane są u nas bezpieczne.</p>
-                    </div>
-                  </div>
+             <div className="flex-1 w-full max-w-[440px] mx-auto px-6 py-8 flex flex-col justify-center overflow-y-auto">
+                {/* Summary Section */}
+                <div className="mb-10 text-center space-y-2">
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/30">Bezpieczna płatność</span>
+                  <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">
+                    Zostajesz Patronem
+                  </h1>
+                  <p className="text-xs text-[#1a1a1a]/40 font-medium italic">
+                    &quot;{videoTitle || "Wsparcie twórcy"}&quot;
+                  </p>
                 </div>
 
-                {/* Right Side: Payment Form */}
-                <div className="bg-white border-2 border-[#1a1a1a] p-8 rounded-3xl shadow-brutalist h-fit">
-                   {stripePromise ? (
-                  <Elements stripe={stripePromise} options={{
-                    clientSecret,
-                    appearance: {
-                      theme: 'stripe',
-                      variables: {
-                        colorPrimary: '#1e3a8a',
-                        colorBackground: '#ffffff',
-                        colorText: '#1a1a1a',
-                        borderRadius: '12px',
-                      }
-                    }
-                  }}>
-                        <CheckoutForm />
-                      </Elements>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                        <span className="w-8 h-8 border-4 border-[#1e3a8a]/20 border-t-[#1e3a8a] rounded-full animate-spin" />
-                        <p className="text-sm font-mono text-[#1a1a1a]/40">Inicjalizacja bezpiecznych płatności...</p>
-                      </div>
-                    )}
+                {/* Amount Highlight */}
+                <div className="mb-8 p-6 bg-white border border-[#1a1a1a]/5 rounded-2xl flex flex-col items-center gap-1">
+                   <p className="text-[10px] font-bold uppercase text-[#1a1a1a]/40 tracking-widest">Kwota do zapłaty</p>
+                   <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
+                   <div className="mt-4 px-3 py-1 bg-[#1a1a1a]/5 rounded-full">
+                     <p className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/60">Dostęp dożywotni (Lifetime)</p>
+                   </div>
+                </div>
+
+                {/* Payment Form Container */}
+                <div className="bg-white border border-[#1a1a1a]/10 p-1 shadow-sm rounded-3xl h-fit">
+                   <div className="p-7">
+                      {stripePromise ? (
+                        <Elements stripe={stripePromise} options={{
+                          clientSecret,
+                          appearance: {
+                            theme: 'flat',
+                            variables: {
+                              colorPrimary: '#1a1a1a',
+                              colorBackground: '#ffffff',
+                              colorText: '#1a1a1a',
+                              borderRadius: '12px',
+                              fontFamily: 'var(--font-jakarta)',
+                            }
+                          }
+                        }}>
+                          <CheckoutForm />
+                        </Elements>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                          <span className="w-8 h-8 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
+                          <p className="text-sm font-mono text-[#1a1a1a]/40">Inicjalizacja...</p>
+                        </div>
+                      )}
+                   </div>
+                </div>
+
+                {/* Security badges */}
+                <div className="mt-8 flex justify-center items-center gap-8 opacity-20">
+                    <div className="flex items-center gap-2">
+                       <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                       <span className="text-[9px] font-black uppercase tracking-widest">SSL Secure</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                       <span className="text-[9px] font-black uppercase tracking-widest">Powered by Stripe</span>
+                    </div>
                 </div>
              </div>
 
              {/* Footer space */}
-             <div className="w-full py-8 text-center border-t border-[#1a1a1a]/5 mt-auto">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/20">
-                  Powered by Stripe & POLUTEK.PL
+             <div className="w-full py-8 text-center mt-auto">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/10">
+                  POLUTEK.PL &copy; {new Date().getFullYear()}
                 </p>
              </div>
           </div>

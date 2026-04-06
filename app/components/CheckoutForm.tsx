@@ -34,12 +34,12 @@ export default function CheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <PaymentElement options={{ layout: 'tabs' }} />
-      {errorMessage && <div className="text-red-500 font-mono text-xs">{errorMessage}</div>}
+      <PaymentElement options={{ layout: 'accordion' }} />
+      {errorMessage && <div className="text-red-500 font-medium text-[11px] text-center mt-3">{errorMessage}</div>}
       <button
         type="submit"
         disabled={isLoading || !stripe || !elements}
-        className="w-full bg-[#1e3a8a] text-white py-4 rounded-lg font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all shadow-brutalist-sm hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50"
+        className="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-colors duration-200 hover:bg-black disabled:opacity-50"
       >
         {isLoading ? (
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block mr-2" />
