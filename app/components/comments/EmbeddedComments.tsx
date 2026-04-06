@@ -46,6 +46,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   const isPatron = (userProfile?.totalPaid || 0) >= 5 || (userProfile?.referralCount || 0) >= 5 || userProfile?.role === 'ADMIN' || userProfile?.email === 'pawel.perfect@gmail.com';
   const canComment = !!userProfile && (!isPatronGated || isPatron);
 
+  const [sortBy, setSortBy] = useState<'newest' | 'top'>('newest');
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -240,10 +241,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
       }
       return 'Komentarzy';
     }
-    return count === 1 ? 'Comment' : 'Comments';
+    return count === 1 ? 'comment' : 'comments';
   };
-
-  const [sortBy, setSortBy] = useState<'newest' | 'top'>('newest');
 
   return (
     <div className="space-y-6 max-w-4xl bg-white p-0 rounded-none border-none font-serif">
@@ -297,17 +296,17 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center justify-end">
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center justify-center">
                  {isPatronGated && !isPatron ? (
                     <a
                       href="#donations"
-                      className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all"
+                      className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-center"
                     >
                       {t.becomePatronToComment}
                     </a>
                   ) : (
                     <SignInButton mode="modal">
-                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-right">
+                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-center">
                         {t.signInToComment}
                       </button>
                     </SignInButton>
