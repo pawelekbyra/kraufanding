@@ -194,7 +194,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                     <span className="text-[clamp(2rem,10vw,6rem)] uppercase tracking-tighter leading-[0.8] text-amber-500">
                         {(t as any).patronZoneLine1}
                     </span>
-                    <div className="h-px w-24 md:w-48 bg-white/10 my-3 md:my-6" />
+                    <div className="h-px w-24 md:w-48 bg-white/10 my-1 md:my-2" />
                     <span className="text-[clamp(2rem,10vw,6rem)] uppercase tracking-tighter leading-[0.8] text-white">
                         {(t as any).patronZoneLine2}
                     </span>
@@ -211,7 +211,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                     <span className="text-[clamp(2rem,10vw,6rem)] uppercase tracking-tighter leading-[0.8] text-white">
                         {t.paywallText}
                     </span>
-                    <div className="h-px w-24 md:w-48 bg-white/10 my-3 md:my-6" />
+                    <div className="h-px w-24 md:w-48 bg-white/10 my-1 md:my-2" />
                     <span className="text-[clamp(2rem,10vw,6rem)] uppercase tracking-tighter leading-[0.8] text-blue-400">
                         {t.paywallAction}
                     </span>
