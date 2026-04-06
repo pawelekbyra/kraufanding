@@ -264,7 +264,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border-b border-[#e9eef6] min-h-[1.5rem]" />
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] text-[14px] text-[#0f0f0f]/25 cursor-default select-none">
+                 {t.addComment}
+              </div>
             ) : (
               <textarea
                 value={newComment}
