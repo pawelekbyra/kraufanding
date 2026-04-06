@@ -62,10 +62,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     isLoading,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['comments', videoId],
+    queryKey: ['comments', videoId, sortBy],
     queryFn: async ({ pageParam }) => {
         const url = new URL('/api/comments', window.location.origin);
         url.searchParams.append('videoId', videoId);
+        url.searchParams.append('sortBy', sortBy);
         if (pageParam) url.searchParams.append('cursor', pageParam as string);
         const res = await fetch(url.toString());
         return res.json();
@@ -89,7 +90,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', videoId] });
+      queryClient.invalidateQueries({ queryKey: ['comments', videoId, sortBy] });
       setNewComment('');
       setReplyTo(null);
     },
@@ -105,10 +106,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         return res.json();
     },
     onMutate: async (commentId) => {
-        await queryClient.cancelQueries({ queryKey: ['comments', videoId] });
-        const previousData = queryClient.getQueryData(['comments', videoId]);
+        await queryClient.cancelQueries({ queryKey: ['comments', videoId, sortBy] });
+        const previousData = queryClient.getQueryData(['comments', videoId, sortBy]);
 
-        queryClient.setQueryData(['comments', videoId], (old: any) => {
+        queryClient.setQueryData(['comments', videoId, sortBy], (old: any) => {
             if (!old) return old;
 
             const updateComment = (c: any) => {
@@ -145,11 +146,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     },
     onError: (err, commentId, context) => {
         if (context?.previousData) {
-            queryClient.setQueryData(['comments', videoId], context.previousData);
+            queryClient.setQueryData(['comments', videoId, sortBy], context.previousData);
         }
     },
     onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ['comments', videoId] });
+        queryClient.invalidateQueries({ queryKey: ['comments', videoId, sortBy] });
     }
   });
 
@@ -163,10 +164,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         return res.json();
     },
     onMutate: async (commentId) => {
-        await queryClient.cancelQueries({ queryKey: ['comments', videoId] });
-        const previousData = queryClient.getQueryData(['comments', videoId]);
+        await queryClient.cancelQueries({ queryKey: ['comments', videoId, sortBy] });
+        const previousData = queryClient.getQueryData(['comments', videoId, sortBy]);
 
-        queryClient.setQueryData(['comments', videoId], (old: any) => {
+        queryClient.setQueryData(['comments', videoId, sortBy], (old: any) => {
             if (!old) return old;
 
             const updateComment = (c: any) => {
@@ -203,11 +204,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     },
     onError: (err, commentId, context) => {
         if (context?.previousData) {
-            queryClient.setQueryData(['comments', videoId], context.previousData);
+            queryClient.setQueryData(['comments', videoId, sortBy], context.previousData);
         }
     },
     onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ['comments', videoId] });
+        queryClient.invalidateQueries({ queryKey: ['comments', videoId, sortBy] });
     }
   });
 
@@ -219,7 +220,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         return res.json();
     },
     onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['comments', videoId] });
+        queryClient.invalidateQueries({ queryKey: ['comments', videoId, sortBy] });
     }
   });
 
@@ -232,15 +233,45 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   const getCommentsLabel = (count: number) => {
     if (language === 'pl') {
       if (count === 1) return 'Komentarz';
-      return 'Komentarze';
+      const lastDigit = count % 10;
+      const lastTwoDigits = count % 100;
+      if (lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14)) {
+        return 'Komentarze';
+      }
+      return 'Komentarzy';
     }
-    return t.comments;
+    return count === 1 ? 'Comment' : 'Comments';
   };
+
+  const [sortBy, setSortBy] = useState<'newest' | 'top'>('newest');
 
   return (
     <div className="space-y-6 max-w-4xl bg-white p-0 rounded-none border-none font-serif">
-      <div className="flex items-center gap-6 mb-0">
-         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
+      <div className="flex items-center justify-between mb-0">
+         <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">
+            {comments.length} {getCommentsLabel(comments.length)}
+         </h3>
+
+         <div className="flex gap-4">
+            <button
+              onClick={() => setSortBy('top')}
+              className={cn(
+                "text-[12px] font-bold uppercase tracking-widest transition-all",
+                sortBy === 'top' ? "text-primary border-b-2 border-primary" : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/60"
+              )}
+            >
+              {language === 'pl' ? 'Najlepsze' : 'Top'}
+            </button>
+            <button
+              onClick={() => setSortBy('newest')}
+              className={cn(
+                "text-[12px] font-bold uppercase tracking-widest transition-all",
+                sortBy === 'newest' ? "text-primary border-b-2 border-primary" : "text-[#1a1a1a]/40 hover:text-[#1a1a1a]/60"
+              )}
+            >
+              {language === 'pl' ? 'Najnowsze' : 'Newest'}
+            </button>
+         </div>
       </div>
 
       {/* Input Area */}
@@ -270,7 +301,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                  {isPatronGated && !isPatron ? (
                     <a
                       href="#donations"
-                      className="text-[14px] font-bold text-amber-600 underline underline-offset-4 hover:opacity-80 transition-all"
+                      className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all"
                     >
                       {t.becomePatronToComment}
                     </a>

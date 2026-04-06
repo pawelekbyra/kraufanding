@@ -12,6 +12,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const videoId = searchParams.get('videoId');
+  const sortBy = searchParams.get('sortBy') || 'newest';
   const cursor = searchParams.get('cursor') || undefined;
   const limit = parseInt(searchParams.get('limit') || '20', 10);
 
@@ -41,12 +42,19 @@ export async function GET(request: NextRequest) {
         }
     }
 
+    const orderBy: any = sortBy === 'top'
+        ? [
+            { likes: { _count: 'desc' } },
+            { createdAt: 'desc' }
+          ]
+        : { createdAt: 'desc' };
+
     const comments = await prisma.comment.findMany({
         where: { videoId, parentId: null },
         take: limit,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         include: {
             author: {
                 select: { id: true, email: true, name: true, username: true, imageUrl: true }
