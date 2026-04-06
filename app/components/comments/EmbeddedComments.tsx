@@ -236,13 +236,13 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-4xl prose bg-white p-0 rounded-none border-none font-serif">
-      <div className="flex items-center gap-6 mb-4">
+    <div className="space-y-6 max-w-4xl bg-white p-0 rounded-none border-none font-serif">
+      <div className="flex items-center gap-6 mb-2">
          <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
       </div>
 
       {/* Input Area */}
-      <div className="flex gap-4 items-start mb-10">
+      <div className="flex gap-4 items-start mb-8">
         <div className="w-10 h-10 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
            <img
              src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
@@ -293,13 +293,13 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 {isPatronGated && !isPatron ? (
                   <a
                     href="#donations"
-                    className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all text-center"
+                    className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all py-2"
                   >
                     {t.becomePatronToComment}
                   </a>
                 ) : !userProfile ? (
                   <SignInButton mode="modal">
-                    <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
+                    <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all py-2">
                       {t.signInToComment}
                     </button>
                   </SignInButton>
@@ -338,10 +338,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   />
                </div>
               <div className="flex-1 space-y-0.5 min-w-0">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[#0f0f0f] text-[12px]">{comment.authorName}</span>
-                        <span className="text-[11px] text-[#606060]">
+                <div className="flex items-start justify-between -mt-1.5">
+                    <div className="flex items-center gap-1.5 leading-none">
+                        <span className="font-bold text-[#0f0f0f] text-[12px] leading-none">{comment.authorName}</span>
+                        <span className="text-[11px] text-[#606060] leading-none">
                             {isClient && comment.createdAt && !isNaN(new Date(comment.createdAt).getTime())
                             ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: pl })
                             : isClient ? 'niedawno' : ''}
@@ -406,10 +406,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                        />
                     </div>
                     <div className="flex-1 space-y-0.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-[#0f0f0f] text-[11px]">{reply.authorName}</span>
-                          <span className="text-[10px] text-[#606060]">
+                      <div className="flex items-start justify-between -mt-1.5">
+                        <div className="flex items-center gap-1.5 leading-none">
+                          <span className="font-bold text-[#0f0f0f] text-[11px] leading-none">{reply.authorName}</span>
+                          <span className="text-[10px] text-[#606060] leading-none">
                             {isClient && reply.createdAt && !isNaN(new Date(reply.createdAt).getTime())
                               ? formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true, locale: pl })
                               : t.justNow}
