@@ -352,10 +352,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="hidden md:flex absolute top-2 right-2 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
+                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
                   aria-label="Zamknij"
                 >
-                  <span className="text-2xl leading-none">×</span>
+                  <span className="text-2xl leading-none flex items-center justify-center">×</span>
                 </button>
 
                 {/* Mobile Header Overlap */}
@@ -379,8 +379,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                    <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
                       {/* Mobile-only summary head */}
                       <div className="md:hidden text-center space-y-3">
-                         <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">Bezpieczna płatność</span>
-                         <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">Zostajesz Patronem</h1>
+                         <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
+                         <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Tip the Guy'}</h1>
                          <div className="py-6 border-y border-[#1a1a1a]/5">
                             <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
                          </div>
@@ -388,7 +388,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
                       {/* Desktop Heading hint */}
                       <div className="hidden md:block space-y-1 mb-2">
-                         <h2 className="text-2xl font-brand font-black uppercase tracking-tight">Finalizacja wpłaty</h2>
+                         <h2 className="text-2xl font-brand font-black uppercase tracking-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
                          <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
                       </div>
 

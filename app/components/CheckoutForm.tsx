@@ -44,7 +44,7 @@ export default function CheckoutForm() {
         {isLoading ? (
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block mr-2" />
         ) : null}
-        {language === 'pl' ? 'OPŁAĆ' : 'PAY NOW'}
+        {language === 'pl' ? 'NAPIWKUJ' : 'PAY NOW'}
       </button>
     </form>
   );
