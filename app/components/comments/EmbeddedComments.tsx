@@ -263,60 +263,55 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
               </div>
             )}
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onFocus={() => setIsInputFocused(true)}
-              placeholder={
-                isPatronGated && !isPatron
-                ? t.becomePatronToComment
-                : !userProfile
-                  ? t.signInToComment
-                  : (replyTo ? t.addReply : t.addComment)
-              }
-              readOnly={!canComment}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
-            />
+            {!canComment ? (
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center">
+                 {isPatronGated && !isPatron ? (
+                    <a
+                      href="#donations"
+                      className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all"
+                    >
+                      {t.becomePatronToComment}
+                    </a>
+                  ) : (
+                    <SignInButton mode="modal">
+                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-left">
+                        {t.signInToComment}
+                      </button>
+                    </SignInButton>
+                  )}
+              </div>
+            ) : (
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onFocus={() => setIsInputFocused(true)}
+                placeholder={replyTo ? t.addReply : t.addComment}
+                className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
+              />
+            )}
           </div>
 
-          {(isInputFocused || newComment.trim() || replyTo || !canComment) && (
+          {(isInputFocused || newComment.trim() || replyTo) && canComment && (
             <div className="flex justify-start gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-               {canComment && (
-                 <button
-                   onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                   className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
-                 >
-                     {t.cancel}
-                 </button>
-               )}
+               <button
+                 onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
+               >
+                   {t.cancel}
+               </button>
 
-                {isPatronGated && !isPatron ? (
-                  <a
-                    href="#donations"
-                    className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all"
-                  >
-                    {t.becomePatronToComment}
-                  </a>
-                ) : !userProfile ? (
-                  <SignInButton mode="modal">
-                    <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all">
-                      {t.signInToComment}
-                    </button>
-                  </SignInButton>
-                ) : (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!newComment.trim() || postMutation.isPending}
-                    className={cn(
-                        "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
-                        newComment.trim()
-                            ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
-                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
-                    )}
-                  >
-                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
-                  </button>
-                )}
+                <button
+                  onClick={handleSubmit}
+                  disabled={!newComment.trim() || postMutation.isPending}
+                  className={cn(
+                      "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
+                      newComment.trim()
+                          ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
+                          : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
+                  )}
+                >
+                  {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
+                </button>
             </div>
           )}
         </div>
@@ -380,12 +375,14 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-black")} />
                     <span className="text-[11px] font-normal">{comment._count?.dislikes || 0}</span>
                   </button>
-                  <button
-                      onClick={() => userProfile && setReplyTo(comment.id)}
-                      className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-full ml-1 transition-all"
-                  >
-                      {t.reply}
-                  </button>
+                  {canComment && (
+                    <button
+                        onClick={() => userProfile && setReplyTo(comment.id)}
+                        className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                    >
+                        {t.reply}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
