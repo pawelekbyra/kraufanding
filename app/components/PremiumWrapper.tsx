@@ -148,13 +148,21 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
   const { t } = useLanguage();
   const isVIPGated = requiredTier === "VIP1" || requiredTier === "VIP2";
 
+  const sharedBg = (
+    <div className="absolute inset-0 z-0 opacity-50">
+        <div className={`w-full h-full blur-[12px] transition-all duration-700 group-hover:scale-110 ${
+            isVIPGated
+            ? 'bg-gradient-to-br from-amber-900 via-black to-amber-950'
+            : 'bg-gradient-to-br from-blue-900 via-black to-blue-950'
+        }`} />
+    </div>
+  );
+
   if (variant === 'thumbnail') {
     return (
       <div className="w-full h-full relative group bg-black overflow-hidden rounded-lg border border-white/10">
-         <div className="absolute inset-0 z-0 opacity-40">
-            <div className={`w-full h-full blur-[8px] transition-all duration-700 group-hover:scale-110 ${isVIPGated ? 'bg-amber-950' : 'bg-blue-950'}`} />
-         </div>
-         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 gap-1.5">
+         {sharedBg}
+         <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center z-10 gap-1.5 italic">
             {isVIPGated ? (
               <Gem className="w-5 h-5 text-amber-500 mb-0.5" />
             ) : (
@@ -162,9 +170,14 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             )}
             <div className="flex flex-col leading-[1] text-center font-brand font-black">
                {isVIPGated ? (
-                 <span className="text-[10px] text-amber-500 uppercase tracking-tighter">
-                   {t.paywallUnlock}
-                 </span>
+                 <>
+                   <span className="text-[10px] text-amber-500 uppercase tracking-tighter">
+                     {t.patronZone}
+                   </span>
+                   <span className="text-[8px] text-amber-500/60 uppercase tracking-tight mt-0.5">
+                     {t.paywallUnlock}
+                   </span>
+                 </>
                ) : (
                  <>
                    <span className="text-[10px] text-white/90 uppercase tracking-tighter">
@@ -185,11 +198,10 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
   }
 
   return (
-    <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative">
-      <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative group border border-[#1a1a1a] h-full w-full shadow-2xl flex items-center justify-center">
+    <div className="animate-in fade-in zoom-in-95 duration-700 h-full w-full relative group">
+      <div className="aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden relative border border-[#1a1a1a] h-full w-full shadow-2xl flex items-center justify-center">
 
-         <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-              style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
+         {sharedBg}
 
          <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
             <div className="mb-4 md:mb-8 transition-all duration-700 group-hover:scale-110">
@@ -205,44 +217,34 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
             </div>
 
             <div className="flex flex-col gap-4 md:gap-6 items-center font-brand font-black">
-              {(!isLoggedIn && requiredTier === 'LOGGED_IN') ? (
-                <div className="flex flex-col items-center">
-                    <span className="text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-white">
-                        {t.paywallText}
+                <div className="flex flex-col items-center italic">
+                    <span className={`text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
+                        {isVIPGated ? t.patronZone : t.paywallText}
                     </span>
-                    <div className="h-px w-24 md:w-48 bg-white/10 my-3 md:my-6" />
-                    <span className="text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-blue-400">
-                        {t.paywallAction}
-                    </span>
-
-                    <CustomAuthTrigger>
-                      <button className="group flex flex-col items-center gap-2 mt-6 md:mt-10">
-                         <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                         <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
-                            {t.loginGatedText}
-                         </span>
-                      </button>
-                    </CustomAuthTrigger>
-                </div>
-              ) : (
-                <>
-                    <span className={`text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.85] text-center max-w-[90vw] ${isVIPGated ? 'text-amber-500' : 'text-white'}`}>
-                        {isVIPGated ? t.paywallUnlock : t.paywallText}
-                    </span>
-                    {isVIPGated ? (
-                        <a href="#donations" className="group flex flex-col items-center gap-2 mt-4 md:mt-6">
-                            <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
-                            <span className="text-[8px] md:text-[10px] font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-amber-500 transition-colors">
-                                {t.becomePatron}
-                            </span>
-                        </a>
-                    ) : (
-                        <span className="text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-blue-400">
+                    {!isVIPGated && (
+                         <span className="text-[clamp(2rem,8vw,5rem)] uppercase tracking-tighter leading-[0.8] text-blue-400">
                             {t.paywallAction}
                         </span>
                     )}
-                </>
-              )}
+                </div>
+
+                {isVIPGated ? (
+                    <a href="#donations" className="group flex flex-col items-center gap-2 mt-4 md:mt-6">
+                        <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
+                            <span className="text-[8px] md:text-[10px] font-brand font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-amber-500 transition-colors">
+                                {t.paywallUnlock}
+                            </span>
+                        </a>
+                    ) : (
+                        <CustomAuthTrigger>
+                            <button className="group flex flex-col items-center gap-2 mt-4 md:mt-6">
+                                <div className="h-px w-16 md:w-24 bg-white/10 group-hover:w-48 transition-all duration-500" />
+                                <span className="text-[8px] md:text-[10px] font-brand font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-white/30 group-hover:text-primary transition-colors">
+                                    {t.loginGatedText}
+                                </span>
+                            </button>
+                        </CustomAuthTrigger>
+                    )}
             </div>
          </div>
       </div>
