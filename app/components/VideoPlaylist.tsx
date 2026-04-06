@@ -316,16 +316,16 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between px-10 md:px-12 lg:px-16 pt-4 md:pt-6 lg:pt-8 pb-10 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-16 pt-2 md:pt-3 lg:pt-4 pb-10 relative overflow-hidden h-full border-r border-white/5">
                 {/* Main Summary content */}
-                <div className="space-y-8 relative z-10">
-                   <div className="space-y-4">
-                      <span className="inline-block px-3 py-1 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80">Premium Access</span>
+                <div className="space-y-6 relative z-10">
+                   <div className="space-y-3">
                       <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
                         Zostań <br /> Patronem
                       </h1>
                       <p className="text-base text-white/40 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
+                        <span className="ml-3 inline-block px-2 py-0.5 bg-white/10 rounded text-[9px] font-black uppercase tracking-[0.3em] text-white/60 align-middle not-italic">Premium Access</span>
                       </p>
                    </div>
 
@@ -406,7 +406,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-4 md:pt-6 lg:pt-8 pb-10 relative z-10 overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-2 md:pt-3 lg:pt-4 pb-10 relative z-10 overflow-y-auto">
                    <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
                       {isSuccess ? (
                         <div className="text-center space-y-8 py-12 animate-in fade-in zoom-in-95 duration-500">
