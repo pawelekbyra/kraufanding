@@ -264,7 +264,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center">
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center justify-end">
                  {isPatronGated && !isPatron ? (
                     <a
                       href="#donations"
