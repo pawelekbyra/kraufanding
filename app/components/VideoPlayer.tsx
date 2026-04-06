@@ -146,6 +146,9 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     --plyr-color-main: #3b82f6;
                     --plyr-video-background: #000;
                     --plyr-font-family: var(--font-space-grotesk), sans-serif;
+                    --plyr-range-track-height: 4px;
+                    --plyr-range-thumb-height: 12px;
+                    --plyr-control-spacing: 8px;
                 }
                 .plyr--video {
                     height: 100%;
@@ -165,6 +168,55 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 }
                 .plyr__poster {
                     background-size: cover;
+                }
+
+                /* YouTube-style: Progress bar full width on top, controls below */
+                .plyr__controls {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    padding: 5px 15px 10px 15px !important;
+                    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8)) !important;
+                    gap: 0 !important;
+                }
+
+                .plyr__progress {
+                    flex-basis: 100% !important;
+                    order: -1 !important;
+                    margin-bottom: 5px !important;
+                    padding: 0 !important;
+                    margin-left: -10px !important;
+                    margin-right: -10px !important;
+                }
+
+                .plyr__progress input[type=range] {
+                    cursor: pointer;
+                }
+
+                .plyr__volume {
+                    max-width: 110px !important;
+                    min-width: 60px !important;
+                }
+
+                .plyr__time {
+                    padding: 0 8px !important;
+                    font-size: 13px !important;
+                    font-weight: bold !important;
+                }
+
+                .plyr__controls__item.plyr__progress__container {
+                    padding: 0 !important;
+                    margin: 0 0 5px 0 !important;
+                }
+
+                /* Hide the default middle big play button if playing */
+                .plyr--playing .plyr__control--overlaid {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+                /* Hover effect for cleaner look */
+                .plyr--full-ui input[type=range]::-webkit-slider-runnable-track {
+                    background-color: rgba(255, 255, 255, 0.25);
                 }
             `}</style>
         </div>
