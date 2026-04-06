@@ -274,91 +274,111 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         {isCheckoutModalOpen && clientSecret && (
           <div className="fixed inset-0 z-[9999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col overflow-hidden">
              {/* Header bar */}
-             <div className="w-full max-w-4xl mx-auto px-6 py-6 flex justify-between items-center shrink-0">
+             <div className="w-full max-w-7xl mx-auto px-6 py-6 md:py-10 flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm">
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm md:text-lg">
                     P
                   </div>
-                  <h3 className="text-lg font-brand font-black uppercase tracking-tighter">
+                  <h3 className="text-lg md:text-2xl font-brand font-black uppercase tracking-tighter">
                     POLUTEK<span className="text-[#1a1a1a]/40">.PL</span>
                   </h3>
                 </div>
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="group flex items-center gap-1.5 px-3 py-1.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all"
+                  className="group flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] md:text-xs hover:bg-[#1a1a1a] hover:text-white transition-all shadow-sm"
                 >
-                  <span>Wróć</span>
-                  <span className="text-base leading-none">×</span>
+                  <span className="hidden md:inline">Zamknij i wróć</span>
+                  <span className="md:hidden">Wróć</span>
+                  <span className="text-base md:text-lg leading-none">×</span>
                 </button>
              </div>
 
              {/* Main Content Area */}
-             <div className="flex-1 w-full max-w-[440px] mx-auto px-6 py-8 flex flex-col justify-center overflow-y-auto">
-                {/* Summary Section */}
-                <div className="mb-10 text-center space-y-2">
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/30">Bezpieczna płatność</span>
-                  <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">
-                    Zostajesz Patronem
-                  </h1>
-                  <p className="text-xs text-[#1a1a1a]/40 font-medium italic">
-                    &quot;{videoTitle || "Wsparcie twórcy"}&quot;
-                  </p>
-                </div>
+             <div className="flex-1 w-full max-w-[440px] md:max-w-6xl mx-auto px-6 py-8 md:py-0 flex flex-col md:justify-center overflow-y-auto">
+                <div className="md:grid md:grid-cols-[1.1fr,0.9fr] md:gap-20 md:items-center">
 
-                {/* Amount Highlight */}
-                <div className="mb-8 p-6 bg-white border border-[#1a1a1a]/5 rounded-2xl flex flex-col items-center gap-1">
-                   <p className="text-[10px] font-bold uppercase text-[#1a1a1a]/40 tracking-widest">Kwota do zapłaty</p>
-                   <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
-                   <div className="mt-4 px-3 py-1 bg-[#1a1a1a]/5 rounded-full">
-                     <p className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/60">Dostęp dożywotni (Lifetime)</p>
-                   </div>
-                </div>
+                  {/* Left Side: Summary and Benefits (Desktop) */}
+                  <div className="space-y-8 md:space-y-12">
+                    {/* Summary Section */}
+                    <div className="text-center md:text-left space-y-2 md:space-y-4">
+                      <span className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/30">Bezpieczna płatność</span>
+                      <h1 className="text-3xl md:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.9]">
+                        Zostajesz <br className="hidden md:block" /> Patronem
+                      </h1>
+                      <p className="text-xs md:text-lg text-[#1a1a1a]/40 font-medium italic">
+                        &quot;{videoTitle || "Wsparcie twórcy"}&quot;
+                      </p>
+                    </div>
 
-                {/* Payment Form Container */}
-                <div className="bg-white border border-[#1a1a1a]/10 p-1 shadow-sm rounded-3xl h-fit">
-                   <div className="p-7">
-                      {stripePromise ? (
-                        <Elements stripe={stripePromise} options={{
-                          clientSecret,
-                          appearance: {
-                            theme: 'flat',
-                            variables: {
-                              colorPrimary: '#1a1a1a',
-                              colorBackground: '#ffffff',
-                              colorText: '#1a1a1a',
-                              borderRadius: '12px',
-                              fontFamily: 'var(--font-jakarta)',
-                            }
-                          }
-                        }}>
-                          <CheckoutForm />
-                        </Elements>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                          <span className="w-8 h-8 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
-                          <p className="text-sm font-mono text-[#1a1a1a]/40">Inicjalizacja...</p>
+                    {/* Amount Highlight */}
+                    <div className="p-6 md:p-10 bg-white border border-[#1a1a1a]/5 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center md:items-start gap-1 md:gap-2 shadow-sm">
+                       <p className="text-[10px] md:text-xs font-bold uppercase text-[#1a1a1a]/40 tracking-widest">Kwota do zapłaty</p>
+                       <p className="text-5xl md:text-7xl font-mono font-black tracking-tighter">{amount} <span className="text-xl md:text-3xl align-top opacity-20">{selectedCurrency}</span></p>
+                       <div className="mt-4 md:mt-6 px-3 py-1 md:px-4 md:py-2 bg-[#1a1a1a]/5 rounded-full">
+                         <p className="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-[#1a1a1a]/60">Dostęp dożywotni (Lifetime)</p>
+                       </div>
+                    </div>
+
+                    {/* Professional Benefits List (Desktop only) */}
+                    <div className="hidden md:grid grid-cols-2 gap-6 pt-4">
+                        <div className="space-y-1">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Pełny Dostęp</p>
+                           <p className="text-sm text-[#1a1a1a]/40 leading-snug">Wszystkie materiały premium bez limitu czasu.</p>
                         </div>
-                      )}
-                   </div>
-                </div>
+                        <div className="space-y-1">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Brak Reklam</p>
+                           <p className="text-sm text-[#1a1a1a]/40 leading-snug">Czysty interfejs bez rozpraszaczy.</p>
+                        </div>
+                    </div>
 
-                {/* Security badges */}
-                <div className="mt-8 flex justify-center items-center gap-8 opacity-20">
-                    <div className="flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
-                       <span className="text-[9px] font-black uppercase tracking-widest">SSL Secure</span>
+                    {/* Security badges */}
+                    <div className="flex justify-center md:justify-start items-center gap-8 md:gap-12 opacity-20 pt-4 md:pt-0">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">SSL Secure</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Powered by Stripe</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
-                       <span className="text-[9px] font-black uppercase tracking-widest">Powered by Stripe</span>
+                  </div>
+
+                  {/* Right Side: Payment Form Container */}
+                  <div className="mt-12 md:mt-0 bg-white border border-[#1a1a1a]/10 p-1 shadow-xl rounded-3xl md:rounded-[3rem] h-fit overflow-hidden">
+                    <div className="p-7 md:p-12">
+                        {stripePromise ? (
+                          <Elements stripe={stripePromise} options={{
+                            clientSecret,
+                            appearance: {
+                              theme: 'flat',
+                              variables: {
+                                colorPrimary: '#1a1a1a',
+                                colorBackground: '#ffffff',
+                                colorText: '#1a1a1a',
+                                borderRadius: '12px',
+                                fontFamily: 'var(--font-jakarta)',
+                              }
+                            }
+                          }}>
+                            <CheckoutForm />
+                          </Elements>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-24 space-y-6">
+                            <span className="w-10 h-10 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
+                            <p className="text-sm md:text-base font-mono text-[#1a1a1a]/40 tracking-widest">Inicjalizacja bezpiecznej płatności...</p>
+                          </div>
+                        )}
                     </div>
+                  </div>
+
                 </div>
              </div>
 
              {/* Footer space */}
-             <div className="w-full py-8 text-center mt-auto">
-                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/10">
-                  POLUTEK.PL &copy; {new Date().getFullYear()}
+             <div className="w-full py-8 md:py-12 text-center mt-auto">
+                <p className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/10">
+                  POLUTEK.PL &copy; {new Date().getFullYear()} &bull; Professional Video Content
                 </p>
              </div>
           </div>
