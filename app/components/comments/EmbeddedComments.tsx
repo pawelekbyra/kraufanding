@@ -237,7 +237,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
   return (
     <div className="space-y-6 max-w-4xl bg-white p-0 rounded-none border-none font-serif">
-      <div className="flex items-center gap-6 mb-2">
+      <div className="flex items-center gap-6 mb-0">
          <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
       </div>
 
@@ -280,7 +280,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
           </div>
 
           {(isInputFocused || newComment.trim() || replyTo || !canComment) && (
-            <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="flex justify-start gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
                {canComment && (
                  <button
                    onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
@@ -293,13 +293,13 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 {isPatronGated && !isPatron ? (
                   <a
                     href="#donations"
-                    className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all py-2"
+                    className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all"
                   >
                     {t.becomePatronToComment}
                   </a>
                 ) : !userProfile ? (
                   <SignInButton mode="modal">
-                    <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all py-2">
+                    <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all">
                       {t.signInToComment}
                     </button>
                   </SignInButton>
@@ -327,7 +327,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         {comments.map((comment: any) => (
           <div key={comment.id} className="space-y-3">
             <div className="flex gap-3 items-start group/comment">
-               <div className="w-9 h-9 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
+               <div className="w-9 h-9 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6] mt-0">
                   <img
                     src={comment.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.author?.email}`}
                     alt="Avatar"
@@ -337,8 +337,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     )}
                   />
                </div>
-              <div className="flex-1 space-y-0.5 min-w-0">
-                <div className="flex items-start justify-between -mt-1.5">
+              <div className="flex-1 space-y-0.5 min-w-0 pt-0.5">
+                <div className="flex items-start justify-between">
                     <div className="flex items-center gap-1.5 leading-none">
                         <span className="font-bold text-[#0f0f0f] text-[12px] leading-none">{comment.authorName}</span>
                         <span className="text-[11px] text-[#606060] leading-none">
@@ -395,7 +395,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start group/reply">
-                    <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
+                    <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6] mt-0">
                        <img
                          src={reply.author?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.authorName || 'Guest'}`}
                          alt="Avatar"
@@ -405,8 +405,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                          )}
                        />
                     </div>
-                    <div className="flex-1 space-y-0.5">
-                      <div className="flex items-start justify-between -mt-1.5">
+                    <div className="flex-1 space-y-0.5 pt-0.5">
+                      <div className="flex items-start justify-between">
                         <div className="flex items-center gap-1.5 leading-none">
                           <span className="font-bold text-[#0f0f0f] text-[11px] leading-none">{reply.authorName}</span>
                           <span className="text-[10px] text-[#606060] leading-none">

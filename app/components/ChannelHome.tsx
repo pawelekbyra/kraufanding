@@ -234,7 +234,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                </button>
             </div>
 
-            <div className="lg:hidden mt-0">
+            <div className="lg:hidden mt-10">
                {activeTab === 'comments' ? (
                  <EmbeddedComments
                    videoId={selectedVideo.id}
@@ -261,7 +261,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                )}
             </div>
 
-            <div className="hidden lg:block mt-0">
+            <div className="hidden lg:block mt-10">
                <EmbeddedComments
                  videoId={selectedVideo.id}
                  userProfile={userProfile}
