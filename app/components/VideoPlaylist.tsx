@@ -281,33 +281,33 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between p-12 lg:p-24 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between p-12 lg:p-20 relative overflow-hidden h-full border-r border-white/5">
                 {/* Branding */}
                 <div className="flex items-center gap-4 relative z-10">
-                   <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-[#1a1a1a] font-black text-2xl shadow-2xl">
+                   <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#1a1a1a] font-black text-xl shadow-2xl">
                       P
                    </div>
-                   <h3 className="text-3xl font-brand font-black uppercase tracking-tighter">
+                   <h3 className="text-2xl font-brand font-black uppercase tracking-tighter">
                       POLUTEK<span className="text-white/20">.PL</span>
                    </h3>
                 </div>
 
                 {/* Main Summary content */}
-                <div className="space-y-12 relative z-10">
-                   <div className="space-y-6">
+                <div className="space-y-10 relative z-10 -mt-24">
+                   <div className="space-y-4">
                       <span className="inline-block px-3 py-1 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80">Premium Access</span>
-                      <h1 className="text-7xl lg:text-8xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
+                      <h1 className="text-6xl lg:text-7xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
                         Zostań <br /> Patronem
                       </h1>
-                      <p className="text-xl text-white/40 font-medium italic max-w-md">
+                      <p className="text-lg text-white/40 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
                       </p>
                    </div>
 
-                   <div className="space-y-8">
-                      <div className="flex items-baseline gap-4 border-b border-white/10 pb-10">
-                         <span className="text-9xl font-mono font-black tracking-tighter">{amount}</span>
-                         <span className="text-3xl font-mono opacity-20">{selectedCurrency}</span>
+                   <div className="space-y-6">
+                      <div className="flex items-baseline gap-3 border-b border-white/10 pb-8">
+                         <span className="text-5xl lg:text-6xl font-mono font-black tracking-tighter">{amount}</span>
+                         <span className="text-xl font-mono opacity-20">{selectedCurrency}</span>
                       </div>
 
                       <div className="grid grid-cols-1 gap-8">
@@ -352,10 +352,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="hidden md:flex absolute top-8 right-8 z-30 group items-center gap-3 px-6 py-3 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-xl"
+                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
+                  aria-label="Zamknij"
                 >
-                  <span>Zamknij</span>
-                  <span className="text-xl leading-none">×</span>
+                  <span className="text-2xl leading-none">×</span>
                 </button>
 
                 {/* Mobile Header Overlap */}
@@ -375,8 +375,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12 relative z-10 overflow-y-auto">
-                   <div className="w-full max-w-[480px] space-y-8 md:space-y-12">
+                <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-8 lg:p-12 pt-20 md:pt-24 lg:pt-32 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[480px] space-y-4 md:space-y-6">
                       {/* Mobile-only summary head */}
                       <div className="md:hidden text-center space-y-3">
                          <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">Bezpieczna płatność</span>
@@ -387,9 +387,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       </div>
 
                       {/* Desktop Heading hint */}
-                      <div className="hidden md:block space-y-2 mb-10">
-                         <h2 className="text-3xl font-brand font-black uppercase tracking-tight">Finalizacja wpłaty</h2>
-                         <p className="text-base text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
+                      <div className="hidden md:block space-y-1 mb-4">
+                         <h2 className="text-2xl font-brand font-black uppercase tracking-tight">Finalizacja wpłaty</h2>
+                         <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
                       </div>
 
                       {/* Stripe form card */}
