@@ -266,8 +266,21 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] text-[14px] text-[#0f0f0f]/25 cursor-default select-none">
-                 {t.addComment}
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center">
+                 {isPatronGated && !isPatron ? (
+                    <a
+                      href="#donations"
+                      className="text-[14px] font-bold text-amber-600 underline underline-offset-4 hover:opacity-80 transition-all"
+                    >
+                      {t.becomePatronToComment}
+                    </a>
+                  ) : (
+                    <SignInButton mode="modal">
+                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-left">
+                        {t.signInToComment}
+                      </button>
+                    </SignInButton>
+                  )}
               </div>
             ) : (
               <textarea
@@ -279,25 +292,6 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               />
             )}
           </div>
-
-          {!canComment && (
-            <div className="flex justify-end mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-               {isPatronGated && !isPatron ? (
-                  <a
-                    href="#donations"
-                    className="text-[14px] font-bold text-primary underline underline-offset-4 hover:opacity-80 transition-all"
-                  >
-                    {t.becomePatronToComment}
-                  </a>
-                ) : (
-                  <SignInButton mode="modal">
-                    <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-right">
-                      {t.signInToComment}
-                    </button>
-                  </SignInButton>
-                )}
-            </div>
-          )}
 
           {(isInputFocused || newComment.trim() || replyTo) && canComment && (
             <div className="flex justify-start gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
