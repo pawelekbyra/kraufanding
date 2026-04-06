@@ -103,6 +103,8 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
       name: userDb?.name || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null),
       imageUrl: user?.imageUrl || null,
       totalPaid: userDb?.totalPaid || 0,
+      role: userDb?.role || 'USER',
+      referralCount: userDb?.referralCount || 0,
       initialInteraction,
       initialIsSubscribed
   } : null;

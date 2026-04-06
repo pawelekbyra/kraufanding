@@ -239,6 +239,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  <EmbeddedComments
                    videoId={selectedVideo.id}
                    userProfile={userProfile}
+                   videoTier={selectedVideo.tier}
                  />
                ) : (
                  <div className="space-y-2">
@@ -264,6 +265,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                <EmbeddedComments
                  videoId={selectedVideo.id}
                  userProfile={userProfile}
+                 videoTier={selectedVideo.tier}
                />
             </div>
           </div>

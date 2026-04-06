@@ -8,32 +8,41 @@ import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRig
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '../LanguageContext';
-import { useVideoAccess } from '../PremiumWrapper';
+import { AccessTier } from "@prisma/client";
 
 interface EmbeddedCommentsProps {
   userProfile?: {
     id: string;
     email: string;
     imageUrl?: string | null;
+    totalPaid?: number;
+    role?: string;
+    referralCount?: number;
   } | null;
   videoId: string;
+  videoTier?: AccessTier;
 }
 
 const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
-  userProfile: initialUserProfile,
-  videoId
+  userProfile: propUserProfile,
+  videoId,
+  videoTier = "PUBLIC"
 }) => {
   const { t, language } = useLanguage();
   const queryClient = useQueryClient();
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
-  const { hasAccess, effectiveTier } = useVideoAccess();
 
-  const userProfile = isSignedIn ? {
+  const userProfile = propUserProfile || (isSignedIn ? {
     id: userId!,
     email: user?.primaryEmailAddress?.emailAddress || '',
-    imageUrl: user?.imageUrl || null
-  } : null;
+    imageUrl: user?.imageUrl || null,
+    totalPaid: (user?.publicMetadata?.totalPaid as number) || 0
+  } : null);
+
+  const isPatronGated = videoTier === "VIP1" || videoTier === "VIP2";
+  const isPatron = (userProfile?.totalPaid || 0) >= 5 || (userProfile?.referralCount || 0) >= 5 || userProfile?.role === 'ADMIN' || userProfile?.email === 'pawel.perfect@gmail.com';
+  const canComment = !!userProfile && (!isPatronGated || isPatron);
 
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<string | null>(null);
@@ -261,18 +270,18 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               placeholder={
                 !userProfile
                 ? t.signInToComment
-                : !hasAccess
+                : !canComment
                   ? t.becomePatronToComment
                   : (replyTo ? t.addReply : t.addComment)
               }
-              readOnly={!userProfile || !hasAccess}
+              readOnly={!canComment}
               className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
 
-          {(isInputFocused || newComment.trim() || replyTo || !userProfile || !hasAccess) && (
+          {(isInputFocused || newComment.trim() || replyTo || !canComment) && (
             <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-               {userProfile && hasAccess && (
+               {canComment && (
                  <button
                    onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
                    className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
@@ -284,15 +293,15 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 {!userProfile ? (
                   <SignInButton mode="modal">
                     <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
-                      {t.signIn}
+                      {t.signInToComment}
                     </button>
                   </SignInButton>
-                ) : !hasAccess ? (
+                ) : !canComment ? (
                   <a
                     href="#donations"
-                    className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all"
+                    className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all text-center"
                   >
-                    {t.becomePatron}
+                    {t.becomePatronToComment}
                   </a>
                 ) : (
                   <button
