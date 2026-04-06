@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth, useClerk } from '@clerk/nextjs';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
 import BrandName from './BrandName';
@@ -32,10 +33,44 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Auto-open modal if returning from Stripe with success
+    if (searchParams.get('success') === 'true') {
+      setIsCheckoutModalOpen(true);
+      setIsSuccess(true);
+      startSyncing();
+    }
+  }, [searchParams]);
+
+  const startSyncing = async () => {
+    setIsSyncing(true);
+    let attempts = 0;
+    const maxAttempts = 10;
+
+    const poll = setInterval(async () => {
+      attempts++;
+      try {
+        const res = await fetch('/api/user/sync');
+        const data = await res.json();
+
+        // If totalPaid is updated or we reached max attempts, stop
+        if (data.totalPaid > 0 || attempts >= maxAttempts) {
+          clearInterval(poll);
+          setIsSyncing(false);
+          // Optional: full page refresh to update all components
+          if (data.totalPaid > 0) router.refresh();
+        }
+      } catch (e) {
+        console.error("Sync error", e);
+      }
+    }, 2000);
+  };
 
   useEffect(() => {
     if (isCheckoutModalOpen) {
@@ -277,21 +312,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         )}
 
         {/* Checkout Full-Screen Takeover */}
-        {isMounted && isCheckoutModalOpen && clientSecret && createPortal(
+        {isMounted && isCheckoutModalOpen && (clientSecret || isSuccess) && createPortal(
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
              <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between p-12 lg:p-20 relative overflow-hidden h-full border-r border-white/5">
-                {/* Branding */}
-                <div className="flex items-center gap-4 relative z-10">
-                   <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#1a1a1a] font-black text-xl shadow-2xl">
-                      P
-                   </div>
-                   <h3 className="text-2xl font-brand font-black uppercase tracking-tighter">
-                      POLUTEK<span className="text-white/20">.PL</span>
-                   </h3>
-                </div>
-
                 {/* Main Summary content */}
                 <div className="space-y-8 relative z-10 -mt-32">
                    <div className="space-y-4">
@@ -351,7 +376,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
              <div className="flex-1 bg-[#FDFBF7] flex flex-col relative h-full">
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
-                  onClick={() => setIsCheckoutModalOpen(false)}
+                  onClick={() => {
+                    setIsCheckoutModalOpen(false);
+                    if (isSuccess) router.replace(window.location.pathname);
+                  }}
                   className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
                   aria-label="Zamknij"
                 >
@@ -366,7 +394,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                    </div>
 
                    <button
-                     onClick={() => setIsCheckoutModalOpen(false)}
+                     onClick={() => {
+                       setIsCheckoutModalOpen(false);
+                       if (isSuccess) router.replace(window.location.pathname);
+                     }}
                      className="group flex items-center gap-1.5 px-3 py-1.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-sm"
                    >
                      <span>Wróć</span>
@@ -375,50 +406,94 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-8 lg:p-12 pt-12 md:pt-16 lg:pt-20 relative z-10 overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-8 lg:p-12 pt-4 md:pt-6 lg:pt-8 relative z-10 overflow-y-auto">
                    <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
-                      {/* Mobile-only summary head */}
-                      <div className="md:hidden text-center space-y-3">
-                         <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
-                         <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Tip the Guy'}</h1>
-                         <div className="py-6 border-y border-[#1a1a1a]/5">
-                            <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
-                         </div>
-                      </div>
+                      {isSuccess ? (
+                        <div className="text-center space-y-8 py-12 animate-in fade-in zoom-in-95 duration-500">
+                           <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
+                              <span className="text-white text-5xl">✓</span>
+                           </div>
+                           <div className="space-y-3">
+                              <h1 className="text-4xl font-brand font-black uppercase tracking-tighter">
+                                {language === 'pl' ? 'Dziękujemy!' : 'Thank you!'}
+                              </h1>
+                              <p className="text-lg text-[#1a1a1a]/60 font-medium italic">
+                                {language === 'pl'
+                                  ? 'Twój napiwek został pomyślnie przekazany.'
+                                  : 'Your tip has been successfully received.'}
+                              </p>
+                           </div>
 
-                      {/* Desktop Heading hint */}
-                      <div className="hidden md:block space-y-1 mb-2">
-                         <h2 className="text-2xl font-brand font-black uppercase tracking-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
-                         <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
-                      </div>
-
-                      {/* Stripe form card */}
-                      <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem]">
-                         <div className="p-6 md:p-8 lg:p-10">
-                            {stripePromise ? (
-                              <Elements stripe={stripePromise} options={{
-                                clientSecret,
-                                appearance: {
-                                  theme: 'flat',
-                                  variables: {
-                                    colorPrimary: '#1a1a1a',
-                                    colorBackground: '#ffffff',
-                                    colorText: '#1a1a1a',
-                                    borderRadius: '12px',
-                                    fontFamily: 'var(--font-jakarta)',
-                                  }
-                                }
-                              }}>
-                                <CheckoutForm />
-                              </Elements>
-                            ) : (
-                              <div className="flex flex-col items-center justify-center py-24 space-y-8">
-                                <span className="w-12 h-12 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
-                                <p className="text-sm font-mono text-[#1a1a1a]/40 tracking-widest">Inicjalizacja systemu...</p>
+                           <div className="bg-white border border-[#1a1a1a]/5 p-8 rounded-3xl space-y-4">
+                              <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40">
+                                 {isSyncing
+                                    ? (language === 'pl' ? 'Synchronizacja statusu...' : 'Syncing status...')
+                                    : (language === 'pl' ? 'Status zaktualizowany' : 'Status updated')}
+                              </p>
+                              <div className="flex items-center justify-center gap-3">
+                                 {isSyncing && <span className="w-4 h-4 border-2 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />}
+                                 <span className="text-xs font-mono font-black uppercase tracking-tighter">
+                                    {language === 'pl' ? 'Dziękujemy za wsparcie niezależnych mediów.' : 'Thank you for supporting independent media.'}
+                                 </span>
                               </div>
-                            )}
-                         </div>
-                      </div>
+                           </div>
+
+                           <button
+                             onClick={() => {
+                               setIsCheckoutModalOpen(false);
+                               router.replace(window.location.pathname);
+                             }}
+                             className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98]"
+                           >
+                             {language === 'pl' ? 'Wróć do serwisu' : 'Back to site'}
+                           </button>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Mobile-only summary head */}
+                          <div className="md:hidden text-center space-y-3">
+                             <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
+                             <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Tip the Guy'}</h1>
+                             <div className="py-6 border-y border-[#1a1a1a]/5">
+                                <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
+                             </div>
+                          </div>
+
+                          {/* Desktop Heading hint */}
+                          <div className="hidden md:block space-y-1 mb-2">
+                             <h2 className="text-2xl font-brand font-black uppercase tracking-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
+                             <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
+                          </div>
+
+                          {/* Stripe form card */}
+                          <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem]">
+                             <div className="p-6 md:p-8 lg:p-10">
+                                {stripePromise && clientSecret ? (
+                                  <Elements stripe={stripePromise} options={{
+                                    clientSecret,
+                                    appearance: {
+                                      theme: 'flat',
+                                      variables: {
+                                        colorPrimary: '#1a1a1a',
+                                        colorBackground: '#ffffff',
+                                        colorText: '#1a1a1a',
+                                        borderRadius: '12px',
+                                        fontFamily: 'var(--font-jakarta)',
+                                      }
+                                    }
+                                  }}>
+                                    <CheckoutForm />
+                                  </Elements>
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center py-24 space-y-8">
+                                    <span className="w-12 h-12 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
+                                    <p className="text-sm font-mono text-[#1a1a1a]/40 tracking-widest">Inicjalizacja systemu...</p>
+                                  </div>
+                                )}
+                             </div>
+                          </div>
+                        </>
+                      )}
 
                       {/* Trust indicators */}
                       <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200">
