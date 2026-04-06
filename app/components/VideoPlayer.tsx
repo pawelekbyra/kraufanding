@@ -177,15 +177,19 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     padding: 0 10px 10px 10px !important;
                     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.85)) !important;
                     gap: 0 !important;
+                    overflow: visible !important;
                 }
 
                 .plyr__progress {
                     flex-basis: 100% !important;
                     order: -1 !important;
-                    margin-bottom: 12px !important;
+                    margin-bottom: 14px !important;
                     padding: 0 !important;
-                    transform: translateY(-10px); /* Pare pixeli wyzej */
-                    width: 100% !important;
+                    margin-left: -10px !important;
+                    margin-right: -10px !important;
+                    transform: translateY(-12px); /* Pare pixeli wyzej */
+                    width: calc(100% + 20px) !important;
+                    min-width: calc(100% + 20px) !important;
                 }
 
                 .plyr__progress input[type=range] {

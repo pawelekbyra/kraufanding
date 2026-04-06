@@ -266,7 +266,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center">
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center justify-end">
                  {isPatronGated && !isPatron ? (
                     <a
                       href="#donations"
@@ -276,7 +276,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                     </a>
                   ) : (
                     <SignInButton mode="modal">
-                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-left">
+                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-right">
                         {t.signInToComment}
                       </button>
                     </SignInButton>
