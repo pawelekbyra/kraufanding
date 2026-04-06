@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { useLanguage } from './LanguageContext';
 import ReferralModal from './ReferralModal';
@@ -30,6 +31,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
   const [isPolitykaOpen, setIsPolitykaOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isCheckoutModalOpen) {
@@ -271,117 +277,170 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         )}
 
         {/* Checkout Full-Screen Takeover */}
-        {isCheckoutModalOpen && clientSecret && (
-          <div className="fixed inset-0 z-[9999] bg-[#FDFBF7] animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col overflow-hidden">
-             {/* Header bar */}
-             <div className="w-full max-w-7xl mx-auto px-6 py-6 md:py-10 flex justify-between items-center shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm md:text-lg">
-                    P
-                  </div>
-                  <h3 className="text-lg md:text-2xl font-brand font-black uppercase tracking-tighter">
-                    POLUTEK<span className="text-[#1a1a1a]/40">.PL</span>
-                  </h3>
+        {isMounted && isCheckoutModalOpen && clientSecret && createPortal(
+          <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
+
+             {/* Left Column (Summary - Desktop) */}
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between p-12 lg:p-24 relative overflow-hidden h-full border-r border-white/5">
+                {/* Branding */}
+                <div className="flex items-center gap-4 relative z-10">
+                   <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-[#1a1a1a] font-black text-2xl shadow-2xl">
+                      P
+                   </div>
+                   <h3 className="text-3xl font-brand font-black uppercase tracking-tighter">
+                      POLUTEK<span className="text-white/20">.PL</span>
+                   </h3>
                 </div>
-                <button
-                  onClick={() => setIsCheckoutModalOpen(false)}
-                  className="group flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] md:text-xs hover:bg-[#1a1a1a] hover:text-white transition-all shadow-sm"
-                >
-                  <span className="hidden md:inline">Zamknij i wróć</span>
-                  <span className="md:hidden">Wróć</span>
-                  <span className="text-base md:text-lg leading-none">×</span>
-                </button>
-             </div>
 
-             {/* Main Content Area */}
-             <div className="flex-1 w-full max-w-[440px] md:max-w-6xl mx-auto px-6 py-8 md:py-0 flex flex-col md:justify-center overflow-y-auto">
-                <div className="md:grid md:grid-cols-[1.1fr,0.9fr] md:gap-20 md:items-center">
-
-                  {/* Left Side: Summary and Benefits (Desktop) */}
-                  <div className="space-y-8 md:space-y-12">
-                    {/* Summary Section */}
-                    <div className="text-center md:text-left space-y-2 md:space-y-4">
-                      <span className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/30">Bezpieczna płatność</span>
-                      <h1 className="text-3xl md:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.9]">
-                        Zostajesz <br className="hidden md:block" /> Patronem
+                {/* Main Summary content */}
+                <div className="space-y-12 relative z-10">
+                   <div className="space-y-6">
+                      <span className="inline-block px-3 py-1 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80">Premium Access</span>
+                      <h1 className="text-7xl lg:text-8xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
+                        Zostań <br /> Patronem
                       </h1>
-                      <p className="text-xs md:text-lg text-[#1a1a1a]/40 font-medium italic">
+                      <p className="text-xl text-white/40 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
                       </p>
-                    </div>
+                   </div>
 
-                    {/* Amount Highlight */}
-                    <div className="p-6 md:p-10 bg-white border border-[#1a1a1a]/5 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center md:items-start gap-1 md:gap-2 shadow-sm">
-                       <p className="text-[10px] md:text-xs font-bold uppercase text-[#1a1a1a]/40 tracking-widest">Kwota do zapłaty</p>
-                       <p className="text-5xl md:text-7xl font-mono font-black tracking-tighter">{amount} <span className="text-xl md:text-3xl align-top opacity-20">{selectedCurrency}</span></p>
-                       <div className="mt-4 md:mt-6 px-3 py-1 md:px-4 md:py-2 bg-[#1a1a1a]/5 rounded-full">
-                         <p className="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-[#1a1a1a]/60">Dostęp dożywotni (Lifetime)</p>
-                       </div>
-                    </div>
+                   <div className="space-y-8">
+                      <div className="flex items-baseline gap-4 border-b border-white/10 pb-10">
+                         <span className="text-9xl font-mono font-black tracking-tighter">{amount}</span>
+                         <span className="text-3xl font-mono opacity-20">{selectedCurrency}</span>
+                      </div>
 
-                    {/* Professional Benefits List (Desktop only) */}
-                    <div className="hidden md:grid grid-cols-2 gap-6 pt-4">
-                        <div className="space-y-1">
-                           <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Pełny Dostęp</p>
-                           <p className="text-sm text-[#1a1a1a]/40 leading-snug">Wszystkie materiały premium bez limitu czasu.</p>
-                        </div>
-                        <div className="space-y-1">
-                           <p className="text-[10px] font-black uppercase tracking-widest text-[#1a1a1a]">Brak Reklam</p>
-                           <p className="text-sm text-[#1a1a1a]/40 leading-snug">Czysty interfejs bez rozpraszaczy.</p>
-                        </div>
-                    </div>
+                      <div className="grid grid-cols-1 gap-8">
+                         <div className="flex items-start gap-5">
+                            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                               <span className="text-[#1a1a1a] text-xs font-black">✓</span>
+                            </div>
+                            <div className="space-y-1.5">
+                               <p className="text-sm font-black uppercase tracking-widest">Dożywotni Dostęp</p>
+                               <p className="text-base text-white/40 leading-relaxed">Wszystkie obecne i przyszłe materiały premium bez żadnych limitów czasowych.</p>
+                            </div>
+                         </div>
+                         <div className="flex items-start gap-5">
+                            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                               <span className="text-[#1a1a1a] text-xs font-black">✓</span>
+                            </div>
+                            <div className="space-y-1.5">
+                               <p className="text-sm font-black uppercase tracking-widest">Niezależne Śledztwa</p>
+                               <p className="text-base text-white/40 leading-relaxed">Twoje wsparcie pozwala nam tworzyć unikalne treści i niezależne raporty.</p>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
 
-                    {/* Security badges */}
-                    <div className="flex justify-center md:justify-start items-center gap-8 md:gap-12 opacity-20 pt-4 md:pt-0">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
-                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">SSL Secure</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
-                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Powered by Stripe</span>
-                        </div>
-                    </div>
-                  </div>
+                {/* Footer attribution */}
+                <div className="relative z-10 flex justify-between items-center">
+                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/10">
+                      POLUTEK.PL &copy; {new Date().getFullYear()}
+                   </p>
+                   <div className="flex gap-4 opacity-20">
+                      <span className="text-[10px] font-black uppercase tracking-widest">Secure Payment</span>
+                   </div>
+                </div>
 
-                  {/* Right Side: Payment Form Container */}
-                  <div className="mt-12 md:mt-0 bg-white border border-[#1a1a1a]/10 p-1 shadow-xl rounded-3xl md:rounded-[3rem] h-fit overflow-hidden">
-                    <div className="p-7 md:p-12">
-                        {stripePromise ? (
-                          <Elements stripe={stripePromise} options={{
-                            clientSecret,
-                            appearance: {
-                              theme: 'flat',
-                              variables: {
-                                colorPrimary: '#1a1a1a',
-                                colorBackground: '#ffffff',
-                                colorText: '#1a1a1a',
-                                borderRadius: '12px',
-                                fontFamily: 'var(--font-jakarta)',
-                              }
-                            }
-                          }}>
-                            <CheckoutForm />
-                          </Elements>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center py-24 space-y-6">
-                            <span className="w-10 h-10 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
-                            <p className="text-sm md:text-base font-mono text-[#1a1a1a]/40 tracking-widest">Inicjalizacja bezpiecznej płatności...</p>
-                          </div>
-                        )}
-                    </div>
-                  </div>
+                {/* Decorative background element */}
+                <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px]" />
+             </div>
 
+             {/* Right Column (Form Area) */}
+             <div className="flex-1 bg-[#FDFBF7] flex flex-col relative overflow-hidden h-full">
+                {/* Integrated Close Button (Desktop Only) */}
+                <button
+                  onClick={() => setIsCheckoutModalOpen(false)}
+                  className="hidden md:flex absolute top-12 right-12 z-30 group items-center gap-3 px-6 py-3 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-xl"
+                >
+                  <span>Zamknij</span>
+                  <span className="text-xl leading-none">×</span>
+                </button>
+
+                {/* Mobile Header Overlap */}
+                <div className="md:hidden w-full px-8 py-8 flex justify-between items-center shrink-0 relative z-20">
+                   <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg">P</div>
+                      <h3 className="text-xl font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-[#1a1a1a]/40">.PL</span></h3>
+                   </div>
+
+                   <button
+                     onClick={() => setIsCheckoutModalOpen(false)}
+                     className="ml-auto group flex items-center gap-2 px-4 py-2 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-sm"
+                   >
+                     <span>Wróć</span>
+                     <span className="text-base leading-none">×</span>
+                   </button>
+                </div>
+
+                {/* Main Form content */}
+                <div className="flex-1 flex items-center justify-center p-6 lg:p-16 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[480px] space-y-12">
+                      {/* Mobile-only summary head */}
+                      <div className="md:hidden text-center space-y-4">
+                         <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">Bezpieczna płatność</span>
+                         <h1 className="text-4xl font-brand font-black uppercase tracking-tighter leading-tight">Zostajesz Patronem</h1>
+                         <div className="py-8 border-y border-[#1a1a1a]/5">
+                            <p className="text-6xl font-mono font-black tracking-tighter">{amount} <span className="text-2xl align-top opacity-20">{selectedCurrency}</span></p>
+                         </div>
+                      </div>
+
+                      {/* Desktop Heading hint */}
+                      <div className="hidden md:block space-y-2 mb-10">
+                         <h2 className="text-3xl font-brand font-black uppercase tracking-tight">Finalizacja wpłaty</h2>
+                         <p className="text-base text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
+                      </div>
+
+                      {/* Stripe form card */}
+                      <div className="bg-white border border-[#1a1a1a]/5 p-2 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem] overflow-hidden">
+                         <div className="p-8 lg:p-12">
+                            {stripePromise ? (
+                              <Elements stripe={stripePromise} options={{
+                                clientSecret,
+                                appearance: {
+                                  theme: 'flat',
+                                  variables: {
+                                    colorPrimary: '#1a1a1a',
+                                    colorBackground: '#ffffff',
+                                    colorText: '#1a1a1a',
+                                    borderRadius: '12px',
+                                    fontFamily: 'var(--font-jakarta)',
+                                  }
+                                }
+                              }}>
+                                <CheckoutForm />
+                              </Elements>
+                            ) : (
+                              <div className="flex flex-col items-center justify-center py-24 space-y-8">
+                                <span className="w-12 h-12 border-4 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />
+                                <p className="text-sm font-mono text-[#1a1a1a]/40 tracking-widest">Inicjalizacja systemu...</p>
+                              </div>
+                            )}
+                         </div>
+                      </div>
+
+                      {/* Trust indicators */}
+                      <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200">
+                         <div className="flex items-center gap-2">
+                           <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                           <span className="text-[10px] font-black uppercase tracking-widest">SSL encryption</span>
+                         </div>
+                         <div className="flex items-center gap-2">
+                           <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                           <span className="text-[10px] font-black uppercase tracking-widest">Secure stripe check</span>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Subtle right-side background pattern */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.02] pointer-events-none z-0">
+                   <div className="absolute top-0 right-0 w-[500px] h-[500px] border border-[#1a1a1a] rounded-full -mr-40 -mt-40" />
                 </div>
              </div>
-
-             {/* Footer space */}
-             <div className="w-full py-8 md:py-12 text-center mt-auto">
-                <p className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#1a1a1a]/10">
-                  POLUTEK.PL &copy; {new Date().getFullYear()} &bull; Professional Video Content
-                </p>
-             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* Regulamin Modal */}
