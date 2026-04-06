@@ -316,16 +316,16 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-16 pt-2 md:pt-3 lg:pt-4 pb-10 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-white/5">
                 {/* Main Summary content */}
-                <div className="space-y-6 relative z-10">
-                   <div className="space-y-3">
-                      <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
+                <div className="relative z-10 mt-0">
+                   <div className="flex flex-col">
+                      <span className="inline-block w-fit px-3 py-0.5 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">Premium Access</span>
+                      <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85] mt-6">
                         Zostań <br /> Patronem
                       </h1>
                       <p className="text-base text-white/40 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
-                        <span className="ml-3 inline-block px-2 py-0.5 bg-white/10 rounded text-[9px] font-black uppercase tracking-[0.3em] text-white/60 align-middle not-italic">Premium Access</span>
                       </p>
                    </div>
 
@@ -406,33 +406,33 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-2 md:pt-3 lg:pt-4 pb-10 relative z-10 overflow-y-auto">
-                   <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
+                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-1 pb-10 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[480px]">
                       {isSuccess ? (
-                        <div className="text-center space-y-8 py-12 animate-in fade-in zoom-in-95 duration-500">
-                           <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
-                              <span className="text-white text-5xl">✓</span>
+                        <div className="text-center space-y-8 py-10 animate-in fade-in zoom-in-95 duration-500">
+                           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
+                              <span className="text-white text-4xl">✓</span>
                            </div>
-                           <div className="space-y-3">
-                              <h1 className="text-4xl font-brand font-black uppercase tracking-tighter">
+                           <div className="space-y-2">
+                              <h1 className="text-3xl font-brand font-black uppercase tracking-tighter">
                                 {language === 'pl' ? 'Dziękujemy!' : 'Thank you!'}
                               </h1>
-                              <p className="text-lg text-[#1a1a1a]/60 font-medium italic">
+                              <p className="text-base text-[#1a1a1a]/60 font-medium italic">
                                 {language === 'pl'
                                   ? 'Twój napiwek został pomyślnie przekazany.'
                                   : 'Your tip has been successfully received.'}
                               </p>
                            </div>
 
-                           <div className="bg-white border border-[#1a1a1a]/5 p-8 rounded-3xl space-y-4">
-                              <p className="text-sm font-bold uppercase tracking-widest text-[#1a1a1a]/40">
+                           <div className="bg-white border border-[#1a1a1a]/5 p-6 rounded-3xl space-y-3">
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40">
                                  {isSyncing
                                     ? (language === 'pl' ? 'Synchronizacja statusu...' : 'Syncing status...')
                                     : (language === 'pl' ? 'Status zaktualizowany' : 'Status updated')}
                               </p>
                               <div className="flex items-center justify-center gap-3">
-                                 {isSyncing && <span className="w-4 h-4 border-2 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />}
-                                 <span className="text-xs font-mono font-black uppercase tracking-tighter">
+                                 {isSyncing && <span className="w-3 h-3 border-2 border-[#1a1a1a]/10 border-t-[#1a1a1a] rounded-full animate-spin" />}
+                                 <span className="text-[10px] font-mono font-black uppercase tracking-tighter">
                                     {language === 'pl' ? 'Dziękujemy za wsparcie niezależnych mediów.' : 'Thank you for supporting independent media.'}
                                  </span>
                               </div>
@@ -449,9 +449,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                            </button>
                         </div>
                       ) : (
-                        <>
+                        <div className="flex flex-col">
+                          {/* Desktop Heading hint */}
+                          <div className="hidden md:block mb-6 mt-0">
+                             <h2 className="text-2xl font-brand font-black uppercase tracking-tight leading-none">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
+                             <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
+                          </div>
+
                           {/* Mobile-only summary head */}
-                          <div className="md:hidden text-center space-y-3">
+                          <div className="md:hidden text-center space-y-3 mb-6">
                              <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
                              <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Tip the Guy'}</h1>
                              <div className="py-6 border-y border-[#1a1a1a]/5">
@@ -459,14 +465,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                              </div>
                           </div>
 
-                          {/* Desktop Heading hint */}
-                          <div className="hidden md:block space-y-1 mb-2">
-                             <h2 className="text-2xl font-brand font-black uppercase tracking-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
-                             <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
-                          </div>
-
                           {/* Stripe form card */}
-                          <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem]">
+                          <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem] mb-6">
                              <div className="p-6 md:p-8 lg:p-10">
                                 {stripePromise && clientSecret ? (
                                   <Elements stripe={stripePromise} options={{
@@ -492,11 +492,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                 )}
                              </div>
                           </div>
-                        </>
+                        </div>
                       )}
 
                       {/* Trust indicators */}
-                      <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200">
+                          <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200 mt-2">
                          <div className="flex items-center gap-2">
                            <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
                            <span className="text-[10px] font-black uppercase tracking-widest">SSL encryption</span>
