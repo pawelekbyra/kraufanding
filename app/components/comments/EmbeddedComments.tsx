@@ -268,10 +268,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               onChange={(e) => setNewComment(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               placeholder={
-                !userProfile
-                ? t.signInToComment
-                : !canComment
-                  ? t.becomePatronToComment
+                isPatronGated && !isPatron
+                ? t.becomePatronToComment
+                : !userProfile
+                  ? t.signInToComment
                   : (replyTo ? t.addReply : t.addComment)
               }
               readOnly={!canComment}
@@ -290,19 +290,19 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                  </button>
                )}
 
-                {!userProfile ? (
-                  <SignInButton mode="modal">
-                    <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
-                      {t.signInToComment}
-                    </button>
-                  </SignInButton>
-                ) : !canComment ? (
+                {isPatronGated && !isPatron ? (
                   <a
                     href="#donations"
                     className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all text-center"
                   >
                     {t.becomePatronToComment}
                   </a>
+                ) : !userProfile ? (
+                  <SignInButton mode="modal">
+                    <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
+                      {t.signInToComment}
+                    </button>
+                  </SignInButton>
                 ) : (
                   <button
                     onClick={handleSubmit}
