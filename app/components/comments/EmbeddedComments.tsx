@@ -66,6 +66,8 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
   const comments = data?.pages?.flatMap((page) => page.comments || []) ?? [];
 
+  const replyingToAuthor = replyTo ? comments.find(c => c.id === replyTo)?.authorName : null;
+
   const postMutation = useMutation({
     mutationFn: async ({ text, parentId }: { text: string; parentId?: string }) => {
         const res = await fetch('/api/comments', {
@@ -244,7 +246,11 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             {replyTo && userProfile && (
               <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
                 <CornerDownRight size={12} />
-                {t.replying}
+                {language === 'pl' ? (
+                  <>Odpowiadasz <span className="font-black ml-1">{replyingToAuthor}</span></>
+                ) : (
+                  <>Replying to <span className="font-black ml-1">{replyingToAuthor}</span></>
+                )}
                 <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
               </div>
             )}
@@ -257,6 +263,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 ? (language === 'pl' ? 'Zostań Patronem, aby dodać komentarz' : 'Become a Patron to comment')
                 : (replyTo ? t.addReply : t.addComment)
               }
+              readOnly={!hasAccess && (effectiveTier === 'VIP1' || effectiveTier === 'VIP2')}
               className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
             />
           </div>
@@ -276,7 +283,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                       href="#donations"
                       className="px-6 py-2 rounded-full bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 text-[14px] font-bold transition-all"
                     >
-                      {t.paywallUnlock}
+                      {t.becomePatron}
                     </a>
                   ) : (
                     <button
@@ -419,12 +426,6 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                         >
                           <ThumbsDown size={11} className={cn(reply.isDisliked && "fill-black")} />
                           <span className="text-[10px] font-normal">{reply._count?.dislikes || 0}</span>
-                        </button>
-                        <button
-                            onClick={() => userProfile && setReplyTo(comment.id)}
-                            className="text-[10px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2 py-0.5 rounded-full ml-1 transition-all"
-                        >
-                            {t.reply}
                         </button>
                       </div>
                     </div>
