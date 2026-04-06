@@ -316,7 +316,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between p-10 md:p-12 lg:p-16 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-between px-10 md:px-12 lg:px-16 pt-4 md:pt-6 lg:pt-8 pb-10 relative overflow-hidden h-full border-r border-white/5">
                 {/* Main Summary content */}
                 <div className="space-y-8 relative z-10">
                    <div className="space-y-4">
@@ -406,7 +406,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex flex-col items-center justify-start p-10 md:p-12 lg:p-16 relative z-10 overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-4 md:pt-6 lg:pt-8 pb-10 relative z-10 overflow-y-auto">
                    <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
                       {isSuccess ? (
                         <div className="text-center space-y-8 py-12 animate-in fade-in zoom-in-95 duration-500">
