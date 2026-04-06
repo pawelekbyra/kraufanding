@@ -169,7 +169,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 ) : video.tier === 'LOGGED_IN' ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-blue-500 mt-0.5">{t.loginToWatchShort}</span>
                 ) : (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#1a1a1a]/30 mt-0.5">{t.becomePatron}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 mt-0.5">{t.becomePatron}</span>
                 )
               )}
             </div>
