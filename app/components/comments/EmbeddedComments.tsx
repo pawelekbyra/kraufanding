@@ -37,7 +37,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
     id: userId!,
     email: user?.primaryEmailAddress?.emailAddress || '',
     imageUrl: user?.imageUrl || null,
-    totalPaid: (user?.publicMetadata?.totalPaid as number) || 0
+    totalPaid: (user?.publicMetadata?.totalPaid as number) || 0,
+    role: (user?.publicMetadata?.role as string) || 'USER',
+    referralCount: (user?.publicMetadata?.referralCount as number) || 0
   } : null);
 
   const isPatronGated = videoTier === "VIP1" || videoTier === "VIP2";
