@@ -40,36 +40,39 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   useEffect(() => {
     setIsMounted(true);
+    let interval: NodeJS.Timeout;
+
     // Auto-open modal if returning from Stripe with success
     if (searchParams.get('success') === 'true') {
       setIsCheckoutModalOpen(true);
       setIsSuccess(true);
-      startSyncing();
+      setIsSyncing(true);
+
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      interval = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch('/api/user/sync');
+          const data = await res.json();
+
+          if (data.totalPaid > 0 || attempts >= maxAttempts) {
+            clearInterval(interval);
+            setIsSyncing(false);
+            if (data.totalPaid > 0) router.refresh();
+          }
+        } catch (e) {
+          console.error("Sync error", e);
+        }
+      }, 2000);
     }
-  }, [searchParams]);
+
+    return () => { if (interval) clearInterval(interval); };
+  }, [searchParams, router]);
 
   const startSyncing = async () => {
-    setIsSyncing(true);
-    let attempts = 0;
-    const maxAttempts = 10;
-
-    const poll = setInterval(async () => {
-      attempts++;
-      try {
-        const res = await fetch('/api/user/sync');
-        const data = await res.json();
-
-        // If totalPaid is updated or we reached max attempts, stop
-        if (data.totalPaid > 0 || attempts >= maxAttempts) {
-          clearInterval(poll);
-          setIsSyncing(false);
-          // Optional: full page refresh to update all components
-          if (data.totalPaid > 0) router.refresh();
-        }
-      } catch (e) {
-        console.error("Sync error", e);
-      }
-    }, 2000);
+    // Legacy function, logic moved to useEffect for better cleanup
   };
 
   useEffect(() => {

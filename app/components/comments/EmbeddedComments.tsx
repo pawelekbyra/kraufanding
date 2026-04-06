@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock } from '../icons';
+import { Heart, MessageSquare, ArrowUp, Loader2, Smile, ImageIcon, CornerDownRight, ThumbsUp, ThumbsDown, MoreVertical, Trash2, Lock, Star, Gem } from '../icons';
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '../LanguageContext';
+import { useVideoAccess } from '../PremiumWrapper';
 
 interface EmbeddedCommentsProps {
   userProfile?: {
@@ -26,6 +27,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
   const queryClient = useQueryClient();
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
+  const { hasAccess, effectiveTier } = useVideoAccess();
 
   const userProfile = isSignedIn ? {
     id: userId!,
@@ -95,27 +97,33 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
         queryClient.setQueryData(['comments', videoId], (old: any) => {
             if (!old) return old;
+
+            const updateComment = (c: any) => {
+                if (c.id === commentId) {
+                    const wasLiked = c.isLiked;
+                    const wasDisliked = c.isDisliked;
+                    return {
+                        ...c,
+                        isLiked: !wasLiked,
+                        isDisliked: false,
+                        _count: {
+                            ...c._count,
+                            likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes + 1,
+                            dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes
+                        }
+                    };
+                }
+                if (c.replies) {
+                    return { ...c, replies: c.replies.map(updateComment) };
+                }
+                return c;
+            };
+
             return {
                 ...old,
                 pages: old.pages.map((page: any) => ({
                     ...page,
-                    comments: page.comments.map((c: any) => {
-                        if (c.id === commentId) {
-                            const wasLiked = c.isLiked;
-                            const wasDisliked = c.isDisliked;
-                            return {
-                                ...c,
-                                isLiked: !wasLiked,
-                                isDisliked: false,
-                                _count: {
-                                    ...c._count,
-                                    likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes + 1,
-                                    dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes
-                                }
-                            };
-                        }
-                        return c;
-                    })
+                    comments: page.comments.map(updateComment)
                 }))
             };
         });
@@ -147,27 +155,33 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
         queryClient.setQueryData(['comments', videoId], (old: any) => {
             if (!old) return old;
+
+            const updateComment = (c: any) => {
+                if (c.id === commentId) {
+                    const wasLiked = c.isLiked;
+                    const wasDisliked = c.isDisliked;
+                    return {
+                        ...c,
+                        isLiked: false,
+                        isDisliked: !wasDisliked,
+                        _count: {
+                            ...c._count,
+                            likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes,
+                            dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes + 1
+                        }
+                    };
+                }
+                if (c.replies) {
+                    return { ...c, replies: c.replies.map(updateComment) };
+                }
+                return c;
+            };
+
             return {
                 ...old,
                 pages: old.pages.map((page: any) => ({
                     ...page,
-                    comments: page.comments.map((c: any) => {
-                        if (c.id === commentId) {
-                            const wasLiked = c.isLiked;
-                            const wasDisliked = c.isDisliked;
-                            return {
-                                ...c,
-                                isLiked: false,
-                                isDisliked: !wasDisliked,
-                                _count: {
-                                    ...c._count,
-                                    likes: wasLiked ? Math.max(0, c._count.likes - 1) : c._count.likes,
-                                    dislikes: wasDisliked ? Math.max(0, c._count.dislikes - 1) : c._count.dislikes + 1
-                                }
-                            };
-                        }
-                        return c;
-                    })
+                    comments: page.comments.map(updateComment)
                 }))
             };
         });
@@ -216,66 +230,104 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
          <h3 className="text-[18px] font-bold text-[#0f0f0f] leading-none uppercase tracking-tighter">{comments.length} {getCommentsLabel(comments.length)}</h3>
       </div>
 
-      {/* Input Area */}
-      <div className="flex gap-4 items-start mb-10">
-        <div className="w-10 h-10 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
-           <img
-             src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
-             alt="Avatar"
-             className="w-full h-full object-cover"
-           />
+      {/* Input Area or Gated Placeholder */}
+      {!hasAccess ? (
+        <div className="mb-10 group overflow-hidden rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-6 relative shadow-lg">
+           {/* Minimalist Grid Pattern Background */}
+           <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                style={{ backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`, backgroundSize: '24px 24px' }} />
+
+           <div className="relative z-10 flex flex-col items-center text-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform duration-500">
+                 {effectiveTier === 'VIP1' || effectiveTier === 'VIP2' ? (
+                   <Gem className="w-6 h-6 text-amber-500/60" />
+                 ) : (
+                   <Star className="w-6 h-6 text-blue-400/60" />
+                 )}
+              </div>
+              <div className="space-y-1">
+                 <p className="text-white text-sm font-black uppercase tracking-tighter leading-none italic">
+                    {effectiveTier === 'LOGGED_IN' ? t.paywallText : t.patronZone}
+                 </p>
+                 <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.2em]">
+                    {language === 'pl' ? 'Komentowanie dostępne tylko dla uprawnionych' : 'Commenting available to members only'}
+                 </p>
+              </div>
+              <a
+                href={effectiveTier === 'LOGGED_IN' ? '#' : '#donations'}
+                className="btn btn-sm px-6 rounded-full bg-white text-black hover:bg-white/90 border-none font-bold uppercase tracking-widest text-[10px] mt-2"
+                onClick={(e) => {
+                  if (effectiveTier === 'LOGGED_IN') {
+                    e.preventDefault();
+                    // Custom trigger for auth handled in PremiumWrapper
+                  }
+                }}
+              >
+                {effectiveTier === 'LOGGED_IN' ? t.signIn : t.paywallUnlock}
+              </a>
+           </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="relative">
-            {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
-                <CornerDownRight size={12} />
-                {t.replying}
-                <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
+      ) : (
+        <div className="flex gap-4 items-start mb-10">
+          <div className="w-10 h-10 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6]">
+             <img
+               src={userProfile?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`}
+               alt="Avatar"
+               className="w-full h-full object-cover"
+             />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="relative">
+              {replyTo && userProfile && (
+                <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
+                  <CornerDownRight size={12} />
+                  {t.replying}
+                  <button onClick={() => setReplyTo(null)} className="ml-2 hover:opacity-60">✕</button>
+                </div>
+              )}
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onFocus={() => setIsInputFocused(true)}
+                placeholder={replyTo ? t.addReply : t.addComment}
+                className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
+              />
+            </div>
+
+            {(isInputFocused || newComment.trim() || replyTo) && (
+              <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                 <button
+                   onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
+                   className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
+                 >
+                     {t.cancel}
+                 </button>
+
+                  {userProfile ? (
+                    <button
+                      onClick={handleSubmit}
+                      disabled={!newComment.trim() || postMutation.isPending}
+                      className={cn(
+                          "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
+                          newComment.trim()
+                              ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
+                              : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
+                      )}
+                    >
+                      {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
+                    </button>
+                  ) : (
+                    <SignInButton mode="modal">
+                      <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
+                        {t.signIn}
+                      </button>
+                    </SignInButton>
+                  )}
               </div>
             )}
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onFocus={() => setIsInputFocused(true)}
-              placeholder={replyTo ? t.addReply : t.addComment}
-              className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
-            />
           </div>
-
-          {(isInputFocused || newComment.trim() || replyTo) && (
-            <div className="flex justify-end gap-2 mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
-               <button
-                 onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
-               >
-                   {t.cancel}
-               </button>
-
-                {userProfile ? (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!newComment.trim() || postMutation.isPending}
-                    className={cn(
-                        "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
-                        newComment.trim()
-                            ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
-                            : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
-                    )}
-                  >
-                    {postMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : (replyTo ? t.reply : t.comment)}
-                  </button>
-                ) : (
-                  <SignInButton mode="modal">
-                    <button className="px-6 py-2 rounded-full bg-[#065fd4] text-white hover:bg-[#0556bf] text-[14px] font-bold transition-all">
-                      {t.signIn}
-                    </button>
-                  </SignInButton>
-                )}
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Comments List */}
       <div className="space-y-6">
@@ -372,6 +424,34 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                       <p className="text-[#0f0f0f] text-[13px] leading-relaxed">
                         {reply.text}
                       </p>
+                      <div className="flex items-center gap-3 pt-0.5">
+                        <button
+                          onClick={() => userProfile && likeMutation.mutate(reply.id)}
+                          className={cn(
+                            "flex items-center gap-1 transition-all group",
+                            reply.isLiked ? "text-primary" : "text-[#606060] hover:text-[#0f0f0f]"
+                          )}
+                        >
+                          <ThumbsUp size={11} className={cn(reply.isLiked && "fill-primary")} />
+                          <span className="text-[10px] font-normal">{reply._count?.likes || 0}</span>
+                        </button>
+                        <button
+                          onClick={() => userProfile && dislikeMutation.mutate(reply.id)}
+                          className={cn(
+                              "flex items-center gap-1 transition-all group",
+                              reply.isDisliked ? "text-black" : "text-[#606060] hover:text-[#0f0f0f]"
+                          )}
+                        >
+                          <ThumbsDown size={11} className={cn(reply.isDisliked && "fill-black")} />
+                          <span className="text-[10px] font-normal">{reply._count?.dislikes || 0}</span>
+                        </button>
+                        <button
+                            onClick={() => userProfile && setReplyTo(comment.id)}
+                            className="text-[10px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2 py-0.5 rounded-full ml-1 transition-all"
+                        >
+                            {t.reply}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
