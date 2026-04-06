@@ -188,7 +188,7 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
                )}
             </div>
 
-            <div className="flex flex-col items-center font-brand font-black italic">
+            <div className="flex flex-col items-center font-brand font-black">
               {isVIPGated ? (
                 <div className="flex flex-col items-center">
                     <span className="text-[clamp(2rem,10vw,6rem)] uppercase tracking-tighter leading-[0.8] text-amber-500">
