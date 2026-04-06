@@ -293,20 +293,20 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Summary content */}
-                <div className="space-y-10 relative z-10 -mt-24">
+                <div className="space-y-8 relative z-10 -mt-32">
                    <div className="space-y-4">
                       <span className="inline-block px-3 py-1 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80">Premium Access</span>
-                      <h1 className="text-6xl lg:text-7xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
+                      <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85]">
                         Zostań <br /> Patronem
                       </h1>
-                      <p className="text-lg text-white/40 font-medium italic max-w-md">
+                      <p className="text-base text-white/40 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
                       </p>
                    </div>
 
                    <div className="space-y-6">
-                      <div className="flex items-baseline gap-3 border-b border-white/10 pb-8">
-                         <span className="text-5xl lg:text-6xl font-mono font-black tracking-tighter">{amount}</span>
+                      <div className="flex items-baseline gap-3 border-b border-white/10 pb-6">
+                         <span className="text-4xl lg:text-5xl font-mono font-black tracking-tighter">{amount}</span>
                          <span className="text-xl font-mono opacity-20">{selectedCurrency}</span>
                       </div>
 
@@ -317,7 +317,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                             </div>
                             <div className="space-y-1.5">
                                <p className="text-sm font-black uppercase tracking-widest">Dożywotni Dostęp</p>
-                               <p className="text-base text-white/40 leading-relaxed">Wszystkie obecne i przyszłe materiały premium bez żadnych limitów czasowych.</p>
+                               <p className="text-sm text-white/40 leading-relaxed">Wszystkie obecne i przyszłe materiały premium bez żadnych limitów czasowych.</p>
                             </div>
                          </div>
                          <div className="flex items-start gap-5">
@@ -326,7 +326,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                             </div>
                             <div className="space-y-1.5">
                                <p className="text-sm font-black uppercase tracking-widest">Niezależne Śledztwa</p>
-                               <p className="text-base text-white/40 leading-relaxed">Twoje wsparcie pozwala nam tworzyć unikalne treści i niezależne raporty.</p>
+                               <p className="text-sm text-white/40 leading-relaxed">Twoje wsparcie pozwala nam tworzyć unikalne treści i niezależne raporty.</p>
                             </div>
                          </div>
                       </div>
@@ -352,7 +352,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
+                  className="hidden md:flex absolute top-2 right-2 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
                   aria-label="Zamknij"
                 >
                   <span className="text-2xl leading-none">×</span>
@@ -375,8 +375,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Main Form content */}
-                <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-8 lg:p-12 pt-20 md:pt-24 lg:pt-32 relative z-10 overflow-y-auto">
-                   <div className="w-full max-w-[480px] space-y-4 md:space-y-6">
+                <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-8 lg:p-12 pt-12 md:pt-16 lg:pt-20 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[480px] space-y-3 md:space-y-4">
                       {/* Mobile-only summary head */}
                       <div className="md:hidden text-center space-y-3">
                          <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">Bezpieczna płatność</span>
@@ -387,7 +387,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       </div>
 
                       {/* Desktop Heading hint */}
-                      <div className="hidden md:block space-y-1 mb-4">
+                      <div className="hidden md:block space-y-1 mb-2">
                          <h2 className="text-2xl font-brand font-black uppercase tracking-tight">Finalizacja wpłaty</h2>
                          <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
                       </div>
