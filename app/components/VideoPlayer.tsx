@@ -175,7 +175,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     display: flex !important;
                     flex-wrap: wrap !important;
                     align-items: center !important;
-                    padding: 12px 10px 6px 10px !important;
+                    padding: 12px 0 6px 0 !important;
                     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)) !important;
                     gap: 0 !important;
                     overflow: visible !important;
@@ -218,6 +218,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     cursor: pointer !important;
                 }
 
+                .plyr__controls > [data-plyr="play"] {
+                    margin-left: 10px !important;
+                }
+
                 .plyr__volume {
                     max-width: 110px !important;
                     min-width: 60px !important;
@@ -239,12 +243,8 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     margin-left: 0 !important;
                 }
 
-                /* Push secondary controls to the right */
-                .plyr__controls > [data-plyr="captions"],
-                .plyr__controls > [data-plyr="settings"],
-                .plyr__controls > .plyr__controls__item:last-child,
                 .plyr__controls > [data-plyr="fullscreen"] {
-                    margin-left: 0 !important;
+                    margin-right: 10px !important;
                 }
 
                 .plyr__controls > [data-plyr="captions"],
