@@ -184,13 +184,14 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 .plyr__progress {
                     flex-basis: 100% !important;
                     order: -1 !important;
-                    margin-bottom: 6px !important;
+                    margin-bottom: 2px !important;
                     padding: 0 !important;
                     margin-left: -10px !important;
                     margin-right: -10px !important;
-                    transform: translateY(-2px);
+                    transform: translateY(-4px);
                     width: calc(100% + 20px) !important;
                     min-width: calc(100% + 20px) !important;
+                    z-index: 10;
                 }
 
                 .plyr__progress input[type=range] {
