@@ -175,27 +175,47 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     display: flex !important;
                     flex-wrap: wrap !important;
                     align-items: center !important;
-                    padding: 0 10px 6px 10px !important;
+                    padding: 12px 10px 6px 10px !important;
                     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)) !important;
                     gap: 0 !important;
                     overflow: visible !important;
+                    position: relative !important;
                 }
 
                 .plyr__progress {
-                    flex-basis: 100% !important;
-                    order: -1 !important;
-                    margin-bottom: 2px !important;
+                    position: absolute !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    width: 100% !important;
+                    margin: 0 !important;
                     padding: 0 !important;
-                    margin-left: -10px !important;
-                    margin-right: -10px !important;
-                    transform: translateY(-4px);
-                    width: calc(100% + 20px) !important;
-                    min-width: calc(100% + 20px) !important;
-                    z-index: 10;
+                    height: 12px !important;
+                    transform: translateY(-50%) !important;
+                    z-index: 10 !important;
+                }
+
+                /* Ensure the seek bar inside is also full width */
+                .plyr__progress input[type=range] {
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    border: 0 !important;
+                }
+
+                /* Adjust seek-tooltip position if needed */
+                .plyr__tooltip {
+                    z-index: 20 !important;
+                }
+
+                .plyr__progress__container {
+                    padding: 0 !important;
+                    margin: 0 !important;
                 }
 
                 .plyr__progress input[type=range] {
-                    cursor: pointer;
+                    height: 12px !important;
+                    cursor: pointer !important;
                 }
 
                 .plyr__volume {
