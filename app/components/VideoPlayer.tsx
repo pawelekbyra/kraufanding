@@ -175,51 +175,57 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     display: flex !important;
                     flex-wrap: wrap !important;
                     align-items: center !important;
-                    padding: 12px 0 6px 0 !important;
+                    padding: 12px 10px 8px 10px !important;
                     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)) !important;
                     gap: 0 !important;
                     overflow: visible !important;
                     position: relative !important;
                 }
 
-                .plyr__progress {
+                .plyr__progress__container {
                     position: absolute !important;
                     top: 0 !important;
                     left: 0 !important;
                     right: 0 !important;
                     width: 100% !important;
-                    margin: 0 !important;
                     padding: 0 !important;
-                    height: 12px !important;
-                    transform: translateY(-50%) !important;
+                    margin: 0 !important;
                     z-index: 10 !important;
+                    transform: translateY(-50%) !important;
                 }
 
-                /* Ensure the seek bar inside is also full width */
-                .plyr__progress input[type=range] {
+                .plyr__progress {
                     width: 100% !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                }
+
+                /* Range Seek Bar Styling */
+                .plyr__progress input[type=range] {
+                    cursor: pointer !important;
+                    height: 4px !important;
+                    transition: height 0.1s ease !important;
                     margin: 0 !important;
                     padding: 0 !important;
+                    width: 100% !important;
                     border: 0 !important;
                 }
 
-                /* Adjust seek-tooltip position if needed */
+                .plyr__progress input[type=range]:hover {
+                    height: 6px !important;
+                }
+
+                /* Adjust seek-tooltip */
                 .plyr__tooltip {
                     z-index: 20 !important;
                 }
 
-                .plyr__progress__container {
-                    padding: 0 !important;
-                    margin: 0 !important;
-                }
-
-                .plyr__progress input[type=range] {
-                    height: 12px !important;
-                    cursor: pointer !important;
-                }
-
                 .plyr__controls > [data-plyr="play"] {
-                    margin-left: 10px !important;
+                    margin-left: 0 !important;
+                }
+
+                .plyr--full-ui input[type=range] {
+                    color: var(--plyr-color-main) !important;
                 }
 
                 .plyr__volume {
