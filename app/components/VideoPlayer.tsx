@@ -174,8 +174,9 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 .plyr__controls {
                     display: flex !important;
                     flex-wrap: wrap !important;
-                    padding: 0 10px 10px 10px !important;
-                    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.85)) !important;
+                    align-items: center !important;
+                    padding: 0 10px 6px 10px !important;
+                    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)) !important;
                     gap: 0 !important;
                     overflow: visible !important;
                 }
@@ -183,11 +184,11 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 .plyr__progress {
                     flex-basis: 100% !important;
                     order: -1 !important;
-                    margin-bottom: 14px !important;
+                    margin-bottom: 6px !important;
                     padding: 0 !important;
                     margin-left: -10px !important;
                     margin-right: -10px !important;
-                    transform: translateY(-12px); /* Pare pixeli wyzej */
+                    transform: translateY(-2px);
                     width: calc(100% + 20px) !important;
                     min-width: calc(100% + 20px) !important;
                 }
@@ -199,17 +200,40 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 .plyr__volume {
                     max-width: 110px !important;
                     min-width: 60px !important;
+                    margin-right: 10px !important;
                 }
 
                 .plyr__time {
                     padding: 0 8px !important;
                     font-size: 13px !important;
-                    font-weight: bold !important;
+                    font-weight: 500 !important;
+                }
+
+                /* Push right controls to the right */
+                .plyr__controls > [data-plyr="captions"],
+                .plyr__controls > [data-plyr="settings"],
+                .plyr__controls > [data-plyr="pip"],
+                .plyr__controls > [data-plyr="airplay"],
+                .plyr__controls > [data-plyr="fullscreen"] {
+                    margin-left: 0 !important;
+                }
+
+                /* Push secondary controls to the right */
+                .plyr__controls > [data-plyr="captions"],
+                .plyr__controls > [data-plyr="settings"],
+                .plyr__controls > .plyr__controls__item:last-child,
+                .plyr__controls > [data-plyr="fullscreen"] {
+                    margin-left: 0 !important;
+                }
+
+                .plyr__controls > [data-plyr="captions"],
+                .plyr__controls > [data-plyr="settings"] {
+                    margin-left: auto !important;
                 }
 
                 .plyr__controls__item.plyr__progress__container {
                     padding: 0 !important;
-                    margin: 0 0 5px 0 !important;
+                    margin: 0 !important;
                 }
 
                 /* Hide the default middle big play button if playing */
