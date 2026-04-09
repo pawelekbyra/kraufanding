@@ -6,18 +6,11 @@ import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
-import dynamic from 'next/dynamic';
-
-// Plyr Imports - Use dynamic import with SSR disabled to avoid document is not defined error
-const Plyr = dynamic(() => import('plyr-react').then((mod) => mod.Plyr), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-black flex items-center justify-center">
-       <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  )
-});
-import 'plyr/dist/plyr.css';
+// Vidstack Imports
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
+import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
+import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
 
 interface VideoPlayerProps {
     video: VideoType;
@@ -27,7 +20,6 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
     const [isMounted, setIsMounted] = useState(false);
-    const plyrRef = React.useRef<any>(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -87,191 +79,139 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         </div>
     );
 
-    const plyrSource: any = {
-        type: 'video',
-        title: video.title,
-        sources: [
-            {
-                src: videoUrl,
-                type: 'video/mp4',
-            },
-        ],
-        poster: video.thumbnailUrl,
-    };
-
-    const plyrOptions = {
-        autoplay: variant === 'hero',
-        muted: true, // Force muted for reliable initialization
-        clickToPlay: true,
-        controls: [
-            'play-large',
-            'play',
-            'progress',
-            'current-time',
-            'mute',
-            'volume',
-            'captions',
-            'settings',
-            'pip',
-            'airplay',
-            'fullscreen',
-        ],
-        ratio: '16:9',
-        keyboard: { focused: true, global: true },
-        tooltips: { controls: true, seek: true },
-    };
-
-    const handlePlayerClick = (e: React.MouseEvent) => {
-        // Only toggle play if clicking on the video area or the overlay,
-        // but NOT on the controls. Plyr controls are usually inside .plyr__controls
-        const target = e.target as HTMLElement;
-        if (target.closest('.plyr__controls')) return;
-
-        if (plyrRef.current?.plyr) {
-            plyrRef.current.plyr.togglePlay();
-        }
-    };
+    const isHero = variant === 'hero';
 
     return (
-        <div
-            className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center plyr-cyber-archive cursor-pointer"
-            onClick={handlePlayerClick}
-        >
-            <div className="w-full max-w-full h-full flex items-center justify-center">
-                 <Plyr ref={plyrRef} source={plyrSource} options={plyrOptions} />
-            </div>
+        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center vds-yt-theme">
+            <MediaPlayer
+                title={video.title}
+                src={videoUrl}
+                crossOrigin
+                playsInline
+                autoplay={isHero}
+                muted={isHero}
+                className="w-full h-full aspect-video"
+            >
+                <MediaProvider>
+                    <Poster
+                        className="vds-poster absolute inset-0 w-full h-full object-cover opacity-0 data-[visible]:opacity-100 transition-opacity duration-500"
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                    />
+                </MediaProvider>
+                <DefaultVideoLayout
+                    icons={defaultLayoutIcons}
+                />
+            </MediaPlayer>
 
             <style jsx global>{`
-                .plyr-cyber-archive {
-                    --plyr-color-main: #3b82f6;
-                    --plyr-video-background: #000;
-                    --plyr-font-family: var(--font-space-grotesk), sans-serif;
-                    --plyr-range-track-height: 4px;
-                    --plyr-range-thumb-height: 12px;
-                    --plyr-control-spacing: 8px;
-                }
-                .plyr--video {
-                    height: 100%;
-                    width: 100%;
-                }
-                .plyr__video-wrapper {
-                    height: 100% !important;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .plyr--full-ui.plyr--video .plyr__control--overlaid {
-                    background: #3b82f6;
-                }
-                .plyr--full-ui input[type=range] {
-                    color: #3b82f6;
-                }
-                .plyr__poster {
-                    background-size: cover;
+                /* YouTube-style Customization for Vidstack */
+                .vds-yt-theme {
+                    --video-brand: #ff0000;
+                    --video-controls-bg: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+                    --media-font-family: var(--font-space-grotesk), sans-serif;
                 }
 
-                /* YouTube-style: Progress bar full width on top, controls below */
-                .plyr__controls {
-                    display: flex !important;
-                    flex-wrap: wrap !important;
-                    align-items: center !important;
-                    padding: 12px 10px 8px 10px !important;
-                    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)) !important;
-                    gap: 0 !important;
-                    overflow: visible !important;
-                    position: relative !important;
+                .vds-player {
+                    background-color: #000;
+                    border-radius: 8px;
                 }
 
-                .plyr__progress__container {
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    right: 0 !important;
-                    width: 100% !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    z-index: 10 !important;
-                    transform: translateY(-50%) !important;
+                /* Minimalist seek bar that expands on hover - matching YT */
+                .vds-time-slider {
+                    --slider-track-height: 4px;
+                    --slider-thumb-size: 0px;
+                    --slider-active-track-bg: var(--video-brand);
+                    --slider-buffer-bg: rgba(255, 255, 255, 0.3);
+                    --slider-track-bg: rgba(255, 255, 255, 0.2);
+                    transition: height 0.1s ease;
                 }
 
-                .plyr__progress {
-                    width: 100% !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
+                /* Increase hit area for easier scrubbing */
+                .vds-time-slider .vds-slider-track {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
                 }
 
-                /* Range Seek Bar Styling */
-                .plyr__progress input[type=range] {
-                    cursor: pointer !important;
-                    height: 4px !important;
-                    transition: height 0.1s ease !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    width: 100% !important;
-                    border: 0 !important;
+                .vds-player[data-hover] .vds-time-slider,
+                .vds-time-slider[data-dragging],
+                .vds-time-slider[data-hover] {
+                    --slider-track-height: 6px;
+                    --slider-thumb-size: 14px;
                 }
 
-                .plyr__progress input[type=range]:hover {
-                    height: 6px !important;
+                /* Controls Layout Overrides */
+                .vds-controls-group {
+                    padding-bottom: 2px !important;
                 }
 
-                /* Adjust seek-tooltip */
-                .plyr__tooltip {
-                    z-index: 20 !important;
+                /* Icon sizing to match YouTube's chunky feel */
+                .vds-icon {
+                    width: 26px;
+                    height: 26px;
                 }
 
-                .plyr__controls > [data-plyr="play"] {
-                    margin-left: 0 !important;
-                }
-
-                .plyr--full-ui input[type=range] {
-                    color: var(--plyr-color-main) !important;
-                }
-
-                .plyr__volume {
-                    max-width: 110px !important;
-                    min-width: 60px !important;
-                    margin-right: 10px !important;
-                }
-
-                .plyr__time {
-                    padding: 0 8px !important;
-                    font-size: 13px !important;
-                    font-weight: 500 !important;
-                }
-
-                /* Push right controls to the right */
-                .plyr__controls > [data-plyr="captions"],
-                .plyr__controls > [data-plyr="settings"],
-                .plyr__controls > [data-plyr="pip"],
-                .plyr__controls > [data-plyr="airplay"],
-                .plyr__controls > [data-plyr="fullscreen"] {
-                    margin-left: 0 !important;
-                }
-
-                .plyr__controls > [data-plyr="fullscreen"] {
-                    margin-right: 10px !important;
-                }
-
-                .plyr__controls > [data-plyr="captions"],
-                .plyr__controls > [data-plyr="settings"] {
-                    margin-left: auto !important;
-                }
-
-                .plyr__controls__item.plyr__progress__container {
-                    padding: 0 !important;
-                    margin: 0 !important;
-                }
-
-                /* Hide the default middle big play button if playing */
-                .plyr--playing .plyr__control--overlaid {
+                /* Volume slider behavior - hide unless hovering volume area */
+                .vds-volume-slider {
+                    width: 0;
+                    transition: width 0.2s ease, margin 0.2s ease, opacity 0.2s ease;
                     opacity: 0;
-                    visibility: hidden;
+                    margin-left: 0;
                 }
 
-                /* Hover effect for cleaner look */
-                .plyr--full-ui input[type=range]::-webkit-slider-runnable-track {
-                    background-color: rgba(255, 255, 255, 0.25);
+                .vds-mute-button:hover + .vds-volume-slider,
+                .vds-volume-slider:hover,
+                .vds-volume-slider[data-dragging] {
+                    width: 60px;
+                    opacity: 1;
+                    margin-left: 8px;
+                }
+
+                /* Tooltip styling - minimalist dark */
+                .vds-tooltip-content {
+                    background-color: rgba(28, 28, 28, 0.9) !important;
+                    backdrop-filter: blur(4px);
+                    border-radius: 2px !important;
+                    font-size: 12px !important;
+                    padding: 5px 8px !important;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                }
+
+                /* Settings Menu styling */
+                .vds-menu-items {
+                    background-color: rgba(28, 28, 28, 0.95) !important;
+                    backdrop-filter: blur(8px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 8px !important;
+                    padding: 4px !important;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+                }
+
+                .vds-menu-item {
+                    font-size: 13px !important;
+                    padding: 10px 14px !important;
+                    border-radius: 4px !important;
+                    transition: background-color 0.2s ease;
+                }
+
+                .vds-menu-item[data-focus] {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                }
+
+                /* Big Play Button Fix */
+                .vds-play-button[data-paused][data-active] .vds-icon {
+                   width: 56px;
+                   height: 56px;
+                }
+
+                /* Center the controls properly on mobile */
+                @media (max-width: 640px) {
+                    .vds-player {
+                        border-radius: 0;
+                    }
+                    .vds-time-slider {
+                        --slider-track-height: 3px;
+                    }
                 }
             `}</style>
         </div>
