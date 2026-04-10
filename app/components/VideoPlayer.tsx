@@ -136,10 +136,10 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
             )}
 
             <style jsx global>{`
-                /* YouTube Red Theme Overrides - Scoped to container */
+                /* Brand Theme Overrides - Scoped to container and matching site's #3b82f6 blue */
                 .vidstack-player-container {
-                    --video-brand: #FF0000;
-                    --video-focus: #FF0000;
+                    --video-brand: #3b82f6;
+                    --video-focus: #3b82f6;
                 }
 
                 .vidstack-player-container .vds-player {
@@ -147,12 +147,12 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     border-radius: 8px;
                 }
 
-                /* YouTube-style progress bar - repositioned lower */
+                /* Custom progress bar - matching site's blue and repositioned lower */
                 .vidstack-player-container .vds-slider[data-type="progress"] {
                     --slider-track-height: 3px;
                     --slider-thumb-size: 12px;
-                    --slider-active-track-bg: #FF0000;
-                    --slider-thumb-bg: #FF0000;
+                    --slider-active-track-bg: #3b82f6;
+                    --slider-thumb-bg: #3b82f6;
                     margin-bottom: -4px !important;
                     z-index: 20;
                 }
