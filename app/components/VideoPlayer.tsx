@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Play } from './icons';
 
 // Vidstack Imports
+import '@vidstack/react/player/styles/base.css';
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
 import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
@@ -65,7 +66,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     }
 
     if (!isMounted) return (
-        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center cursor-pointer">
+        <div className="relative w-full aspect-video bg-black overflow-hidden flex items-center justify-center cursor-pointer rounded-lg">
             <img
                 src={video.thumbnailUrl}
                 alt={video.title}
@@ -82,21 +83,21 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     const isHero = variant === 'hero';
 
     return (
-        <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center vds-yt-theme">
+        <div className="relative w-full aspect-video bg-black vds-yt-theme rounded-lg overflow-hidden group shadow-2xl">
             <MediaPlayer
+                key={videoUrl}
                 title={video.title}
                 src={videoUrl}
-                crossOrigin
-                playsInline
+                poster={video.thumbnailUrl}
                 autoplay={isHero}
                 muted={isHero}
-                className="w-full h-full aspect-video"
+                playsInline
+                load="eager"
+                className="w-full h-full"
             >
                 <MediaProvider>
                     <Poster
                         className="vds-poster absolute inset-0 w-full h-full object-cover opacity-0 data-[visible]:opacity-100 transition-opacity duration-500"
-                        src={video.thumbnailUrl}
-                        alt={video.title}
                     />
                 </MediaProvider>
                 <DefaultVideoLayout
@@ -113,8 +114,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 }
 
                 .vds-player {
-                    background-color: #000;
-                    border-radius: 8px;
+                    background-color: #000 !important;
                 }
 
                 /* Minimalist seek bar that expands on hover - matching YT */
@@ -125,12 +125,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     --slider-buffer-bg: rgba(255, 255, 255, 0.3);
                     --slider-track-bg: rgba(255, 255, 255, 0.2);
                     transition: height 0.1s ease;
-                }
-
-                /* Increase hit area for easier scrubbing */
-                .vds-time-slider .vds-slider-track {
-                    margin-top: 10px;
-                    margin-bottom: 10px;
                 }
 
                 .vds-player[data-hover] .vds-time-slider,
@@ -174,7 +168,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     border-radius: 2px !important;
                     font-size: 12px !important;
                     padding: 5px 8px !important;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
                 }
 
                 /* Settings Menu styling */
@@ -184,14 +177,12 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 8px !important;
                     padding: 4px !important;
-                    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
                 }
 
                 .vds-menu-item {
                     font-size: 13px !important;
                     padding: 10px 14px !important;
                     border-radius: 4px !important;
-                    transition: background-color 0.2s ease;
                 }
 
                 .vds-menu-item[data-focus] {
@@ -199,18 +190,14 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 }
 
                 /* Big Play Button Fix */
-                .vds-play-button[data-paused][data-active] .vds-icon {
+                .vds-play-button[data-paused] .vds-icon {
                    width: 56px;
                    height: 56px;
                 }
 
-                /* Center the controls properly on mobile */
                 @media (max-width: 640px) {
                     .vds-player {
                         border-radius: 0;
-                    }
-                    .vds-time-slider {
-                        --slider-track-height: 3px;
                     }
                 }
             `}</style>
