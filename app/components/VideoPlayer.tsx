@@ -117,7 +117,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                         setLoadError('Nie udało się załadować materiału wideo. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
                     }}
                     className="w-full h-full"
-                    theme="dark"
                 >
                     <MediaProvider>
                         <Poster
