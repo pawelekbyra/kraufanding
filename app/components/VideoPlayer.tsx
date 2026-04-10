@@ -147,15 +147,33 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     border-radius: 8px;
                 }
 
-                /* YouTube-style progress bar */
+                /* YouTube-style progress bar - repositioned lower */
                 .vidstack-player-container .vds-slider[data-type="progress"] {
-                    --slider-track-height: 4px;
-                    --slider-thumb-size: 14px;
+                    --slider-track-height: 3px;
+                    --slider-thumb-size: 12px;
                     --slider-active-track-bg: #FF0000;
+                    --slider-thumb-bg: #FF0000;
+                    margin-bottom: -4px !important;
+                    z-index: 20;
                 }
 
                 .vidstack-player-container .vds-slider[data-type="progress"]:hover {
-                    --slider-track-height: 6px;
+                    --slider-track-height: 5px;
+                }
+
+                /* Tighten the layout of control groups to match YouTube's proportions */
+                .vidstack-player-container .vds-controls {
+                    padding-bottom: 8px !important;
+                }
+
+                .vidstack-player-container .vds-controls-group {
+                    padding: 0 16px !important;
+                }
+
+                /* Specifically target the progress bar container group */
+                .vidstack-player-container .vds-controls-group:has(.vds-slider[data-type="progress"]) {
+                    padding: 0 !important;
+                    margin-bottom: -2px !important;
                 }
 
                 /* Mobile responsiveness */
