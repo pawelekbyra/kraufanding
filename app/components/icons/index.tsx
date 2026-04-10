@@ -456,6 +456,14 @@ export const Globe = (props: IconProps) => (
   </BaseIcon>
 );
 
+export const AlertCircle = (props: IconProps) => (
+  <BaseIcon viewBox="0 0 24 24" {...props}>
+    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+    <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </BaseIcon>
+);
+
 export const ShieldCheck = (props: IconProps) => (
   <BaseIcon viewBox="0 0 157 156" {...props}>
     <g dangerouslySetInnerHTML={{ __html: `<g clip-path="url(#shieldcheck_clip0)">

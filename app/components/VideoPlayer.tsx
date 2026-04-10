@@ -1,11 +1,18 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
 import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
-import { Play } from './icons';
-import Artplayer from 'artplayer';
+import { Play, AlertCircle } from './icons';
+
+// Vidstack Imports
+import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
+import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
+
+// Vidstack Styles
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
 
 interface VideoPlayerProps {
     video: VideoType;
@@ -15,94 +22,13 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
     const [isMounted, setIsMounted] = useState(false);
-    const artRef = useRef<HTMLDivElement>(null);
-    const playerInstance = useRef<Artplayer | null>(null);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
-        return () => {
-            if (playerInstance.current) {
-                playerInstance.current.destroy();
-            }
-        };
     }, []);
 
-    useEffect(() => {
-        if (isMounted && videoUrl && artRef.current && variant === 'hero') {
-            // Clean up previous instance if it exists
-            if (playerInstance.current) {
-                playerInstance.current.destroy();
-            }
-
-            const art = new Artplayer({
-                container: artRef.current,
-                url: videoUrl,
-                poster: video.thumbnailUrl,
-                title: video.title,
-                volume: 0.5,
-                isLive: false,
-                muted: variant === 'hero',
-                autoplay: variant === 'hero',
-                pip: true,
-                autoSize: false,
-                autoMini: true,
-                screenshot: true,
-                setting: true,
-                loop: false,
-                flip: true,
-                playbackRate: true,
-                aspectRatio: true,
-                fullscreen: true,
-                fullscreenWeb: true,
-                subtitleOffset: true,
-                miniProgressBar: true,
-                mutex: true,
-                backdrop: true,
-                playsInline: true,
-                autoPlayback: true,
-                airplay: true,
-                theme: '#FF0000', // YouTube Red
-                moreVideoAttr: {
-                    crossOrigin: 'anonymous',
-                    playsInline: true,
-                },
-                settings: [
-                    {
-                        width: 200,
-                        html: 'Quality',
-                        tooltip: '720P',
-                        selector: [
-                            {
-                                default: true,
-                                html: '720P',
-                                url: videoUrl,
-                            },
-                        ],
-                        onSelect: function (item) {
-                            art.switchQuality(item.url, item.html);
-                            return item.html;
-                        },
-                    },
-                ],
-                customHotkeys: [
-                    {
-                        key: ' ',
-                        action: () => art.toggle(),
-                    },
-                ],
-            });
-
-            playerInstance.current = art;
-
-            return () => {
-                if (playerInstance.current) {
-                    playerInstance.current.destroy();
-                }
-            };
-        }
-    }, [isMounted, videoUrl, variant, video.thumbnailUrl, video.title]);
-
-    // If it's a thumbnail or we don't have access/URL, show the preview/restricted UI
+    // Optimized Thumbnail Variant: No player engine, just a static preview
     if (variant === 'thumbnail' || !videoUrl) {
         return (
             <div
@@ -141,6 +67,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         );
     }
 
+    // Hydration guard
     if (!isMounted) return (
         <div className="relative w-full aspect-video bg-black overflow-hidden flex items-center justify-center cursor-pointer rounded-lg">
             <img
@@ -157,46 +84,89 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     );
 
     return (
-        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden group shadow-2xl art-player-container">
-            <div ref={artRef} className="w-full h-full" />
+        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden group shadow-2xl vidstack-player-container">
+            {loadError ? (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-neutral-900 p-6 text-center">
+                    <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+                    <h3 className="text-white font-bold text-lg mb-2">Błąd ładowania filmu</h3>
+                    <p className="text-neutral-400 text-sm max-w-md">{loadError}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="mt-6 px-6 py-2 bg-white text-black rounded-full font-bold text-sm hover:bg-neutral-200 transition-colors"
+                    >
+                        Odśwież stronę
+                    </button>
+                </div>
+            ) : (
+                <MediaPlayer
+                    title={video.title}
+                    src={videoUrl}
+                    poster={video.thumbnailUrl}
+                    crossOrigin="anonymous"
+                    load="visible"
+                    autoPlay={variant === 'hero'}
+                    muted={variant === 'hero'}
+                    playsInline
+                    key={videoUrl} // Force re-mount on URL change to prevent state carryover
+                    onCanPlay={() => {
+                        console.log('[Vidstack] Video is ready to play');
+                        setLoadError(null);
+                    }}
+                    onError={(detail) => {
+                        console.error('[Vidstack] Load Error:', detail);
+                        setLoadError('Nie udało się załadować materiału wideo. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
+                    }}
+                    className="w-full h-full"
+                    theme="dark"
+                >
+                    <MediaProvider>
+                        <Poster
+                            className="vds-poster"
+                            src={video.thumbnailUrl}
+                            alt={video.title}
+                        />
+                    </MediaProvider>
+                    <DefaultVideoLayout
+                        icons={defaultLayoutIcons}
+                        noModal
+                    />
+                </MediaPlayer>
+            )}
 
             <style jsx global>{`
-                .art-player-container .art-video-container {
-                    background-color: #000 !important;
+                /* YouTube Red Theme Overrides - Scoped to container */
+                .vidstack-player-container {
+                    --video-brand: #FF0000;
+                    --video-focus: #FF0000;
                 }
 
-                .art-player-container .art-control-progress-inner {
-                    background: #FF0000 !important;
+                .vidstack-player-container .vds-player {
+                    background-color: #000;
+                    border-radius: 8px;
                 }
 
-                .art-player-container .art-control-progress-handle {
-                    background: #FF0000 !important;
-                    width: 12px;
-                    height: 12px;
+                /* YouTube-style progress bar */
+                .vidstack-player-container .vds-slider[data-type="progress"] {
+                    --slider-track-height: 4px;
+                    --slider-thumb-size: 14px;
+                    --slider-active-track-bg: #FF0000;
                 }
 
-                .art-player-container .art-bottom {
-                    background: linear-gradient(transparent, rgba(0,0,0,0.7)) !important;
+                .vidstack-player-container .vds-slider[data-type="progress"]:hover {
+                    --slider-track-height: 6px;
                 }
 
-                .art-player-container .art-control {
-                    color: #fff !important;
-                }
-
-                /* YouTube-style hover effect on progress bar */
-                .art-player-container .art-control-progress {
-                    height: 4px !important;
-                    transition: height 0.1s ease !important;
-                }
-
-                .art-player-container:hover .art-control-progress {
-                    height: 6px !important;
-                }
-
+                /* Mobile responsiveness */
                 @media (max-width: 640px) {
-                    .art-player-container {
+                    .vidstack-player-container,
+                    .vidstack-player-container .vds-player {
                         border-radius: 0;
                     }
+                }
+
+                /* Ensure controls are styled professionally */
+                .vidstack-player-container .vds-controls {
+                    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
                 }
             `}</style>
         </div>
