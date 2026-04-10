@@ -93,13 +93,13 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 muted={isHero}
                 playsInline
                 load="eager"
+                crossOrigin
                 className="w-full h-full"
             >
-                <MediaProvider>
-                    <Poster
-                        className="vds-poster absolute inset-0 w-full h-full object-cover opacity-0 data-[visible]:opacity-100 transition-opacity duration-500"
-                    />
-                </MediaProvider>
+                <MediaProvider />
+                <Poster
+                    className="vds-poster absolute inset-0 w-full h-full object-cover opacity-0 data-[visible]:opacity-100 transition-opacity duration-500"
+                />
                 <DefaultVideoLayout
                     icons={defaultLayoutIcons}
                 />
