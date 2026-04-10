@@ -1,17 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useVideoAccess } from './PremiumWrapper';
 import { Video as VideoType } from '@/app/types/video';
 import { cn } from '@/lib/utils';
 import { Play } from './icons';
-
-// Vidstack Imports
-import '@vidstack/react/player/styles/base.css';
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
-import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
-import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
+import Artplayer from 'artplayer';
 
 interface VideoPlayerProps {
     video: VideoType;
@@ -21,10 +15,92 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProps) {
     const { videoUrl } = useVideoAccess();
     const [isMounted, setIsMounted] = useState(false);
+    const artRef = useRef<HTMLDivElement>(null);
+    const playerInstance = useRef<Artplayer | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
+        return () => {
+            if (playerInstance.current) {
+                playerInstance.current.destroy();
+            }
+        };
     }, []);
+
+    useEffect(() => {
+        if (isMounted && videoUrl && artRef.current && variant === 'hero') {
+            // Clean up previous instance if it exists
+            if (playerInstance.current) {
+                playerInstance.current.destroy();
+            }
+
+            const art = new Artplayer({
+                container: artRef.current,
+                url: videoUrl,
+                poster: video.thumbnailUrl,
+                title: video.title,
+                volume: 0.5,
+                isLive: false,
+                muted: variant === 'hero',
+                autoplay: variant === 'hero',
+                pip: true,
+                autoSize: false,
+                autoMini: true,
+                screenshot: true,
+                setting: true,
+                loop: false,
+                flip: true,
+                playbackRate: true,
+                aspectRatio: true,
+                fullscreen: true,
+                fullscreenWeb: true,
+                subtitleOffset: true,
+                miniProgressBar: true,
+                mutex: true,
+                backdrop: true,
+                playsInline: true,
+                autoPlayback: true,
+                airplay: true,
+                theme: '#FF0000', // YouTube Red
+                moreVideoAttr: {
+                    crossOrigin: 'anonymous',
+                    playsInline: true,
+                },
+                settings: [
+                    {
+                        width: 200,
+                        html: 'Quality',
+                        tooltip: '720P',
+                        selector: [
+                            {
+                                default: true,
+                                html: '720P',
+                                url: videoUrl,
+                            },
+                        ],
+                        onSelect: function (item) {
+                            art.switchQuality(item.url, item.html);
+                            return item.html;
+                        },
+                    },
+                ],
+                customHotkeys: [
+                    {
+                        key: ' ',
+                        action: () => art.toggle(),
+                    },
+                ],
+            });
+
+            playerInstance.current = art;
+
+            return () => {
+                if (playerInstance.current) {
+                    playerInstance.current.destroy();
+                }
+            };
+        }
+    }, [isMounted, videoUrl, variant, video.thumbnailUrl, video.title]);
 
     // If it's a thumbnail or we don't have access/URL, show the preview/restricted UI
     if (variant === 'thumbnail' || !videoUrl) {
@@ -80,123 +156,45 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
         </div>
     );
 
-    const isHero = variant === 'hero';
-
     return (
-        <div className="relative w-full aspect-video bg-black vds-yt-theme rounded-lg overflow-hidden group shadow-2xl">
-            <MediaPlayer
-                key={videoUrl}
-                title={video.title}
-                src={videoUrl}
-                poster={video.thumbnailUrl}
-                autoplay={isHero}
-                muted={isHero}
-                playsInline
-                load="eager"
-                crossOrigin
-                className="w-full h-full"
-            >
-                <MediaProvider />
-                <Poster
-                    className="vds-poster absolute inset-0 w-full h-full object-cover opacity-0 data-[visible]:opacity-100 transition-opacity duration-500"
-                />
-                <DefaultVideoLayout
-                    icons={defaultLayoutIcons}
-                />
-            </MediaPlayer>
+        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden group shadow-2xl art-player-container">
+            <div ref={artRef} className="w-full h-full" />
 
             <style jsx global>{`
-                /* YouTube-style Customization for Vidstack */
-                .vds-yt-theme {
-                    --video-brand: #ff0000;
-                    --video-controls-bg: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
-                    --media-font-family: var(--font-space-grotesk), sans-serif;
-                }
-
-                .vds-player {
+                .art-player-container .art-video-container {
                     background-color: #000 !important;
                 }
 
-                /* Minimalist seek bar that expands on hover - matching YT */
-                .vds-time-slider {
-                    --slider-track-height: 4px;
-                    --slider-thumb-size: 0px;
-                    --slider-active-track-bg: var(--video-brand);
-                    --slider-buffer-bg: rgba(255, 255, 255, 0.3);
-                    --slider-track-bg: rgba(255, 255, 255, 0.2);
-                    transition: height 0.1s ease;
+                .art-player-container .art-control-progress-inner {
+                    background: #FF0000 !important;
                 }
 
-                .vds-player[data-hover] .vds-time-slider,
-                .vds-time-slider[data-dragging],
-                .vds-time-slider[data-hover] {
-                    --slider-track-height: 6px;
-                    --slider-thumb-size: 14px;
+                .art-player-container .art-control-progress-handle {
+                    background: #FF0000 !important;
+                    width: 12px;
+                    height: 12px;
                 }
 
-                /* Controls Layout Overrides */
-                .vds-controls-group {
-                    padding-bottom: 2px !important;
+                .art-player-container .art-bottom {
+                    background: linear-gradient(transparent, rgba(0,0,0,0.7)) !important;
                 }
 
-                /* Icon sizing to match YouTube's chunky feel */
-                .vds-icon {
-                    width: 26px;
-                    height: 26px;
+                .art-player-container .art-control {
+                    color: #fff !important;
                 }
 
-                /* Volume slider behavior - hide unless hovering volume area */
-                .vds-volume-slider {
-                    width: 0;
-                    transition: width 0.2s ease, margin 0.2s ease, opacity 0.2s ease;
-                    opacity: 0;
-                    margin-left: 0;
+                /* YouTube-style hover effect on progress bar */
+                .art-player-container .art-control-progress {
+                    height: 4px !important;
+                    transition: height 0.1s ease !important;
                 }
 
-                .vds-mute-button:hover + .vds-volume-slider,
-                .vds-volume-slider:hover,
-                .vds-volume-slider[data-dragging] {
-                    width: 60px;
-                    opacity: 1;
-                    margin-left: 8px;
-                }
-
-                /* Tooltip styling - minimalist dark */
-                .vds-tooltip-content {
-                    background-color: rgba(28, 28, 28, 0.9) !important;
-                    backdrop-filter: blur(4px);
-                    border-radius: 2px !important;
-                    font-size: 12px !important;
-                    padding: 5px 8px !important;
-                }
-
-                /* Settings Menu styling */
-                .vds-menu-items {
-                    background-color: rgba(28, 28, 28, 0.95) !important;
-                    backdrop-filter: blur(8px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 8px !important;
-                    padding: 4px !important;
-                }
-
-                .vds-menu-item {
-                    font-size: 13px !important;
-                    padding: 10px 14px !important;
-                    border-radius: 4px !important;
-                }
-
-                .vds-menu-item[data-focus] {
-                    background-color: rgba(255, 255, 255, 0.1) !important;
-                }
-
-                /* Big Play Button Fix */
-                .vds-play-button[data-paused] .vds-icon {
-                   width: 56px;
-                   height: 56px;
+                .art-player-container:hover .art-control-progress {
+                    height: 6px !important;
                 }
 
                 @media (max-width: 640px) {
-                    .vds-player {
+                    .art-player-container {
                         border-radius: 0;
                     }
                 }
