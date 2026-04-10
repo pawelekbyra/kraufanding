@@ -25,7 +25,11 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
     const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
-        setIsMounted(true);
+        // Small timeout to ensure the DOM and context are ready
+        const timer = setTimeout(() => {
+            setIsMounted(true);
+        }, 100);
+        return () => clearTimeout(timer);
     }, []);
 
     // Optimized Thumbnail Variant: No player engine, just a static preview
@@ -102,7 +106,6 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     title={video.title}
                     src={videoUrl}
                     poster={video.thumbnailUrl}
-                    crossOrigin="anonymous"
                     load="visible"
                     autoPlay={variant === 'hero'}
                     muted={variant === 'hero'}
