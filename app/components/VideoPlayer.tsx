@@ -166,9 +166,21 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     }
                 }
 
-                /* Ensure controls are styled professionally */
+                /* Ensure controls are styled professionally with smooth animations */
                 .vidstack-player-container .vds-controls {
                     background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+                    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                }
+
+                /* Smooth slide-down animation when controls hide */
+                .vidstack-player-container .vds-player:not([data-controls-visible]) .vds-controls {
+                    opacity: 0 !important;
+                    transform: translateY(20px) !important;
+                }
+
+                .vidstack-player-container .vds-player[data-controls-visible] .vds-controls {
+                    opacity: 1 !important;
+                    transform: translateY(0) !important;
                 }
             `}</style>
         </div>
