@@ -282,10 +282,10 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
              className="w-full h-full object-cover"
            />
         </div>
-        <div className="flex-1 min-w-0 group/input">
+        <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-white px-3 py-1 rounded-full w-fit mb-3 border border-[#1a1a1a] shadow-brutalist-sm">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
                 <CornerDownRight size={12} />
                 {language === 'pl' ? (
                   <>Odpowiadasz <span className="font-black ml-1">{replyingToAuthor}</span></>
@@ -296,17 +296,17 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
               </div>
             )}
             {!canComment ? (
-              <div className="w-full border border-[#e9eef6] bg-white rounded-xl py-4 min-h-[3rem] flex items-center justify-center shadow-inner">
+              <div className="w-full border-b border-[#e9eef6] py-1 min-h-[1.5rem] flex items-center justify-center">
                  {isPatronGated && !isPatron ? (
                     <a
                       href="#donations"
-                      className="text-[14px] font-bold text-blue-600 underline underline-offset-8 decoration-2 hover:text-blue-700 transition-all text-center"
+                      className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-center"
                     >
                       {t.becomePatronToComment}
                     </a>
                   ) : (
                     <SignInButton mode="modal">
-                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-8 decoration-2 hover:text-blue-700 transition-all text-center">
+                      <button className="text-[14px] font-bold text-blue-600 underline underline-offset-4 hover:opacity-80 transition-all text-center">
                         {t.signInToComment}
                       </button>
                     </SignInButton>
@@ -318,13 +318,13 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                 onChange={(e) => setNewComment(e.target.value)}
                 onFocus={() => setIsInputFocused(true)}
                 placeholder={replyTo ? t.addReply : t.addComment}
-                className="w-full bg-white text-[#0f0f0f] focus:outline-none text-[14px] border border-[#e9eef6] focus:border-[#3b82f6] rounded-xl shadow-inner focus:ring-4 focus:ring-[#3b82f6]/5 transition-all duration-300 resize-none px-4 py-3 min-h-[3.5rem]"
+                className="w-full bg-transparent text-[#0f0f0f] focus:outline-none text-[14px] border-b border-[#e9eef6] focus:border-b-2 focus:border-[#3b82f6] transition-all resize-none py-1 min-h-[1.5rem]"
               />
             )}
           </div>
 
           {(isInputFocused || newComment.trim() || replyTo) && canComment && (
-            <div className="flex justify-start gap-2 mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex justify-start gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
                <button
                  onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
                  className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
@@ -336,9 +336,9 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   onClick={handleSubmit}
                   disabled={!newComment.trim() || postMutation.isPending}
                   className={cn(
-                      "px-4 py-2 rounded-full text-[14px] font-bold transition-all active:scale-95",
+                      "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
                       newComment.trim()
-                          ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 shadow-sm"
+                          ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
                           : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
                   )}
                 >
@@ -390,21 +390,21 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   <button
                     onClick={() => userProfile && likeMutation.mutate(comment.id)}
                     className={cn(
-                      "flex items-center gap-1 transition-all group active:scale-90",
+                      "flex items-center gap-1 transition-all group",
                       comment.isLiked ? "text-primary" : "text-[#606060] hover:text-[#0f0f0f]"
                     )}
                   >
-                    <ThumbsUp size={13} className={cn(comment.isLiked && "fill-primary transition-transform group-hover:scale-110")} />
+                    <ThumbsUp size={13} className={cn(comment.isLiked && "fill-primary")} />
                     <span className="text-[11px] font-normal">{comment._count?.likes || 0}</span>
                   </button>
                   <button
                     onClick={() => userProfile && dislikeMutation.mutate(comment.id)}
                     className={cn(
-                        "flex items-center gap-1 transition-all group active:scale-90",
+                        "flex items-center gap-1 transition-all group",
                         comment.isDisliked ? "text-black" : "text-[#606060] hover:text-[#0f0f0f]"
                     )}
                   >
-                    <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-black transition-transform group-hover:scale-110")} />
+                    <ThumbsDown size={13} className={cn(comment.isDisliked && "fill-black")} />
                     <span className="text-[11px] font-normal">{comment._count?.dislikes || 0}</span>
                   </button>
                   {canComment && (
@@ -421,7 +421,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
 
             {/* NESTED REPLIES */}
             {comment.replies && comment.replies.length > 0 && (
-              <div className="pl-6 md:pl-12 space-y-4 border-l border-[#1a1a1a]/5 ml-4 md:ml-4.5 mt-2">
+              <div className="pl-12 space-y-3">
                 {comment.replies.map((reply: any) => (
                   <div key={reply.id} className="flex gap-2.5 items-start group/reply">
                     <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center shrink-0 overflow-hidden border border-[#e9eef6] mt-0">

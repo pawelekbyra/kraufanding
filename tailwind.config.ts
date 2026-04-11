@@ -25,11 +25,6 @@ const config = {
           dark: '#6d28d9',
         },
       },
-      boxShadow: {
-        'brutalist': '4px 4px 0px 0px #1a1a1a',
-        'brutalist-sm': '2px 2px 0px 0px #1a1a1a',
-        'brutalist-lg': '8px 8px 0px 0px #1a1a1a',
-      },
       animation: {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s infinite',

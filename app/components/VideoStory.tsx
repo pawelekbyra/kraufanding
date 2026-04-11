@@ -10,9 +10,9 @@ const VideoStory: React.FC<VideoStoryProps> = ({ video }) => {
   const { t } = useLanguage();
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 font-serif">
-      <div className="card bg-white border-2 border-[#1a1a1a] rounded-[2rem] p-8 shadow-brutalist overflow-hidden group">
+      <div className="card bg-white border-2 border-[#1a1a1a]/10 rounded-[2rem] p-8 shadow-lg overflow-hidden group">
         <div className="space-y-6">
-          <h2 className="text-3xl font-black text-[#1a1a1a] mb-8 border-b-2 border-[#1a1a1a]/10 pb-6 uppercase tracking-tighter">
+          <h2 className="text-3xl font-black text-[#1a1a1a] mb-8 border-b-2 border-[#1a1a1a]/10 pb-6 uppercase tracking-tighter italic">
             {t.noMoneyHowTitle}
           </h2>
 
@@ -25,13 +25,13 @@ const VideoStory: React.FC<VideoStoryProps> = ({ video }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white border-2 border-[#1a1a1a] rounded-3xl p-8 shadow-brutalist-sm hover:shadow-brutalist transition-all duration-300">
+        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-3xl p-8 shadow-md">
           <h3 className="text-xl font-black text-[#1a1a1a] mb-4 uppercase tracking-tight">Misja</h3>
           <p className="text-[#1a1a1a]/70 leading-relaxed italic">
             Dostarczanie najwyższej jakości materiałów operacyjnych i śledczych bezpośrednio do rąk naszych Patronów.
           </p>
         </div>
-        <div className="bg-white border-2 border-[#1a1a1a] rounded-3xl p-8 shadow-brutalist-sm hover:shadow-brutalist transition-all duration-300">
+        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-3xl p-8 shadow-md">
           <h3 className="text-xl font-black text-[#1a1a1a] mb-4 uppercase tracking-tight">Dla Patronów</h3>
           <ul className="space-y-3 text-[#1a1a1a]/70 font-bold uppercase text-xs tracking-widest">
             <li className="flex items-center gap-3">

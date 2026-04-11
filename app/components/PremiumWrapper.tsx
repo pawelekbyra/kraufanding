@@ -160,18 +160,12 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
           isThumbnail ? "rounded-lg border-white/10" : "rounded-2xl border-[#1a1a1a]"
       )}>
 
-         <div className="absolute inset-0 z-0 opacity-70">
+         <div className="absolute inset-0 z-0 opacity-60">
             <div className={cn(
-                "w-full h-full blur-[24px] transition-all duration-1000 group-hover:scale-125 group-hover:rotate-3",
+                "w-full h-full blur-[16px] transition-all duration-700 group-hover:scale-110",
                 isVIPGated
-                    ? 'bg-[radial-gradient(circle_at_50%_50%,rgba(245,158,11,0.15),rgba(0,0,0,1))]'
-                    : 'bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.15),rgba(0,0,0,1))]'
-            )} />
-            <div className={cn(
-                "absolute inset-0 opacity-30 mix-blend-overlay transition-all duration-700 group-hover:opacity-50",
-                isVIPGated
-                    ? 'bg-gradient-to-br from-amber-500/20 via-transparent to-amber-900/20'
-                    : 'bg-gradient-to-br from-blue-500/20 via-transparent to-blue-900/20'
+                    ? 'bg-gradient-to-br from-amber-900 via-black to-amber-950'
+                    : 'bg-gradient-to-br from-blue-900 via-black to-blue-950'
             )} />
          </div>
 
