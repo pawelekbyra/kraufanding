@@ -39,7 +39,7 @@ export default function CheckoutForm() {
       <button
         type="submit"
         disabled={isLoading || !stripe || !elements}
-        className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all duration-300 hover:bg-black hover:shadow-brutalist active:scale-[0.98] disabled:opacity-50"
+        className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all duration-200 hover:bg-black hover:shadow-lg disabled:opacity-50"
       >
         {isLoading ? (
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block mr-2" />

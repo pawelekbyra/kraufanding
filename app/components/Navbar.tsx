@@ -30,12 +30,12 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-sans flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden transition-all duration-300">
+    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-sans flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
-        <div className="flex-1 flex items-center gap-2 px-2 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
              onClick={() => setIsMobileSearchOpen(false)}
-             className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0 active:scale-90"
+             className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0"
            >
               <X size={20} />
            </button>
@@ -46,15 +46,15 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-4 focus:ring-blue-500/10 transition-all duration-300"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
               />
            </form>
         </div>
       ) : (
         <>
           <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent">
-              <BrandName className="text-[1.02rem] md:text-[1.2rem] translate-y-[4.5px]" variant="handwriting" />
+            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent transition-all active:scale-95">
+              <BrandName className="text-[1.1rem] md:text-[1.3rem] translate-y-[4.5px]" variant="handwriting" />
             </Link>
           </div>
 
@@ -67,10 +67,10 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 placeholder:text-[#888]"
+                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
               />
             </div>
-            <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] active:bg-[#60a5fa] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
+            <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
               <Search size={18} className="text-black" />
             </button>
           </form>
@@ -86,12 +86,12 @@ const Navbar = () => {
                 <Search size={20} className="text-black" />
             </button>
 
-            <div className="flex gap-4 items-center bg-white rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9 shadow-inner">
+            <div className="flex gap-4 items-center bg-[#1a1a1a]/[0.02] rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-90",
-                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/20 hover:text-[#1a1a1a]/50"
+                    "text-[10px] font-black tracking-widest uppercase transition-all",
+                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/30"
                   )}
                 >
                   PL
@@ -99,8 +99,8 @@ const Navbar = () => {
                 <button
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-90",
-                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/20 hover:text-[#1a1a1a]/50"
+                    "text-[10px] font-black tracking-widest uppercase transition-all",
+                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/30"
                   )}
                 >
                   EN

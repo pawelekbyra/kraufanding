@@ -34,7 +34,7 @@ export default function ReferralModal({ isOpen, onClose, referralCode, referralP
           <h2 className="font-mono font-black text-xl uppercase tracking-tighter text-black">
             {t.noMoneyTitle}
           </h2>
-          <button onClick={onClose} className="hover:rotate-90 transition-transform p-1 active:scale-75">
+          <button onClick={onClose} className="hover:rotate-90 transition-transform p-1">
             <X size={24} />
           </button>
         </div>
@@ -83,7 +83,7 @@ export default function ReferralModal({ isOpen, onClose, referralCode, referralP
               </div>
               <button
                 onClick={copyToClipboard}
-                className="bg-black text-white px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-neutral-800 active:scale-95 transition-all shrink-0 shadow-brutalist-sm active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                className="bg-black text-white px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors shrink-0"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {t.noMoneyCopy}
@@ -100,13 +100,12 @@ export default function ReferralModal({ isOpen, onClose, referralCode, referralP
                 <span className="font-mono font-black text-lg">{referralPoints} / 5</span>
             </div>
 
-            <div className="h-6 w-full border border-[#1a1a1a] bg-white overflow-hidden p-0.5 shadow-inner">
+            <div className="h-6 w-full border border-[#1a1a1a] bg-white overflow-hidden p-0.5">
                 <div
-                    className="h-full bg-black transition-all duration-1000 ease-out flex items-center justify-end px-2 relative overflow-hidden"
+                    className="h-full bg-black transition-all duration-1000 ease-out flex items-center justify-end px-2"
                     style={{ width: `${progress}%` }}
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer -translate-x-full" />
-                    {progress > 10 && <span className="text-[10px] font-mono font-black text-white uppercase relative z-10">{Math.round(progress)}%</span>}
+                    {progress > 10 && <span className="text-[10px] font-mono font-black text-white uppercase">{Math.round(progress)}%</span>}
                 </div>
             </div>
 
