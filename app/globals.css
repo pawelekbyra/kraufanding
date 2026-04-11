@@ -36,20 +36,32 @@ body {
   }
 }
 
-/* Custom Scrollbar for better UI */
+/* Custom Scrollbar for better UI - matching brand colors */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #FDFBF7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 5px;
+  background: #1a1a1a20;
+  border-radius: 10px;
+  border: 2px solid #FDFBF7;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: #1a1a1a40;
+}
+
+::selection {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #1a1a1a;
+}
+
+/* Global focus styles for better "shine" and accessibility */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }

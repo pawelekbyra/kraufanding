@@ -27,7 +27,7 @@ const VideoTabs: React.FC<VideoTabsProps> = ({ video }) => {
             key={tab.id}
             role="tab"
             onClick={() => setActiveTab(tab.id)}
-            className={`tab h-14 text-sm font-black transition-all uppercase tracking-widest ${
+            className={`tab h-14 text-sm font-black transition-all duration-300 uppercase tracking-widest active:scale-95 ${
               activeTab === tab.id ? 'tab-active text-primary border-primary' : 'text-[#1a1a1a]/40 hover:text-[#1a1a1a]'
             }`}
           >

@@ -201,13 +201,13 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-[#f3f4f6] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a]">
+               <div className="flex items-center bg-[#f3f4f6] rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-[#1a1a1a] shadow-sm">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#e5e7eb] transition-colors border-r border-[#1a1a1a] relative",
-                        optimisticState.isLiked && "text-primary",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-[#e5e7eb] active:scale-95 transition-all border-r border-[#1a1a1a] relative",
+                        optimisticState.isLiked && "text-primary bg-primary/5",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
@@ -219,8 +219,8 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#e5e7eb] transition-colors",
-                        optimisticState.isDisliked && "text-red-500",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-[#e5e7eb] active:scale-95 transition-all",
+                        optimisticState.isDisliked && "text-red-500 bg-red-500/5",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
@@ -230,12 +230,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#f3f4f6] hover:bg-[#e5e7eb] rounded-full transition-colors flex-[2] lg:flex-none border border-[#1a1a1a]"
+                 className="flex items-center justify-center gap-2 px-3 h-9 bg-[#f3f4f6] hover:bg-[#e5e7eb] active:scale-95 rounded-full transition-all flex-[2] lg:flex-none border border-[#1a1a1a] shadow-sm"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-semibold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-[#f3f4f6] hover:bg-[#e5e7eb] rounded-full transition-colors shrink-0 border border-[#1a1a1a]">
+               <button className="w-9 h-9 flex items-center justify-center bg-[#f3f4f6] hover:bg-[#e5e7eb] active:scale-95 rounded-full transition-all shrink-0 border border-[#1a1a1a] shadow-sm">
                   <MoreHorizontal size={16} />
                </button>
             </div>
@@ -243,9 +243,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-[#f3f4f6] rounded-2xl p-4 transition-colors cursor-pointer border border-[#1a1a1a]" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-[#f3f4f6] hover:bg-[#ebedf0] rounded-2xl p-4 transition-colors cursor-pointer border border-[#1a1a1a] shadow-sm" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
-              <span className="text-[14px] font-semibold text-[#0f0f0f]">
+              <span className="text-[14px] font-bold text-[#0f0f0f]">
                  {mounted ? video.views.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}
               </span>
               <span className="text-[14px] font-semibold text-[#0f0f0f]">

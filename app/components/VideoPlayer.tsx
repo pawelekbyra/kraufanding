@@ -61,8 +61,8 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     </div>
                 </div>
                 {!videoUrl && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-opacity">
-                        <span className="text-white font-mono text-[10px] uppercase tracking-widest bg-black/60 px-4 py-2 border border-white/20">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition-all duration-500">
+                        <span className="text-white font-brand font-black text-[10px] uppercase tracking-[0.3em] bg-[#1a1a1a] px-5 py-2.5 border border-white/10 shadow-2xl transform translate-y-4 group-hover/player:translate-y-0 transition-transform duration-500">
                             Access Restricted
                         </span>
                     </div>
