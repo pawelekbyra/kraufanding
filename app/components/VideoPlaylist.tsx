@@ -187,7 +187,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a] px-6 py-4 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-white border-2 border-[#1a1a1a] px-6 py-4 shadow-brutalist-lg relative overflow-hidden rounded-2xl transition-all duration-500 hover:shadow-brutalist">
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-[#1e3a8a] text-white py-4 rounded-lg font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 border border-[#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 border border-[#1a1a1a] shadow-brutalist hover:shadow-brutalist-sm hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
@@ -297,13 +297,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         </div>
 
         {/* "Nie mam hajsu" outside the box, positioned to not add height */}
-        <button
-          type="button"
-          onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
-          className="absolute -bottom-5 right-6 text-[#1a1a1a]/20 hover:text-black hover:bg-[#1a1a1a]/5 px-2 py-1 rounded font-brand font-black text-[9px] uppercase tracking-[0.25em] transition-all z-30"
-        >
-          {t.noMoney}
-        </button>
+        <div className="flex justify-end pr-4">
+            <button
+              type="button"
+              onClick={() => userId ? setIsModalOpen(true) : openSignIn()}
+              className="text-[#1a1a1a]/20 hover:text-primary hover:bg-[#1a1a1a]/5 px-2 py-1 rounded font-brand font-black text-[9px] uppercase tracking-[0.25em] transition-all relative z-30 active:scale-90"
+            >
+              {t.noMoney}
+            </button>
+        </div>
 
         {userId && (
           <ReferralModal
@@ -319,11 +321,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-white/5 group/summary">
                 {/* Main Summary content */}
                 <div className="relative z-10 mt-0">
                    <div className="flex flex-col">
-                      <span className="inline-block w-fit px-3 py-0.5 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">Premium Access</span>
+                      <span className="inline-block w-fit px-3 py-0.5 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none group-hover/summary:bg-primary/20 transition-colors duration-500">Premium Access</span>
                       <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85] mt-6">
                         Zostań <br /> Patronem
                       </h1>
@@ -372,7 +374,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 </div>
 
                 {/* Decorative background element */}
-                <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px]" />
+                <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px] transition-all duration-1000 group-hover/summary:bg-primary/10 group-hover/summary:scale-110" />
              </div>
 
              {/* Right Column (Form Area) */}
@@ -383,7 +385,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsCheckoutModalOpen(false);
                     if (isSuccess) router.replace(window.location.pathname);
                   }}
-                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
+                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-brutalist active:shadow-none active:translate-x-1 active:translate-y-1"
                   aria-label="Zamknij"
                 >
                   <span className="text-2xl leading-none flex items-center justify-center">×</span>

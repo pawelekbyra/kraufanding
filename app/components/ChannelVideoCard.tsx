@@ -36,10 +36,10 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                       video.isMainFeatured;
 
     return (
-        <div className="group cursor-pointer flex flex-col">
+        <div className="group cursor-pointer flex flex-col transition-all duration-300 hover:-translate-y-1">
             <div className="block relative">
                 <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10 border border-[#1a1a1a]">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10 border border-[#1a1a1a] group-hover:shadow-brutalist-sm transition-all duration-300">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
