@@ -37,7 +37,12 @@ const config = {
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
         }
-      }
+      },
+      boxShadow: {
+        'brutalist-sm': '2px 2px 0px 0px #1a1a1a',
+        'brutalist': '4px 4px 0px 0px #1a1a1a',
+        'brutalist-lg': '8px 8px 0px 0px #1a1a1a',
+      },
     },
   },
   plugins: [
