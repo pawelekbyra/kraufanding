@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { ContentService } from '@/lib/services/content.service';
 import { prisma } from '@/lib/prisma';
@@ -20,7 +19,6 @@ export default async function ZrzutkaPage() {
   const adminData = await ContentService.getAdminData();
   const creator = await ContentService.getCreatorBySlug('polutek');
 
-  // Fetch all completed transactions for this creator to show progress
   const transactions = await prisma.transaction.findMany({
     where: {
       creatorId: creator?.id,
@@ -32,7 +30,6 @@ export default async function ZrzutkaPage() {
     }
   }).catch(() => []);
 
-  // Simple sum for demo purposes (assuming all are in same currency for simplicity or just summing raw numbers)
   const totalRaised = transactions.reduce((sum, tx) => sum + tx.amount, 0);
   const supportersCount = transactions.length;
 
@@ -49,7 +46,6 @@ export default async function ZrzutkaPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-sans">
-      <Navbar />
       <main>
         <CampaignContent
           adminData={adminData}

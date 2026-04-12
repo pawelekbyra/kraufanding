@@ -7,7 +7,9 @@ import { Trophy, Users, Heart, Star, Gem, Check, ArrowRight, Loader2, ChevronDow
 import EmbeddedComments from '../components/comments/EmbeddedComments';
 import { createPortal } from 'react-dom';
 import { useAuth, useClerk } from '@clerk/nextjs';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import BrandName from '../components/BrandName';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
@@ -67,7 +69,7 @@ export default function CampaignContent({
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState<number>(50);
+  const [selectedAmount, setSelectedAmount] = useState<number | ''>(50);
 
   useEffect(() => {
     setMounted(true);
@@ -149,16 +151,21 @@ export default function CampaignContent({
           I rise money for <br className="hidden md:block" />
           <span className="text-primary italic">my secret project</span>
         </h1>
-        <div className="flex items-center justify-center gap-2 text-[#1a1a1a]/60 font-serif">
-          <div className="w-8 h-8 rounded-full bg-[#eff6ff] border border-[#1a1a1a] overflow-hidden">
+        <Link
+          href="/channel/polutek"
+          className="flex items-center justify-center gap-2 text-[#1a1a1a]/60 font-serif hover:opacity-80 transition-opacity group/author"
+        >
+          <div className="w-8 h-8 rounded-full bg-[#eff6ff] border border-[#1a1a1a] overflow-hidden group-hover/author:border-primary transition-colors">
              <img
                src={creator?.imageUrl || "/nowe.png"}
                alt={creator?.name}
                className="w-full h-full object-contain p-1"
              />
           </div>
-          <span className="font-bold uppercase tracking-widest text-xs">By {creator?.name || 'POLUTEK.PL'}</span>
-        </div>
+          <span className="font-bold uppercase tracking-widest text-[10px] flex items-center gap-1">
+            By <BrandName className="text-[10px]" dotPlClassName="group-hover/author:animate-glow" />
+          </span>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -260,9 +267,33 @@ export default function CampaignContent({
                    </div>
                 </div>
 
-                <button onClick={() => document.getElementById('rewards-section')?.scrollIntoView({ behavior: 'smooth' })} className="w-full bg-white text-[#1a1a1a] py-4 rounded-2xl font-mono font-black text-sm tracking-[0.2em] uppercase transition-all hover:bg-primary hover:text-white active:scale-95 shadow-xl">
-                  DORZUĆ SIĘ
-                </button>
+                <div className="space-y-4">
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                      <span className="font-mono font-bold text-white/20">PLN</span>
+                    </div>
+                    <input
+                      type="number"
+                      min="10"
+                      step="1"
+                      value={selectedAmount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedAmount(val === '' ? '' : parseInt(val));
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 font-mono text-2xl font-black text-white focus:ring-2 focus:ring-primary focus:outline-none transition-all placeholder:text-white/10"
+                      placeholder="10"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => handleSupport(Number(selectedAmount))}
+                    disabled={isLoading || !selectedAmount || Number(selectedAmount) < 10}
+                    className="w-full bg-white text-[#1a1a1a] py-4 rounded-2xl font-mono font-black text-sm tracking-[0.2em] uppercase transition-all hover:bg-primary hover:text-white active:scale-95 shadow-xl disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? <Loader2 className="animate-spin mx-auto" /> : 'WESPRZYJ PROJEKT'}
+                  </button>
+                </div>
              </div>
           </div>
 
