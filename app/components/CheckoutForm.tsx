@@ -7,7 +7,7 @@ import { useLanguage } from './LanguageContext';
 export default function CheckoutForm({ returnUrl }: { returnUrl?: string }) {
   const stripe = useStripe();
   const elements = useElements();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
