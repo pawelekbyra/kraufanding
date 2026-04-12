@@ -38,7 +38,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
     return (
         <div className="group cursor-pointer flex flex-col">
             <div className="block relative">
-                <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`} className="absolute inset-0 z-0" />
+                <Link href={`/?v=${video.id}`} className="absolute inset-0 z-0" />
                 <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10 border border-[#1a1a1a]">
                     <PremiumWrapper
                         videoId={video.id}
@@ -71,7 +71,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                 </div>
                 <div className="flex gap-2 relative z-10">
                     <div className="flex-1 min-w-0">
-                        <Link href={video.isMainFeatured ? "/" : `/?v=${video.id}`}>
+                        <Link href={`/?v=${video.id}`}>
                             <h3 className="text-[14px] font-bold text-[#0f0f0f] leading-tight line-clamp-2 uppercase tracking-tight mb-1 hover:opacity-80 transition-opacity">
                                 {video.slug === 'independency-2024'
                                     ? (isLoggedIn ? (
