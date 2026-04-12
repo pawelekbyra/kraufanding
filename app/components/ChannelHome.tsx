@@ -115,7 +115,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-md bg-black relative z-10 group/thumb border border-neutral-300">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-md bg-black relative z-10 group/thumb border border-neutral-400">
               <Link
                 href={`/?v=${video.id}`}
                 scroll={false}
@@ -213,7 +213,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               initialIsSubscribed={userProfile?.initialIsSubscribed}
             />
 
-            <div className="lg:hidden flex border-b border-neutral-300 mt-4">
+            <div className="lg:hidden flex border-b border-neutral-400 mt-4">
                <button
                  onClick={() => setActiveTab('comments')}
                  className={cn(

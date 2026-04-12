@@ -245,7 +245,7 @@ export default function CampaignContent({
                                 <button
                                 onClick={() => handleSupport(Number(selectedAmount))}
                                 disabled={isLoading || !selectedAmount || Number(selectedAmount) < 10}
-                                className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-blue-700 disabled:opacity-50"
+                                className="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-black disabled:opacity-50 active:scale-95 shadow-md border border-neutral-800"
                                 >
                                 {isLoading ? <Loader2 className="animate-spin mx-auto" /> : 'WESPRZYJ PROJEKT'}
                                 </button>
@@ -327,7 +327,7 @@ export default function CampaignContent({
                     <button
                       onClick={() => handleSupport(Number(selectedAmount))}
                       disabled={isLoading || !selectedAmount || Number(selectedAmount) < 10}
-                      className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-blue-700 disabled:opacity-50"
+                      className="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-black disabled:opacity-50 active:scale-95 shadow-md border border-neutral-800"
                     >
                       {isLoading ? <Loader2 className="animate-spin mx-auto" /> : 'WESPRZYJ PROJEKT'}
                     </button>

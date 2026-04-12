@@ -65,10 +65,10 @@ export default function SubscribeButton({
             onClick={handleSubscribe}
             disabled={isPending}
             className={cn(
-                "text-xs font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest sm:min-w-[154px] border active:scale-95",
+                "text-[10px] font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest sm:min-w-[154px] border active:scale-95 shadow-sm",
                 isSubscribed
-                    ? "bg-neutral-100 text-neutral-600 border-neutral-400"
-                    : "bg-neutral-900 text-white border-neutral-900 hover:bg-black",
+                    ? "bg-neutral-100 text-neutral-500 border-neutral-300"
+                    : "bg-[#1a1a1a] text-white border-[#1a1a1a] hover:bg-black",
                 isPending && "opacity-50 cursor-wait",
                 className
             )}

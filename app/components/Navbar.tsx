@@ -66,10 +66,10 @@ const Navbar = () => {
                   placeholder="Szukaj"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="w-full h-9 bg-white border border-neutral-300 rounded-l-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all placeholder:text-neutral-400"
+                  className="w-full h-9 bg-white border border-neutral-400 rounded-l-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all placeholder:text-neutral-400"
                 />
               </div>
-              <button type="submit" className="h-9 bg-neutral-100 border border-neutral-300 border-l-0 rounded-r-md px-5 hover:bg-neutral-200 transition-colors shrink-0 flex items-center justify-center text-neutral-600" title="Szukaj">
+              <button type="submit" className="h-9 bg-neutral-100 border border-neutral-400 border-l-0 rounded-r-md px-5 hover:bg-neutral-200 transition-colors shrink-0 flex items-center justify-center text-neutral-600" title="Szukaj">
                 <Search size={18} />
               </button>
             </form>
@@ -85,7 +85,7 @@ const Navbar = () => {
                 </button>
             </div>
 
-            <div className="hidden sm:flex gap-2 items-center bg-white rounded-md px-2 py-1 border border-neutral-300 h-9">
+            <div className="hidden sm:flex gap-2 items-center bg-white rounded-md px-2 py-1 border border-neutral-400 h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -114,8 +114,8 @@ const Navbar = () => {
 
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs flex items-center gap-2 px-4 h-9 rounded-md transition-all">
-                  <LogIn size={16} />
+                <button className="bg-[#1a1a1a] text-white hover:bg-black font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 px-5 h-9 rounded-full transition-all active:scale-95 shadow-sm">
+                  <LogIn size={14} />
                   <span className="hidden md:inline">{t.signIn}</span>
                 </button>
               </SignInButton>

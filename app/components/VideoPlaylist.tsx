@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-neutral-900 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-black flex items-center justify-center gap-2 active:scale-95 border border-neutral-800 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-black flex items-center justify-center gap-2 active:scale-95 border border-neutral-800 shadow-sm ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
@@ -446,7 +446,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                setIsCheckoutModalOpen(false);
                                router.replace(window.location.pathname);
                              }}
-                             className="w-full bg-neutral-900 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98] border border-neutral-800"
+                             className="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98] border border-neutral-800"
                            >
                              {language === 'pl' ? 'Wróć do serwisu' : 'Back to site'}
                            </button>
