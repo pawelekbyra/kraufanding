@@ -111,13 +111,13 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             )}
           >
             <Link
-               href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+               href={`/?v=${video.id}`}
                scroll={false}
                className="absolute inset-0 z-0"
             />
             <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-xl bg-black relative z-10 group/thumb border border-[#1a1a1a]">
               <Link
-                href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+                href={`/?v=${video.id}`}
                 scroll={false}
                 className="absolute inset-0 z-20"
               />
@@ -132,7 +132,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             </div>
             <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5 z-10">
               <Link
-                href={video.id === mainVideo.id ? "/" : `/?v=${video.id}`}
+                href={`/?v=${video.id}`}
                 scroll={false}
                 className="hover:opacity-80 transition-opacity"
               >
