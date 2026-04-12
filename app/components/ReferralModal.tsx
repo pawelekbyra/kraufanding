@@ -28,7 +28,7 @@ export default function ReferralModal({ isOpen, onClose, referralCode, referralP
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-[#F5F2ED] border border-[#1a1a1a] w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-brutalist relative animate-in zoom-in-95 duration-300">
+      <div className="bg-[#F5F2ED] border border-[#1a1a1a] w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-sm relative animate-in zoom-in-95 duration-300">
         {/* Header */}
         <div className="sticky top-0 bg-[#F5F2ED] border-b border-[#1a1a1a] p-4 flex justify-between items-center z-20">
           <h2 className="font-mono font-black text-xl uppercase tracking-tighter text-black">

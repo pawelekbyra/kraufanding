@@ -285,7 +285,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
         <div className="flex-1 min-w-0">
           <div className="relative">
             {replyTo && userProfile && (
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-full w-fit mb-2 border border-[#e9eef6]">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#0f0f0f] bg-[#eff6ff] px-3 py-1 rounded-md w-fit mb-2 border border-[#e9eef6]">
                 <CornerDownRight size={12} />
                 {language === 'pl' ? (
                   <>Odpowiadasz <span className="font-black ml-1">{replyingToAuthor}</span></>
@@ -327,7 +327,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
             <div className="flex justify-start gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
                <button
                  onClick={() => {setNewComment(''); setReplyTo(null); setIsInputFocused(false);}}
-                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-full transition-all"
+                 className="text-[14px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-4 py-2 rounded-md transition-all"
                >
                    {t.cancel}
                </button>
@@ -336,7 +336,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   onClick={handleSubmit}
                   disabled={!newComment.trim() || postMutation.isPending}
                   className={cn(
-                      "px-4 py-2 rounded-full text-[14px] font-bold transition-all",
+                      "px-4 py-2 rounded-md text-[14px] font-bold transition-all",
                       newComment.trim()
                           ? "bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90"
                           : "bg-[#eff6ff] text-[#0f0f0f]/40 cursor-not-allowed border border-[#e9eef6]"
@@ -410,7 +410,7 @@ const EmbeddedComments: React.FC<EmbeddedCommentsProps> = ({
                   {canComment && (
                     <button
                         onClick={() => userProfile && setReplyTo(comment.id)}
-                        className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-full ml-1 transition-all"
+                        className="text-[11px] font-bold text-[#0f0f0f] hover:bg-[#dbeafe] px-2.5 py-0.5 rounded-md ml-1 transition-all"
                     >
                         {t.reply}
                     </button>

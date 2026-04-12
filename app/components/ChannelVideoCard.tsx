@@ -39,7 +39,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
         <div className="group cursor-pointer flex flex-col">
             <div className="block relative">
                 <Link href={`/?v=${video.id}`} className="absolute inset-0 z-0" />
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-black mb-2.5 z-10 border border-[#1a1a1a]">
+                <div className="relative aspect-video rounded-md overflow-hidden bg-black mb-2.5 z-10 border border-neutral-200">
                     <PremiumWrapper
                         videoId={video.id}
                         videoUrl={video.videoUrl}
@@ -108,7 +108,7 @@ export default function ChannelVideoCard({ video, userTotalPaid, isLoggedIn }: C
                             </div>
                         </div>
                     </div>
-                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-full transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-[#1a1a1a]">
+                    <button className="h-fit p-1 hover:bg-[#000000]/5 rounded-md transition-colors opacity-0 group-hover:opacity-100 shrink-0 border border-neutral-200 hover:bg-neutral-50">
                         <MoreVertical size={20} />
                     </button>
                 </div>

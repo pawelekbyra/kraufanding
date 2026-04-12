@@ -187,7 +187,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
-        <div className="bg-white border-2 border-[#1a1a1a] px-6 py-4 shadow-brutalist relative overflow-hidden rounded-2xl">
+        <div className="bg-white border border-neutral-200 px-6 py-4 shadow-sm relative overflow-hidden rounded-xl">
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
@@ -234,7 +234,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-[#eff6ff] border border-[#e9eef6] rounded-lg py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-md py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
                     placeholder={String(minAmount)}
                   />
                 </div>
@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-[#1e3a8a] text-white py-4 rounded-lg font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 border border-[#1a1a1a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none shadow-brutalist-sm active:translate-x-[4px] active:translate-y-[4px] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-neutral-900 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-neutral-800 flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
@@ -272,7 +272,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsTermsAccepted(e.target.checked);
                     if (e.target.checked) setShowTermsError(false);
                   }}
-                  className="checkbox checkbox-xs border-2 border-[#1e3a8a] rounded-sm checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                  className="checkbox checkbox-xs border border-neutral-300 rounded checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                 />
                 <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
                   {language === 'pl' ? (
@@ -427,7 +427,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                               </p>
                            </div>
 
-                           <div className="bg-white border border-[#1a1a1a]/5 p-6 rounded-3xl space-y-3">
+                           <div className="bg-white border border-[#1a1a1a]/5 p-6 rounded-xl space-y-3">
                               <p className="text-[10px] font-bold uppercase tracking-widest text-[#1a1a1a]/40">
                                  {isSyncing
                                     ? (language === 'pl' ? 'Synchronizacja statusu...' : 'Syncing status...')
@@ -446,7 +446,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                setIsCheckoutModalOpen(false);
                                router.replace(window.location.pathname);
                              }}
-                             className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98]"
+                             className="w-full bg-[#1a1a1a] text-white py-4 rounded-lg font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98]"
                            >
                              {language === 'pl' ? 'Wróć do serwisu' : 'Back to site'}
                            </button>
@@ -524,7 +524,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         {/* Regulamin Modal */}
         {isRegulaminOpen && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-brutalist relative animate-in zoom-in-95 duration-300">
+             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-sm relative animate-in zoom-in-95 duration-300">
                 <button
                   onClick={() => setIsRegulaminOpen(false)}
                   className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"
@@ -559,7 +559,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
         {/* Polityka Prywatnosci Modal */}
         {isPolitykaOpen && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-brutalist relative animate-in zoom-in-95 duration-300">
+             <div className="bg-[#FDFBF7] border-2 border-[#1a1a1a] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-sm relative animate-in zoom-in-95 duration-300">
                 <button
                   onClick={() => setIsPolitykaOpen(false)}
                   className="absolute top-4 right-4 text-black hover:opacity-50 transition-opacity font-bold uppercase tracking-widest text-xs"

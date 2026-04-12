@@ -53,9 +53,9 @@ export default function TipsList() {
     <div className="space-y-6 font-serif">
       <div className="grid grid-cols-1 gap-4">
         {tips.map((tip) => (
-          <div key={tip.id} className="bg-white border-2 border-[#1a1a1a]/5 rounded-3xl p-6 flex justify-between items-center shadow-sm hover:shadow-md transition-all group">
+          <div key={tip.id} className="bg-white border-2 border-[#1a1a1a]/5 rounded-xl p-6 flex justify-between items-center shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center gap-6">
-               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                   <Coins size={24} />
                </div>
                <div>

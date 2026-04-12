@@ -153,11 +153,11 @@ function PaywallOverlay({ requiredTier, isLoggedIn, variant }: { requiredTier: A
   return (
     <div className={cn(
         "animate-in fade-in zoom-in-95 duration-700 h-full w-full relative group",
-        isThumbnail ? "rounded-lg" : "rounded-2xl"
+        isThumbnail ? "rounded-lg" : "rounded-lg"
     )}>
       <div className={cn(
           "aspect-video bg-[#0a0a0a] overflow-hidden relative border flex items-center justify-center h-full w-full shadow-2xl transition-all duration-500",
-          isThumbnail ? "rounded-lg border-white/10" : "rounded-2xl border-[#1a1a1a]"
+          isThumbnail ? "rounded-lg border-white/10" : "rounded-lg border-[#1a1a1a]"
       )}>
 
          <div className="absolute inset-0 z-0 opacity-60">
