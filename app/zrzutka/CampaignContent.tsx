@@ -150,38 +150,23 @@ export default function CampaignContent({
 
   return (
     <div className="relative bg-neutral-50 min-h-screen font-sans text-neutral-900">
-      {/* FULL WIDTH HEADER - SHADCN STYLE */}
-      <header className="w-full border-b border-neutral-200 bg-white sticky top-0 z-[100] px-4 md:px-8 py-4 shadow-sm">
-        <div className="grid grid-cols-3 items-center max-w-[1920px] mx-auto">
-          {/* LEFT SIDE EMPTY FOR BALANCING GRID */}
-          <div className="hidden md:block"></div>
+      {/* FLOATING AUTH ICON */}
+      <div className="absolute top-6 right-8 z-50">
+         <SignedOut>
+            <SignInButton mode="modal">
+               <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs px-4 py-2 rounded-md shadow-md transition-colors">
+                  Log In
+               </button>
+            </SignInButton>
+         </SignedOut>
+         <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+         </SignedIn>
+      </div>
 
-          {/* CENTERED TITLE */}
-          <div className="col-span-3 md:col-span-1 text-center">
-             <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
-                I rise money for <span className="text-blue-600 italic">my secret project</span>
-             </h1>
-          </div>
-
-          {/* AUTH ICON ON THE RIGHT */}
-          <div className="flex items-center justify-end gap-4">
-             <SignedOut>
-                <SignInButton mode="modal">
-                   <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-medium text-xs px-4 py-2 rounded-md transition-colors">
-                      Log In
-                   </button>
-                </SignInButton>
-             </SignedOut>
-             <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-             </SignedIn>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-6">
             <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-md border border-neutral-200 bg-black">
                <VideoPlayer video={{
                  id: 'campaign_video',
@@ -195,6 +180,13 @@ export default function CampaignContent({
                  likesCount: 45000,
                  dislikesCount: 120
                } as any} />
+            </div>
+
+            {/* TITLE MOVED HERE - UNDER VIDEO */}
+            <div className="text-center py-4">
+               <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
+                  I rise money for <span className="text-blue-600 italic">my secret project</span>
+               </h1>
             </div>
 
             <div className="bg-white border border-neutral-200 p-6 md:p-10 shadow-sm rounded-xl space-y-8">
@@ -233,7 +225,7 @@ export default function CampaignContent({
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-6 h-fit">
             <div className="bg-white border border-neutral-200 p-6 shadow-md rounded-xl space-y-6 relative overflow-hidden">
                <div className="relative z-10 space-y-6">
                   <div className="space-y-4">
@@ -295,7 +287,7 @@ export default function CampaignContent({
                         </div>
                         <h3 className="text-base font-bold tracking-tight mb-2 group-hover:text-blue-600 transition-colors">{reward.title}</h3>
                         <p className="text-xs text-neutral-500 mb-6 leading-relaxed">{reward.description}</p>
-                        <button onClick={() => handleSupport(reward.amount)} disabled={isLoading} className="w-full bg-neutral-50 hover:bg-neutral-900 hover:text-white border border-neutral-200 py-2.5 rounded-md font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
+                        <button onClick={() => handleSupport(reward.amount)} disabled={isLoading} className="w-full bg-white hover:bg-neutral-900 hover:text-white border border-neutral-200 py-2.5 rounded-md font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
                            {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                         </button>
                      </div>

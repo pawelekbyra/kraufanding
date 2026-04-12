@@ -115,7 +115,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-md bg-black relative z-10 group/thumb border border-neutral-200">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-md bg-black relative z-10 group/thumb border border-neutral-300">
               <Link
                 href={`/?v=${video.id}`}
                 scroll={false}
@@ -213,7 +213,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               initialIsSubscribed={userProfile?.initialIsSubscribed}
             />
 
-            <div className="lg:hidden flex border-b border-neutral-200 mt-4">
+            <div className="lg:hidden flex border-b border-neutral-300 mt-4">
                <button
                  onClick={() => setActiveTab('comments')}
                  className={cn(
@@ -248,10 +248,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </div>
                     {playlistItems}
                     {searchQuery && (
-                      <div className="px-2 pt-4 border-t border-neutral-200 mt-4">
+                      <div className="px-2 pt-4 border-t border-neutral-300 mt-4">
                         <Link
                           href="/"
-                          className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
+                          className="bg-white border border-neutral-300 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
                         >
                           {language === 'pl' ? '← Wróć do wszystkich' : '← Back to all'}
                         </Link>
@@ -302,10 +302,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <>
                   {playlistItems}
                   {searchQuery && (
-                    <div className="pt-4 border-t border-neutral-200 mt-4">
+                    <div className="pt-4 border-t border-neutral-300 mt-4">
                       <Link
                         href="/"
-                        className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
+                        className="bg-white border border-neutral-300 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
                       >
                         {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
                       </Link>
@@ -319,7 +319,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </p>
                     <Link
                       href="/"
-                      className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic px-6"
+                      className="bg-white border border-neutral-300 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic px-6"
                     >
                       {t.showAll}
                     </Link>

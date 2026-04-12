@@ -32,6 +32,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     const userProfile = userId ? {
       id: userId,
       email: user?.primaryEmailAddress?.emailAddress || '',
+      name: userDb?.name || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null),
       imageUrl: user?.imageUrl || null,
       totalPaid: userDb?.totalPaid || 0,
       role: userDb?.role || 'USER',
@@ -39,7 +40,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     } : null;
 
     return (
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-sans">
+      <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
         <Navbar />
         <main className="relative">
           <ChannelHome
@@ -81,7 +82,7 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   } : null;
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-sans">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
       <main className="relative">
         <CampaignContent
           adminData={adminData}
