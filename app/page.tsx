@@ -29,6 +29,30 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     const mainVideo = await ContentService.getMainFeaturedVideo();
 
     const user = await currentUser();
+
+    let initialInteraction = { liked: false, disliked: false };
+    let initialIsSubscribed = false;
+
+    if (userId) {
+      const targetVideoId = videoId || mainVideo.id;
+      const [like, dislike] = await Promise.all([
+        prisma.videoLike.findUnique({
+          where: { userId_videoId: { userId, videoId: targetVideoId } }
+        }),
+        prisma.videoDislike.findUnique({
+          where: { userId_videoId: { userId, videoId: targetVideoId } }
+        })
+      ]);
+      initialInteraction = { liked: !!like, disliked: !!dislike };
+
+      if (creator?.id) {
+        const sub = await prisma.subscription.findUnique({
+          where: { userId_creatorId: { userId, creatorId: creator.id } }
+        });
+        initialIsSubscribed = !!sub;
+      }
+    }
+
     const userProfile = userId ? {
       id: userId,
       email: user?.primaryEmailAddress?.emailAddress || '',
@@ -36,7 +60,9 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
       imageUrl: user?.imageUrl || null,
       totalPaid: userDb?.totalPaid || 0,
       role: userDb?.role || 'USER',
-      referralCount: userDb?.referralCount || 0
+      referralCount: userDb?.referralCount || 0,
+      initialInteraction,
+      initialIsSubscribed
     } : null;
 
     return (
@@ -71,6 +97,30 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   const supportersCount = transactions.length;
 
   const user = await currentUser();
+
+  let initialInteraction = { liked: false, disliked: false };
+  let initialIsSubscribed = false;
+
+  if (userId) {
+    // Check interaction for campaign video
+    const [like, dislike] = await Promise.all([
+      prisma.videoLike.findUnique({
+        where: { userId_videoId: { userId, videoId: 'crowdfunding_zrzutka' } }
+      }),
+      prisma.videoDislike.findUnique({
+        where: { userId_videoId: { userId, videoId: 'crowdfunding_zrzutka' } }
+      })
+    ]);
+    initialInteraction = { liked: !!like, disliked: !!dislike };
+
+    if (creator?.id) {
+      const sub = await prisma.subscription.findUnique({
+        where: { userId_creatorId: { userId, creatorId: creator.id } }
+      });
+      initialIsSubscribed = !!sub;
+    }
+  }
+
   const userProfile = userId ? {
     id: userId,
     email: user?.primaryEmailAddress?.emailAddress || '',
@@ -78,7 +128,9 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     imageUrl: user?.imageUrl || null,
     totalPaid: userDb?.totalPaid || 0,
     role: userDb?.role || 'USER',
-    referralCount: userDb?.referralCount || 0
+    referralCount: userDb?.referralCount || 0,
+    initialInteraction,
+    initialIsSubscribed
   } : null;
 
   return (

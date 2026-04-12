@@ -147,7 +147,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   );
 
   return (
-    <section className="bg-[#FDFBF7]">
+    <section className="bg-transparent">
       <div className="w-full">
         {/* FEATURED MEDIA */}
         <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-sm border border-neutral-400 mb-3 group bg-black">
@@ -201,41 +201,41 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-white rounded-md h-9 flex-[3] lg:flex-none overflow-hidden border border-neutral-400">
+               <div className="flex items-center bg-neutral-100 rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-neutral-300">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-white transition-colors border-r border-neutral-400 relative",
-                        optimisticState.isLiked && "text-primary",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-neutral-200 transition-colors border-r border-neutral-300 relative",
+                        optimisticState.isLiked && "text-blue-600",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                   >
-                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-primary")} />
-                     <span className="text-[14px] font-semibold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
+                     <ThumbsUp size={18} className={cn(optimisticState.isLiked && "fill-blue-600")} />
+                     <span className="text-[14px] font-bold">{optimisticState.likesCount.toLocaleString('pl-PL')}</span>
                   </button>
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-white transition-colors",
-                        optimisticState.isDisliked && "text-red-500",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-neutral-200 transition-colors",
+                        optimisticState.isDisliked && "text-red-600",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                   >
-                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-red-500")} />
+                     <ThumbsDown size={18} className={cn(optimisticState.isDisliked && "fill-red-600")} />
                   </button>
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-3 h-9 bg-white hover:bg-white rounded-md transition-colors flex-[2] lg:flex-none border border-neutral-400"
+                 className="flex items-center justify-center gap-2 px-4 h-9 bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors flex-[2] lg:flex-none border border-neutral-300"
                >
                   <Share2 size={16} />
-                  <span className="text-[13px] font-semibold">{t.share}</span>
+                  <span className="text-[13px] font-bold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-white hover:bg-white rounded-md transition-colors shrink-0 border border-neutral-400">
+               <button className="w-9 h-9 flex items-center justify-center bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors shrink-0 border border-neutral-300">
                   <MoreHorizontal size={16} />
                </button>
             </div>
@@ -243,7 +243,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
         </div>
 
         {/* DESCRIPTION BOX */}
-        <div className="mt-3 bg-white rounded-xl p-4 transition-colors cursor-pointer border border-neutral-400" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="mt-3 bg-neutral-100 rounded-xl p-4 transition-colors cursor-pointer border border-transparent hover:bg-neutral-200/50" onClick={() => setIsExpanded(!isExpanded)}>
            <div className="flex flex-wrap gap-x-2 gap-y-1 mb-1">
               <span className="text-[14px] font-semibold text-[#0f0f0f]">
                  {mounted ? video.views.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US') : video.views} {t.views}
