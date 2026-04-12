@@ -148,46 +148,33 @@ export default function CampaignContent({
 
   return (
     <div className="relative">
-      {/* AUTH ICON TOP RIGHT */}
-      <div className="absolute top-4 right-4 md:top-6 md:right-8 z-30">
-         <SignedOut>
-            <SignInButton mode="modal">
-               <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center justify-center p-2 h-10 w-10 md:h-12 md:w-12 rounded-full border border-[#1a1a1a] shadow-brutalist-sm active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all">
-                  <LogIn size={20} />
-               </button>
-            </SignInButton>
-         </SignedOut>
-         <SignedIn>
-            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full border border-[#1a1a1a] bg-white flex items-center justify-center shadow-brutalist-sm overflow-hidden">
-               <UserButton afterSignOutUrl="/" />
-            </div>
-         </SignedIn>
-      </div>
+      {/* FULL WIDTH HEADER */}
+      <header className="w-full border-b border-[#1a1a1a]/5 bg-[#FDFBF7] sticky top-0 z-[100] px-4 md:px-8 py-4">
+        <div className="flex items-center justify-between gap-4 max-w-[1920px] mx-auto">
+          {/* TITLE ON THE LEFT (FULL WIDTH FEEL ON DESKTOP) */}
+          <div className="flex-1">
+             <h1 className="text-xl md:text-3xl lg:text-4xl font-brand font-black uppercase tracking-tighter leading-none">
+                I rise money for <span className="text-primary italic">my secret project</span>
+             </h1>
+          </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12 md:pt-16">
-        {/* CAMPAIGN TITLE */}
-        <div className="mb-10 text-center">
-          <h1 className="text-4xl md:text-6xl font-brand font-black uppercase tracking-tighter leading-tight mb-4">
-            I rise money for <br className="hidden md:block" />
-            <span className="text-primary italic">my secret project</span>
-          </h1>
-          <Link
-            href="/channel/polutek"
-            className="flex items-center justify-center gap-2 text-[#1a1a1a]/60 font-serif hover:opacity-80 transition-opacity group/author"
-          >
-            <div className="w-8 h-8 rounded-full bg-[#eff6ff] border border-[#1a1a1a] overflow-hidden group-hover/author:border-primary transition-colors">
-               <img
-                 src={creator?.imageUrl || "/nowe.png"}
-                 alt={creator?.name}
-                 className="w-full h-full object-contain p-1"
-               />
-            </div>
-            <span className="font-bold uppercase tracking-widest text-[10px] flex items-center gap-1">
-              By <BrandName className="text-[10px]" dotPlClassName="group-hover/author:animate-glow" />
-            </span>
-          </Link>
+          {/* AUTH ICON ON THE RIGHT */}
+          <div className="flex items-center gap-4">
+             <SignedOut>
+                <SignInButton mode="modal">
+                   <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center justify-center p-2 h-10 w-10 md:h-12 md:w-12 rounded-full border border-[#1a1a1a] shadow-brutalist-sm active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all">
+                      <LogIn size={20} />
+                   </button>
+                </SignInButton>
+             </SignedOut>
+             <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+             </SignedIn>
+          </div>
         </div>
+      </header>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8 space-y-12">
             <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-brutalist-lg border-2 border-[#1a1a1a] bg-black">
@@ -206,7 +193,30 @@ export default function CampaignContent({
             </div>
 
             <div className="bg-white border-2 border-[#1a1a1a] p-8 md:p-12 shadow-brutalist rounded-3xl space-y-8">
-              <h2 className="text-2xl font-brand font-black uppercase tracking-tight border-b-2 border-[#1a1a1a]/5 pb-4">O projekcie</h2>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-[#1a1a1a]/5 pb-6">
+                 <h2 className="text-2xl md:text-3xl font-brand font-black uppercase tracking-tight">O projekcie</h2>
+
+                 {/* BRANDING MOVED HERE */}
+                 <Link
+                    href="/channel/polutek"
+                    className="flex items-center gap-3 text-[#1a1a1a]/60 font-serif hover:opacity-80 transition-opacity group/author"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#eff6ff] border border-[#1a1a1a] overflow-hidden group-hover/author:border-primary transition-colors">
+                       <img
+                         src={creator?.imageUrl || "/nowe.png"}
+                         alt={creator?.name}
+                         className="w-full h-full object-contain p-1"
+                       />
+                    </div>
+                    <div className="flex flex-col">
+                       <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Kampania autorstwa</span>
+                       <span className="font-bold uppercase tracking-widest text-xs flex items-center gap-1 text-[#1a1a1a]">
+                         <BrandName className="text-xs" dotPlClassName="group-hover/author:animate-glow" />
+                       </span>
+                    </div>
+                  </Link>
+              </div>
+
               <div className="prose prose-neutral max-w-none font-serif text-lg leading-relaxed text-[#1a1a1a]/80">
                 <p>Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.</p>
                 <p><strong>&quot;Secret Project&quot;</strong> to rozbudowana platforma, która pozwoli nam wszystkim dotrzeć do prawdy tam, gdzie inni wolą milczeć. Potrzebuję Waszego wsparcia, aby sfinalizować produkcję i zabezpieczyć infrastrukturę.</p>
@@ -219,7 +229,7 @@ export default function CampaignContent({
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-8 h-fit">
+          <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-24 h-fit">
             <div className="bg-[#1a1a1a] text-white p-8 md:p-10 shadow-brutalist-lg rounded-3xl space-y-8 relative overflow-hidden">
                <div className="relative z-10 space-y-6">
                   <div className="space-y-2">
