@@ -68,7 +68,7 @@ export default function SubscribeButton({
                 "text-xs font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest sm:min-w-[154px] border active:scale-95",
                 isSubscribed
                     ? "bg-neutral-100 text-neutral-600 border-neutral-300"
-                    : "bg-neutral-900 text-white border-neutral-900 hover:bg-black",
+                    : "bg-charcoal text-white border-charcoal hover:bg-black",
                 isPending && "opacity-50 cursor-wait",
                 className
             )}
@@ -83,7 +83,7 @@ export default function SubscribeButton({
                     <h3 className="text-xl font-bold text-neutral-900 tracking-tight mb-2">{t.confirmSubscribeTitle}</h3>
                     <p className="text-sm text-neutral-500 mb-8">{t.confirmSubscribeText}</p>
                     <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => { setShowConfirm(false); executeSubscribe(); }} className="bg-neutral-900 text-white py-2 rounded-md font-semibold text-sm hover:bg-neutral-800 transition-all">{t.yes}</button>
+                        <button onClick={() => { setShowConfirm(false); executeSubscribe(); }} className="bg-charcoal text-white py-2 rounded-md font-semibold text-sm hover:bg-black transition-all">{t.yes}</button>
                         <button onClick={() => setShowConfirm(false)} className="bg-white border border-neutral-300 text-neutral-900 py-2 rounded-md font-semibold text-sm hover:bg-neutral-50 transition-all">{t.no}</button>
                     </div>
                 </div>

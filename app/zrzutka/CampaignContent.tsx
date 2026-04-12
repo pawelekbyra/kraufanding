@@ -171,20 +171,6 @@ export default function CampaignContent({
 
   return (
     <div className="relative bg-neutral-50 min-h-screen font-sans text-neutral-900">
-      {/* FLOATING AUTH ICON */}
-      <div className="absolute top-6 right-8 z-50">
-         <SignedOut>
-            <SignInButton mode="modal">
-               <button className="bg-neutral-900 text-white hover:bg-black font-bold text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 border border-neutral-800">
-                  Log In
-               </button>
-            </SignInButton>
-         </SignedOut>
-         <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-         </SignedIn>
-      </div>
-
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 pt-6 pb-12">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 lg:col-span-8 space-y-6">
@@ -281,7 +267,7 @@ export default function CampaignContent({
                                     <button
                                     onClick={() => handleSupport(reward.amount)}
                                     disabled={isLoading}
-                                    className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                                    className="w-full bg-charcoal text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
                                     >
                                     {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                                     </button>
@@ -363,7 +349,7 @@ export default function CampaignContent({
                         <button
                           onClick={() => handleSupport(reward.amount)}
                           disabled={isLoading}
-                          className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                          className="w-full bg-charcoal text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
                         >
                            {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                         </button>
@@ -396,7 +382,7 @@ export default function CampaignContent({
                         <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-lg"><Check size={24} className="text-white" /></div>
                            <h1 className="text-2xl font-bold tracking-tight">Dziękujemy!</h1>
-                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-neutral-900 text-white py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:bg-black active:scale-95">Wróć do kampanii</button>
+                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-charcoal text-white py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:bg-black active:scale-95">Wróć do kampanii</button>
                         </div>
                       ) : (
                         <div className="flex flex-col">
