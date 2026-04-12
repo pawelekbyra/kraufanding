@@ -67,7 +67,7 @@ export default function SubscribeButton({
             className={cn(
                 "text-xs font-bold rounded-full px-6 h-9 flex items-center justify-center transition-all uppercase tracking-widest sm:min-w-[154px] border active:scale-95",
                 isSubscribed
-                    ? "bg-neutral-100 text-neutral-600 border-neutral-300"
+                    ? "bg-neutral-100 text-neutral-600 border-neutral-400"
                     : "bg-neutral-900 text-white border-neutral-900 hover:bg-black",
                 isPending && "opacity-50 cursor-wait",
                 className

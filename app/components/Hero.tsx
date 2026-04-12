@@ -201,12 +201,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className="flex items-center gap-2 w-full lg:w-auto">
-               <div className="flex items-center bg-neutral-100 rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-neutral-300">
+               <div className="flex items-center bg-white rounded-full h-9 flex-[3] lg:flex-none overflow-hidden border border-neutral-400">
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-neutral-200 transition-colors border-r border-neutral-300 relative",
+                        "flex items-center justify-center gap-2 pl-4 pr-3 h-full flex-1 hover:bg-neutral-100 transition-colors border-r border-neutral-400 relative active:bg-neutral-200",
                         optimisticState.isLiked && "text-blue-600",
                         isPending && "opacity-50"
                     )}
@@ -219,7 +219,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex items-center justify-center px-4 h-full flex-none hover:bg-neutral-200 transition-colors",
+                        "flex items-center justify-center px-4 h-full flex-none hover:bg-neutral-100 transition-colors active:bg-neutral-200",
                         optimisticState.isDisliked && "text-red-600",
                         isPending && "opacity-50"
                     )}
@@ -230,12 +230,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                </div>
                <button
                  onClick={handleShare}
-                 className="flex items-center justify-center gap-2 px-4 h-9 bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors flex-[2] lg:flex-none border border-neutral-300"
+                 className="flex items-center justify-center gap-2 px-4 h-9 bg-white hover:bg-neutral-100 rounded-full transition-colors flex-[2] lg:flex-none border border-neutral-400 active:scale-95"
                >
                   <Share2 size={16} />
                   <span className="text-[13px] font-bold">{t.share}</span>
                </button>
-               <button className="w-9 h-9 flex items-center justify-center bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors shrink-0 border border-neutral-300">
+               <button className="w-9 h-9 flex items-center justify-center bg-white hover:bg-neutral-100 rounded-full transition-colors shrink-0 border border-neutral-400 active:scale-95">
                   <MoreHorizontal size={16} />
                </button>
             </div>
