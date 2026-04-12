@@ -187,7 +187,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
-        <div className="bg-white border border-neutral-200 px-6 py-4 shadow-sm relative overflow-hidden rounded-xl">
+        <div className="bg-white border border-neutral-400 px-6 py-4 shadow-sm relative overflow-hidden rounded-xl">
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
@@ -234,7 +234,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-md py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
+                    className="w-full bg-white border border-neutral-400 rounded-md py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
                     placeholder={String(minAmount)}
                   />
                 </div>
@@ -272,7 +272,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsTermsAccepted(e.target.checked);
                     if (e.target.checked) setShowTermsError(false);
                   }}
-                  className="checkbox checkbox-xs border border-neutral-300 rounded checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                  className="checkbox checkbox-xs border border-neutral-400 rounded checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
                 />
                 <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
                   {language === 'pl' ? (

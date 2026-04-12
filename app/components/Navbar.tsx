@@ -30,7 +30,7 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="flex items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral-200 px-4 lg:px-6 h-14 min-h-14 font-sans justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="flex items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral-300 px-4 lg:px-6 h-14 min-h-14 font-sans justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
@@ -46,7 +46,7 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-neutral-50 border border-neutral-200 rounded-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
+                className="w-full h-9 bg-white border border-neutral-300 rounded-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
               />
            </form>
         </div>
@@ -66,10 +66,10 @@ const Navbar = () => {
                   placeholder="Szukaj"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="w-full h-9 bg-neutral-50 border border-neutral-200 rounded-l-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all placeholder:text-neutral-400"
+                  className="w-full h-9 bg-white border border-neutral-300 rounded-l-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all placeholder:text-neutral-400"
                 />
               </div>
-              <button type="submit" className="h-9 bg-neutral-100 border border-neutral-200 border-l-0 rounded-r-md px-5 hover:bg-neutral-200 transition-colors shrink-0 flex items-center justify-center text-neutral-600" title="Szukaj">
+              <button type="submit" className="h-9 bg-neutral-100 border border-neutral-300 border-l-0 rounded-r-md px-5 hover:bg-neutral-200 transition-colors shrink-0 flex items-center justify-center text-neutral-600" title="Szukaj">
                 <Search size={18} />
               </button>
             </form>
@@ -85,12 +85,12 @@ const Navbar = () => {
                 </button>
             </div>
 
-            <div className="hidden sm:flex gap-2 items-center bg-neutral-50 rounded-md px-2 py-1 border border-neutral-200 h-9">
+            <div className="hidden sm:flex gap-2 items-center bg-white rounded-md px-2 py-1 border border-neutral-300 h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
                     "text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded transition-all",
-                    language === 'pl' ? "bg-white shadow-sm text-neutral-900 border border-neutral-200" : "text-neutral-400 hover:text-neutral-600"
+                    language === 'pl' ? "bg-white shadow-sm text-neutral-900 border border-neutral-300" : "text-neutral-400 hover:text-neutral-600"
                   )}
                 >
                   PL
@@ -99,7 +99,7 @@ const Navbar = () => {
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
                     "text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded transition-all",
-                    language === 'en' ? "bg-white shadow-sm text-neutral-900 border border-neutral-200" : "text-neutral-400 hover:text-neutral-600"
+                    language === 'en' ? "bg-white shadow-sm text-neutral-900 border border-neutral-300" : "text-neutral-400 hover:text-neutral-600"
                   )}
                 >
                   EN
