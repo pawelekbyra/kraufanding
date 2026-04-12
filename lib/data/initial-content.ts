@@ -12,6 +12,23 @@ export const DEFAULT_CREATOR = {
 
 export const INITIAL_VIDEOS: Video[] = [
   {
+    id: "crowdfunding_zrzutka",
+    creatorId: DEFAULT_CREATOR.id,
+    title: "I rise money for my secret project",
+    slug: "campaign-video",
+    description: "Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.",
+    videoUrl: "https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4",
+    thumbnailUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
+    duration: "10:00",
+    tier: AccessTier.PUBLIC,
+    isMainFeatured: false,
+    views: 1250400,
+    likesCount: 45000,
+    dislikesCount: 120,
+    publishedAt: new Date(),
+    creator: DEFAULT_CREATOR,
+  },
+  {
     id: "v_fallback_001",
     creatorId: DEFAULT_CREATOR.id,
     title: "Wuthering Heights - Kate Bush Cover",

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import VideoPlayer from '../components/VideoPlayer';
 import { useLanguage } from '../components/LanguageContext';
 import { Trophy, Users, Heart, Star, Gem, Check, ArrowRight, Loader2, ChevronDown, LogIn } from '../components/icons';
 import EmbeddedComments from '../components/comments/EmbeddedComments';
+import Hero from '../components/Hero';
 import { createPortal } from 'react-dom';
 import { useAuth, useClerk, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import Link from 'next/link';
@@ -55,7 +55,7 @@ const REWARDS = [
 ];
 
 export default function CampaignContent({
-  creator,
+  creator: initialCreator,
   userProfile,
   totalRaised: initialRaised,
   supportersCount: initialSupporters
@@ -72,6 +72,7 @@ export default function CampaignContent({
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number | ''>(50);
+  const [activeTab, setActiveTab] = useState<'support' | 'comments'>('support');
 
   useEffect(() => {
     setMounted(true);
@@ -125,7 +126,7 @@ export default function CampaignContent({
             amount: Number(amount),
             currency: 'pln',
             title: `Wsparcie projektu: I rise money for my secret project`,
-            creatorId: creator?.id
+            creatorId: initialCreator?.id
           }),
           cache: 'no-store'
       });
@@ -148,13 +149,33 @@ export default function CampaignContent({
 
   if (!mounted) return null;
 
+  const dummyCampaignVideo = {
+    id: 'crowdfunding_zrzutka',
+    title: 'I rise money for my secret project',
+    description: `Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.\n\n"Secret Project" to rozbudowana platforma, która pozwoli nam wszystkim dotrzeć do prawdy tam, gdzie inni wolą milczeć. Potrzebuję Waszego wsparcia, aby sfinalizować produkcję i zabezpieczyć infrastrukturę.\n\nKampania autorstwa POLUTEK.PL`,
+    videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
+    creatorId: initialCreator?.id || '',
+    creator: {
+      ...initialCreator,
+      name: 'POLUTEK.PL',
+      subscribersCount: initialCreator?.subscribersCount || 1250000
+    },
+    slug: 'campaign-video',
+    tier: 'PUBLIC',
+    views: 1250400,
+    likesCount: 45000,
+    dislikesCount: 120,
+    publishedAt: new Date().toISOString()
+  };
+
   return (
     <div className="relative bg-neutral-50 min-h-screen font-sans text-neutral-900">
       {/* FLOATING AUTH ICON */}
       <div className="absolute top-6 right-8 z-50">
          <SignedOut>
             <SignInButton mode="modal">
-               <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs px-4 py-2 rounded-md shadow-md transition-colors">
+               <button className="bg-neutral-900 text-white hover:bg-black font-bold text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 border border-neutral-800">
                   Log In
                </button>
             </SignInButton>
@@ -164,68 +185,120 @@ export default function CampaignContent({
          </SignedIn>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 space-y-6">
-            <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-md border border-neutral-200 bg-black">
-               <VideoPlayer video={{
-                 id: 'campaign_video',
-                 title: 'I rise money for my secret project',
-                 videoUrl: 'https://pub-309ebc4b2d654f78b2a22e1d57917b94.r2.dev/Wuthering-Heights.mp4',
-                 thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
-                 creatorId: creator?.id || '',
-                 slug: 'campaign-video',
-                 tier: 'PUBLIC',
-                 views: 1250400,
-                 likesCount: 45000,
-                 dislikesCount: 120
-               } as any} />
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 pt-6 pb-12">
+        <div className="grid grid-cols-12 gap-8">
+          <div className="col-span-12 lg:col-span-8 space-y-6">
+            <Hero
+              video={dummyCampaignVideo as any}
+              initialInteraction={userProfile?.initialInteraction}
+              initialIsSubscribed={userProfile?.initialIsSubscribed}
+            />
+
+            <div className="lg:hidden flex border-b border-neutral-300 mt-4">
+               <button
+                 onClick={() => setActiveTab('support')}
+                 className={cn(
+                   "flex-1 py-3 text-sm font-bold uppercase tracking-widest transition-all border-b-2",
+                   activeTab === 'support' ? "border-blue-600 text-blue-600" : "border-transparent text-neutral-400"
+                 )}
+               >
+                 Wsparcie
+               </button>
+               <button
+                 onClick={() => setActiveTab('comments')}
+                 className={cn(
+                   "flex-1 py-3 text-sm font-bold uppercase tracking-widest transition-all border-b-2",
+                   activeTab === 'comments' ? "border-blue-600 text-blue-600" : "border-transparent text-neutral-400"
+                 )}
+               >
+                 Komentarze
+               </button>
             </div>
 
-            {/* TITLE MOVED HERE - UNDER VIDEO */}
-            <div className="text-center py-4">
-               <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
-                  I rise money for <span className="text-blue-600 italic">my secret project</span>
-               </h1>
-            </div>
+            <div className="lg:hidden mt-6">
+               {activeTab === 'comments' ? (
+                 <EmbeddedComments videoId="crowdfunding_zrzutka" userProfile={userProfile} videoTier="PUBLIC" />
+               ) : (
+                 <div className="space-y-6">
+                    {/* MOBILE SUPPORT CONTENT */}
+                    <div className="bg-white border border-neutral-200 p-6 shadow-md rounded-xl space-y-6 relative overflow-hidden">
+                        <div className="relative z-10 space-y-6">
+                            <div className="space-y-4">
+                                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Postęp kampanii</p>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-4xl font-bold tracking-tighter text-neutral-900">{initialRaised.toLocaleString()}</span>
+                                    <span className="text-lg font-medium text-neutral-400">PLN</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-neutral-500 font-medium">Cel: {goal.toLocaleString()} PLN</span>
+                                    <span className="text-blue-600 font-bold">Pozostało: {amountRemaining.toLocaleString()} PLN</span>
+                                </div>
+                            </div>
 
-            <div className="bg-white border border-neutral-200 p-6 md:p-10 shadow-sm rounded-xl space-y-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-100 pb-6">
-                 <h2 className="text-2xl font-bold tracking-tight">O projekcie</h2>
+                            <div className="space-y-2">
+                                <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+                                    <div className="h-full bg-blue-600 transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
+                                </div>
+                            </div>
 
-                 <Link
-                    href="/channel/polutek"
-                    className="flex items-center gap-3 text-neutral-500 hover:text-neutral-900 transition-colors group/author"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-neutral-100 border border-neutral-200 overflow-hidden">
-                       <img
-                         src={creator?.imageUrl || "/nowe.png"}
-                         alt={creator?.name}
-                         className="w-full h-full object-contain p-1"
-                       />
+                            <div className="space-y-4 pt-4 border-t border-neutral-100">
+                                <div className="relative group">
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                                    <span className="text-sm font-semibold text-neutral-400">PLN</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    min="10"
+                                    step="1"
+                                    value={selectedAmount}
+                                    onChange={(e) => setSelectedAmount(e.target.value === '' ? '' : parseInt(e.target.value))}
+                                    className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-3 px-4 text-lg font-semibold text-neutral-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
+                                    placeholder="10"
+                                />
+                                </div>
+                                <button
+                                onClick={() => handleSupport(Number(selectedAmount))}
+                                disabled={isLoading || !selectedAmount || Number(selectedAmount) < 10}
+                                className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-blue-700 disabled:opacity-50"
+                                >
+                                {isLoading ? <Loader2 className="animate-spin mx-auto" /> : 'WESPRZYJ PROJEKT'}
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex flex-col">
-                       <span className="text-[10px] uppercase tracking-wider opacity-60">Kampania autorstwa</span>
-                       <span className="font-semibold text-sm flex items-center gap-1 text-neutral-900">
-                         <BrandName className="text-sm" dotPlClassName="group-hover/author:text-blue-600" />
-                       </span>
-                    </div>
-                  </Link>
-              </div>
 
-              <div className="prose prose-neutral max-w-none text-neutral-600">
-                <p className="text-lg leading-relaxed">Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.</p>
-                <p className="text-lg leading-relaxed"><strong>&quot;Secret Project&quot;</strong> to rozbudowana platforma, która pozwoli nam wszystkim dotrzeć do prawdy tam, gdzie inni wolą milczeć. Potrzebuję Waszego wsparcia, aby sfinalizować produkcję i zabezpieczyć infrastrukturę.</p>
-              </div>
+                    <div className="space-y-4">
+                        <h2 className="text-lg font-bold tracking-tight px-1">Nagrody dla Ciebie</h2>
+                        <div className="space-y-4">
+                            {REWARDS.map((reward) => (
+                                <div key={reward.id} className="group bg-white border border-neutral-200 p-5 shadow-sm rounded-xl hover:border-blue-600 transition-all">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">{reward.icon}</div>
+                                        <span className="text-xl font-bold">{reward.amount} <span className="text-xs font-normal text-neutral-400">PLN</span></span>
+                                    </div>
+                                    <h3 className="text-base font-bold tracking-tight mb-2 group-hover:text-blue-600 transition-colors">{reward.title}</h3>
+                                    <p className="text-xs text-neutral-500 mb-6 leading-relaxed">{reward.description}</p>
+                                    <button
+                                    onClick={() => handleSupport(reward.amount)}
+                                    disabled={isLoading}
+                                    className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                                    >
+                                    {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                 </div>
+               )}
             </div>
 
-            <div className="bg-white border border-neutral-200 p-6 shadow-sm rounded-xl">
-               <h2 className="text-xl font-bold tracking-tight mb-6">Komentarze wspierających</h2>
+            <div className="hidden lg:block mt-10">
                <EmbeddedComments videoId="crowdfunding_zrzutka" userProfile={userProfile} videoTier="PUBLIC" />
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-6 h-fit">
+          <div className="hidden lg:block lg:col-span-4 space-y-6 lg:sticky lg:top-6 h-fit">
             <div className="bg-white border border-neutral-200 p-6 shadow-md rounded-xl space-y-6 relative overflow-hidden">
                <div className="relative z-10 space-y-6">
                   <div className="space-y-4">
@@ -287,7 +360,11 @@ export default function CampaignContent({
                         </div>
                         <h3 className="text-base font-bold tracking-tight mb-2 group-hover:text-blue-600 transition-colors">{reward.title}</h3>
                         <p className="text-xs text-neutral-500 mb-6 leading-relaxed">{reward.description}</p>
-                        <button onClick={() => handleSupport(reward.amount)} disabled={isLoading} className="w-full bg-white hover:bg-neutral-900 hover:text-white border border-neutral-200 py-2.5 rounded-md font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleSupport(reward.amount)}
+                          disabled={isLoading}
+                          className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                        >
                            {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                         </button>
                      </div>
@@ -319,7 +396,7 @@ export default function CampaignContent({
                         <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-lg"><Check size={24} className="text-white" /></div>
                            <h1 className="text-2xl font-bold tracking-tight">Dziękujemy!</h1>
-                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-neutral-900 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-neutral-800">Wróć do kampanii</button>
+                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-neutral-900 text-white py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:bg-black active:scale-95">Wróć do kampanii</button>
                         </div>
                       ) : (
                         <div className="flex flex-col">
