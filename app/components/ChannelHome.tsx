@@ -106,8 +106,8 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
             key={video.id}
             onMouseEnter={() => prefetchVideoComments(video.id)}
             className={cn(
-              "group flex gap-2 p-1 rounded-xl transition-colors relative",
-              isCurrent ? "bg-[#bfdbfe]" : "hover:bg-[#dbeafe]"
+              "group flex gap-2 p-1 rounded-lg transition-colors relative",
+              isCurrent ? "bg-neutral-100" : "hover:bg-neutral-200"
             )}
           >
             <Link
@@ -115,7 +115,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                scroll={false}
                className="absolute inset-0 z-0"
             />
-            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-xl bg-black relative z-10 group/thumb border border-[#1a1a1a]">
+            <div className="w-[168px] h-[94px] shrink-0 overflow-hidden rounded-md bg-black relative z-10 group/thumb border border-neutral-200">
               <Link
                 href={`/?v=${video.id}`}
                 scroll={false}
@@ -180,7 +180,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
       if (i === 1) {
         acc.push(
           <div key="donate" className="pt-4 pb-0">
-              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-2">
+              <div className="flex justify-between items-end border-b border-neutral-100 pb-1 mb-2">
                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.donate}</h3>
               </div>
               <VideoPlaylist
@@ -190,7 +190,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
         );
         acc.push(
           <div key="patron-header" className="pt-4">
-              <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-0">
+              <div className="flex justify-between items-end border-b border-neutral-100 pb-1 mb-0">
                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.patronZone}</h3>
               </div>
           </div>
@@ -201,7 +201,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
   }, []);
 
   return (
-    <main className="bg-[#FDFBF7] min-h-screen">
+    <main className="bg-neutral-50 min-h-screen">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-6 py-6">
 
 
@@ -213,7 +213,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
               initialIsSubscribed={userProfile?.initialIsSubscribed}
             />
 
-            <div className="lg:hidden flex border-b border-[#1a1a1a]/5 mt-4">
+            <div className="lg:hidden flex border-b border-neutral-200 mt-4">
                <button
                  onClick={() => setActiveTab('comments')}
                  className={cn(
@@ -243,15 +243,15 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                  />
                ) : (
                  <div className="space-y-2">
-                    <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-2">
+                    <div className="flex justify-between items-end border-b border-neutral-100 pb-1 mb-2">
                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">{t.materials}</h3>
                     </div>
                     {playlistItems}
                     {searchQuery && (
-                      <div className="px-2 pt-4 border-t border-[#1a1a1a]/5 mt-4">
+                      <div className="px-2 pt-4 border-t border-neutral-200 mt-4">
                         <Link
                           href="/"
-                          className="btn btn-sm btn-block rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
+                          className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
                         >
                           {language === 'pl' ? '← Wróć do wszystkich' : '← Back to all'}
                         </Link>
@@ -271,7 +271,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
           </div>
 
           <aside className="hidden lg:block lg:col-span-4 space-y-2">
-            <div className="flex justify-between items-end border-b border-[#1a1a1a]/5 pb-1 mb-0">
+            <div className="flex justify-between items-end border-b border-neutral-100 pb-1 mb-0">
               <div className="flex items-center gap-3">
                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1a1a1a]">
                   {searchQuery ? (language === 'pl' ? 'Wyniki wyszukiwania' : 'Search Results') : t.materials}
@@ -302,10 +302,10 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                 <>
                   {playlistItems}
                   {searchQuery && (
-                    <div className="pt-4 border-t border-[#1a1a1a]/5 mt-4">
+                    <div className="pt-4 border-t border-neutral-200 mt-4">
                       <Link
                         href="/"
-                        className="btn btn-sm btn-block rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic"
+                        className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic"
                       >
                         {language === 'pl' ? '← Wróć do listy' : '← Back to list'}
                       </Link>
@@ -319,7 +319,7 @@ export default function ChannelHome({ mainVideo, allVideos, currentVideoId, user
                     </p>
                     <Link
                       href="/"
-                      className="btn btn-sm rounded-xl border border-[#1a1a1a] bg-white text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-all font-bold uppercase tracking-widest italic px-6"
+                      className="bg-white border border-neutral-200 rounded-md py-2 text-sm font-medium hover:bg-neutral-50 transition-all font-bold uppercase tracking-widest italic px-6"
                     >
                       {t.showAll}
                     </Link>

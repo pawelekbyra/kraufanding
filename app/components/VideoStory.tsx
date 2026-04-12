@@ -25,13 +25,13 @@ const VideoStory: React.FC<VideoStoryProps> = ({ video }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-3xl p-8 shadow-md">
+        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-xl p-8 shadow-md">
           <h3 className="text-xl font-black text-[#1a1a1a] mb-4 uppercase tracking-tight">Misja</h3>
           <p className="text-[#1a1a1a]/70 leading-relaxed italic">
             Dostarczanie najwyższej jakości materiałów operacyjnych i śledczych bezpośrednio do rąk naszych Patronów.
           </p>
         </div>
-        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-3xl p-8 shadow-md">
+        <div className="bg-white border-2 border-[#1a1a1a]/10 rounded-xl p-8 shadow-md">
           <h3 className="text-xl font-black text-[#1a1a1a] mb-4 uppercase tracking-tight">Dla Patronów</h3>
           <ul className="space-y-3 text-[#1a1a1a]/70 font-bold uppercase text-xs tracking-widest">
             <li className="flex items-center gap-3">

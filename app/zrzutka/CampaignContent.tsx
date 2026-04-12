@@ -13,6 +13,7 @@ import BrandName from '../components/BrandName';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
+import { cn } from '@/lib/utils';
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
@@ -32,7 +33,7 @@ const REWARDS = [
     amount: 50,
     title: 'Wspierający',
     description: 'Twoje imię pojawi się w napisach końcowych mojego projektu. Dziękuję za zaufanie!',
-    icon: <Heart className="text-red-500" size={32} />,
+    icon: <Heart className="text-red-500" size={24} />,
     perks: ['Imię w napisach', 'Podziękowanie e-mail', 'Dożywotni Patron (Tier 1)']
   },
   {
@@ -40,7 +41,7 @@ const REWARDS = [
     amount: 150,
     title: 'Mecenas Projektu',
     description: 'Dostęp do ekskluzywnych nagrań zza kulis powstawania projektu oraz wcześniejszy dostęp do materiałów.',
-    icon: <Star className="text-amber-500" size={32} />,
+    icon: <Star className="text-amber-500" size={24} />,
     perks: ['Wszystko z Tier 1', 'Nagrania Behind-the-scenes', 'Wcześniejszy dostęp', 'Dożywotni Patron (Tier 2)']
   },
   {
@@ -48,7 +49,7 @@ const REWARDS = [
     amount: 500,
     title: 'Partner Strategiczny',
     description: 'Zaproszenie na zamknięte spotkanie online, gdzie omówię szczegóły projektu i odpowiem na Twoje pytania.',
-    icon: <Gem className="text-blue-500" size={32} />,
+    icon: <Gem className="text-blue-500" size={24} />,
     perks: ['Wszystko z Tier 2', 'Spotkanie online Q&A', 'Dostęp do Discorda VIP', 'Limitowana koszulka projektu']
   }
 ];
@@ -99,6 +100,7 @@ export default function CampaignContent({
 
   const goal = 50000;
   const progress = Math.min(Math.round((initialRaised / goal) * 100), 100);
+  const amountRemaining = Math.max(goal - initialRaised, 0);
 
   const handleSupport = async (amount: number) => {
     if (!userId) {
@@ -147,23 +149,26 @@ export default function CampaignContent({
   if (!mounted) return null;
 
   return (
-    <div className="relative">
-      {/* FULL WIDTH HEADER */}
-      <header className="w-full border-b border-[#1a1a1a]/5 bg-[#FDFBF7] sticky top-0 z-[100] px-4 md:px-8 py-4">
-        <div className="flex items-center justify-between gap-4 max-w-[1920px] mx-auto">
-          {/* TITLE ON THE LEFT (FULL WIDTH FEEL ON DESKTOP) */}
-          <div className="flex-1">
-             <h1 className="text-xl md:text-3xl lg:text-4xl font-brand font-black uppercase tracking-tighter leading-none">
-                I rise money for <span className="text-primary italic">my secret project</span>
+    <div className="relative bg-neutral-50 min-h-screen font-sans text-neutral-900">
+      {/* FULL WIDTH HEADER - SHADCN STYLE */}
+      <header className="w-full border-b border-neutral-200 bg-white sticky top-0 z-[100] px-4 md:px-8 py-4 shadow-sm">
+        <div className="grid grid-cols-3 items-center max-w-[1920px] mx-auto">
+          {/* LEFT SIDE EMPTY FOR BALANCING GRID */}
+          <div className="hidden md:block"></div>
+
+          {/* CENTERED TITLE */}
+          <div className="col-span-3 md:col-span-1 text-center">
+             <h1 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
+                I rise money for <span className="text-blue-600 italic">my secret project</span>
              </h1>
           </div>
 
           {/* AUTH ICON ON THE RIGHT */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-end gap-4">
              <SignedOut>
                 <SignInButton mode="modal">
-                   <button className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center justify-center p-2 h-10 w-10 md:h-12 md:w-12 rounded-full border border-[#1a1a1a] shadow-brutalist-sm active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all">
-                      <LogIn size={20} />
+                   <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-medium text-xs px-4 py-2 rounded-md transition-colors">
+                      Log In
                    </button>
                 </SignInButton>
              </SignedOut>
@@ -174,10 +179,10 @@ export default function CampaignContent({
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-8 space-y-12">
-            <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-brutalist-lg border-2 border-[#1a1a1a] bg-black">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-8">
+            <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-md border border-neutral-200 bg-black">
                <VideoPlayer video={{
                  id: 'campaign_video',
                  title: 'I rise money for my secret project',
@@ -192,16 +197,15 @@ export default function CampaignContent({
                } as any} />
             </div>
 
-            <div className="bg-white border-2 border-[#1a1a1a] p-8 md:p-12 shadow-brutalist rounded-3xl space-y-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-[#1a1a1a]/5 pb-6">
-                 <h2 className="text-2xl md:text-3xl font-brand font-black uppercase tracking-tight">O projekcie</h2>
+            <div className="bg-white border border-neutral-200 p-6 md:p-10 shadow-sm rounded-xl space-y-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-100 pb-6">
+                 <h2 className="text-2xl font-bold tracking-tight">O projekcie</h2>
 
-                 {/* BRANDING MOVED HERE */}
                  <Link
                     href="/channel/polutek"
-                    className="flex items-center gap-3 text-[#1a1a1a]/60 font-serif hover:opacity-80 transition-opacity group/author"
+                    className="flex items-center gap-3 text-neutral-500 hover:text-neutral-900 transition-colors group/author"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#eff6ff] border border-[#1a1a1a] overflow-hidden group-hover/author:border-primary transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-neutral-100 border border-neutral-200 overflow-hidden">
                        <img
                          src={creator?.imageUrl || "/nowe.png"}
                          alt={creator?.name}
@@ -209,52 +213,55 @@ export default function CampaignContent({
                        />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Kampania autorstwa</span>
-                       <span className="font-bold uppercase tracking-widest text-xs flex items-center gap-1 text-[#1a1a1a]">
-                         <BrandName className="text-xs" dotPlClassName="group-hover/author:animate-glow" />
+                       <span className="text-[10px] uppercase tracking-wider opacity-60">Kampania autorstwa</span>
+                       <span className="font-semibold text-sm flex items-center gap-1 text-neutral-900">
+                         <BrandName className="text-sm" dotPlClassName="group-hover/author:text-blue-600" />
                        </span>
                     </div>
                   </Link>
               </div>
 
-              <div className="prose prose-neutral max-w-none font-serif text-lg leading-relaxed text-[#1a1a1a]/80">
-                <p>Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.</p>
-                <p><strong>&quot;Secret Project&quot;</strong> to rozbudowana platforma, która pozwoli nam wszystkim dotrzeć do prawdy tam, gdzie inni wolą milczeć. Potrzebuję Waszego wsparcia, aby sfinalizować produkcję i zabezpieczyć infrastrukturę.</p>
+              <div className="prose prose-neutral max-w-none text-neutral-600">
+                <p className="text-lg leading-relaxed">Witajcie! Przez ostatnie miesiące pracowałem w ukryciu nad czymś, co może całkowicie zmienić sposób, w jaki postrzegacie niezależne dziennikarstwo i śledztwa w sieci.</p>
+                <p className="text-lg leading-relaxed"><strong>&quot;Secret Project&quot;</strong> to rozbudowana platforma, która pozwoli nam wszystkim dotrzeć do prawdy tam, gdzie inni wolą milczeć. Potrzebuję Waszego wsparcia, aby sfinalizować produkcję i zabezpieczyć infrastrukturę.</p>
               </div>
             </div>
 
-            <div className="bg-white border-2 border-[#1a1a1a] p-8 shadow-brutalist rounded-3xl">
-               <h2 className="text-2xl font-brand font-black uppercase tracking-tight mb-6">Komentarze wspierających</h2>
+            <div className="bg-white border border-neutral-200 p-6 shadow-sm rounded-xl">
+               <h2 className="text-xl font-bold tracking-tight mb-6">Komentarze wspierających</h2>
                <EmbeddedComments videoId="crowdfunding_zrzutka" userProfile={userProfile} videoTier="PUBLIC" />
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-8 lg:sticky lg:top-24 h-fit">
-            <div className="bg-[#1a1a1a] text-white p-8 md:p-10 shadow-brutalist-lg rounded-3xl space-y-8 relative overflow-hidden">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+            <div className="bg-white border border-neutral-200 p-6 shadow-md rounded-xl space-y-6 relative overflow-hidden">
                <div className="relative z-10 space-y-6">
-                  <div className="space-y-2">
-                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Postęp kampanii</p>
+                  <div className="space-y-4">
+                     <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Postęp kampanii</p>
                      <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-mono font-black tracking-tighter text-primary">{initialRaised.toLocaleString()}</span>
-                        <span className="text-xl font-mono text-white/20">PLN</span>
+                        <span className="text-4xl font-bold tracking-tighter text-neutral-900">{initialRaised.toLocaleString()}</span>
+                        <span className="text-lg font-medium text-neutral-400">PLN</span>
                      </div>
-                     <p className="text-sm font-medium text-white/40 italic">Cel: {goal.toLocaleString()} PLN</p>
+                     <div className="flex justify-between items-center text-sm">
+                        <span className="text-neutral-500 font-medium">Cel: {goal.toLocaleString()} PLN</span>
+                        <span className="text-blue-600 font-bold">Pozostało: {amountRemaining.toLocaleString()} PLN</span>
+                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                     <div className="w-full h-4 bg-white/10 rounded-full overflow-hidden border border-white/5">
-                        <div className="h-full bg-primary shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
+                  <div className="space-y-2">
+                     <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-600 transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
                      </div>
-                     <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                     <div className="flex justify-between items-center text-xs font-medium text-neutral-500 uppercase tracking-tight">
                         <span>{progress}% sfinalizowane</span>
-                        <span className="text-primary">Wspieraj teraz</span>
+                        <span className="text-blue-600">Wspieraj teraz</span>
                      </div>
                   </div>
 
-                  <div className="space-y-4 pt-4 border-t border-white/10">
+                  <div className="space-y-4 pt-4 border-t border-neutral-100">
                     <div className="relative group">
                       <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span className="font-mono font-bold text-white/20">PLN</span>
+                        <span className="text-sm font-semibold text-neutral-400">PLN</span>
                       </div>
                       <input
                         type="number"
@@ -262,14 +269,14 @@ export default function CampaignContent({
                         step="1"
                         value={selectedAmount}
                         onChange={(e) => setSelectedAmount(e.target.value === '' ? '' : parseInt(e.target.value))}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 font-mono text-2xl font-black text-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                        className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-3 px-4 text-lg font-semibold text-neutral-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all"
                         placeholder="10"
                       />
                     </div>
                     <button
                       onClick={() => handleSupport(Number(selectedAmount))}
                       disabled={isLoading || !selectedAmount || Number(selectedAmount) < 10}
-                      className="w-full bg-white text-[#1a1a1a] py-4 rounded-2xl font-mono font-black text-sm tracking-[0.2em] uppercase transition-all hover:bg-primary hover:text-white active:scale-95 shadow-xl disabled:opacity-30"
+                      className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-blue-700 disabled:opacity-50"
                     >
                       {isLoading ? <Loader2 className="animate-spin mx-auto" /> : 'WESPRZYJ PROJEKT'}
                     </button>
@@ -277,18 +284,18 @@ export default function CampaignContent({
                </div>
             </div>
 
-            <div className="space-y-6">
-               <h2 className="text-xl font-brand font-black uppercase tracking-tight px-2">Nagrody dla Ciebie</h2>
-               <div className="space-y-6">
+            <div className="space-y-4">
+               <h2 className="text-lg font-bold tracking-tight px-1">Nagrody dla Ciebie</h2>
+               <div className="space-y-4">
                   {REWARDS.map((reward) => (
-                     <div key={reward.id} className="group bg-white border-2 border-[#1a1a1a] p-6 shadow-brutalist rounded-3xl hover:-translate-y-1 transition-all duration-300">
+                     <div key={reward.id} className="group bg-white border border-neutral-200 p-5 shadow-sm rounded-xl hover:border-blue-600 transition-all">
                         <div className="flex justify-between items-start mb-4">
-                           <div className="p-3 bg-[#eff6ff] rounded-2xl border border-[#1a1a1a]/5 group-hover:bg-primary/10 transition-colors">{reward.icon}</div>
-                           <span className="text-2xl font-mono font-black">{reward.amount} <span className="text-xs opacity-40">PLN</span></span>
+                           <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">{reward.icon}</div>
+                           <span className="text-xl font-bold">{reward.amount} <span className="text-xs font-normal text-neutral-400">PLN</span></span>
                         </div>
-                        <h3 className="text-lg font-brand font-black uppercase tracking-tight mb-2 group-hover:text-primary transition-colors">{reward.title}</h3>
-                        <p className="text-xs text-[#1a1a1a]/60 font-serif mb-6 leading-relaxed">{reward.description}</p>
-                        <button onClick={() => handleSupport(reward.amount)} disabled={isLoading} className="w-full bg-[#eff6ff] group-hover:bg-[#1a1a1a] group-hover:text-white border border-[#1a1a1a]/5 py-3 rounded-xl font-mono font-bold text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2">
+                        <h3 className="text-base font-bold tracking-tight mb-2 group-hover:text-blue-600 transition-colors">{reward.title}</h3>
+                        <p className="text-xs text-neutral-500 mb-6 leading-relaxed">{reward.description}</p>
+                        <button onClick={() => handleSupport(reward.amount)} disabled={isLoading} className="w-full bg-neutral-50 hover:bg-neutral-900 hover:text-white border border-neutral-200 py-2.5 rounded-md font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
                            {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                         </button>
                      </div>
@@ -300,39 +307,37 @@ export default function CampaignContent({
       </div>
 
       {isCheckoutModalOpen && (clientSecret || isSuccess) && createPortal(
-          <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-white/5">
-                <div className="relative z-10 mt-20">
-                   <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85] mb-8">Zostań <br /> Mecenasem</h1>
-                   <div className="flex items-baseline gap-3 border-b border-white/10 pb-6 mb-6">
-                      <span className="text-4xl lg:text-5xl font-mono font-black tracking-tighter">{selectedAmount}</span>
-                      <span className="text-xl font-mono opacity-20">PLN</span>
+          <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-white flex flex-col md:flex-row overflow-hidden">
+             <div className="hidden md:flex md:w-[40%] bg-neutral-50 text-neutral-900 flex-col justify-start px-12 pt-20 pb-10 relative overflow-hidden h-full border-r border-neutral-200">
+                <div className="relative z-10">
+                   <h1 className="text-4xl font-bold tracking-tighter mb-8">Zostań <br /> Mecenasem</h1>
+                   <div className="flex items-baseline gap-2 border-b border-neutral-200 pb-6 mb-6">
+                      <span className="text-5xl font-bold tracking-tighter">{selectedAmount}</span>
+                      <span className="text-xl font-medium text-neutral-400">PLN</span>
                    </div>
-                   <p className="text-lg text-white/60 font-serif italic italic">&quot;I rise money for my secret project&quot;</p>
+                   <p className="text-base text-neutral-500 italic">&quot;I rise money for my secret project&quot;</p>
                 </div>
              </div>
 
-             <div className="flex-1 bg-[#FDFBF7] flex flex-col relative h-full">
-                <button onClick={() => setIsCheckoutModalOpen(false)} className="absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg text-2xl">×</button>
-                <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 lg:px-16 pt-20 pb-10 relative z-10 overflow-y-auto">
-                   <div className="w-full max-w-[480px]">
+             <div className="flex-1 bg-white flex flex-col relative h-full">
+                <button onClick={() => setIsCheckoutModalOpen(false)} className="absolute top-4 right-4 z-30 flex items-center justify-center w-10 h-10 border border-neutral-200 rounded-full hover:bg-neutral-50 transition-colors bg-white text-xl">×</button>
+                <div className="flex-1 flex flex-col items-center justify-start px-6 pt-20 pb-10 relative z-10 overflow-y-auto">
+                   <div className="w-full max-w-[440px]">
                       {isSuccess ? (
                         <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
-                           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"><Check size={32} className="text-white" /></div>
-                           <h1 className="text-3xl font-brand font-black uppercase tracking-tighter">Dziękujemy!</h1>
-                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-mono font-bold text-sm tracking-[0.2em] uppercase transition-all">Wróć do kampanii</button>
+                           <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-lg"><Check size={24} className="text-white" /></div>
+                           <h1 className="text-2xl font-bold tracking-tight">Dziękujemy!</h1>
+                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-neutral-900 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-neutral-800">Wróć do kampanii</button>
                         </div>
                       ) : (
                         <div className="flex flex-col">
-                           <h2 className="text-2xl font-brand font-black uppercase tracking-tight mb-8">Dokończ wpłatę</h2>
-                           <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-2xl rounded-[2.5rem]">
-                              <div className="p-6 md:p-8 lg:p-10">
+                           <h2 className="text-xl font-bold tracking-tight mb-8">Dokończ wpłatę</h2>
+                           <div className="bg-white border border-neutral-200 p-6 shadow-sm rounded-xl">
                                  {stripePromise && clientSecret ? (
-                                   <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'flat', variables: { colorPrimary: '#1a1a1a', colorBackground: '#ffffff', colorText: '#1a1a1a', borderRadius: '12px', fontFamily: 'var(--font-jakarta)' } } }}>
+                                   <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'flat', variables: { colorPrimary: '#2563eb', colorBackground: '#ffffff', colorText: '#171717', borderRadius: '8px' } } }}>
                                      <CheckoutForm returnUrl={`${window.location.origin}/?success=true`} />
                                    </Elements>
-                                 ) : <Loader2 className="animate-spin mx-auto my-20" size={32} />}
-                              </div>
+                                 ) : <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-neutral-400" size={32} /></div>}
                            </div>
                         </div>
                       )}

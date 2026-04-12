@@ -30,12 +30,12 @@ const Navbar = () => {
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'pawel.perfect@gmail.com';
   return (
-    <div className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral/10 px-4 lg:px-6 h-14 min-h-14 font-sans flex items-center justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
+    <div className="flex items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-neutral-200 px-4 lg:px-6 h-14 min-h-14 font-sans justify-between gap-2 md:gap-4 w-full max-w-full overflow-hidden">
       {isMobileSearchOpen ? (
         <div className="flex-1 flex items-center gap-2 px-2 animate-in slide-in-from-top-4 duration-200">
            <button
              onClick={() => setIsMobileSearchOpen(false)}
-             className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors shrink-0"
+             className="p-2 hover:bg-neutral-100 rounded-md transition-colors shrink-0"
            >
               <X size={20} />
            </button>
@@ -46,52 +46,51 @@ const Navbar = () => {
                 placeholder="Szukaj"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner"
+                className="w-full h-9 bg-neutral-50 border border-neutral-200 rounded-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
               />
            </form>
         </div>
       ) : (
         <>
-          <div className="navbar-start flex-1 md:w-56 md:flex-none">
-            <Link href="/" className="btn btn-ghost shrink-0 px-1 md:px-2 min-h-0 h-12 flex items-center gap-0 hover:bg-transparent transition-all active:scale-95">
-              <BrandName className="text-[1.1rem] md:text-[1.3rem] translate-y-[4.5px]" variant="handwriting" />
+          <div className="flex items-center shrink-0">
+            <Link href="/" className="shrink-0 px-1 md:px-2 flex items-center gap-0 hover:opacity-80 transition-all active:scale-95">
+              <BrandName className="text-[1.1rem] md:text-[1.3rem]" variant="handwriting" />
             </Link>
           </div>
 
-          <div className="navbar-center flex-[2] max-w-[480px] hidden md:flex mx-2 lg:mx-4 min-w-0">
-        <div className="relative w-full group">
-          <form onSubmit={handleSearch} className="flex w-full">
-            <div className="relative flex-1 flex items-center min-w-0">
-              <input
-                type="text"
-                placeholder="Szukaj"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full h-9 bg-white border border-[#1a1a1a] rounded-l-full px-4 text-sm focus:outline-none focus:border-blue-500 shadow-inner focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-[#888]"
-              />
-            </div>
-            <button type="submit" className="h-9 bg-[#bfdbfe] border border-[#1a1a1a] border-l-0 rounded-r-full px-5 hover:bg-[#93c5fd] transition-colors shrink-0 flex items-center justify-center" title="Szukaj">
-              <Search size={18} className="text-black" />
-            </button>
-          </form>
-        </div>
-      </div>
-      <div className="navbar-end flex-1 md:w-80 md:flex-none justify-end gap-1 md:gap-3">
-        {/* Language Switcher - Mobile only as requested */}
-        <div className="flex items-center gap-1 md:hidden">
-            <button
-              onClick={() => setIsMobileSearchOpen(true)}
-              className="p-2 hover:bg-[#1a1a1a]/5 rounded-full transition-colors md:hidden"
-            >
-                <Search size={20} className="text-black" />
-            </button>
+          <div className="flex-1 max-w-[540px] hidden md:flex mx-4 min-w-0">
+            <form onSubmit={handleSearch} className="flex w-full">
+              <div className="relative flex-1 flex items-center min-w-0">
+                <input
+                  type="text"
+                  placeholder="Szukaj"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-9 bg-neutral-50 border border-neutral-200 rounded-l-md px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all placeholder:text-neutral-400"
+                />
+              </div>
+              <button type="submit" className="h-9 bg-neutral-100 border border-neutral-200 border-l-0 rounded-r-md px-5 hover:bg-neutral-200 transition-colors shrink-0 flex items-center justify-center text-neutral-600" title="Szukaj">
+                <Search size={18} />
+              </button>
+            </form>
+          </div>
 
-            <div className="flex gap-4 items-center bg-[#1a1a1a]/[0.02] rounded-full px-3 py-1 mr-1 border border-[#1a1a1a] h-9">
+          <div className="flex items-center justify-end gap-1 md:gap-3">
+            <div className="flex items-center gap-1 md:hidden">
+                <button
+                  onClick={() => setIsMobileSearchOpen(true)}
+                  className="p-2 hover:bg-neutral-100 rounded-md transition-colors"
+                >
+                    <Search size={20} className="text-neutral-600" />
+                </button>
+            </div>
+
+            <div className="hidden sm:flex gap-2 items-center bg-neutral-50 rounded-md px-2 py-1 border border-neutral-200 h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'pl' ? "text-primary" : "text-[#1a1a1a]/30"
+                    "text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded transition-all",
+                    language === 'pl' ? "bg-white shadow-sm text-neutral-900 border border-neutral-200" : "text-neutral-400 hover:text-neutral-600"
                   )}
                 >
                   PL
@@ -99,48 +98,35 @@ const Navbar = () => {
                 <button
                   onClick={() => { if (setLanguage) setLanguage('en'); }}
                   className={cn(
-                    "text-[10px] font-black tracking-widest uppercase transition-all",
-                    language === 'en' ? "text-primary" : "text-[#1a1a1a]/30"
+                    "text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded transition-all",
+                    language === 'en' ? "bg-white shadow-sm text-neutral-900 border border-neutral-200" : "text-neutral-400 hover:text-neutral-600"
                   )}
                 >
                   EN
                 </button>
             </div>
-        </div>
 
-        {isAdmin && (
-          <Link href="/admin" className="btn btn-ghost btn-xs md:btn-sm font-bold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors whitespace-nowrap">
-            Admin
-          </Link>
-        )}
+            {isAdmin && (
+              <Link href="/admin" className="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-neutral-900 transition-colors whitespace-nowrap px-2">
+                Admin
+              </Link>
+            )}
 
-
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button
-              onClick={() => {
-                // Pre-set language in unsafeMetadata via a custom trigger if needed,
-                // but SignInButton doesn't support unsafeMetadata directly in props here easily.
-                // However, our ClerkLocalizationProvider handles sync.
-              }}
-              className="bg-[#1e3a8a] text-white hover:bg-[#1e3a8a]/90 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1 md:gap-2 px-2 md:px-3 h-9 rounded-full border border-[#1a1a1a] transition-all"
-            >
-              <LogIn size={18} />
-              <span className="hidden md:inline">{t.signIn}</span>
-            </button>
-          </SignInButton>
-        </SignedOut>
-        <SignedIn>
-          <div className="flex items-center gap-2 md:gap-4 mr-1 md:mr-2">
-            <div className="flex flex-col items-center pb-0.5">
-               <div className="rounded-full inline-flex items-center justify-center bg-transparent aspect-square border border-[#1a1a1a] overflow-hidden">
-                  <UserButton afterSignOutUrl="/" />
-               </div>
-            </div>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs flex items-center gap-2 px-4 h-9 rounded-md transition-all">
+                  <LogIn size={16} />
+                  <span className="hidden md:inline">{t.signIn}</span>
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex items-center gap-2">
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            </SignedIn>
           </div>
-        </SignedIn>
-      </div>
-      </>
+        </>
       )}
     </div>
   );

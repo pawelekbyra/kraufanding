@@ -25,7 +25,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
         <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
             <h1 className="text-4xl font-black uppercase">Kanał nie znaleziony</h1>
             <p className="text-[#606060] mt-2 mb-6">Ten kanał nie istnieje.</p>
-            <Link href="/" className="bg-[#0f0f0f] text-white px-8 py-3 rounded-full uppercase font-bold tracking-widest hover:bg-[#272727] transition-all">Wróć na stronę główną</Link>
+            <Link href="/" className="bg-[#0f0f0f] text-white px-8 py-3 rounded-md uppercase font-bold tracking-widest hover:bg-[#272727] transition-all">Wróć na stronę główną</Link>
         </div>
         <Footer />
       </div>
@@ -87,7 +87,7 @@ export default async function ChannelPage({ params }: { params: { slug: string }
       {/* CHANNEL HEADER */}
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-[#1a1a1a] overflow-hidden bg-[#1a1a1a]/5 shrink-0 shadow-sm">
+          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border border-neutral-200 overflow-hidden bg-[#1a1a1a]/5 shrink-0 shadow-sm">
              <img
                src={ownerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${ownerEmail || displayName}`}
                alt={displayName}
@@ -115,13 +115,13 @@ export default async function ChannelPage({ params }: { params: { slug: string }
                  initialSubscribersCount={creator.subscribersCount || 0}
                  initialIsSubscribed={isSubscribed}
                />
-               <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-full px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5 border border-[#1a1a1a]">Wspieraj</Link>
+               <Link href={userId ? "/#donations" : "/"} className="bg-[#000000]/5 hover:bg-[#000000]/10 rounded-md px-6 h-9 font-bold text-[14px] transition-all uppercase tracking-widest flex items-center mb-5 border border-neutral-200">Wspieraj</Link>
             </div>
           </div>
         </div>
 
         {/* CHANNEL TABS */}
-        <div className="flex border-b border-[#1a1a1a]/10 mt-6 overflow-x-auto no-scrollbar gap-8">
+        <div className="flex border-b border-neutral-200 mt-6 overflow-x-auto no-scrollbar gap-8">
            <button className="pb-3 border-b-2 border-[#0f0f0f] text-[14px] font-bold uppercase tracking-widest">Wideo</button>
            <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Playlisty</button>
            <button className="pb-3 text-[#606060] text-[14px] font-bold uppercase tracking-widest hover:text-[#0f0f0f] transition-colors">Społeczność</button>
