@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { UserService } from '@/lib/services/user.service';
 import CampaignContent from './CampaignContent';
+import Navbar from '../components/Navbar';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,6 +47,7 @@ export default async function ZrzutkaPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1a1a1a] font-sans">
+      <Navbar />
       <main>
         <CampaignContent
           adminData={adminData}

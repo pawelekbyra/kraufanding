@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-neutral-900 text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-neutral-800 flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-charcoal text-white py-3 rounded-md font-semibold text-sm uppercase tracking-wider transition-colors hover:bg-black flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
