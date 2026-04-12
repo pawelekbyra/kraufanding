@@ -221,4 +221,56 @@ export class ContentService {
       throw new Error(`Failed to create comment: ${e.message}`);
     }
   }
+
+  /**
+   * Fetches all videos from the database, falling back to initial content.
+   */
+  static async getAllVideos() {
+    try {
+      const videos = await prisma.video.findMany({
+        include: {
+          creator: {
+            include: {
+              user: {
+                select: { imageUrl: true, email: true }
+              }
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      if (videos.length === 0) return INITIAL_VIDEOS;
+      return videos;
+    } catch (e: any) {
+      console.error("[GET_ALL_VIDEOS_ERROR]", e);
+      return INITIAL_VIDEOS;
+    }
+  }
+
+  /**
+   * Fetches the main featured video from the database, falling back to initial content.
+   */
+  static async getMainFeaturedVideo() {
+    try {
+      const video = await prisma.video.findFirst({
+        where: { isMainFeatured: true },
+        include: {
+          creator: {
+            include: {
+              user: {
+                select: { imageUrl: true, email: true }
+              }
+            }
+          }
+        }
+      });
+
+      if (!video) return INITIAL_VIDEOS[0];
+      return video;
+    } catch (e: any) {
+      console.error("[GET_MAIN_FEATURED_VIDEO_ERROR]", e);
+      return INITIAL_VIDEOS[0];
+    }
+  }
 }
