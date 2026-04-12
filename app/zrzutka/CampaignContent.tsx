@@ -171,21 +171,7 @@ export default function CampaignContent({
 
   return (
     <div className="relative bg-neutral-50 min-h-screen font-sans text-neutral-900">
-      {/* FLOATING AUTH ICON */}
-      <div className="absolute top-6 right-8 z-50">
-         <SignedOut>
-            <SignInButton mode="modal">
-               <button className="bg-neutral-900 text-white hover:bg-black font-bold text-[10px] uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 border border-neutral-800">
-                  Log In
-               </button>
-            </SignInButton>
-         </SignedOut>
-         <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-         </SignedIn>
-      </div>
-
-      <div className="max-w-[1280px] mx-auto px-4 md:px-6 pt-6 pb-12">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 pt-8 pb-12">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 lg:col-span-8 space-y-6">
             <Hero
