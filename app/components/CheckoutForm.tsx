@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useLanguage } from './LanguageContext';
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ returnUrl }: { returnUrl?: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const { t, language } = useLanguage();
@@ -21,7 +21,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/?success=true`,
+        return_url: returnUrl || `${window.location.origin}/?success=true`,
       },
     });
 
