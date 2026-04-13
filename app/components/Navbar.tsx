@@ -76,7 +76,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center justify-end gap-1 md:gap-3">
-            <div className="flex items-center gap-1 md:hidden">
+            <div className="flex items-center gap-1 sm:hidden">
                 <button
                   onClick={() => setIsMobileSearchOpen(true)}
                   className="p-2 hover:bg-neutral-100 rounded-md transition-colors"
@@ -85,7 +85,7 @@ const Navbar = () => {
                 </button>
             </div>
 
-            <div className="hidden sm:flex gap-2 items-center bg-white rounded-md px-2 py-1 border border-neutral-300 h-9">
+            <div className="flex gap-1 items-center bg-white rounded-md px-1 sm:px-2 py-1 border border-neutral-300 h-9">
                 <button
                   onClick={() => { if (setLanguage) setLanguage('pl'); }}
                   className={cn(
@@ -114,9 +114,9 @@ const Navbar = () => {
 
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-neutral-900 text-white hover:bg-neutral-800 font-semibold text-xs flex items-center gap-2 px-4 h-9 rounded-md transition-all">
-                  <LogIn size={16} />
-                  <span className="hidden md:inline">{t.signIn}</span>
+                <button className="bg-charcoal text-white hover:bg-black font-semibold text-[10px] sm:text-xs flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 h-9 rounded-md transition-all shadow-sm active:scale-95 border border-charcoal">
+                  <LogIn size={14} className="sm:w-4 sm:h-4" />
+                  <span>{t.signIn}</span>
                 </button>
               </SignInButton>
             </SignedOut>
