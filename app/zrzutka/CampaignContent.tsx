@@ -267,7 +267,7 @@ export default function CampaignContent({
                                     <button
                                     onClick={() => handleSupport(reward.amount)}
                                     disabled={isLoading}
-                                    className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                                    className="w-full bg-charcoal text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
                                     >
                                     {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                                     </button>
@@ -349,7 +349,7 @@ export default function CampaignContent({
                         <button
                           onClick={() => handleSupport(reward.amount)}
                           disabled={isLoading}
-                          className="w-full bg-neutral-900 text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
+                          className="w-full bg-charcoal text-white hover:bg-black py-2.5 rounded-md font-bold text-[10px] tracking-widest uppercase transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm"
                         >
                            {isLoading && selectedAmount === reward.amount ? <Loader2 className="animate-spin" size={14} /> : <>WYBIERAM <ArrowRight size={14} /></>}
                         </button>
@@ -382,7 +382,7 @@ export default function CampaignContent({
                         <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-lg"><Check size={24} className="text-white" /></div>
                            <h1 className="text-2xl font-bold tracking-tight">Dziękujemy!</h1>
-                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-neutral-900 text-white py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:bg-black active:scale-95">Wróć do kampanii</button>
+                           <button onClick={() => { setIsCheckoutModalOpen(false); router.push('/'); }} className="w-full bg-charcoal text-white py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:bg-black active:scale-95">Wróć do kampanii</button>
                         </div>
                       ) : (
                         <div className="flex flex-col">

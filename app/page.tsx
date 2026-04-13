@@ -23,78 +23,9 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   const adminData = await ContentService.getAdminData();
   const creator = await ContentService.getCreatorBySlug('polutek');
 
-  // If there is a video ID or a search query, show the standard video player view
-  if (videoId || searchQuery) {
-    const allVideos = await ContentService.getAllVideos();
-    const mainVideo = await ContentService.getMainFeaturedVideo();
-
-    const user = await currentUser();
-
-    let initialInteraction = { liked: false, disliked: false };
-    let initialIsSubscribed = false;
-
-    if (userId) {
-      const targetVideoId = videoId || mainVideo.id;
-      const [like, dislike] = await Promise.all([
-        prisma.videoLike.findUnique({
-          where: { userId_videoId: { userId, videoId: targetVideoId } }
-        }),
-        prisma.videoDislike.findUnique({
-          where: { userId_videoId: { userId, videoId: targetVideoId } }
-        })
-      ]);
-      initialInteraction = { liked: !!like, disliked: !!dislike };
-
-      if (creator?.id) {
-        const sub = await prisma.subscription.findUnique({
-          where: { userId_creatorId: { userId, creatorId: creator.id } }
-        });
-        initialIsSubscribed = !!sub;
-      }
-    }
-
-    const userProfile = userId ? {
-      id: userId,
-      email: user?.primaryEmailAddress?.emailAddress || '',
-      name: userDb?.name || (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null),
-      imageUrl: user?.imageUrl || null,
-      totalPaid: userDb?.totalPaid || 0,
-      role: userDb?.role || 'USER',
-      referralCount: userDb?.referralCount || 0,
-      initialInteraction,
-      initialIsSubscribed
-    } : null;
-
-    return (
-      <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
-        <Navbar />
-        <main className="relative">
-          <ChannelHome
-            mainVideo={mainVideo as any}
-            allVideos={allVideos as any}
-            currentVideoId={videoId}
-            userProfile={userProfile as any}
-          />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Otherwise show the crowdfunding campaign
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      creatorId: creator?.id,
-      status: 'COMPLETED'
-    },
-    select: {
-      amount: true,
-      currency: true
-    }
-  }).catch(() => []);
-
-  const totalRaised = transactions.reduce((sum, tx) => sum + tx.amount, 0);
-  const supportersCount = transactions.length;
+  // Always show the standard video player view on homepage
+  const allVideos = await ContentService.getAllVideos();
+  const mainVideo = await ContentService.getMainFeaturedVideo();
 
   const user = await currentUser();
 
@@ -102,13 +33,13 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
   let initialIsSubscribed = false;
 
   if (userId) {
-    // Check interaction for campaign video
+    const targetVideoId = videoId || mainVideo.id;
     const [like, dislike] = await Promise.all([
       prisma.videoLike.findUnique({
-        where: { userId_videoId: { userId, videoId: 'crowdfunding_zrzutka' } }
+        where: { userId_videoId: { userId, videoId: targetVideoId } }
       }),
       prisma.videoDislike.findUnique({
-        where: { userId_videoId: { userId, videoId: 'crowdfunding_zrzutka' } }
+        where: { userId_videoId: { userId, videoId: targetVideoId } }
       })
     ]);
     initialInteraction = { liked: !!like, disliked: !!dislike };
@@ -137,12 +68,11 @@ export default async function Home({ searchParams }: { searchParams: { v?: strin
     <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans">
       <Navbar />
       <main className="relative">
-        <CampaignContent
-          adminData={adminData}
-          creator={creator}
+        <ChannelHome
+          mainVideo={mainVideo as any}
+          allVideos={allVideos as any}
+          currentVideoId={videoId}
           userProfile={userProfile as any}
-          totalRaised={totalRaised}
-          supportersCount={supportersCount}
         />
       </main>
       <Footer />
