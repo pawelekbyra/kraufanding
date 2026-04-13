@@ -187,15 +187,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
-        <div className="bg-white border border-neutral-400 px-6 py-4 shadow-sm relative overflow-hidden rounded-xl">
+        <div className="bg-white border border-neutral-200 px-6 py-4 shadow-md relative overflow-hidden rounded-xl">
           <div className="space-y-4 relative z-10">
-            <h3 className="text-xl font-sans font-black text-[#1e3a8a] uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
+            <h3 className="text-xl font-sans font-black text-blue-600 uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
-              <Trophy size={32} className="text-[#1e3a8a]" />
+              <Trophy size={32} className="text-blue-600" />
             </h3>
 
             <div className="space-y-3">
-              <p className="font-serif text-sm leading-relaxed text-[#1e3a8a] whitespace-pre-wrap">
+              <p className="font-serif text-sm leading-relaxed text-blue-600 whitespace-pre-wrap">
                 {t.donationDescription}
               </p>
 
@@ -206,7 +206,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               )}
 
               <div className="space-y-2 pt-2">
-                <label className="block font-serif text-sm text-[#1e3a8a] font-bold text-center">
+                <label className="block font-serif text-sm text-blue-600 font-bold text-center">
                   {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
@@ -214,7 +214,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     <select
                       value={selectedCurrency}
                       onChange={(e) => handleCurrencyChange(e.target.value)}
-                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-[#1e3a8a]/50 focus:text-[#1e3a8a] focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-blue-600/50 focus:text-blue-600 focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
                       aria-label="Select Currency"
                     >
                       {availableCurrencies.map(curr => (
@@ -234,7 +234,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-white border border-neutral-400 rounded-md py-4 px-12 font-mono text-3xl font-black text-[#1e3a8a] text-center focus:ring-0 outline-none transition-all placeholder:text-[#1e3a8a]/20"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-4 px-12 font-mono text-3xl font-black text-blue-600 text-center focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all placeholder:text-blue-600/20"
                     placeholder={String(minAmount)}
                   />
                 </div>
@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-neutral-900 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-black flex items-center justify-center gap-2 active:scale-95 border border-neutral-800 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-blue-700 flex items-center justify-center gap-2 active:scale-95 border border-blue-600 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
@@ -272,9 +272,9 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsTermsAccepted(e.target.checked);
                     if (e.target.checked) setShowTermsError(false);
                   }}
-                  className="checkbox checkbox-xs border border-neutral-400 rounded checked:!bg-[#1e3a8a] checked:!border-[#1e3a8a] transition-all"
+                  className="checkbox checkbox-xs border border-neutral-400 rounded checked:!bg-blue-600 checked:!border-blue-600 transition-all"
                 />
-                <span className="text-[#1e3a8a] font-sans font-medium text-[10px] tracking-tight transition-colors">
+                <span className="text-blue-600 font-sans font-medium text-[10px] tracking-tight transition-colors">
                   {language === 'pl' ? (
                     <>
                       Akceptuję{' '}
@@ -316,45 +316,45 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
         {/* Checkout Full-Screen Takeover */}
         {isMounted && isCheckoutModalOpen && (clientSecret || isSuccess) && createPortal(
-          <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-[#1a1a1a] flex flex-col md:flex-row overflow-hidden">
+          <div className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-white flex flex-col md:flex-row overflow-hidden">
 
              {/* Left Column (Summary - Desktop) */}
-             <div className="hidden md:flex md:w-[45%] bg-[#1a1a1a] text-white flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-white/5">
+             <div className="hidden md:flex md:w-[45%] bg-neutral-50 text-neutral-900 flex-col justify-start px-10 md:px-12 lg:px-20 pt-1 pb-10 relative overflow-hidden h-full border-r border-neutral-200">
                 {/* Main Summary content */}
                 <div className="relative z-10 mt-0">
                    <div className="flex flex-col">
-                      <span className="inline-block w-fit px-3 py-0.5 bg-white/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">Premium Access</span>
+                      <span className="inline-block w-fit px-3 py-0.5 bg-blue-600/10 rounded text-[10px] font-black uppercase tracking-[0.4em] text-blue-600 leading-none">Premium Access</span>
                       <h1 className="text-5xl lg:text-6xl font-brand font-black uppercase tracking-tighter leading-[0.85] mt-6">
                         Zostań <br /> Patronem
                       </h1>
-                      <p className="text-base text-white/40 font-medium italic max-w-md">
+                      <p className="text-base text-neutral-500 font-medium italic max-w-md">
                         &quot;{videoTitle || "Wsparcie twórcy"}&quot;
                       </p>
                    </div>
 
                    <div className="space-y-6">
-                      <div className="flex items-baseline gap-3 border-b border-white/10 pb-6">
+                      <div className="flex items-baseline gap-3 border-b border-neutral-200 pb-6 mb-6">
                          <span className="text-4xl lg:text-5xl font-mono font-black tracking-tighter">{amount}</span>
-                         <span className="text-xl font-mono opacity-20">{selectedCurrency}</span>
+                         <span className="text-xl font-mono text-neutral-300">{selectedCurrency}</span>
                       </div>
 
                       <div className="grid grid-cols-1 gap-8">
                          <div className="flex items-start gap-5">
-                            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shrink-0 mt-1">
-                               <span className="text-[#1a1a1a] text-xs font-black">✓</span>
+                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shrink-0 mt-1">
+                               <span className="text-white text-xs font-black">✓</span>
                             </div>
                             <div className="space-y-1.5">
                                <p className="text-sm font-black uppercase tracking-widest">Dożywotni Dostęp</p>
-                               <p className="text-sm text-white/40 leading-relaxed">Wszystkie obecne i przyszłe materiały premium bez żadnych limitów czasowych.</p>
+                               <p className="text-sm text-neutral-500 leading-relaxed">Wszystkie obecne i przyszłe materiały premium bez żadnych limitów czasowych.</p>
                             </div>
                          </div>
                          <div className="flex items-start gap-5">
-                            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shrink-0 mt-1">
-                               <span className="text-[#1a1a1a] text-xs font-black">✓</span>
+                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shrink-0 mt-1">
+                               <span className="text-white text-xs font-black">✓</span>
                             </div>
                             <div className="space-y-1.5">
                                <p className="text-sm font-black uppercase tracking-widest">Niezależne Śledztwa</p>
-                               <p className="text-sm text-white/40 leading-relaxed">Twoje wsparcie pozwala nam tworzyć unikalne treści i niezależne raporty.</p>
+                               <p className="text-sm text-neutral-500 leading-relaxed">Twoje wsparcie pozwala nam tworzyć unikalne treści i niezależne raporty.</p>
                             </div>
                          </div>
                       </div>
@@ -363,37 +363,37 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
                 {/* Footer attribution */}
                 <div className="relative z-10 flex justify-between items-center">
-                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/10">
+                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-300">
                       POLUTEK.PL &copy; {new Date().getFullYear()}
                    </p>
                    <div className="flex gap-4 opacity-20">
-                      <span className="text-[10px] font-black uppercase tracking-widest">Secure Payment</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Secure Payment</span>
                    </div>
                 </div>
 
                 {/* Decorative background element */}
-                <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px]" />
+                <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-[120px]" />
              </div>
 
              {/* Right Column (Form Area) */}
-             <div className="flex-1 bg-[#FDFBF7] flex flex-col relative h-full">
+             <div className="flex-1 bg-white flex flex-col relative h-full">
                 {/* Integrated Close Button (Desktop Only) */}
                 <button
                   onClick={() => {
                     setIsCheckoutModalOpen(false);
                     if (isSuccess) router.replace(window.location.pathname);
                   }}
-                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-[#1a1a1a]/10 rounded-full font-bold hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-lg"
+                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-neutral-200 rounded-full font-bold hover:bg-neutral-50 transition-all bg-white shadow-md"
                   aria-label="Zamknij"
                 >
                   <span className="text-2xl leading-none flex items-center justify-center">×</span>
                 </button>
 
                 {/* Mobile Header Overlap */}
-                <div className="md:hidden w-full px-6 py-6 flex justify-between items-center shrink-0 relative z-20 border-b border-[#1a1a1a]/5 bg-[#FDFBF7]">
+                <div className="md:hidden w-full px-6 py-6 flex justify-between items-center shrink-0 relative z-20 border-b border-neutral-100 bg-white">
                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center text-white font-black text-xs">P</div>
-                      <h3 className="text-lg font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-[#1a1a1a]/40">.PL</span></h3>
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-black text-xs">P</div>
+                      <h3 className="text-lg font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-neutral-400">.PL</span></h3>
                    </div>
 
                    <button
@@ -401,7 +401,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                        setIsCheckoutModalOpen(false);
                        if (isSuccess) router.replace(window.location.pathname);
                      }}
-                     className="group flex items-center gap-1.5 px-3 py-1.5 border border-[#1a1a1a]/10 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-[#1a1a1a] hover:text-white transition-all bg-white shadow-sm"
+                     className="group flex items-center gap-1.5 px-3 py-1.5 border border-neutral-200 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-neutral-50 transition-all bg-white shadow-sm"
                    >
                      <span>Wróć</span>
                      <span className="text-base leading-none">×</span>
@@ -446,7 +446,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                setIsCheckoutModalOpen(false);
                                router.replace(window.location.pathname);
                              }}
-                             className="w-full bg-neutral-900 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-black hover:shadow-xl active:scale-[0.98] border border-neutral-800"
+                             className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-blue-700 hover:shadow-xl active:scale-[0.98]"
                            >
                              {language === 'pl' ? 'Wróć do serwisu' : 'Back to site'}
                            </button>
@@ -456,20 +456,20 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                           {/* Desktop Heading hint */}
                           <div className="hidden md:block mb-6 mt-0">
                              <h2 className="text-2xl font-brand font-black uppercase tracking-tight leading-none">{language === 'pl' ? 'Przekaż napiwek' : 'Finalize payment'}</h2>
-                             <p className="text-sm text-[#1a1a1a]/40">Bezpieczna transakcja obsługiwana przez Stripe.</p>
+                             <p className="text-sm text-neutral-400">Bezpieczna transakcja obsługiwana przez Stripe.</p>
                           </div>
 
                           {/* Mobile-only summary head */}
                           <div className="md:hidden text-center space-y-3 mb-6">
-                             <span className="inline-block px-2 py-0.5 bg-[#1a1a1a]/5 rounded text-[9px] font-black uppercase tracking-[0.3em] text-[#1a1a1a]/60">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
+                             <span className="inline-block px-2 py-0.5 bg-neutral-100 rounded text-[9px] font-black uppercase tracking-[0.3em] text-neutral-500">{language === 'pl' ? 'Bezpieczna płatność' : 'Secure payment'}</span>
                              <h1 className="text-3xl font-brand font-black uppercase tracking-tighter leading-tight">{language === 'pl' ? 'Przekaż napiwek' : 'Tip the Guy'}</h1>
-                             <div className="py-6 border-y border-[#1a1a1a]/5">
+                             <div className="py-6 border-y border-neutral-100">
                                 <p className="text-5xl font-mono font-black tracking-tighter">{amount} <span className="text-xl align-top opacity-20">{selectedCurrency}</span></p>
                              </div>
                           </div>
 
                           {/* Stripe form card */}
-                          <div className="bg-white border border-[#1a1a1a]/5 p-1 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] rounded-[2.5rem] mb-6">
+                          <div className="bg-white border border-neutral-200 p-1 shadow-md rounded-[2.5rem] mb-6">
                              <div className="p-6 md:p-8 lg:p-10">
                                 {stripePromise && clientSecret ? (
                                   <Elements stripe={stripePromise} options={{
@@ -477,10 +477,10 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                     appearance: {
                                       theme: 'flat',
                                       variables: {
-                                        colorPrimary: '#1a1a1a',
+                                        colorPrimary: '#2563eb',
                                         colorBackground: '#ffffff',
-                                        colorText: '#1a1a1a',
-                                        borderRadius: '12px',
+                                        colorText: '#171717',
+                                        borderRadius: '8px',
                                         fontFamily: 'var(--font-jakarta)',
                                       }
                                     }
@@ -501,11 +501,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       {/* Trust indicators */}
                           <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200 mt-2">
                          <div className="flex items-center gap-2">
-                           <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
                            <span className="text-[10px] font-black uppercase tracking-widest">SSL encryption</span>
                          </div>
                          <div className="flex items-center gap-2">
-                           <div className="w-1.5 h-1.5 rounded-full bg-[#1a1a1a]" />
+                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
                            <span className="text-[10px] font-black uppercase tracking-widest">Secure stripe check</span>
                          </div>
                       </div>
