@@ -187,15 +187,15 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
   return (
     <div className="space-y-4 px-2 relative scroll-mt-20" id="donations">
-        <div className="bg-white border border-neutral-200 px-6 py-4 shadow-md relative overflow-hidden rounded-xl">
+        <div className="bg-white border border-neutral-200 p-6 shadow-md relative overflow-hidden rounded-xl">
           <div className="space-y-4 relative z-10">
-            <h3 className="text-xl font-sans font-black text-blue-600 uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
+            <h3 className="text-xl font-sans font-black text-neutral-900 uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
               <Trophy size={32} className="text-blue-600" />
             </h3>
 
             <div className="space-y-3">
-              <p className="font-serif text-sm leading-relaxed text-blue-600 whitespace-pre-wrap">
+              <p className="font-sans text-[13px] leading-relaxed text-neutral-500 whitespace-pre-wrap text-center">
                 {t.donationDescription}
               </p>
 
@@ -206,7 +206,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               )}
 
               <div className="space-y-2 pt-2">
-                <label className="block font-serif text-sm text-blue-600 font-bold text-center">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 text-center">
                   {language === 'pl' ? `Kwota wsparcia (Min ${minAmount}.00 ${selectedCurrency})` : `Transaction amount (Min ${minAmount}.00 ${selectedCurrency})`}
                 </label>
                 <div className="relative group">
@@ -214,7 +214,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     <select
                       value={selectedCurrency}
                       onChange={(e) => handleCurrencyChange(e.target.value)}
-                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-blue-600/50 focus:text-blue-600 focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
+                      className="h-full bg-transparent border-none pr-8 pl-4 font-mono text-xl font-bold text-neutral-400 focus:text-neutral-900 focus:ring-0 outline-none cursor-pointer appearance-none transition-colors"
                       aria-label="Select Currency"
                     >
                       {availableCurrencies.map(curr => (
@@ -234,7 +234,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       const val = e.target.value;
                       setAmount(val === '' ? '' : parseInt(val));
                     }}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-4 px-12 font-mono text-3xl font-black text-blue-600 text-center focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all placeholder:text-blue-600/20"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-4 px-12 font-mono text-3xl font-black text-neutral-900 text-center focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all placeholder:text-neutral-200"
                     placeholder={String(minAmount)}
                   />
                 </div>
@@ -250,7 +250,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
               type="button"
               onClick={onSupport}
               disabled={isLoading || amount === '' || amount < minAmount}
-              className={`w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:bg-blue-700 flex items-center justify-center gap-2 active:scale-95 border border-blue-600 ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+              className={`w-full bg-blue-600 text-white py-3.5 rounded-md font-semibold text-sm uppercase tracking-wider transition-all hover:bg-blue-700 flex items-center justify-center gap-2 active:scale-[0.98] ${isLoading ? 'opacity-70 cursor-wait' : ''} ${amount === '' || amount < minAmount ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
             >
               {isLoading ? (
                 <>
@@ -264,7 +264,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
             {/* Terms below the button, no absolute positioning */}
             <div className="flex justify-center">
-              <label className="flex items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+              <label className="flex items-center gap-2 cursor-pointer group opacity-40 hover:opacity-100 transition-opacity">
                 <input
                   type="checkbox"
                   checked={isTermsAccepted}
@@ -272,22 +272,22 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsTermsAccepted(e.target.checked);
                     if (e.target.checked) setShowTermsError(false);
                   }}
-                  className="checkbox checkbox-xs border border-neutral-400 rounded checked:!bg-blue-600 checked:!border-blue-600 transition-all"
+                  className="checkbox checkbox-xs border border-neutral-300 rounded checked:!bg-blue-600 checked:!border-blue-600 transition-all"
                 />
-                <span className="text-blue-600 font-sans font-medium text-[10px] tracking-tight transition-colors">
+                <span className="text-neutral-500 font-sans font-medium text-[10px] tracking-tight transition-colors">
                   {language === 'pl' ? (
                     <>
                       Akceptuję{' '}
-                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-black">Regulamin</button>
+                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-neutral-900">Regulamin</button>
                       {' '}i{' '}
-                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-black">Politykę Prywatności</button>
+                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-neutral-900">Politykę Prywatności</button>
                     </>
                   ) : (
                     <>
                       I accept the{' '}
-                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-black">Terms</button>
+                      <button type="button" onClick={() => setIsRegulaminOpen(true)} className="underline hover:text-neutral-900">Terms</button>
                       {' '}and{' '}
-                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-black">Privacy Policy</button>
+                      <button type="button" onClick={() => setIsPolitykaOpen(true)} className="underline hover:text-neutral-900">Privacy Policy</button>
                     </>
                   )}
                 </span>
