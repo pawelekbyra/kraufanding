@@ -80,7 +80,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                 className="w-full h-full object-cover opacity-60"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-                 <div className="w-16 h-16 md:w-24 md:h-24 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10">
+                 <div className="w-16 h-16 md:w-24 md:h-24 bg-black/80 backdrop-blur-sm rounded-md flex items-center justify-center border border-white/10">
                     <Play className="text-white w-8 h-8 md:w-12 md:h-12 ml-1" />
                 </div>
             </div>
@@ -96,7 +96,7 @@ export default function VideoPlayer({ video, variant = 'hero' }: VideoPlayerProp
                     <p className="text-neutral-400 text-sm max-w-md">{loadError}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-6 px-6 py-2 bg-white text-black rounded-full font-bold text-sm hover:bg-neutral-200 transition-colors"
+                        className="mt-6 px-6 py-2 bg-white text-black rounded-md font-bold text-sm hover:bg-neutral-200 transition-colors"
                     >
                         Odśwież stronę
                     </button>

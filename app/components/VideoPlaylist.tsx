@@ -340,7 +340,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
                       <div className="grid grid-cols-1 gap-8">
                          <div className="flex items-start gap-5">
-                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shrink-0 mt-1">
+                            <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center shrink-0 mt-1">
                                <span className="text-white text-xs font-black">✓</span>
                             </div>
                             <div className="space-y-1.5">
@@ -349,7 +349,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                             </div>
                          </div>
                          <div className="flex items-start gap-5">
-                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shrink-0 mt-1">
+                            <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center shrink-0 mt-1">
                                <span className="text-white text-xs font-black">✓</span>
                             </div>
                             <div className="space-y-1.5">
@@ -383,7 +383,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                     setIsCheckoutModalOpen(false);
                     if (isSuccess) router.replace(window.location.pathname);
                   }}
-                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-neutral-200 rounded-full font-bold hover:bg-neutral-50 transition-all bg-white shadow-md"
+                  className="hidden md:flex absolute top-4 right-4 z-30 group items-center justify-center w-12 h-12 border border-neutral-200 rounded-md font-bold hover:bg-neutral-50 transition-all bg-white shadow-md"
                   aria-label="Zamknij"
                 >
                   <span className="text-2xl leading-none flex items-center justify-center">×</span>
@@ -392,7 +392,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                 {/* Mobile Header Overlap */}
                 <div className="md:hidden w-full px-6 py-6 flex justify-between items-center shrink-0 relative z-20 border-b border-neutral-100 bg-white">
                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-black text-xs">P</div>
+                      <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-black text-xs">P</div>
                       <h3 className="text-lg font-brand font-black uppercase tracking-tighter">POLUTEK<span className="text-neutral-400">.PL</span></h3>
                    </div>
 
@@ -401,7 +401,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                        setIsCheckoutModalOpen(false);
                        if (isSuccess) router.replace(window.location.pathname);
                      }}
-                     className="group flex items-center gap-1.5 px-3 py-1.5 border border-neutral-200 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-neutral-50 transition-all bg-white shadow-sm"
+                     className="group flex items-center gap-1.5 px-3 py-1.5 border border-neutral-200 rounded-md font-bold uppercase tracking-widest text-[10px] hover:bg-neutral-50 transition-all bg-white shadow-sm"
                    >
                      <span>Wróć</span>
                      <span className="text-base leading-none">×</span>
@@ -413,7 +413,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                    <div className="w-full max-w-[480px]">
                       {isSuccess ? (
                         <div className="text-center space-y-8 py-10 animate-in fade-in zoom-in-95 duration-500">
-                           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
+                           <div className="w-20 h-20 bg-green-500 rounded-md flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
                               <span className="text-white text-4xl">✓</span>
                            </div>
                            <div className="space-y-2">
@@ -501,11 +501,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                       {/* Trust indicators */}
                           <div className="flex justify-center items-center gap-10 opacity-30 grayscale contrast-200 mt-2">
                          <div className="flex items-center gap-2">
-                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+                           <div className="w-1.5 h-1.5 rounded-md bg-neutral-900" />
                            <span className="text-[10px] font-black uppercase tracking-widest">SSL encryption</span>
                          </div>
                          <div className="flex items-center gap-2">
-                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-900" />
+                           <div className="w-1.5 h-1.5 rounded-md bg-neutral-900" />
                            <span className="text-[10px] font-black uppercase tracking-widest">Secure stripe check</span>
                          </div>
                       </div>
@@ -514,7 +514,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
 
                 {/* Subtle right-side background pattern */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.02] pointer-events-none z-0">
-                   <div className="absolute top-0 right-0 w-[500px] h-[500px] border border-[#1a1a1a] rounded-full -mr-40 -mt-40" />
+                   <div className="absolute top-0 right-0 w-[500px] h-[500px] border border-[#1a1a1a] rounded-md -mr-40 -mt-40" />
                 </div>
              </div>
           </div>,
