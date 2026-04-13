@@ -191,11 +191,11 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
           <div className="space-y-4 relative z-10">
             <h3 className="text-xl font-sans font-black text-neutral-900 uppercase tracking-tight flex flex-wrap items-center justify-center gap-2 text-center">
               {t.supportArtist}
-              <Trophy size={32} className="text-blue-600" />
+              <Trophy size={32} className="text-neutral-900" />
             </h3>
 
             <div className="space-y-3">
-              <p className="font-sans text-[13px] leading-relaxed text-neutral-500 whitespace-pre-wrap text-center">
+              <p className="font-sans text-[13px] leading-relaxed text-neutral-500 whitespace-pre-wrap text-left">
                 {t.donationDescription}
               </p>
 
@@ -446,7 +446,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({ videoTitle }) => {
                                setIsCheckoutModalOpen(false);
                                router.replace(window.location.pathname);
                              }}
-                             className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-blue-700 hover:shadow-xl active:scale-[0.98]"
+                             className="w-full bg-blue-600 text-white py-4 rounded-md font-bold text-xs tracking-widest uppercase transition-all hover:bg-blue-700 hover:shadow-xl active:scale-[0.98]"
                            >
                              {language === 'pl' ? 'Wróć do serwisu' : 'Back to site'}
                            </button>
