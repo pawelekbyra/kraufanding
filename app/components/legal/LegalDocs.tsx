@@ -39,26 +39,27 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 
 const OWNER = LEGAL_OWNER;
 
-/** Clean, frame-free line-by-line presentation of the operating entity, used in § 1 of every legal document. */
+/** Letterhead-style presentation of the operating entity, used in § 1 of every legal document. */
 export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; contactLabel: string }) {
   return (
     <>
       <p>{leadIn}:</p>
-      <p className="text-center leading-[1.8]">
-        {OWNER.name},
-        <br />
-        {OWNER.street},
-        <br />
-        {OWNER.city},
-        <br />
-        NIP: {OWNER.nip}.
-        <br />
-        {contactLabel}:{' '}
-        <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
-          {OWNER.email}
-        </a>
-        .
-      </p>
+      <div className="border-l-2 border-[var(--chan-blue)]/25 pl-4">
+        <p className="font-bold text-[var(--chan-ink)]">{OWNER.name}</p>
+        <p className="mt-1">
+          {OWNER.street}
+          <br />
+          {OWNER.city}
+        </p>
+        <p className="mt-2">
+          NIP <span className="tabular-nums">{OWNER.nip}</span>
+          {' · '}
+          {contactLabel}:{' '}
+          <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
+            {OWNER.email}
+          </a>
+        </p>
+      </div>
     </>
   );
 }
