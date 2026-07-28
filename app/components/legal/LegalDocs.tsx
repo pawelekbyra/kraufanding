@@ -6,9 +6,8 @@ export const LEGAL_EFFECTIVE_DATE_EN = 'Effective as of 3 July 2026.';
 
 export const LEGAL_OWNER = {
   name: 'Paweł Perfect Inc.',
-  address: 'ul. Złota 7/2, 80-019 Warszawa',
-  nip: '527-000-00-00',
-  regon: '000000000',
+  address: 'ul. Złota 7/28, 80-019 Warszawa',
+  nip: '886-289-10-01',
   phone: '+48 600 000 000',
   email: 'kontakt@polutek.pl',
 };
@@ -40,6 +39,58 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 
 const OWNER = LEGAL_OWNER;
 
+/** Prominent, business-card-style presentation of the operating entity, used in § 1 of every legal document. */
+export function LegalOwnerCard({
+  eyebrow,
+  addressLabel,
+  contactLabel,
+  phoneLabel,
+}: {
+  eyebrow: string;
+  addressLabel: string;
+  contactLabel: string;
+  phoneLabel: string;
+}) {
+  return (
+    <div className="not-prose mb-6 overflow-hidden rounded-2xl border border-[var(--chan-ink)]/12 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.12)]">
+      <div className="border-b border-[var(--chan-ink)]/10 bg-gradient-to-br from-[var(--chan-blue)]/[0.06] to-transparent px-5 py-4 sm:px-6 sm:py-5">
+        <p className="text-[10.5px] font-black uppercase tracking-[0.16em] text-[var(--chan-muted)]">{eyebrow}</p>
+        <p className="mt-1 text-xl font-black leading-tight tracking-tight text-[var(--chan-ink)] sm:text-2xl">
+          {OWNER.name}
+        </p>
+      </div>
+      <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-5 py-5 text-[14px] leading-snug sm:grid-cols-2 sm:px-6">
+        <div>
+          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
+            {addressLabel}
+          </dt>
+          <dd className="mt-1 text-[var(--chan-ink)]">{OWNER.address}</dd>
+        </div>
+        <div>
+          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">NIP</dt>
+          <dd className="mt-1 font-mono tabular-nums text-[var(--chan-ink)]">{OWNER.nip}</dd>
+        </div>
+        <div>
+          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
+            {contactLabel}
+          </dt>
+          <dd className="mt-1">
+            <a href={`mailto:${OWNER.email}`} className="font-medium text-[var(--chan-blue)] underline underline-offset-2 hover:text-primary">
+              {OWNER.email}
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
+            {phoneLabel}
+          </dt>
+          <dd className="mt-1 font-mono tabular-nums text-[var(--chan-ink)]">{OWNER.phone}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 /** Full Terms of Service body (no page chrome), shared by the /regulamin page and the support-box modal. */
 export function RegulaminContent() {
   return (
@@ -55,10 +106,13 @@ export function RegulaminContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Kto prowadzi serwis">
-          <p>
-            Administratorem serwisu {APP_NAME} jest {OWNER.name}, {OWNER.address}, NIP: {OWNER.nip}, REGON: {OWNER.regon}.
-            Kontakt: <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>, tel. {OWNER.phone}.
-          </p>
+          <p>Serwis {APP_NAME} prowadzi:</p>
+          <LegalOwnerCard
+            eyebrow="Administrator serwisu"
+            addressLabel="Adres"
+            contactLabel="E-mail"
+            phoneLabel="Telefon"
+          />
         </LegalSection>
 
         <LegalSection nr="2" title="Co znajdziesz w serwisie i wymagania techniczne">
@@ -205,11 +259,14 @@ export function PolitykaContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Administrator danych">
-          <p>
-            Administratorem Twoich danych jest {OWNER.name}, {OWNER.address}, NIP: {OWNER.nip}, REGON: {OWNER.regon}.
-            W sprawach danych osobowych pisz na{' '}
-            <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.
-          </p>
+          <p>Administratorem Twoich danych osobowych jest:</p>
+          <LegalOwnerCard
+            eyebrow="Administrator danych"
+            addressLabel="Adres"
+            contactLabel="E-mail"
+            phoneLabel="Telefon"
+          />
+          <p>W sprawach danych osobowych pisz na powyższy adres e-mail.</p>
         </LegalSection>
 
         <LegalSection nr="2" title="Jakie dane zbieramy i po co">
@@ -324,10 +381,13 @@ export function TermsContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Who runs the service">
-          <p>
-            {APP_NAME} is administered by {OWNER.name}, {OWNER.address}, NIP: {OWNER.nip}, REGON: {OWNER.regon}.
-            Contact: <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>, tel. {OWNER.phone}.
-          </p>
+          <p>{APP_NAME} is operated by:</p>
+          <LegalOwnerCard
+            eyebrow="Service administrator"
+            addressLabel="Address"
+            contactLabel="Email"
+            phoneLabel="Phone"
+          />
         </LegalSection>
 
         <LegalSection nr="2" title="What you'll find in the service and technical requirements">
@@ -480,11 +540,14 @@ export function PrivacyContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
-          <p>
-            The controller of your data is {OWNER.name}, {OWNER.address}, NIP: {OWNER.nip}, REGON: {OWNER.regon}.
-            For matters concerning personal data, write to{' '}
-            <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.
-          </p>
+          <p>The controller of your personal data is:</p>
+          <LegalOwnerCard
+            eyebrow="Data controller"
+            addressLabel="Address"
+            contactLabel="Email"
+            phoneLabel="Phone"
+          />
+          <p>For matters concerning personal data, write to the email address above.</p>
         </LegalSection>
 
         <LegalSection nr="2" title="What data we collect and why">
