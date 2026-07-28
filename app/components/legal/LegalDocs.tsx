@@ -6,7 +6,8 @@ export const LEGAL_EFFECTIVE_DATE_EN = 'Effective as of 3 July 2026.';
 
 export const LEGAL_OWNER = {
   name: 'Paweł Perfect Inc.',
-  address: 'ul. Złota 7/28, 80-019 Warszawa',
+  street: 'ul. Złota 7/28',
+  city: '80-019 Warszawa',
   nip: '886-289-10-01',
   email: 'kontakt@polutek.pl',
 };
@@ -46,7 +47,9 @@ export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; cont
       <p className="text-center leading-[1.8]">
         {OWNER.name},
         <br />
-        {OWNER.address},
+        {OWNER.street},
+        <br />
+        {OWNER.city},
         <br />
         NIP: {OWNER.nip}.
         <br />
