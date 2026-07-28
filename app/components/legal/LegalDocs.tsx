@@ -42,7 +42,9 @@ const OWNER = LEGAL_OWNER;
 export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; contactLabel: string }) {
   return (
     <p className="leading-[1.8]">
-      {leadIn} <strong className="font-black text-[var(--chan-ink)]">{OWNER.name}</strong>,
+      {leadIn}:
+      <br />
+      {OWNER.name},
       <br />
       {OWNER.address},
       <br />
