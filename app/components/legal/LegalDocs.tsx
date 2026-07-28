@@ -41,21 +41,22 @@ const OWNER = LEGAL_OWNER;
 /** Clean, frame-free line-by-line presentation of the operating entity, used in § 1 of every legal document. */
 export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; contactLabel: string }) {
   return (
-    <p className="leading-[1.8]">
-      {leadIn}:
-      <br />
-      {OWNER.name},
-      <br />
-      {OWNER.address},
-      <br />
-      NIP: {OWNER.nip}.
-      <br />
-      {contactLabel}:{' '}
-      <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
-        {OWNER.email}
-      </a>
-      .
-    </p>
+    <>
+      <p>{leadIn}:</p>
+      <p className="text-center leading-[1.8]">
+        {OWNER.name},
+        <br />
+        {OWNER.address},
+        <br />
+        NIP: {OWNER.nip}.
+        <br />
+        {contactLabel}:{' '}
+        <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
+          {OWNER.email}
+        </a>
+        .
+      </p>
+    </>
   );
 }
 
