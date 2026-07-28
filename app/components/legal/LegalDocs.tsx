@@ -6,7 +6,7 @@ export const LEGAL_EFFECTIVE_DATE_EN = 'Effective as of 3 July 2026.';
 
 export const LEGAL_OWNER = {
   name: 'Paweł Perfect Inc.',
-  address: 'ul. Złota 75A/7, 00-819 Warszawa',
+  address: 'ul. Złota 7/2, 80-019 Warszawa',
   nip: '527-000-00-00',
   regon: '000000000',
   phone: '+48 600 000 000',
