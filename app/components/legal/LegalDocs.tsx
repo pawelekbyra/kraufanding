@@ -8,7 +8,6 @@ export const LEGAL_OWNER = {
   name: 'Paweł Perfect Inc.',
   address: 'ul. Złota 7/28, 80-019 Warszawa',
   nip: '886-289-10-01',
-  phone: '+48 600 000 000',
   email: 'kontakt@polutek.pl',
 };
 
@@ -39,55 +38,22 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 
 const OWNER = LEGAL_OWNER;
 
-/** Prominent, business-card-style presentation of the operating entity, used in § 1 of every legal document. */
-export function LegalOwnerCard({
-  eyebrow,
-  addressLabel,
-  contactLabel,
-  phoneLabel,
-}: {
-  eyebrow: string;
-  addressLabel: string;
-  contactLabel: string;
-  phoneLabel: string;
-}) {
+/** Clean, frame-free line-by-line presentation of the operating entity, used in § 1 of every legal document. */
+export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; contactLabel: string }) {
   return (
-    <div className="not-prose mb-6 overflow-hidden rounded-2xl border border-[var(--chan-ink)]/12 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.12)]">
-      <div className="border-b border-[var(--chan-ink)]/10 bg-gradient-to-br from-[var(--chan-blue)]/[0.06] to-transparent px-5 py-4 sm:px-6 sm:py-5">
-        <p className="text-[10.5px] font-black uppercase tracking-[0.16em] text-[var(--chan-muted)]">{eyebrow}</p>
-        <p className="mt-1 text-xl font-black leading-tight tracking-tight text-[var(--chan-ink)] sm:text-2xl">
-          {OWNER.name}
-        </p>
-      </div>
-      <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-5 py-5 text-[14px] leading-snug sm:grid-cols-2 sm:px-6">
-        <div>
-          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
-            {addressLabel}
-          </dt>
-          <dd className="mt-1 text-[var(--chan-ink)]">{OWNER.address}</dd>
-        </div>
-        <div>
-          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">NIP</dt>
-          <dd className="mt-1 font-mono tabular-nums text-[var(--chan-ink)]">{OWNER.nip}</dd>
-        </div>
-        <div>
-          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
-            {contactLabel}
-          </dt>
-          <dd className="mt-1">
-            <a href={`mailto:${OWNER.email}`} className="font-medium text-[var(--chan-blue)] underline underline-offset-2 hover:text-primary">
-              {OWNER.email}
-            </a>
-          </dd>
-        </div>
-        <div>
-          <dt className="text-[10.5px] font-black uppercase tracking-[0.12em] text-[var(--chan-muted)]">
-            {phoneLabel}
-          </dt>
-          <dd className="mt-1 font-mono tabular-nums text-[var(--chan-ink)]">{OWNER.phone}</dd>
-        </div>
-      </dl>
-    </div>
+    <p className="leading-[1.8]">
+      {leadIn} <strong className="font-black text-[var(--chan-ink)]">{OWNER.name}</strong>,
+      <br />
+      {OWNER.address},
+      <br />
+      NIP: {OWNER.nip}.
+      <br />
+      {contactLabel}:{' '}
+      <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
+        {OWNER.email}
+      </a>
+      .
+    </p>
   );
 }
 
@@ -106,13 +72,7 @@ export function RegulaminContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Kto prowadzi serwis">
-          <p>Serwis {APP_NAME} prowadzi:</p>
-          <LegalOwnerCard
-            eyebrow="Administrator serwisu"
-            addressLabel="Adres"
-            contactLabel="E-mail"
-            phoneLabel="Telefon"
-          />
+          <LegalOwnerBlock leadIn={`Administratorem serwisu ${APP_NAME} jest`} contactLabel="Kontakt" />
         </LegalSection>
 
         <LegalSection nr="2" title="Co znajdziesz w serwisie i wymagania techniczne">
@@ -259,13 +219,7 @@ export function PolitykaContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Administrator danych">
-          <p>Administratorem Twoich danych osobowych jest:</p>
-          <LegalOwnerCard
-            eyebrow="Administrator danych"
-            addressLabel="Adres"
-            contactLabel="E-mail"
-            phoneLabel="Telefon"
-          />
+          <LegalOwnerBlock leadIn="Administratorem Twoich danych osobowych jest" contactLabel="Kontakt" />
           <p>W sprawach danych osobowych pisz na powyższy adres e-mail.</p>
         </LegalSection>
 
@@ -381,13 +335,7 @@ export function TermsContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Who runs the service">
-          <p>{APP_NAME} is operated by:</p>
-          <LegalOwnerCard
-            eyebrow="Service administrator"
-            addressLabel="Address"
-            contactLabel="Email"
-            phoneLabel="Phone"
-          />
+          <LegalOwnerBlock leadIn={`${APP_NAME} is operated by`} contactLabel="Contact" />
         </LegalSection>
 
         <LegalSection nr="2" title="What you'll find in the service and technical requirements">
@@ -540,13 +488,7 @@ export function PrivacyContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
-          <p>The controller of your personal data is:</p>
-          <LegalOwnerCard
-            eyebrow="Data controller"
-            addressLabel="Address"
-            contactLabel="Email"
-            phoneLabel="Phone"
-          />
+          <LegalOwnerBlock leadIn="The controller of your personal data is" contactLabel="Contact" />
           <p>For matters concerning personal data, write to the email address above.</p>
         </LegalSection>
 
