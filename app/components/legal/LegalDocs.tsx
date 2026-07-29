@@ -43,8 +43,8 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 
 const OWNER = LEGAL_OWNER;
 
-/** Letterhead-style presentation of the operating entity, used in § 1 of every legal document. */
-export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string; isEnglish?: boolean }) {
+/** Letterhead-style presentation of the operating entity for Polish documents, used in § 1. */
+export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
   return (
     <>
       <p>{leadIn}:</p>
@@ -53,17 +53,31 @@ export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string;
         <p className="mt-1">
           {OWNER.street}
           <br />
-          {isEnglish ? (
-            <>
-              {OWNER.postalCode} {OWNER.cityEn}
-              <br />
-              {OWNER.countryEn}
-            </>
-          ) : (
-            <>
-              {OWNER.postalCode} {OWNER.city}
-            </>
-          )}
+          {OWNER.postalCode} {OWNER.city}
+        </p>
+        <p className="mt-2">
+          NIP <span className="tabular-nums">{OWNER.nip}</span>
+          <br />
+          REGON <span className="tabular-nums">{OWNER.regon}</span>
+        </p>
+      </div>
+    </>
+  );
+}
+
+/** Letterhead-style presentation of the operating entity for English documents, used in § 1. */
+export function LegalOwnerBlockEn({ leadIn }: { leadIn: string }) {
+  return (
+    <>
+      <p>{leadIn}:</p>
+      <div className="border-l-2 border-[var(--chan-blue)]/25 pl-4">
+        <p className="font-bold text-[var(--chan-ink)]">{OWNER.name}</p>
+        <p className="mt-1">
+          {OWNER.street}
+          <br />
+          {OWNER.postalCode} {OWNER.cityEn}
+          <br />
+          {OWNER.countryEn}
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
@@ -353,7 +367,7 @@ export function TermsContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Who runs the service">
-          <LegalOwnerBlock leadIn={`${APP_NAME} is operated by`} isEnglish={true} />
+          <LegalOwnerBlockEn leadIn={`${APP_NAME} is operated by`} />
         </LegalSection>
 
         <LegalSection nr="2" title="What you'll find in the service and technical requirements">
@@ -506,7 +520,7 @@ export function PrivacyContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
-          <LegalOwnerBlock leadIn="The controller of your personal data is" isEnglish={true} />
+          <LegalOwnerBlockEn leadIn="The controller of your personal data is" />
           <p>For matters concerning personal data, write to <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</p>
         </LegalSection>
 
