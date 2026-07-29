@@ -9,7 +9,8 @@ export const LEGAL_OWNER = {
   street: 'ul. Złota 7/28',
   city: '80-019 Warszawa',
   nip: '886-289-10-01',
-  email: 'kontakt@polutek.pl',
+  regon: '022374976',
+  email: 'support@polutek.pl',
 };
 
 export function LegalSection({ nr, title, children }: { nr: string; title: string; children: React.ReactNode }) {
@@ -40,7 +41,7 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 const OWNER = LEGAL_OWNER;
 
 /** Letterhead-style presentation of the operating entity, used in § 1 of every legal document. */
-export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; contactLabel: string }) {
+export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
   return (
     <>
       <p>{leadIn}:</p>
@@ -50,14 +51,15 @@ export function LegalOwnerBlock({ leadIn, contactLabel }: { leadIn: string; cont
           {OWNER.street}
           <br />
           {OWNER.city}
+          <br />
+          <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
+            {OWNER.email}
+          </a>
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
           {' · '}
-          {contactLabel}:{' '}
-          <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
-            {OWNER.email}
-          </a>
+          REGON <span className="tabular-nums">{OWNER.regon}</span>
         </p>
       </div>
     </>
@@ -79,7 +81,7 @@ export function RegulaminContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Kto prowadzi serwis">
-          <LegalOwnerBlock leadIn={`Administratorem serwisu ${APP_NAME} jest`} contactLabel="Kontakt" />
+          <LegalOwnerBlock leadIn={`Administratorem serwisu ${APP_NAME} jest`} />
         </LegalSection>
 
         <LegalSection nr="2" title="Co znajdziesz w serwisie i wymagania techniczne">
@@ -142,7 +144,7 @@ export function RegulaminContent() {
             Na żądanie nabywcy wystawiamy fakturę zgodnie z obowiązującymi przepisami prawa podatkowego.
             Żądanie wystawienia faktury może zostać zgłoszone w terminie i na zasadach wynikających z tych przepisów.
             Status VAT, sposób dokumentowania sprzedaży oraz ewentualne rozliczenia transgraniczne zależą od
-            obowiązujących przepisów podatkowych i statusu sprzedawcy w chwili sprzedaży.
+            obowiąujących przepisów podatkowych i statusu sprzedawcy w chwili sprzedaży.
           </p>
           <p>
             Dodatkowe dobrowolne wpłaty osób, które mają już dostęp do Strefy Fenkjuu, nie są dokumentowane jako cena
@@ -226,7 +228,7 @@ export function PolitykaContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Administrator danych">
-          <LegalOwnerBlock leadIn="Administratorem Twoich danych osobowych jest" contactLabel="Kontakt" />
+          <LegalOwnerBlock leadIn="Administratorem Twoich danych osobowych jest" />
           <p>W sprawach danych osobowych pisz na powyższy adres e-mail.</p>
         </LegalSection>
 
@@ -342,7 +344,7 @@ export function TermsContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Who runs the service">
-          <LegalOwnerBlock leadIn={`${APP_NAME} is operated by`} contactLabel="Contact" />
+          <LegalOwnerBlock leadIn={`${APP_NAME} is operated by`} />
         </LegalSection>
 
         <LegalSection nr="2" title="What you'll find in the service and technical requirements">
@@ -495,7 +497,7 @@ export function PrivacyContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
-          <LegalOwnerBlock leadIn="The controller of your personal data is" contactLabel="Contact" />
+          <LegalOwnerBlock leadIn="The controller of your personal data is" />
           <p>For matters concerning personal data, write to the email address above.</p>
         </LegalSection>
 
