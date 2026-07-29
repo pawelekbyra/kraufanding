@@ -75,9 +75,7 @@ export function LegalOwnerBlockEn({ leadIn }: { leadIn: string }) {
         <p className="mt-1">
           {OWNER.street}
           <br />
-          {OWNER.postalCode} {OWNER.cityEn}
-          <br />
-          {OWNER.countryEn}
+          {OWNER.postalCode} {OWNER.cityEn}, {OWNER.countryEn}
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
