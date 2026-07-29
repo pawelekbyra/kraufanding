@@ -7,7 +7,8 @@ export const LEGAL_EFFECTIVE_DATE_EN = 'Effective as of 3 July 2026.';
 export const LEGAL_OWNER = {
   name: 'Paweł Perfect Inc.',
   street: 'ul. Złota 7/28',
-  city: '80-019 Warszawa',
+  postalCode: '80-019',
+  city: 'Warszawa',
   cityEn: 'Warsaw',
   countryEn: 'Poland',
   nip: '886-289-10-01',
@@ -43,7 +44,7 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 const OWNER = LEGAL_OWNER;
 
 /** Letterhead-style presentation of the operating entity, used in § 1 of every legal document. */
-export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
+export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string; isEnglish?: boolean }) {
   return (
     <>
       <p>{leadIn}:</p>
@@ -52,7 +53,17 @@ export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
         <p className="mt-1">
           {OWNER.street}
           <br />
-          {OWNER.city}
+          {isEnglish ? (
+            <>
+              {OWNER.postalCode} {OWNER.cityEn}
+              <br />
+              {OWNER.countryEn}
+            </>
+          ) : (
+            <>
+              {OWNER.postalCode} {OWNER.city}
+            </>
+          )}
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
@@ -342,22 +353,7 @@ export function TermsContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Who runs the service">
-          <div className="space-y-3 text-[15px] leading-[1.7] text-[#333]">
-            <p>{`${APP_NAME} is operated by`}:</p>
-            <div className="border-l-2 border-[var(--chan-blue)]/25 pl-4">
-              <p className="font-bold text-[var(--chan-ink)]">{OWNER.name}</p>
-              <p className="mt-1">
-                {OWNER.street}
-                <br />
-                {OWNER.cityEn}, {OWNER.countryEn}
-              </p>
-              <p className="mt-2">
-                NIP <span className="tabular-nums">{OWNER.nip}</span>
-                <br />
-                REGON <span className="tabular-nums">{OWNER.regon}</span>
-              </p>
-            </div>
-          </div>
+          <LegalOwnerBlock leadIn={`${APP_NAME} is operated by`} isEnglish={true} />
         </LegalSection>
 
         <LegalSection nr="2" title="What you'll find in the service and technical requirements">
@@ -510,22 +506,7 @@ export function PrivacyContentEn() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
-          <div className="space-y-3 text-[15px] leading-[1.7] text-[#333]">
-            <p>The controller of your personal data is:</p>
-            <div className="border-l-2 border-[var(--chan-blue)]/25 pl-4">
-              <p className="font-bold text-[var(--chan-ink)]">{OWNER.name}</p>
-              <p className="mt-1">
-                {OWNER.street}
-                <br />
-                {OWNER.cityEn}, {OWNER.countryEn}
-              </p>
-              <p className="mt-2">
-                NIP <span className="tabular-nums">{OWNER.nip}</span>
-                <br />
-                REGON <span className="tabular-nums">{OWNER.regon}</span>
-              </p>
-            </div>
-          </div>
+          <LegalOwnerBlock leadIn="The controller of your personal data is" isEnglish={true} />
           <p>For matters concerning personal data, write to <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</p>
         </LegalSection>
 
