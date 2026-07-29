@@ -51,14 +51,10 @@ export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
           {OWNER.street}
           <br />
           {OWNER.city}
-          <br />
-          <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">
-            {OWNER.email}
-          </a>
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
-          {' · '}
+          <br />
           REGON <span className="tabular-nums">{OWNER.regon}</span>
         </p>
       </div>
@@ -102,7 +98,7 @@ export function RegulaminContent() {
 
         <LegalSection nr="3" title="Konto i zasady korzystania">
           <p>
-            Konto jest bezpłatne i możesz je w każdej chwili usunąć (wystarczy e-mail na adres z § 1).
+            Konto jest bezpłatne i możesz je w każdej chwili usunąć (wystarczy e-mail na adres <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>).
             Korzystając z serwisu — w szczególności komentując — nie wolno publikować treści bezprawnych,
             obraźliwych ani spamu. Takie treści możemy usuwać, a w razie powtarzających się naruszeń zablokować konto.
             Filmy i pozostałe materiały są chronione prawem autorskim i przeznaczone wyłącznie do osobistego użytku.
@@ -144,7 +140,7 @@ export function RegulaminContent() {
             Na żądanie nabywcy wystawiamy fakturę zgodnie z obowiązującymi przepisami prawa podatkowego.
             Żądanie wystawienia faktury może zostać zgłoszone w terminie i na zasadach wynikających z tych przepisów.
             Status VAT, sposób dokumentowania sprzedaży oraz ewentualne rozliczenia transgraniczne zależą od
-            obowiąujących przepisów podatkowych i statusu sprzedawcy w chwili sprzedaży.
+            obowiązujących przepisów podatkowych i statusu sprzedawcy w chwili sprzedaży.
           </p>
           <p>
             Dodatkowe dobrowolne wpłaty osób, które mają już dostęp do Strefy Fenkjuu, nie są dokumentowane jako cena
@@ -167,7 +163,7 @@ export function RegulaminContent() {
             o prawach konsumenta). Informację o zawarciu umowy i udzielonych zgodach możemy potwierdzić e-mailem.
           </p>
           <p>
-            Jeżeli zapłaciłeś, a dostęp nie został uruchomiony — napisz do nas; naprawimy to albo zwrócimy pieniądze.
+            Jeżeli zapłaciłeś, a dostęp nie został uruchomiony — napisz na <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>; naprawimy to albo zwrócimy pieniądze.
           </p>
         </LegalSection>
 
@@ -222,14 +218,14 @@ export function PolitykaContent() {
         items={[
           'Zbieramy tylko to, co potrzebne do działania serwisu: konto, płatności, komentarze, e-maile transakcyjne i logi bezpieczeństwa.',
           'Niczego nie sprzedajemy i nie profilujemy Cię reklamowo. Brak cookies reklamowych.',
-          <>Zawsze możesz poprosić o dostęp do swoich danych albo ich usunięcie: {OWNER.email}.</>,
+          <>Zawsze możesz poprosić o dostęp do swoich danych albo ich usunięcie: <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</>,
         ]}
       />
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Administrator danych">
           <LegalOwnerBlock leadIn="Administratorem Twoich danych osobowych jest" />
-          <p>W sprawach danych osobowych pisz na powyższy adres e-mail.</p>
+          <p>W sprawach danych osobowych pisz na adres <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</p>
         </LegalSection>
 
         <LegalSection nr="2" title="Jakie dane zbieramy i po co">
@@ -292,7 +288,7 @@ export function PolitykaContent() {
           <p>
             Masz prawo do: dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania,
             przenoszenia oraz sprzeciwu. Jeżeli dane przetwarzamy na podstawie zgody, możesz ją w każdej chwili wycofać,
-            co nie wpływa na zgodność z prawem przetwarzania sprzed jej wycofania. Wystarczy e-mail na{' '}
+            co nie wpływa na zgodność z prawem przetwarzania sprzed jej wycofania. Wystarczy wysłać e-mail na{' '}
             <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a> —
             w ten sposób usuniesz też konto. Możesz również złożyć skargę do Prezesa Urzędu Ochrony Danych
             Osobowych (uodo.gov.pl).
@@ -364,7 +360,7 @@ export function TermsContentEn() {
 
         <LegalSection nr="3" title="Account and usage rules">
           <p>
-            The account is free and you can delete it at any time (an email to the address in § 1 is enough). When
+            The account is free and you can delete it at any time (an email to <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a> is enough). When
             using the service — in particular when commenting — you must not publish unlawful or offensive content,
             or spam. We may remove such content and, in the case of repeated violations, block the account. Videos
             and other materials are protected by copyright and are intended solely for personal use.
@@ -434,7 +430,7 @@ export function TermsContentEn() {
             email.
           </p>
           <p>
-            If you paid and access was not activated — contact us; we will fix it or refund your money.
+            If you paid and access was not activated — email us at <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>; we will fix it or refund your money.
           </p>
         </LegalSection>
 
@@ -491,14 +487,14 @@ export function PrivacyContentEn() {
         items={[
           'We only collect what is needed to run the service: account, payments, comments, transactional emails and security logs.',
           'We never sell your data and we do not build advertising profiles from it. No advertising cookies.',
-          <>You can always ask for access to your data, or ask us to delete it: {OWNER.email}.</>,
+          <>You can always ask for access to your data, or ask us to delete it: <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</>,
         ]}
       />
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Data controller">
           <LegalOwnerBlock leadIn="The controller of your personal data is" />
-          <p>For matters concerning personal data, write to the email address above.</p>
+          <p>For matters concerning personal data, write to <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</p>
         </LegalSection>
 
         <LegalSection nr="2" title="What data we collect and why">
@@ -562,8 +558,7 @@ export function PrivacyContentEn() {
             You have the right to: access your data, have it corrected, deleted, have its processing restricted,
             transfer it, and object to its processing. Where we process data based on consent, you can withdraw it
             at any time, which does not affect the lawfulness of processing carried out before its withdrawal. Just
-            email{' '}
-            <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>{' '}
+            email <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>{' '}
             — this also deletes your account. You may also file a complaint with the President of the Polish Data
             Protection Authority (UODO, uodo.gov.pl).
           </p>
