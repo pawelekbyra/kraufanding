@@ -43,7 +43,7 @@ export function LegalSummary({ items }: { items: React.ReactNode[] }) {
 const OWNER = LEGAL_OWNER;
 
 /** Letterhead-style presentation of the operating entity, used in § 1 of every legal document. */
-export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string; isEnglish?: boolean }) {
+export function LegalOwnerBlock({ leadIn }: { leadIn: string }) {
   return (
     <>
       <p>{leadIn}:</p>
@@ -52,13 +52,7 @@ export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string;
         <p className="mt-1">
           {OWNER.street}
           <br />
-          {isEnglish ? (
-            <>
-              {OWNER.cityEn}, {OWNerCountry(OWNER.countryEn)}
-            </>
-          ) : (
-            OWNER.city
-          )}
+          {OWNER.city}
         </p>
         <p className="mt-2">
           NIP <span className="tabular-nums">{OWNER.nip}</span>
@@ -66,16 +60,6 @@ export function LegalOwnerBlock({ leadIn, isEnglish = false }: { leadIn: string;
           REGON <span className="tabular-nums">{OWNER.regon}</span>
         </p>
       </div>
-    </>
-  );
-}
-
-function OWNER_CITY_EN() {
-  return (
-    <>
-      {OWNER.street}
-      <br />
-      {OWNER.cityEn}, {OWNER.countryEn}
     </>
   );
 }
