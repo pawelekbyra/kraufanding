@@ -5,14 +5,14 @@ import { useUser } from "@clerk/nextjs";
 import { useAuthModal } from "./auth/AuthModalProvider";
 import UserMenu from "./auth/UserMenu";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "./LanguageContext";
 import BrandName from "./BrandName";
 import { resolveNavbarAdminUiState } from "@/lib/navbar-admin-ui";
 import { Search, X, LogIn } from "lucide-react";
 import NotificationsMenu from "./notifications/NotificationsMenu";
 import { NotificationDTO } from "@/app/types/notification";
-import { getLocalizedHref, type Locale } from "@/lib/i18n/routing";
+import { appendQueryString, getLocalizedHref, switchLocalePath, type Locale } from "@/lib/i18n/routing";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type NavbarMetadata = {
@@ -30,6 +30,7 @@ const Navbar = () => {
   const { open: openAuthModal } = useAuthModal();
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [searchValue, setSearchValue] = useState(searchParams.get("q") || "");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -95,7 +96,9 @@ const Navbar = () => {
   }, [isSignedIn]);
 
   const switchLanguage = (locale: Locale) => {
+    if (locale === language) return;
     setLanguage(locale);
+    router.push(appendQueryString(switchLocalePath(pathname || "/", locale), searchParams));
   };
 
   return (
