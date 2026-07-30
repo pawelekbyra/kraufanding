@@ -18,6 +18,7 @@
 }
 
 .creatorStrip > a {
+  border-radius: 9999px;
   box-shadow:
     0 0 0 3px var(--watch-control-bg),
     0 0 0 4px var(--watch-control-border),

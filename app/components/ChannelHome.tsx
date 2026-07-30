@@ -256,14 +256,14 @@ function ChannelHomeContent({
 
             <div
               className={cn(
-                "mt-3 border-t border-[var(--cm-line-80)] py-3 lg:mt-5 lg:block lg:rounded-[24px] lg:border lg:bg-[var(--cm-card-88-white)] lg:px-5 lg:py-2 lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_2px_rgba(23,23,23,0.03),0_22px_48px_-24px_rgba(23,23,23,0.18)]",
+                "mt-3 py-3 border-[var(--cm-line-80)] lg:mt-5 lg:block lg:rounded-[24px] lg:border lg:bg-[var(--cm-card-88-white)] lg:px-5 lg:py-2 lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_2px_rgba(23,23,23,0.03),0_22px_48px_-24px_rgba(23,23,23,0.18)]",
                 activeTab === "videos" && "hidden",
               )}
             >
               {mounted ? comments : <CommentsMountPlaceholder />}
             </div>
             {activeTab === "videos" && (
-              <div className="mt-3 border-t border-[var(--cm-line-80)] py-3 lg:hidden">
+              <div className="mt-3 py-3 lg:hidden">
                 <SidebarPlaylist {...commonSidebarProps} />
               </div>
             )}
