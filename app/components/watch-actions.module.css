@@ -276,6 +276,22 @@
   }
 }
 
+/* Phone landscape has very little vertical space. A full-bleed 16:9 box sized
+   purely from viewport width (see Hero.tsx's -mx-4/-mx-6 bleed) can end up taller
+   than the whole viewport, pushing the title/actions/comments below it off-screen
+   or forcing a scroll before any chrome is visible. Below 1024px, in landscape
+   with a short viewport, size the player from height instead and letterbox it
+   (centered, no longer edge-to-edge) so the rest of the layout stays reachable. */
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 560px) {
+  :global(main):has(.metaRow) :global(section:has(.polutek-vidstack-player) > div > div:first-child) {
+    width: auto !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: min(calc(100dvh - 56px), 92vmin) !important;
+    margin: 0 auto !important;
+  }
+}
+
 @media (max-width: 639px) {
   .metaRow {
     gap: 10px;
