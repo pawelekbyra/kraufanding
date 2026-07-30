@@ -264,6 +264,18 @@
   }
 }
 
+/* Below 1024px the player is full-bleed edge-to-edge (see Hero.tsx) — the desktop
+   "premium bezel" border/outline would look like a stray frame with no card around
+   it, so it's flattened to a plain black edge here instead. */
+@media (max-width: 1023px) {
+  :global(main):has(.metaRow) :global(section:has(.polutek-vidstack-player) > div > div:first-child) {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    background: #000;
+  }
+}
+
 @media (max-width: 639px) {
   .metaRow {
     gap: 10px;
@@ -294,12 +306,6 @@
   .subscribeAction {
     padding-left: 14px !important;
     padding-right: 14px !important;
-  }
-
-  :global(main):has(.metaRow) :global(section:has(.polutek-vidstack-player) > div > div:first-child) {
-    box-shadow:
-      0 15px 34px rgba(23, 23, 23, 0.14),
-      0 5px 14px rgba(23, 23, 23, 0.08);
   }
 }
 

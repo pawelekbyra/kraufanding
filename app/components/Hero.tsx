@@ -174,16 +174,16 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
   return (
     <section className="bg-transparent">
-      <div className="w-full rounded-[26px] border border-[var(--cm-line-80)] bg-[var(--cm-card-92-white)] p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_2px_6px_rgba(23,23,23,0.03),0_30px_60px_-26px_rgba(23,23,23,0.24)] md:p-3">
-        {/* FEATURED MEDIA */}
-        <div className="relative mb-4 aspect-video w-full overflow-hidden rounded-[20px] bg-black md:rounded-[22px]">
+      <div className="w-full lg:rounded-[26px] lg:border lg:border-[var(--cm-line-80)] lg:bg-[var(--cm-card-92-white)] lg:p-3 lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_2px_6px_rgba(23,23,23,0.03),0_30px_60px_-26px_rgba(23,23,23,0.24)]">
+        {/* FEATURED MEDIA — full-bleed edge-to-edge on phone/tablet (standard mobile video-platform layout), contained card on desktop */}
+        <div className="relative -mx-4 mb-3 aspect-video w-full overflow-hidden bg-black md:-mx-6 md:mb-4 lg:mx-0 lg:rounded-[22px]">
           <PremiumWrapper videoId={video.id} requiredTier={video.tier} isMainFeatured={video.isMainFeatured}>
             <VideoPlayer video={video} onViewCounted={() => setLocalViewsCount((views) => views + 1)} />
           </PremiumWrapper>
         </div>
 
         {/* INFO SECTION */}
-        <div className="space-y-3 px-1 pb-1 md:px-2">
+        <div className="space-y-3 pb-1 lg:px-2">
           <p className="mb-1.5 flex items-center gap-2 font-brand text-[10.5px] font-bold uppercase leading-none tracking-[0.18em] text-[var(--chan-muted-2)]">
             <span aria-hidden="true" className="inline-flex h-1.5 w-1.5 rounded-full bg-[var(--chan-blue)] shadow-[0_0_0_3px_var(--cm-blue-18)]" />
             {language === "pl" ? "Teraz odtwarzane" : "Now playing"}
