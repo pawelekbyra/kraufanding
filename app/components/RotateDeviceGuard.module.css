@@ -4,7 +4,15 @@
   display: none;
 }
 
-@media (orientation: landscape) and (max-height: 560px) and (hover: none) and (pointer: coarse) {
+/* Landscape is expressed as an explicit width/height comparison rather than the
+   `orientation` media feature: some mobile browsers evaluate `orientation`
+   against the device/screen orientation-lock state rather than the actual
+   viewport box, which can disagree with what's really on screen. Touch is
+   `(hover: none) or (pointer: coarse)` rather than `and`, since a device that
+   misreports just one of the two should still trip this — the risk of a false
+   positive on some odd hybrid input device is far cheaper than the layout
+   silently breaking again on a real phone. */
+@media (max-height: 560px) and (min-width: 561px) and ((hover: none) or (pointer: coarse)) {
   .guard {
     position: fixed;
     inset: 0;
