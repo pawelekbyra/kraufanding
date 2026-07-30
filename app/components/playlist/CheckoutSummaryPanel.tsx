@@ -95,7 +95,7 @@ export default function CheckoutSummaryPanel({
     <div className="relative hidden h-full flex-col justify-between overflow-hidden border-r border-[var(--chan-line)] bg-[var(--chan-surface)] px-10 py-10 text-[var(--chan-ink)] md:flex md:w-[45%] lg:px-14">
       {/* brand */}
       <div className="relative z-10">
-        <BrandName className="h-[27px]" />
+        <BrandName className="h-[36px]" />
       </div>
 
       {/* centre: drawing + message + amount */}
