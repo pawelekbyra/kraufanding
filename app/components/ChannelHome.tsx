@@ -211,7 +211,7 @@ function ChannelHomeContent({
     <>
       <PreloadProgressBar />
       <main className="min-h-screen bg-[var(--chan-nav)] bg-[radial-gradient(circle_at_top_left,var(--cm-blue-9),transparent_34%),radial-gradient(circle_at_top_right,var(--cm-amber-8),transparent_30%),linear-gradient(180deg,var(--cm-card-72),transparent_42%)]">
-      <div className="mx-auto max-w-[1180px] px-4 pb-8 pt-4 md:px-6 lg:px-8 lg:pb-10 lg:pt-5">
+      <div className="mx-auto max-w-[1180px] px-4 pb-8 md:px-6 lg:px-8 lg:pb-10 lg:pt-5">
         <div className="grid grid-cols-12 gap-5 lg:items-start xl:gap-6">
           <div className="col-span-12 flex flex-col lg:col-span-8">
             <div
@@ -252,14 +252,14 @@ function ChannelHomeContent({
 
             <div
               className={cn(
-                "mt-3 rounded-[22px] border border-[var(--cm-line-80)] bg-[var(--cm-card-88-white)] px-4 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_18px_40px_-22px_rgba(23,23,23,0.18)] lg:mt-5 lg:block lg:rounded-[24px] lg:px-5 lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_2px_rgba(23,23,23,0.03),0_22px_48px_-24px_rgba(23,23,23,0.18)]",
+                "mt-3 border-t border-[var(--cm-line-80)] py-3 lg:mt-5 lg:block lg:rounded-[24px] lg:border lg:bg-[var(--cm-card-88-white)] lg:px-5 lg:py-2 lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_2px_rgba(23,23,23,0.03),0_22px_48px_-24px_rgba(23,23,23,0.18)]",
                 activeTab === "videos" && "hidden",
               )}
             >
               {mounted ? comments : <CommentsMountPlaceholder />}
             </div>
             {activeTab === "videos" && (
-              <div className="mt-3 rounded-[22px] border border-[var(--cm-line-80)] bg-[var(--cm-card-88-white)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_18px_40px_-22px_rgba(23,23,23,0.18)] lg:hidden">
+              <div className="mt-3 border-t border-[var(--cm-line-80)] py-3 lg:hidden">
                 <SidebarPlaylist {...commonSidebarProps} />
               </div>
             )}
