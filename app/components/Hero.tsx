@@ -184,10 +184,6 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
         {/* INFO SECTION */}
         <div className="space-y-3 pb-1 lg:px-2">
-          <p className="mb-1.5 flex items-center gap-2 font-brand text-[10.5px] font-bold uppercase leading-none tracking-[0.18em] text-[var(--chan-muted-2)]">
-            <span aria-hidden="true" className="inline-flex h-1.5 w-1.5 rounded-full bg-[var(--chan-blue)] shadow-[0_0_0_3px_var(--cm-blue-18)]" />
-            {language === "pl" ? "Teraz odtwarzane" : "Now playing"}
-          </p>
           <h1 className="font-brand font-bold not-italic text-[22px] md:text-[30px] tracking-[-0.021em] text-[var(--chan-ink)] leading-[1.16] mb-2">
              {displayTitle}
           </h1>
