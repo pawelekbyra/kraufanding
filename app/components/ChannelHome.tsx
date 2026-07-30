@@ -225,29 +225,33 @@ function ChannelHomeContent({
               />
             </div>
 
-            <div className="mt-5 lg:hidden">
-              <div className="relative flex overflow-hidden rounded-full border border-[var(--cm-line-80)] bg-[var(--cm-card-88-white)] p-1 font-sans shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_8px_20px_-8px_rgba(23,23,23,0.12)]">
-                {(["comments", "videos"] as const).map((tab) => {
-                  const isActive = activeTab === tab;
-                  return (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      aria-pressed={isActive}
-                      className={cn(
-                        "relative flex-1 rounded-full py-2.5 text-[12px] font-bold not-italic uppercase tracking-[0.14em] transition-all duration-200 motion-reduce:transition-none",
-                        isActive
-                          ? tab === "videos"
-                            ? "bg-[var(--chan-amber-soft)] text-[var(--chan-amber-strong)] shadow-[0_1px_2px_rgba(23,23,23,0.06),0_4px_10px_-4px_rgba(23,23,23,0.14)]"
-                            : "bg-[var(--chan-card)] text-[var(--chan-blue)] shadow-[0_1px_2px_rgba(23,23,23,0.06),0_4px_10px_-4px_rgba(23,23,23,0.14)]"
-                          : "text-[var(--chan-muted)] hover:text-[var(--chan-ink)]",
-                      )}
-                    >
-                      {tab === "comments" ? t.comments : t.videosTab}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="-mx-4 mt-5 flex border-b border-[var(--cm-line-80)] font-sans md:-mx-6 lg:hidden">
+              {(["comments", "videos"] as const).map((tab) => {
+                const isActive = activeTab === tab;
+                const accent = tab === "videos" ? "var(--chan-amber)" : "var(--chan-blue)";
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    aria-pressed={isActive}
+                    className={cn(
+                      "relative flex-1 py-3.5 text-[12px] font-bold not-italic uppercase tracking-[0.14em] transition-colors duration-200 motion-reduce:transition-none",
+                      isActive
+                        ? tab === "videos"
+                          ? "text-[var(--chan-amber-strong)]"
+                          : "text-[var(--chan-blue)]"
+                        : "text-[var(--chan-muted)] hover:text-[var(--chan-ink)]",
+                    )}
+                  >
+                    {tab === "comments" ? t.comments : t.videosTab}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-4 -bottom-px h-[2.5px] rounded-full transition-opacity duration-200 motion-reduce:transition-none"
+                      style={{ background: accent, opacity: isActive ? 1 : 0 }}
+                    />
+                  </button>
+                );
+              })}
             </div>
 
             <div
