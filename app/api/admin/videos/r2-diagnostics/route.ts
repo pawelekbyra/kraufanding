@@ -25,7 +25,7 @@ const R2_ENV_DEFINITIONS = [
     name: "CLOUDFLARE_R2_BUCKET_VIDEO_ORIGINALS",
     secret: false,
     expected: "Dokładna nazwa bucketu R2 na oryginalne pliki wideo, bez https:// i bez domeny.",
-    howToGet: "Cloudflare Dashboard → R2 Object Storage → Buckets → skopiuj nazwę bucketu, np. polutek-video-originals.",
+    howToGet: "Cloudflare Dashboard → R2 Object Storage → Buckets → skopiuj nazwę bucketu, np. pawelperfect-video-originals.",
   },
 ] as const;
 

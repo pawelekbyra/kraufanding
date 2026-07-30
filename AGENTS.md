@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Przewodnik dla agentów AI pracujących nad Polutek.pl to **[`CLAUDE.md`](CLAUDE.md)** —
+Przewodnik dla agentów AI pracujących nad PawelPerfect.pl to **[`CLAUDE.md`](CLAUDE.md)** —
 przeczytaj go w całości przed zmianą kodu (stack, mapa modułów, krytyczne
 inwarianty, czego nie robić).
 

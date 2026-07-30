@@ -21,8 +21,8 @@ export function getMockNotifications(): NotificationDTO[] {
     {
       id: "welcome",
       kind: "welcome",
-      titlePl: "Witamy na Polutku!",
-      titleEn: "Welcome to Polutek!",
+      titlePl: "Witamy na PawelPerfect!",
+      titleEn: "Welcome to PawelPerfect!",
       bodyPl: "Cieszymy się, że tu jesteś. Oglądaj najnowsze odcinki i dołącz do rozmowy w komentarzach.",
       bodyEn: "We're glad you're here. Watch the latest episodes and join the conversation in the comments.",
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),

@@ -384,7 +384,7 @@ export default function SecretProjectExperience({
       {/* ── Footer ─────────────────────────────────────────────────────── */}
       <footer className="border-t border-[var(--sp-line)]">
         <div className="mx-auto flex max-w-[1180px] flex-col items-center justify-between gap-4 px-4 py-8 text-[12.5px] text-[var(--sp-muted)] sm:flex-row md:px-6 lg:px-8">
-          <p>© {new Date().getFullYear()} Secret Project · polutek.pl</p>
+          <p>© {new Date().getFullYear()} Secret Project · pawelperfect.pl</p>
           <nav className="flex items-center gap-5" aria-label={isPl ? "Linki prawne" : "Legal links"}>
             <Link href="/" className="transition-colors hover:text-[var(--sp-ink)]">
               {isPl ? "Strona główna" : "Home"}

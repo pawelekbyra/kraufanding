@@ -72,8 +72,8 @@ export function EmailTemplateEditor({ templateSlug, onBack }: EmailTemplateEdito
       .replaceAll("{{email}}", "jan@example.com")
       .replaceAll("{{amount}}", "100.00")
       .replaceAll("{{currency}}", "PLN")
-      .replaceAll("{{appName}}", "Polutek.pl")
-      .replaceAll("{{appUrl}}", "https://polutek.pl")
+      .replaceAll("{{appName}}", "PawelPerfect.pl")
+      .replaceAll("{{appUrl}}", "https://pawelperfect.pl")
       .replaceAll("{{unsubscribeLink}}", "#");
   }, [html]);
 
@@ -84,8 +84,8 @@ export function EmailTemplateEditor({ templateSlug, onBack }: EmailTemplateEdito
       .replaceAll("{{email}}", "john@example.com")
       .replaceAll("{{amount}}", "25.00")
       .replaceAll("{{currency}}", "USD")
-      .replaceAll("{{appName}}", "Polutek.pl")
-      .replaceAll("{{appUrl}}", "https://polutek.pl")
+      .replaceAll("{{appName}}", "PawelPerfect.pl")
+      .replaceAll("{{appUrl}}", "https://pawelperfect.pl")
       .replaceAll("{{unsubscribeLink}}", "#");
   }, [htmlEn]);
 

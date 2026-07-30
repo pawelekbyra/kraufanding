@@ -16,6 +16,13 @@ Do not infer launch readiness from green CI or documentation alone. Public launc
 
 The executable coding queue is `docs/tickets/ready/`. If a GitHub issue or doc says work is still open but the code/schema/docs already prove it is done, update or close that issue instead of re-implementing old work.
 
+**Rebrand as of 2026-07-30: POLUTEK.PL → PAWELPERFECT.PL.** The owner-facing brand name, footer mark, legal-document "Administratorem serwisu ... jest" owner line, PWA manifest `name`/`short_name`, page-title/metadata fallbacks, the `APP_NAME`/`APP_DOMAIN` constants in `lib/constants.ts`, and the transactional-email `from` fallback in `legacy-email-service-provider.ts` were all updated to PAWELPERFECT.PL. Deliberately left untouched, and why:
+- `MAIN_CREATOR_SLUG`'s `'polutek'` fallback (`lib/constants.ts`, `prisma/seed.ts`) — this is a database lookup key (a real `Creator.slug` row), not display text; renaming the code fallback without renaming the actual DB row would break the public home page if the real `MAIN_CREATOR_SLUG` env var were ever unset. Only touch this together with an actual DB migration.
+- The Clerk/CSP hostnames in `lib/utils/security.ts` (`clerk.polutek.pl`, `accounts.polutek.pl`, `polutek.pl`, `*.polutek.pl`) — these are real DNS/Clerk custom-domain entries. Removing them from the CSP allow-list before Clerk's custom domain is actually migrated to the new domain would break production login immediately.
+- `LEGAL_OWNER.email` (`support@polutek.pl` in `LegalDocs.tsx`) — the real, presumably-monitored support inbox shown throughout the legal pages. Don't change the displayed address until a working `@pawelperfect.pl` inbox actually exists, or visitor emails go nowhere.
+- Purely internal identifiers with no user-facing surface — CSS/JS hooks like `.polutek-vidstack-player`, `.polutek-watch-nav`, `.polutek-player-loader*`, the `PolutekControls.tsx` component name, and custom event names like `polutek:open-support` — left alone; renaming them is a large mechanical refactor across many files for zero user-visible benefit.
+- The GitHub repository name/owner and actual DNS — code changes here don't move the live site. `polutek.pl`/`www.polutek.pl` were still the production Vercel domain aliases as of this rebrand; the real cutover (DNS, `NEXT_PUBLIC_APP_URL`, `EMAIL_FROM`, Clerk custom domain) is an infrastructure task outside this repo.
+
 Current UI/runtime baseline as of 2026-07-14:
 
 - Next.js 16 App Router with React 19 is the framework target.

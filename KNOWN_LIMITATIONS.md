@@ -1,6 +1,6 @@
 # Known limitations
 
-- Polutek is strict single-channel: the app is a private creator hub. Multi-creator marketplace support has been removed.
+- PawelPerfect is strict single-channel: the app is a private creator hub. Multi-creator marketplace support has been removed.
 - Patron status is granted by a qualifying one-time donation or another explicit `PatronGrant` source unless this is changed later. `PatronGrant` is the sole source of truth; legacy `User.isPatron`, `User.patronSince`, and `User.patronSource` columns no longer exist.
 - `Subscription` is implemented as email notifications / channel follow only. It does not grant premium access and must remain separate from patron status (active `PatronGrant` rows).
 - HLS/DASH transcoding/packaging is not implemented by the app itself. Cloudflare Stream is the primary managed video provider; admin-provided HLS (.m3u8) and DASH (.mpd) manifests must come from exact allowed media hosts.

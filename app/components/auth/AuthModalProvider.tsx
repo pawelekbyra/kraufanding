@@ -40,7 +40,7 @@ export function AuthModalProvider({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Opens our own POLUTEK-styled auth modal (Clerk headless underneath). Use this everywhere
+ * Opens our own PAWELPERFECT-styled auth modal (Clerk headless underneath). Use this everywhere
  * instead of Clerk's built-in sign-in modal/button. See
  * docs/tickets/active/CLERK-CUSTOM-AUTH-UI-001.md.
  */

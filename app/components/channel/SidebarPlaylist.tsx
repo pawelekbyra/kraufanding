@@ -288,7 +288,7 @@ export function SidebarPlaylist({
             </h4>
             <div className="text-[12px] text-[var(--chan-muted)] flex flex-col mt-0">
               <div className="transition-colors w-fit relative z-20 leading-[1.4]">
-                {video.creator?.name || "Polutek"}
+                {video.creator?.name || "PawelPerfect"}
               </div>
               <div className="flex items-center gap-1">
                 <span>

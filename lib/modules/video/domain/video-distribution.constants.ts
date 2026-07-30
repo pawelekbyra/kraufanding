@@ -2,7 +2,7 @@ import { StorageProvider } from "@prisma/client";
 import { isPlaybackProvider } from "./video-provider-capabilities";
 import type { VideoDistributionStrategyInput } from "./video-distribution.types";
 
-// Cloudflare Stream is the current product default for Polutek.pl. It is not
+// Cloudflare Stream is the current product default for PawelPerfect.pl. It is not
 // an architectural default: distribution logic must remain provider-neutral.
 export const DEFAULT_DISTRIBUTION_STRATEGY = {
   mode: "SINGLE_PROVIDER",

@@ -45,7 +45,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   const baseUrl = getBaseUrl();
 
   return {
-    // Browser tab always reads POLUTEK.PL; creator name stays in OG/twitter below.
+    // Browser tab always reads PAWELPERFECT.PL; creator name stays in OG/twitter below.
     title: APP_NAME,
     alternates: {
       canonical: `${baseUrl}${getLocalizedHref(locale, "channel", { slug: params.slug })}`,

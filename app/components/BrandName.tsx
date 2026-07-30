@@ -7,7 +7,7 @@ interface BrandNameProps {
   decorative?: boolean;
 }
 
-// POLUTEK.PL logo mark: the glasses graphic (public/logo-glasses.svg).
+// PAWELPERFECT.PL logo mark: the glasses graphic (public/logo-glasses.svg).
 export default function BrandName({
   className,
   decorative = false,
@@ -15,7 +15,7 @@ export default function BrandName({
   return (
     <img
       src="/logo-glasses.svg"
-      alt={decorative ? "" : "POLUTEK.PL"}
+      alt={decorative ? "" : "PAWELPERFECT.PL"}
       aria-hidden={decorative ? true : undefined}
       draggable={false}
       className={cn("h-full w-auto select-none", className)}

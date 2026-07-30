@@ -1,12 +1,12 @@
-# Polutek.pl
+# PawelPerfect.pl
 
-Polutek.pl to aktywny produkt VOD jednego twórcy: jedno oficjalne miejsce,
+PawelPerfect.pl to aktywny produkt VOD jednego twórcy: jedno oficjalne miejsce,
 jeden katalog wideo, jeden system wsparcia i dostępu, jedna społeczność,
 jedna lista mailingowa oraz jeden kokpit admina.
 
 ```txt
-Polutek.pl is not a platform.
-Polutek.pl is a home.
+PawelPerfect.pl is not a platform.
+PawelPerfect.pl is a home.
 ```
 
 Widzowie oglądają filmy w trzech poziomach dostępu (PUBLIC / LOGGED_IN /

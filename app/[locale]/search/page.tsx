@@ -29,7 +29,7 @@ export default async function SearchPage(props: SearchPageProps) {
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 border-b border-[var(--chan-line)] pb-6">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[var(--chan-muted)]">
-            Polutek.pl
+            PawelPerfect.pl
           </p>
           <h1 className="font-brand text-3xl font-bold tracking-tight text-[var(--chan-ink)] sm:text-4xl">
             {locale === "pl" ? "Wyniki wyszukiwania" : "Search results"}
@@ -79,7 +79,7 @@ export default async function SearchPage(props: SearchPageProps) {
                     </p>
                   ) : null}
                   <p className="mt-3 text-xs font-bold uppercase tracking-widest text-[var(--chan-muted)]">
-                    {video.creator?.name ?? "Polutek"} ·{" "}
+                    {video.creator?.name ?? "PawelPerfect"} ·{" "}
                     {video.views.toLocaleString(locale === "pl" ? "pl-PL" : "en-US")} {locale === "pl" ? "wyświetleń" : "views"}
                   </p>
                 </div>

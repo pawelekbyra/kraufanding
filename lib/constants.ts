@@ -47,14 +47,14 @@ export const DISPLAY_USD_TO_PLN_RATE = (() => {
 })();
 
 export const MAIN_CREATOR_NAME = process.env.MAIN_CREATOR_NAME || 'Configured Creator';
-// POLUTEK.PL is a strict single-channel app. Keep the env override, but use the
+// PAWELPERFECT.PL is a strict single-channel app. Keep the env override, but use the
 // seeded canonical slug as a safe production fallback so missing Vercel env does
 // not break the public home page or admin video list at runtime.
 export const MAIN_CREATOR_SLUG = process.env.MAIN_CREATOR_SLUG || 'polutek';
 const configuredAppName = process.env.NEXT_PUBLIC_APP_NAME?.trim();
-export const APP_NAME = !configuredAppName || configuredAppName.toLowerCase() === 'polutek.pl'
-  ? 'POLUTEK.PL'
+export const APP_NAME = !configuredAppName || configuredAppName.toLowerCase() === 'pawelperfect.pl'
+  ? 'PAWELPERFECT.PL'
   : configuredAppName;
 export const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_URL
   ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname.toUpperCase().replace(/^(WWW\.)+/, '')
-  : 'POLUTEK.PL';
+  : 'PAWELPERFECT.PL';

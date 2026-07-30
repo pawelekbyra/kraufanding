@@ -23,5 +23,5 @@ export const flags = {
 };
 
 if (process.env.ENABLE_MULTI_CREATOR === "true") {
-  console.warn("WARNING: ENABLE_MULTI_CREATOR is deprecated and unsupported. Polutek.pl is strict single-channel.");
+  console.warn("WARNING: ENABLE_MULTI_CREATOR is deprecated and unsupported. PawelPerfect.pl is strict single-channel.");
 }
