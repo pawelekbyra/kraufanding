@@ -87,11 +87,17 @@ describe('DonationBox', () => {
     expect(screen.queryByRole('spinbutton')).not.toBeInTheDocument();
   });
 
-  it('renders the no-new-benefit copy and an editable amount for an existing patron', async () => {
+  it('renders the tip-gate variant and an editable amount for an existing patron', async () => {
     const { container } = renderDonationBox({ viewerIsPatron: true });
 
-    expect(container.textContent).toContain('Dziękujemy — masz już dostęp do strefy wspierających');
-    expect(screen.getByText('Wspieraj tworzenie wartościowych treści')).toBeInTheDocument();
+    expect(screen.getByText('Bramka Napiwkowa 🪙')).toBeInTheDocument();
+    expect(screen.getByText('Nic tu nie kupujesz. Tu się tylko dziękuje.')).toBeInTheDocument();
+    // The explanation is visible copy here (not sr-only as in the non-patron variant) and must
+    // keep stating that this tip unlocks nothing.
+    expect(container.textContent).toContain('Tutaj nie kupujesz absolutnie niczego');
+    expect(container.textContent).toContain('Zero nowych obietnic — masz już wszystko');
+    // The gate's sales bullets must not leak into the tip jar.
+    expect(container.textContent).not.toContain('Dostęp do specjalnych materiałów');
 
     await waitFor(() => {
       expect(screen.getByLabelText(/Dowolna kwota \(min\. 10 PLN\)/)).toBeInTheDocument();

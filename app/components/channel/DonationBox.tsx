@@ -13,7 +13,7 @@ import { detectDefaultCurrency } from "@/lib/payments/detect-currency";
 import { useLanguage } from "../LanguageContext";
 import { useToast } from "@/app/hooks/useToast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Heart } from "../icons";
+import { Loader2, Heart, PiggyBank } from "../icons";
 import CheckoutModal from "../playlist/CheckoutModal";
 import DonationAmountField from "./DonationAmountField";
 import DonationLegalDialog from "./DonationLegalDialog";
@@ -359,47 +359,101 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
     }
   }, [userId, openAuthModal, isTermsAccepted, amount, minAmount, toast, isPl, selectedCurrency, checkoutRequestId, videoTitle]);
 
-  const title = isPl ? "Strefa Fenkjuu 👑" : "Thank You Zone 👑";
+  // Existing patrons get a deliberately different surface. They already own everything the
+  // non-patron box sells, so this variant stops being a sales/access gate and becomes a plain
+  // tip jar — "Bramka Napiwkowa" — with its own name, warmer card treatment and cheerful copy
+  // that promises nothing new. Keep it that way: any benefit-style promise here would be a lie.
+  const isTipGate = viewerIsPatron;
 
-  const subtitle = isPl
-    ? "Wspieraj tworzenie wartościowych treści"
-    : "Support valuable independent content";
+  const title = isTipGate
+    ? (isPl ? "Bramka Napiwkowa 🪙" : "The Tip Gate 🪙")
+    : (isPl ? "Strefa Fenkjuu 👑" : "Thank You Zone 👑");
 
-  const bodyCopy = viewerIsPatron
+  const subtitle = isTipGate
+    ? (isPl ? "Nic tu nie kupujesz. Tu się tylko dziękuje." : "Nothing to buy here. Just a thank-you.")
+    : (isPl
+        ? "Wspieraj tworzenie wartościowych treści"
+        : "Support valuable independent content");
+
+  const bodyCopy = isTipGate
     ? (isPl
-        ? "Dziękujemy — masz już dostęp do strefy wspierających. Ta wpłata jest dodatkowym gestem wsparcia."
-        : "Thank you — your supporter access is already active. This tip is an extra show of support.")
+        ? "Masz komplet. Dożywotni dostęp, cała Strefa Fenkjuu i wszystko, co dopiero powstanie — już Twoje. Tutaj nie kupujesz absolutnie niczego. To jest bramka napiwkowa: wrzucasz tyle, ile uznasz, że było warte, klepiesz mnie po plecach i lecisz dalej. Bez subskrypcji, bez haczyków, w stu procentach z czystej sympatii. 🎉"
+        : "You have the full set. Lifetime access, the whole Thank You Zone, plus everything still to come — already yours. There is absolutely nothing to buy here. This is the tip gate: drop in whatever you reckon it was worth, give me a pat on the back and carry on. No subscription, no catch, one hundred percent good vibes. 🎉")
     : (isPl
         ? "Jednorazowe wsparcie pomaga rozwijać kanał i odblokowuje dożywotni dostęp do Strefy Fenkjuu."
         : "A one-time tip helps grow the channel and unlocks lifetime Thank You Zone access.");
 
-  const bullets: { text: string }[] = [
-    { text: isPl ? "Twoje wsparcie pomaga w rozwoju kanału" : "Your support helps the channel grow" },
-    { text: isPl ? "Dostęp do specjalnych materiałów" : "Access to special materials" },
-    { text: isPl ? "Wcześniejszy dostęp do nowych filmów" : "Early access to new videos" },
-    { text: isPl ? "Twoje imię w odcinkach dla wspierających" : "Your name in supporter episodes" },
-  ];
+  const bullets: { text: string; emoji?: string }[] = isTipGate
+    ? [
+        { emoji: "👑", text: isPl ? "Zero nowych obietnic — masz już wszystko" : "Zero new promises — you already own it all" },
+        { emoji: "🎚️", text: isPl ? "Kwota dowolna: od symbolicznej po legendarną" : "Any amount: from symbolic to legendary" },
+        { emoji: "🚀", text: isPl ? "Wszystko leci w kolejne materiały (i w kawę)" : "It all goes into the next videos (and coffee)" },
+      ]
+    : [
+        { text: isPl ? "Twoje wsparcie pomaga w rozwoju kanału" : "Your support helps the channel grow" },
+        { text: isPl ? "Dostęp do specjalnych materiałów" : "Access to special materials" },
+        { text: isPl ? "Wcześniejszy dostęp do nowych filmów" : "Early access to new videos" },
+        { text: isPl ? "Twoje imię w odcinkach dla wspierających" : "Your name in supporter episodes" },
+      ];
 
   return (
     <div
       id="donations"
-      className="relative my-[10px] mb-3 scroll-mt-20 overflow-hidden rounded-[20px] border border-[var(--cm-line-82)] bg-[var(--cm-card-92-white)] p-[22px_24px_18px] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_1px_2px_rgba(23,23,23,0.03),0_24px_50px_-26px_rgba(23,23,23,0.2)]"
+      className={`group relative my-[10px] mb-3 scroll-mt-20 overflow-hidden rounded-[20px] border p-[22px_24px_18px] ${
+        isTipGate
+          ? "border-[var(--cm-amber-38)] bg-[linear-gradient(168deg,var(--chan-amber-soft),var(--cm-card-92-white)_62%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_1px_2px_rgba(23,23,23,0.03),0_24px_50px_-26px_var(--cm-amber-58)]"
+          : "border-[var(--cm-line-82)] bg-[var(--cm-card-92-white)] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_1px_2px_rgba(23,23,23,0.03),0_24px_50px_-26px_rgba(23,23,23,0.2)]"
+      }`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_18%_0%,var(--cm-amber-17),transparent_58%),radial-gradient(circle_at_82%_0%,var(--cm-blue-7),transparent_55%)]"
-      />
+      {isTipGate ? (
+        <>
+          {/* Festive ribbon along the very top edge — the tip jar's signature. Sits in the
+              card's own padding so it can never collide with the copy underneath. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[5px] bg-[linear-gradient(90deg,var(--chan-amber-bright),var(--chan-amber),var(--chan-blue),var(--chan-amber),var(--chan-amber-bright))]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_20%_0%,var(--cm-amber-38),transparent_62%),radial-gradient(circle_at_84%_0%,var(--cm-blue-10),transparent_52%)]"
+          />
+        </>
+      ) : (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_18%_0%,var(--cm-amber-17),transparent_58%),radial-gradient(circle_at_82%_0%,var(--cm-blue-7),transparent_55%)]"
+        />
+      )}
       <div className="relative">
-        <div className="mb-1.5 flex items-center gap-4">
-          <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-[linear-gradient(140deg,var(--chan-amber-bright),var(--chan-amber))] text-[var(--chan-amber-ink)] shadow-[0_8px_20px_-6px_var(--cm-amber-58),inset_0_1px_0_rgba(255,255,255,0.45)]">
-            <Heart size={24} className="fill-current" />
-          </span>
-          <h4 className="font-brand m-0 text-[21px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--chan-ink)]">
-            <span>{title}</span>
-          </h4>
-        </div>
-        <p className="m-[-22px_0_16px_64px] font-sans text-[13px] font-medium tracking-[-0.015em] text-[var(--chan-body)]">{subtitle}</p>
-        <p className="sr-only">{bodyCopy}</p>
+        {isTipGate ? (
+          <>
+            <div className="mb-3 flex items-center gap-4">
+              <span className="relative flex h-12 w-12 shrink-0 -rotate-6 items-center justify-center rounded-full bg-[linear-gradient(140deg,var(--chan-amber-bright),var(--chan-amber))] text-[var(--chan-amber-ink)] shadow-[0_8px_20px_-6px_var(--cm-amber-58),inset_0_1px_0_rgba(255,255,255,0.45)] transition-transform duration-300 ease-out group-hover:rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:-rotate-6 motion-reduce:group-hover:scale-100">
+                <PiggyBank size={26} />
+              </span>
+              <div className="min-w-0">
+                <h4 className="font-brand m-0 text-[21px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--chan-ink)]">
+                  {title}
+                </h4>
+                <p className="mt-1 font-sans text-[13px] font-medium tracking-[-0.015em] text-[var(--chan-body)]">{subtitle}</p>
+              </div>
+            </div>
+            <p className="m-[0_0_14px] font-sans text-[13px] leading-[1.6] text-[var(--chan-body)]">{bodyCopy}</p>
+          </>
+        ) : (
+          <>
+            <div className="mb-1.5 flex items-center gap-4">
+              <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-[linear-gradient(140deg,var(--chan-amber-bright),var(--chan-amber))] text-[var(--chan-amber-ink)] shadow-[0_8px_20px_-6px_var(--cm-amber-58),inset_0_1px_0_rgba(255,255,255,0.45)]">
+                <Heart size={24} className="fill-current" />
+              </span>
+              <h4 className="font-brand m-0 text-[21px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--chan-ink)]">
+                <span>{title}</span>
+              </h4>
+            </div>
+            <p className="m-[-22px_0_16px_64px] font-sans text-[13px] font-medium tracking-[-0.015em] text-[var(--chan-body)]">{subtitle}</p>
+            <p className="sr-only">{bodyCopy}</p>
+          </>
+        )}
 
         <ul className="m-[0_0_16px] flex flex-col gap-[9px] font-sans text-[13px]">
           {bullets.map((bullet) => (
@@ -407,7 +461,11 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
               key={bullet.text}
               className="flex items-start gap-[9px] text-[var(--chan-ink)]"
             >
-              <span className="mt-[2px] flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full bg-[var(--chan-amber)] text-[9px] font-black text-[var(--chan-amber-ink)] shadow-[0_2px_5px_-1px_var(--cm-amber-48)]">✓</span>
+              {bullet.emoji ? (
+                <span aria-hidden="true" className="shrink-0 text-[15px] leading-[1.25]">{bullet.emoji}</span>
+              ) : (
+                <span className="mt-[2px] flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full bg-[var(--chan-amber)] text-[9px] font-black text-[var(--chan-amber-ink)] shadow-[0_2px_5px_-1px_var(--cm-amber-48)]">✓</span>
+              )}
               {bullet.text}
             </li>
           ))}
@@ -446,7 +504,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
               </span>
             </span>
           ) : (
-            <span>{t.tipTheGuy}</span>
+            <span>{isTipGate ? (isPl ? "Wrzucam napiwek" : "Drop a tip") : t.tipTheGuy}</span>
           )}
         </button>
 
