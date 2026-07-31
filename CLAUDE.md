@@ -194,9 +194,16 @@ Clerk provides user identity (userId, email, name). It does not control patron a
 
 `app/components/channel/DonationBox.tsx` is the single tip widget rendered by `SidebarPlaylist.tsx`'s `PatronBox`. It renders two copy/threshold variants depending on `viewerIsPatron`, computed from `userProfile?.isPatronDecorative` / admin role and threaded through `SidebarPlaylist`.
 
-- **Non-patron viewer** (`viewerIsPatron` false/undefined): copy promises that a successful tip grants lifetime Thank You Zone access. The amount is fixed to the patron threshold.
-- **Existing patron** (`viewerIsPatron` true): copy states access is already secured and this tip unlocks nothing new — free-form additional support. The minimum is `patronBoxMinimums` from `/api/payment-settings`.
+- **Non-patron viewer** (`viewerIsPatron` false/undefined): copy promises that a successful tip grants lifetime Thank You Zone access. The amount is fixed to the patron threshold and shown as a read-only price badge in the card header — never as an input, which read as a fillable field.
+- **Existing patron** (`viewerIsPatron` true): the "Bramka Napiwkowa" / tip-jar variant. Copy states access is already secured and this tip unlocks nothing new. The card itself carries **no amount field and no terms checkbox** — just the pitch, channel badges (Karta/BLIK/Krypto) and a `Napiwkuj` button that opens `TipJarModal`. The minimum is `patronBoxMinimums` from `/api/payment-settings`.
 - `PatronBox` only renders for **signed-in** users. The render gate uses Clerk's live client auth (`useAuth().isSignedIn`) in `SidebarPlaylist.tsx`, not the server-threaded `userProfile` prop.
+
+**Tip jar multi-step modal (`app/components/channel/TipJarModal.tsx`, patrons only).** Steps: disclaimer → recipient picker → channel picker → one of {Stripe amount, BLIK, crypto coin → address}. Rules that must hold:
+
+- The Stripe branch stays on the canonical path: the modal collects an amount and calls `DonationBox`'s `onSupport(amount, termsAlreadyAccepted)`, which still hits `/api/checkout/create-intent` → `CheckoutModal` → return-URL reconciliation → `fulfillPayment()`. **Do not fork a second payment flow** — BLIK/crypto are not a precedent for that.
+- **BLIK and crypto are display-only.** They record nothing, verify nothing and reconcile nothing: no `Payment` rows, no webhooks, no grants. This is safe *only* because the viewer is already a patron and the tip grants nothing. Never reuse these channels on the non-patron access gate, where a payment must actually be provable before access is granted.
+- The disclaimer step must keep saying the tip buys nothing. It is the honest framing that makes an unverifiable payment channel acceptable here.
+- **Crypto placeholder safety.** `lib/tips/tip-channels.ts` marks each wallet `isPlaceholder` when its `NEXT_PUBLIC_TIP_*_ADDRESS` env var is unset. While that flag is true the UI must show the "do not send funds here" alert, stamp the QR as an example, and keep the copy button disabled. Do not "clean this up" by removing the flag or shipping a default address — crypto sent to an address nobody controls is destroyed, not refunded.
 
 Three distinct per-currency minimums must not be conflated:
 
