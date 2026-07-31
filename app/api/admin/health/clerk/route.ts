@@ -92,7 +92,11 @@ function getRuntimeDiagnostics() {
 }
 
 function isAuthorizedByHealthToken(request: NextRequest) {
-  const provided = request.headers.get("x-health-token");
+  // Query-param form exists so this is reachable by pasting a URL straight
+  // into a browser address bar — no terminal/curl needed — for the exact
+  // scenario this endpoint exists for: Clerk itself is down, so there's no
+  // way to run a Clerk-authenticated admin session to reach it any other way.
+  const provided = request.headers.get("x-health-token") || request.nextUrl.searchParams.get("token");
   return Boolean(process.env.HEALTHCHECK_TOKEN) && provided === process.env.HEALTHCHECK_TOKEN;
 }
 
