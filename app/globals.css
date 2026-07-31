@@ -771,7 +771,9 @@
     backdrop-filter: blur(14px) saturate(1.5);
     -webkit-backdrop-filter: blur(14px) saturate(1.5);
     border-radius: 0;
-    padding: 0 8px 2px;
+    /* Bottom padding matches .mc-scrub's height below so the button row sits
+       exactly centered between the progress bar and the panel's bottom edge. */
+    padding: 0 8px 4px;
     box-sizing: border-box;
   }
 
@@ -825,7 +827,7 @@
      above the line, making the bar look taller than the track itself. */
   .mc-scrub {
     position:relative; display:flex;
-    width:100%; height:12px;
+    width:100%; height:4px;
     align-items:flex-start;
     cursor:pointer; touch-action:none;
     padding: 0 2px;
@@ -1025,7 +1027,7 @@
   .mc-menu-check { width:16px; height:16px; color:rgba(255,255,255,.7); }
 
   .polutek-vidstack-player .vds-captions {
-    bottom:76px;
+    bottom:70px;
     font-family:var(--font-geist-sans, ui-sans-serif), sans-serif;
   }
 
@@ -1033,7 +1035,7 @@
 
   @media (max-width:640px) {
     .mc-bottom { padding:0; }
-    .mc-bar { border-radius:0; padding:0 6px 2px; }
+    .mc-bar { border-radius:0; padding:0 6px 4px; }
     .mc-row { gap:2px; }
     /* .mc-btn/.mc-icon keep their base 38px/24px size — icons stay bold and
        legible on mobile rather than shrinking further. */
@@ -1041,7 +1043,7 @@
     .mc-time-sep, .mc-time-dur { display:none; }
     .mc-volume { display:none; }
     .mc-hero { width:52px; height:52px; }
-    .polutek-vidstack-player .vds-captions { bottom:70px; }
+    .polutek-vidstack-player .vds-captions { bottom:64px; }
   }
 
   @media (prefers-reduced-motion:reduce) {
