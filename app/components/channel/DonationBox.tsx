@@ -13,10 +13,10 @@ import { detectDefaultCurrency } from "@/lib/payments/detect-currency";
 import { useLanguage } from "../LanguageContext";
 import { useToast } from "@/app/hooks/useToast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Heart, ChevronDown } from "../icons";
+import { Loader2, Heart } from "../icons";
 import CheckoutModal from "../playlist/CheckoutModal";
+import DonationAmountField from "./DonationAmountField";
 import DonationLegalDialog from "./DonationLegalDialog";
-import TipJarModal from "./TipJarModal";
 import { RegulaminContent, PolitykaContent } from "../legal/LegalDocs";
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -58,7 +58,6 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   const [checkoutRequestId, setCheckoutRequestId] = useState<string | null>(null);
   const [paymentUiStatus, setPaymentUiStatus] = useState<string | null>(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const [isTipModalOpen, setIsTipModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -285,24 +284,18 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
     if (viewerIsPatron) setAmount(getSuggestedAmount(curr));
   };
 
-  // `explicitAmount` lets the tip-jar modal submit the amount it collected without waiting for
-  // this component's `amount` state to settle first (avoids a stale-closure read). The terms
-  // gate is likewise skipped when the caller already enforced it — the modal owns its own
-  // checkbox — but is still applied for the non-patron box's inline checkbox.
-  const onSupport = useCallback(async (explicitAmount?: number, termsAlreadyAccepted = false) => {
+  const onSupport = useCallback(async () => {
     if (!userId) {
       openAuthModal("sign-in");
       return;
     }
-    if (!termsAlreadyAccepted && !isTermsAccepted) {
+    if (!isTermsAccepted) {
       setShowTermsError(true);
       return;
     }
     setShowTermsError(false);
 
-    const effectiveAmount = explicitAmount ?? (typeof amount === "number" ? amount : 0);
-
-    if (!effectiveAmount || effectiveAmount < minAmount) {
+    if (!amount || amount < minAmount) {
       toast(
         isPl
           ? `Minimalna kwota napiwku to ${minAmount} ${selectedCurrency}`
@@ -321,7 +314,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amountMinor: effectiveAmount * 100,
+          amountMinor: Number(amount) * 100,
           currency: selectedCurrency.toUpperCase(),
           title: videoTitle || "Napiwek / Patron",
           requestId,
@@ -334,7 +327,6 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
       if (data?.clientSecret) {
         setClientSecret(data.clientSecret);
         setPaymentId(data.paymentId || null);
-        setIsTipModalOpen(false);
         setIsCheckoutModalOpen(true);
       } else if (data?.terminal) {
         setPaymentId(data.paymentId || null);
@@ -373,10 +365,10 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   // that promises nothing new. Keep it that way: any benefit-style promise here would be a lie.
   const isTipGate = viewerIsPatron;
 
-  // No emoji in the tip-gate title on purpose: the 🐷 tile sits right beside it, and a second
-  // glyph orphan-wrapped onto its own line in the ~230px the sidebar leaves for the heading.
+  // 💰 rather than 🪙 (COIN): the latter is Unicode 13.0 and rendered as a tofu box on the
+  // owner's system, while MONEY BAG has been around since Unicode 6.0 and is widely covered.
   const title = isTipGate
-    ? (isPl ? "Bramka Napiwkowa" : "The Tip Gate")
+    ? (isPl ? "Bramka Napiwkowa 💰" : "The Tip Gate 💰")
     : (isPl ? "Strefa Fenkjuu 👑" : "Thank You Zone 👑");
 
   const subtitle = isTipGate
@@ -387,28 +379,24 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
 
   const bodyCopy = isTipGate
     ? (isPl
-        ? "Masz komplet — dożywotni dostęp i wszystko, co dopiero powstanie. Możesz wspierać dalej, ale już wyłącznie dla sportu: to zwykły napiwek, który niczego nie odblokowuje."
-        : "You have the full set — lifetime access and everything still to come. You can keep supporting, but purely for sport: this is a plain tip that unlocks nothing.")
+        ? "Masz komplet. Dożywotni dostęp, cała Strefa Fenkjuu i wszystko, co dopiero powstanie — już Twoje. Tutaj nie kupujesz absolutnie niczego. To jest bramka napiwkowa: wrzucasz tyle, ile uznasz, że było warte, klepiesz mnie po plecach i lecisz dalej. Bez subskrypcji, bez haczyków, w stu procentach z czystej sympatii. 🎉"
+        : "You have the full set. Lifetime access, the whole Thank You Zone, plus everything still to come — already yours. There is absolutely nothing to buy here. This is the tip gate: drop in whatever you reckon it was worth, give me a pat on the back and carry on. No subscription, no catch, one hundred percent good vibes. 🎉")
     : (isPl
         ? "Jednorazowe wsparcie pomaga rozwijać kanał i odblokowuje dożywotni dostęp do Strefy Fenkjuu."
         : "A one-time tip helps grow the channel and unlocks lifetime Thank You Zone access.");
 
-  // Only the non-patron gate sells benefits. The tip jar deliberately lists none — it has
-  // nothing left to promise — so its bullets are replaced by the payment-channel badges below.
-  const bullets: { text: string }[] = isTipGate
-    ? []
+  const bullets: { text: string; emoji?: string }[] = isTipGate
+    ? [
+        { emoji: "👑", text: isPl ? "Zero nowych obietnic — masz już wszystko" : "Zero new promises — you already own it all" },
+        { emoji: "🎚️", text: isPl ? "Kwota dowolna: od symbolicznej po legendarną" : "Any amount: from symbolic to legendary" },
+        { emoji: "🚀", text: isPl ? "Wszystko leci w kolejne materiały (i w kawę)" : "It all goes into the next videos (and coffee)" },
+      ]
     : [
         { text: isPl ? "Twoje wsparcie pomaga w rozwoju kanału" : "Your support helps the channel grow" },
         { text: isPl ? "Dostęp do specjalnych materiałów" : "Access to special materials" },
         { text: isPl ? "Wcześniejszy dostęp do nowych filmów" : "Early access to new videos" },
         { text: isPl ? "Twoje imię w odcinkach dla wspierających" : "Your name in supporter episodes" },
       ];
-
-  const tipChannelBadges = [
-    { emoji: "💳", label: isPl ? "Karta" : "Card" },
-    { emoji: "📱", label: "BLIK" },
-    { emoji: "₿", label: isPl ? "Krypto" : "Crypto" },
-  ];
 
   return (
     <div
@@ -456,28 +444,6 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
               </div>
             </div>
             <p className="m-[0_0_14px] font-sans text-[13px] leading-[1.6] text-[var(--chan-body)]">{bodyCopy}</p>
-
-            {/* Channel badges double as the promise that this is not a card-only surface —
-                the actual numbers/addresses live behind the modal, never on the public card. */}
-            <ul className="m-[0_0_16px] flex flex-wrap items-center gap-1.5">
-              {tipChannelBadges.map((channel) => (
-                <li
-                  key={channel.label}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--cm-amber-38)] bg-[var(--chan-amber-soft)] py-1 pl-2.5 pr-3 font-sans text-[11.5px] font-bold text-[var(--chan-amber-ink)]"
-                >
-                  <span aria-hidden="true">{channel.emoji}</span>
-                  {channel.label}
-                </li>
-              ))}
-            </ul>
-
-            <button
-              type="button"
-              onClick={() => setIsTipModalOpen(true)}
-              className="font-sans flex h-[46px] w-full cursor-pointer items-center justify-center gap-2 rounded-[13px] bg-[linear-gradient(135deg,var(--chan-amber-bright),var(--chan-amber))] text-[16px] font-extrabold tracking-[-0.02em] text-[var(--chan-amber-ink)] shadow-[0_1px_0_var(--cm-amber-66-black),0_10px_22px_-10px_var(--cm-amber-62)] transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:brightness-[1.04] hover:shadow-[0_2px_0_var(--cm-amber-66-black),0_14px_28px_-10px_var(--cm-amber-68)] active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none"
-            >
-              {isPl ? "Napiwkuj" : "Leave a tip"}
-            </button>
           </>
         ) : (
           <>
@@ -491,43 +457,20 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
             </div>
             <p className="m-[-22px_0_16px_64px] font-sans text-[13px] font-medium tracking-[-0.015em] text-[var(--chan-body)]">{subtitle}</p>
             <p className="sr-only">{bodyCopy}</p>
-
-            {/* This is a fixed, non-editable gate price (not a support amount to type in), so it
-                is shown as a plain price badge rather than reusing the patron variant's boxed
-                input styling, which read as an editable field a guest could type into. */}
-            <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-[var(--chan-amber-soft)] py-1.5 pl-3.5 pr-2.5">
-              <span className="font-sans text-[11px] font-bold uppercase tracking-wide text-[var(--chan-amber-ink)]/70">
-                {isPl ? "Cena:" : "Price:"}
-              </span>
-              <span className="font-sans text-[15px] font-extrabold tabular-nums text-[var(--chan-amber-ink)]">
-                {minAmount}
-              </span>
-              <select
-                value={selectedCurrency}
-                onChange={(e) => handleCurrencyChange(e.target.value)}
-                aria-label="Currency"
-                className="cursor-pointer appearance-none bg-transparent pr-4 font-sans text-[13px] font-bold text-[var(--chan-amber-ink)]/80 outline-none"
-              >
-                {availableCurrencies.map((curr) => (
-                  <option key={curr} value={curr}>
-                    {curr}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={11} className="pointer-events-none -ml-3.5 text-[var(--chan-amber-ink)]/50" aria-hidden="true" />
-            </div>
           </>
         )}
 
-        {!isTipGate && (
-        <>
         <ul className="m-[0_0_16px] flex flex-col gap-[9px] font-sans text-[13px]">
           {bullets.map((bullet) => (
             <li
               key={bullet.text}
               className="flex items-start gap-[9px] text-[var(--chan-ink)]"
             >
-              <span className="mt-[2px] flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full bg-[var(--chan-amber)] text-[9px] font-black text-[var(--chan-amber-ink)] shadow-[0_2px_5px_-1px_var(--cm-amber-48)]">✓</span>
+              {bullet.emoji ? (
+                <span aria-hidden="true" className="shrink-0 text-[15px] leading-[1.25]">{bullet.emoji}</span>
+              ) : (
+                <span className="mt-[2px] flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full bg-[var(--chan-amber)] text-[9px] font-black text-[var(--chan-amber-ink)] shadow-[0_2px_5px_-1px_var(--cm-amber-48)]">✓</span>
+              )}
               {bullet.text}
             </li>
           ))}
@@ -539,9 +482,21 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
           </p>
         )}
 
+        <DonationAmountField
+          viewerIsPatron={viewerIsPatron}
+          isPl={isPl}
+          amount={amount}
+          setAmount={setAmount}
+          minAmount={minAmount}
+          selectedCurrency={selectedCurrency}
+          availableCurrencies={availableCurrencies}
+          onCurrencyChange={handleCurrencyChange}
+          amountTooLow={amountTooLow}
+        />
+
         <button
           type="button"
-          onClick={() => onSupport()}
+          onClick={onSupport}
           disabled={isLoading || isInitialLoading || amount === "" || amount < minAmount}
           aria-busy={isLoading}
           className="font-sans flex h-[46px] w-full cursor-pointer items-center justify-center gap-2 rounded-[13px] bg-[linear-gradient(135deg,var(--chan-amber-bright),var(--chan-amber))] text-[16px] font-extrabold tracking-[-0.02em] text-[var(--chan-amber-ink)] shadow-[0_1px_0_var(--cm-amber-66-black),0_10px_22px_-10px_var(--cm-amber-62)] transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:brightness-[1.04] hover:shadow-[0_2px_0_var(--cm-amber-66-black),0_14px_28px_-10px_var(--cm-amber-68)] active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 motion-reduce:transition-none"
@@ -554,7 +509,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
               </span>
             </span>
           ) : (
-            <span>{t.tipTheGuy}</span>
+            <span>{isTipGate ? (isPl ? "Wyślij napiwek" : "Tip the Guy") : t.tipTheGuy}</span>
           )}
         </button>
 
@@ -596,28 +551,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
             )}
           </span>
         </label>
-        </>
-        )}
       </div>
-
-      {isTipModalOpen && (
-        <TipJarModal
-          isPl={isPl}
-          onClose={() => setIsTipModalOpen(false)}
-          amount={amount}
-          setAmount={setAmount}
-          minAmount={minAmount}
-          selectedCurrency={selectedCurrency}
-          availableCurrencies={availableCurrencies}
-          onCurrencyChange={handleCurrencyChange}
-          isTermsAccepted={isTermsAccepted}
-          setIsTermsAccepted={setIsTermsAccepted}
-          onOpenTerms={() => setIsRegulaminOpen(true)}
-          onOpenPrivacy={() => setIsPolitykaOpen(true)}
-          onStripeSubmit={(chosenAmount) => onSupport(chosenAmount, true)}
-          isSubmitting={isLoading}
-        />
-      )}
 
       {isMounted &&
         isCheckoutModalOpen &&
