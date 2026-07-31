@@ -13,7 +13,7 @@ import { detectDefaultCurrency } from "@/lib/payments/detect-currency";
 import { useLanguage } from "../LanguageContext";
 import { useToast } from "@/app/hooks/useToast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Heart, PiggyBank } from "../icons";
+import { Loader2, Heart } from "../icons";
 import CheckoutModal from "../playlist/CheckoutModal";
 import DonationAmountField from "./DonationAmountField";
 import DonationLegalDialog from "./DonationLegalDialog";
@@ -428,8 +428,11 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
         {isTipGate ? (
           <>
             <div className="mb-3 flex items-center gap-4">
-              <span className="relative flex h-12 w-12 shrink-0 -rotate-6 items-center justify-center rounded-full bg-[linear-gradient(140deg,var(--chan-amber-bright),var(--chan-amber))] text-[var(--chan-amber-ink)] shadow-[0_8px_20px_-6px_var(--cm-amber-58),inset_0_1px_0_rgba(255,255,255,0.45)] transition-transform duration-300 ease-out group-hover:rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:-rotate-6 motion-reduce:group-hover:scale-100">
-                <PiggyBank size={26} />
+              <span
+                aria-hidden="true"
+                className="relative flex h-12 w-12 shrink-0 -rotate-6 items-center justify-center rounded-full bg-[linear-gradient(140deg,var(--chan-amber-bright),var(--chan-amber))] text-[26px] shadow-[0_8px_20px_-6px_var(--cm-amber-58),inset_0_1px_0_rgba(255,255,255,0.45)] transition-transform duration-300 ease-out group-hover:rotate-6 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:-rotate-6 motion-reduce:group-hover:scale-100"
+              >
+                🐷
               </span>
               <div className="min-w-0">
                 <h4 className="font-brand m-0 text-[21px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--chan-ink)]">
