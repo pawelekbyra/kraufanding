@@ -504,7 +504,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
               </span>
             </span>
           ) : (
-            <span>{isTipGate ? (isPl ? "Wrzucam napiwek" : "Drop a tip") : t.tipTheGuy}</span>
+            <span>{isTipGate ? (isPl ? "Wyślij napiwek" : "Tip the Guy") : t.tipTheGuy}</span>
           )}
         </button>
 
