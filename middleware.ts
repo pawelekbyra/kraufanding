@@ -66,6 +66,18 @@ const isPublicRoute = createRouteMatcher([
 
 const isAdminRoute = createRouteMatcher(['/admin(.*)', '/api/admin(.*)']);
 
+// Break-glass diagnostics: this one route must stay reachable even when Clerk
+// itself is broken (its whole purpose is diagnosing that), so it can't be
+// gated behind Clerk's auth.protect() like every other /api/admin route. The
+// route handler re-checks the same token itself — this only decides whether
+// middleware lets the request through to it.
+const CLERK_HEALTH_ROUTE = '/api/admin/health/clerk';
+
+function isHealthTokenAuthorized(req: NextRequest): boolean {
+  const token = req.headers.get('x-health-token') || req.nextUrl.searchParams.get('token');
+  return Boolean(process.env.HEALTHCHECK_TOKEN) && token === process.env.HEALTHCHECK_TOKEN;
+}
+
 // TEMPORARY: /logo1 … /logo20 logo font bake-off pages are public and must not
 // be locale-rewritten. Remove alongside the experiment.
 function isLogoExperimentRoute(pathname: string): boolean {
@@ -130,7 +142,10 @@ export default clerkMiddleware(async (auth, req) => {
   if (req.nextUrl.pathname === '/api/comments' && req.method !== 'GET') {
     await auth.protect();
   } else if (isAdminRoute(req)) {
-    await auth.protect();
+    const isClerkHealthBreakGlass = req.nextUrl.pathname === CLERK_HEALTH_ROUTE && isHealthTokenAuthorized(req);
+    if (!isClerkHealthBreakGlass) {
+      await auth.protect();
+    }
   } else if (!isPublicRoute(req) && !isLogoExperimentRoute(req.nextUrl.pathname)) {
     await auth.protect();
   }
