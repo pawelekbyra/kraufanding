@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Save, Globe, Info, Plus, Check, Shield } from "@/app/components/icons";
 import { sanitizeEmailPreviewHtml } from "./sanitizeEmailPreviewHtml";
+import { APP_NAME } from "@/lib/constants";
 
 type EmailTemplateEditorProps = {
   templateSlug: string;
@@ -72,7 +73,7 @@ export function EmailTemplateEditor({ templateSlug, onBack }: EmailTemplateEdito
       .replaceAll("{{email}}", "jan@example.com")
       .replaceAll("{{amount}}", "100.00")
       .replaceAll("{{currency}}", "PLN")
-      .replaceAll("{{appName}}", "PawelPerfect.pl")
+      .replaceAll("{{appName}}", APP_NAME)
       .replaceAll("{{appUrl}}", "https://pawelperfect.pl")
       .replaceAll("{{unsubscribeLink}}", "#");
   }, [html]);
@@ -84,7 +85,7 @@ export function EmailTemplateEditor({ templateSlug, onBack }: EmailTemplateEdito
       .replaceAll("{{email}}", "john@example.com")
       .replaceAll("{{amount}}", "25.00")
       .replaceAll("{{currency}}", "USD")
-      .replaceAll("{{appName}}", "PawelPerfect.pl")
+      .replaceAll("{{appName}}", APP_NAME)
       .replaceAll("{{appUrl}}", "https://pawelperfect.pl")
       .replaceAll("{{unsubscribeLink}}", "#");
   }, [htmlEn]);

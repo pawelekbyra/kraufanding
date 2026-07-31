@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getBaseUrl } from "@/lib/utils";
 import { getLocalizedHref, isLocale, type Locale } from "@/lib/i18n/routing";
+import { APP_NAME } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +16,13 @@ function getFeedVideoHref(locale: Locale, slug: string): string {
 
 export async function generateMetadata(props: WatchPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await props.params;
-  if (!isLocale(rawLocale)) return { title: "PAWELPERFECT.PL" };
+  if (!isLocale(rawLocale)) return { title: APP_NAME };
 
   const baseUrl = getBaseUrl();
   const canonicalPath = getFeedVideoHref(rawLocale, slug);
 
   return {
-    title: "PAWELPERFECT.PL",
+    title: APP_NAME,
     alternates: {
       canonical: `${baseUrl}${canonicalPath}`,
       languages: {

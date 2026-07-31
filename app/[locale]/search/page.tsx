@@ -5,6 +5,7 @@ import Footer from "@/app/components/Footer";
 import { VideoSearchService } from "@/lib/modules/video/application/video-search.service";
 import { getLocalizedHref, isLocale, type Locale } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
+import { APP_NAME } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function SearchPage(props: SearchPageProps) {
       <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 border-b border-[var(--chan-line)] pb-6">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[var(--chan-muted)]">
-            PawelPerfect.pl
+            {APP_NAME}
           </p>
           <h1 className="font-brand text-3xl font-bold tracking-tight text-[var(--chan-ink)] sm:text-4xl">
             {locale === "pl" ? "Wyniki wyszukiwania" : "Search results"}
