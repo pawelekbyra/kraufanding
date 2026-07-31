@@ -91,9 +91,21 @@ function getRuntimeDiagnostics() {
   };
 }
 
+function isAuthorizedByHealthToken(request: NextRequest) {
+  const provided = request.headers.get("x-health-token");
+  return Boolean(process.env.HEALTHCHECK_TOKEN) && provided === process.env.HEALTHCHECK_TOKEN;
+}
+
 export async function GET(request: NextRequest) {
-  const { response } = await requireAdminForApi(HEALTH_SCOPE);
-  if (response) return response;
+  // Clerk being broken is exactly the failure mode this endpoint exists to
+  // diagnose, so it can't require a working Clerk admin session as its only
+  // way in. HEALTHCHECK_TOKEN (already required in production, read from the
+  // Vercel dashboard directly, no Clerk login involved) is an accepted
+  // break-glass alternative to the normal admin-session check below.
+  if (!isAuthorizedByHealthToken(request)) {
+    const { response } = await requireAdminForApi(HEALTH_SCOPE);
+    if (response) return response;
+  }
 
   const missing = getMissingClerkEnv();
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
