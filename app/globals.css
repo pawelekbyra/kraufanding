@@ -765,15 +765,17 @@
   .mc-bar {
     display:flex;
     flex-direction: column;
-    gap: 0;
+    /* Split evenly with the bottom padding below so the button row sits
+       centered between the progress bar and the panel's bottom edge — a
+       zero gap here with all the slack in bottom padding pushed the row
+       up against the scrubber instead. */
+    gap: 2px;
     width: 100%;
     background: rgba(0,0,0,.72);
     backdrop-filter: blur(14px) saturate(1.5);
     -webkit-backdrop-filter: blur(14px) saturate(1.5);
     border-radius: 0;
-    /* Bottom padding matches .mc-scrub's height below so the button row sits
-       exactly centered between the progress bar and the panel's bottom edge. */
-    padding: 0 8px 4px;
+    padding: 0 8px 2px;
     box-sizing: border-box;
   }
 
@@ -1035,7 +1037,7 @@
 
   @media (max-width:640px) {
     .mc-bottom { padding:0; }
-    .mc-bar { border-radius:0; padding:0 6px 4px; }
+    .mc-bar { border-radius:0; padding:0 6px 2px; }
     .mc-row { gap:2px; }
     /* .mc-btn/.mc-icon keep their base 38px/24px size — icons stay bold and
        legible on mobile rather than shrinking further. */
