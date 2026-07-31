@@ -11,19 +11,39 @@ function getR2UploadHosts() {
   ].filter((host): host is string => Boolean(host))));
 }
 
+function getConfiguredAppHosts() {
+  const hosts = new Set<string>();
+
+  const rawAppUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (rawAppUrl) {
+    try {
+      hosts.add(new URL(rawAppUrl).hostname.toLowerCase().replace(/^www\./, ''));
+    } catch {
+      // Invalid NEXT_PUBLIC_APP_URL — fall through to the static fallbacks below
+      // so a bad env value can't take the CSP allow-list down to nothing.
+    }
+  }
+
+  // Static fallbacks cover both the pre- and post-rebrand production domains so
+  // a Clerk custom-domain cutover (Clerk dashboard side) can't silently get CSP
+  // blocked by a stale/missing NEXT_PUBLIC_APP_URL in Vercel. Keep both until the
+  // polutek.pl domain alias is fully retired — see CLAUDE.md rebrand notes.
+  hosts.add('polutek.pl');
+  hosts.add('pawelperfect.pl');
+
+  return Array.from(hosts);
+}
+
 export function generateCSP() {
-  const clerkDomains = [
+  const clerkDomains = Array.from(new Set([
     'clerk.com',
     '*.clerk.com',
     '*.clerk.accounts.dev',
     '*.clerk.dev',
     'accounts.clerk.com',
-    'clerk.polutek.pl',
-    'accounts.polutek.pl',
-    'polutek.pl',
-    '*.polutek.pl',
-    'clerk.accounts.dev'
-  ];
+    'clerk.accounts.dev',
+    ...getConfiguredAppHosts().flatMap((host) => [`clerk.${host}`, `accounts.${host}`, host, `*.${host}`]),
+  ]));
 
   const cloudflareStreamUploadHosts = [
     'upload.cloudflarestream.com',
