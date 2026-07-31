@@ -90,7 +90,7 @@ describe('DonationBox', () => {
   it('renders the tip-gate variant and an editable amount for an existing patron', async () => {
     const { container } = renderDonationBox({ viewerIsPatron: true });
 
-    expect(screen.getByText('Bramka Napiwkowa 🪙')).toBeInTheDocument();
+    expect(screen.getByText('Bramka Napiwkowa 💰')).toBeInTheDocument();
     expect(screen.getByText('Nic tu nie kupujesz. Tu się tylko dziękuje.')).toBeInTheDocument();
     // The explanation is visible copy here (not sr-only as in the non-patron variant) and must
     // keep stating that this tip unlocks nothing.
@@ -100,7 +100,8 @@ describe('DonationBox', () => {
     expect(container.textContent).not.toContain('Dostęp do specjalnych materiałów');
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Dowolna kwota \(min\. 10 PLN\)/)).toBeInTheDocument();
+      expect(screen.getByText('Wpisz kwotę napiwku')).toBeInTheDocument();
+      expect(screen.getByLabelText('Wpisz kwotę napiwku')).toBeInTheDocument();
     });
   });
 });

@@ -13,7 +13,7 @@ import { detectDefaultCurrency } from "@/lib/payments/detect-currency";
 import { useLanguage } from "../LanguageContext";
 import { useToast } from "@/app/hooks/useToast";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Heart } from "../icons";
+import { Loader2, Heart, ChevronDown } from "../icons";
 import CheckoutModal from "../playlist/CheckoutModal";
 import DonationAmountField from "./DonationAmountField";
 import DonationLegalDialog from "./DonationLegalDialog";
@@ -366,7 +366,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   const isTipGate = viewerIsPatron;
 
   const title = isTipGate
-    ? (isPl ? "Bramka Napiwkowa 🪙" : "The Tip Gate 🪙")
+    ? (isPl ? "Bramka Napiwkowa 💰" : "The Tip Gate 💰")
     : (isPl ? "Strefa Fenkjuu 👑" : "Thank You Zone 👑");
 
   const subtitle = isTipGate
@@ -455,6 +455,31 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
             </div>
             <p className="m-[-22px_0_16px_64px] font-sans text-[13px] font-medium tracking-[-0.015em] text-[var(--chan-body)]">{subtitle}</p>
             <p className="sr-only">{bodyCopy}</p>
+
+            {/* This is a fixed, non-editable gate price (not a support amount to type in), so it
+                is shown as a plain price badge rather than reusing the patron variant's boxed
+                input styling, which read as an editable field a guest could type into. */}
+            <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-[var(--chan-amber-soft)] py-1.5 pl-3.5 pr-2.5">
+              <span className="font-sans text-[11px] font-bold uppercase tracking-wide text-[var(--chan-amber-ink)]/70">
+                {isPl ? "Cena:" : "Price:"}
+              </span>
+              <span className="font-sans text-[15px] font-extrabold tabular-nums text-[var(--chan-amber-ink)]">
+                {minAmount}
+              </span>
+              <select
+                value={selectedCurrency}
+                onChange={(e) => handleCurrencyChange(e.target.value)}
+                aria-label="Currency"
+                className="cursor-pointer appearance-none bg-transparent pr-4 font-sans text-[13px] font-bold text-[var(--chan-amber-ink)]/80 outline-none"
+              >
+                {availableCurrencies.map((curr) => (
+                  <option key={curr} value={curr}>
+                    {curr}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={11} className="pointer-events-none -ml-3.5 text-[var(--chan-amber-ink)]/50" aria-hidden="true" />
+            </div>
           </>
         )}
 
@@ -480,17 +505,18 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
           </p>
         )}
 
-        <DonationAmountField
-          viewerIsPatron={viewerIsPatron}
-          isPl={isPl}
-          amount={amount}
-          setAmount={setAmount}
-          minAmount={minAmount}
-          selectedCurrency={selectedCurrency}
-          availableCurrencies={availableCurrencies}
-          onCurrencyChange={handleCurrencyChange}
-          amountTooLow={amountTooLow}
-        />
+        {isTipGate && (
+          <DonationAmountField
+            isPl={isPl}
+            amount={amount}
+            setAmount={setAmount}
+            minAmount={minAmount}
+            selectedCurrency={selectedCurrency}
+            availableCurrencies={availableCurrencies}
+            onCurrencyChange={handleCurrencyChange}
+            amountTooLow={amountTooLow}
+          />
+        )}
 
         <button
           type="button"
