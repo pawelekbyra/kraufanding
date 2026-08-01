@@ -327,7 +327,9 @@
     gap: 8px;
   }
 
-  .secondaryAction {
+  /* Wspieraj is now the row's last item, so it takes over the "stretch to fill
+     the grid's flexible column" role Share used to have. */
+  .supportAction {
     width: 100%;
     padding-left: 14px !important;
     padding-right: 14px !important;
