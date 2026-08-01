@@ -13,7 +13,7 @@ export const LEGAL_OWNER = {
   countryEn: 'Poland',
   nip: '886-289-10-01',
   regon: '022374976',
-  email: 'support@polutek.pl',
+  email: 'support@pawelperfect.pl',
 };
 
 export function LegalSection({ nr, title, children }: { nr: string; title: string; children: React.ReactNode }) {
