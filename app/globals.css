@@ -347,6 +347,10 @@
     --chan-body: #344054;
     --chan-blue: #2563eb;
     --chan-blue-soft: #eff3fe;
+    /* Subscribe-button-only accent (owner decision, 2026-08-01) — YouTube-style red for that
+       one button, kept in the same medium-saturation family as --chan-blue/--chan-amber
+       rather than a harsher pure red. Not a general-purpose semantic color. */
+    --chan-red: #dc2626;
     --chan-amber: #f59e0b;
     --chan-amber-bright: #fbbf24;
     --chan-amber-strong: #d97706;
@@ -444,6 +448,14 @@
     --cm-blue-9: color-mix(in srgb, var(--chan-blue) 9%, transparent);
     --cm-blue-90-black: color-mix(in srgb, var(--chan-blue) 90%, black);
     --cm-blue-soft-48-wc-bg: color-mix(in srgb, var(--chan-blue-soft) 48%, var(--watch-control-bg));
+    /* Derived shades for the Subscribe button's --chan-red accent — same mix percentages as
+       the --cm-blue-* equivalents they replace in .subscribeAction (watch-actions.module.css). */
+    --cm-red-22-2: color-mix(in srgb, var(--chan-red) 22%, transparent);
+    --cm-red-60: color-mix(in srgb, var(--chan-red) 60%, transparent);
+    --cm-red-62: color-mix(in srgb, var(--chan-red) 62%, transparent);
+    --cm-red-62-black: color-mix(in srgb, var(--chan-red) 62%, black);
+    --cm-red-70-black: color-mix(in srgb, var(--chan-red) 70%, black);
+    --cm-red-90-black: color-mix(in srgb, var(--chan-red) 90%, black);
     --cm-card-45-white: color-mix(in srgb, var(--chan-card) 45%, white);
     --cm-card-48: color-mix(in srgb, var(--chan-card) 48%, transparent);
     --cm-card-58-white: color-mix(in srgb, var(--chan-card) 58%, white);
@@ -561,6 +573,12 @@
       --cm-blue-9: rgba(37, 99, 235, 0.09);
       --cm-blue-90-black: rgb(33, 89, 212);
       --cm-blue-soft-48-wc-bg: rgb(247, 249, 255);
+      --cm-red-22-2: rgba(220, 38, 38, 0.22);
+      --cm-red-60: rgba(220, 38, 38, 0.6);
+      --cm-red-62: rgba(220, 38, 38, 0.62);
+      --cm-red-62-black: rgb(136, 24, 24);
+      --cm-red-70-black: rgb(154, 27, 27);
+      --cm-red-90-black: rgb(198, 34, 34);
       --cm-card-45-white: rgb(255, 255, 255);
       --cm-card-48: rgba(255, 255, 255, 0.48);
       --cm-card-58-white: rgb(255, 255, 255);
