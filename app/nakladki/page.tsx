@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import NakladkiGallery from "./NakladkiGallery";
 
 export const metadata: Metadata = {
-  title: "Nakładki — galeria koncepcji | WWW.PAWELPERFECT.PL",
+  title: "Nakładki — galeria koncepcji | www.pawelperfect.pl",
   robots: { index: false, follow: false },
 };
 

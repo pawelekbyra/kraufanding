@@ -7,7 +7,7 @@ interface BrandNameProps {
   decorative?: boolean;
 }
 
-// WWW.PAWELPERFECT.PL logo mark: the glasses graphic (public/logo-glasses.svg).
+// www.pawelperfect.pl logo mark: the glasses graphic (public/logo-glasses.svg).
 export default function BrandName({
   className,
   decorative = false,
@@ -15,7 +15,7 @@ export default function BrandName({
   return (
     <img
       src="/logo-glasses.svg"
-      alt={decorative ? "" : "WWW.PAWELPERFECT.PL"}
+      alt={decorative ? "" : "www.pawelperfect.pl"}
       aria-hidden={decorative ? true : undefined}
       draggable={false}
       className={cn("h-full w-auto select-none", className)}

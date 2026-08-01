@@ -102,7 +102,7 @@ export function RegulaminContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Kto prowadzi serwis">
-          <LegalOwnerBlock leadIn="Administratorem serwisu WWW.PAWELPERFECT.PL jest" />
+          <LegalOwnerBlock leadIn="Administratorem serwisu www.pawelperfect.pl jest" />
         </LegalSection>
 
         <LegalSection nr="2" title="Co znajdziesz w serwisie i wymagania techniczne">
@@ -249,7 +249,7 @@ export function PolitykaContent() {
 
       <div className="space-y-10">
         <LegalSection nr="1" title="Administrator danych">
-          <LegalOwnerBlock leadIn="Administratorem serwisu WWW.PAWELPERFECT.PL jest" />
+          <LegalOwnerBlock leadIn="Administratorem serwisu www.pawelperfect.pl jest" />
           <p>W sprawach danych osobowych pisz na adres <a href={`mailto:${OWNER.email}`} className="underline hover:text-primary">{OWNER.email}</a>.</p>
         </LegalSection>
 

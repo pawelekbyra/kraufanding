@@ -10,7 +10,7 @@ describe("BrandName", () => {
 
   it("renders the glasses logo as an accessible image by default", () => {
     render(<BrandName />);
-    const img = screen.getByRole("img", { name: "WWW.PAWELPERFECT.PL" });
+    const img = screen.getByRole("img", { name: "www.pawelperfect.pl" });
     expect(img.getAttribute("src")).toBe("/logo-glasses.svg");
   });
 
@@ -25,7 +25,7 @@ describe("BrandName", () => {
 
   it("lets the caller size the mark via className", () => {
     render(<BrandName className="h-[28px]" />);
-    const img = screen.getByRole("img", { name: "WWW.PAWELPERFECT.PL" });
+    const img = screen.getByRole("img", { name: "www.pawelperfect.pl" });
 
     expect(img.className).toContain("h-[28px]");
   });
