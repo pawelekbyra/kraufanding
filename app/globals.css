@@ -759,13 +759,22 @@
     position:absolute; left:0; right:0; bottom:0;
     padding: 0;
     pointer-events:none;
+    /* visibility is the hard backstop: once the slide-down finishes, the bar is fully
+       un-rendered so nothing (e.g. the time readout) can ever linger as a visible sliver
+       past the player's edge, even if the transform distance is ever slightly off. It only
+       flips at the very end of the hide transition (transition-delay matches the duration),
+       so it never causes a visible cut/fade — by the time it flips the bar is already
+       off-screen. Showing it again flips visibility back instantly (no delay). */
+    visibility:hidden;
     transform: translateY(100%);
-    transition: transform .38s cubic-bezier(.32,.72,0,1);
+    transition: transform .48s cubic-bezier(0.4,0,0.2,1), visibility 0s linear .48s;
     will-change: transform;
   }
   .mc-controls--visible .mc-bottom {
+    visibility:visible;
     transform: translateY(0);
     pointer-events:auto;
+    transition: transform .48s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0s;
   }
 
   /* Cały pasek — scrubber + przyciski — pełna szerokość do dołu */
@@ -836,14 +845,15 @@
      above the line, making the bar look taller than the track itself. */
   .mc-scrub {
     position:relative; display:flex;
-    width:100%; height:4px;
+    width:100%; height:3px;
     align-items:flex-start;
     cursor:pointer; touch-action:none;
     padding: 0 2px;
   }
   .mc-scrub-track {
     position:relative; width:100%;
-    height:3px; border-radius:999px;
+    /* YouTube-style hairline track — very thin at rest, only thickening on hover/focus. */
+    height:2px; border-radius:999px;
     /* Unwatched portion: solid white rather than a dim gray-reading translucent
        white, so it stays legibly white against the video underneath. */
     background: rgba(255,255,255,.5);
@@ -851,7 +861,7 @@
     overflow:hidden;
   }
   .mc-scrub:hover .mc-scrub-track,
-  .mc-scrub:focus-visible .mc-scrub-track { height:5px; }
+  .mc-scrub:focus-visible .mc-scrub-track { height:4px; }
 
   .mc-scrub-buffer {
     position:absolute; inset:0 auto 0 0;
@@ -868,7 +878,7 @@
   }
   .mc-scrub-thumb {
     position:absolute;
-    top:1.5px; /* centers on the top-aligned track's default 3px height */
+    top:1px; /* centers on the top-aligned track's default 2px height */
     left:var(--slider-fill);
     width:13px; height:13px;
     border-radius:999px;

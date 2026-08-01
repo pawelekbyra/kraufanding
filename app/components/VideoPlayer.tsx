@@ -183,6 +183,7 @@ export default function VideoPlayer({ video, variant = 'hero', onViewCounted }: 
                         autoPlay={playerConfig ? (playerConfig.autoplayAllowed && playerConfig.mutedAutoplay) : variant === 'hero'}
                         playsInline
                         aspectRatio="16/9"
+                        controlsDelay={4000}
                         onCanPlay={() => {
                             if (player.current?.muted && typeof navigator !== 'undefined' && navigator.userActivation?.hasBeenActive) {
                                 player.current.muted = false;
