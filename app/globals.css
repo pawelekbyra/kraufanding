@@ -736,15 +736,14 @@
   .mc-controls {
     position:absolute; inset:0; z-index:20;
     pointer-events:none;
-    opacity:0; visibility:hidden;
-    transition: opacity .18s ease, visibility 0s linear .18s;
     font-family: var(--font-geist-sans, ui-sans-serif), sans-serif;
   }
-  .mc-controls--visible {
-    opacity:1; visibility:visible;
-    transition-delay:0s;
-  }
 
+  /* Scrim and bar animate independently instead of the old instant
+     opacity/visibility swap on the whole .mc-controls box: the scrim fades,
+     while the control bar itself slides down out of view and eases back up
+     on return, so idle hide/show reads as a deliberate motion rather than a
+     sudden pop. */
   .mc-scrim {
     position:absolute; inset:0;
     background: linear-gradient(
@@ -753,11 +752,23 @@
       rgba(0,0,0,.18) 78%,
       rgba(0,0,0,.45) 100%
     );
+    opacity:0;
+    transition: opacity .38s ease;
   }
+  .mc-controls--visible .mc-scrim { opacity:1; }
 
   .mc-bottom {
     position:absolute; left:0; right:0; bottom:0;
     padding: 0;
+    pointer-events:none;
+    opacity:0;
+    transform: translateY(18px);
+    transition: opacity .3s cubic-bezier(.32,.72,0,1), transform .42s cubic-bezier(.32,.72,0,1);
+    will-change: transform, opacity;
+  }
+  .mc-controls--visible .mc-bottom {
+    opacity:1;
+    transform: translateY(0);
     pointer-events:auto;
   }
 
@@ -837,7 +848,9 @@
   .mc-scrub-track {
     position:relative; width:100%;
     height:3px; border-radius:999px;
-    background: rgba(255,255,255,.22);
+    /* Unwatched portion: solid white rather than a dim gray-reading translucent
+       white, so it stays legibly white against the video underneath. */
+    background: rgba(255,255,255,.5);
     transition: height .14s ease;
     overflow:hidden;
   }
@@ -847,12 +860,14 @@
   .mc-scrub-buffer {
     position:absolute; inset:0 auto 0 0;
     width:var(--slider-progress);
-    background: rgba(255,255,255,.25);
+    background: rgba(255,255,255,.75);
   }
   .mc-scrub-fill {
     position:absolute; inset:0 auto 0 0;
     width:var(--slider-fill);
-    background: #fff;
+    /* Watched portion: the site's blue accent, matching the primary
+       action/nav color used elsewhere (--chan-blue), instead of plain white. */
+    background: var(--chan-blue);
     border-radius:inherit;
   }
   .mc-scrub-thumb {
@@ -861,7 +876,7 @@
     left:var(--slider-fill);
     width:13px; height:13px;
     border-radius:999px;
-    background:#fff;
+    background: var(--chan-blue);
     box-shadow:0 1px 4px rgba(0,0,0,.4);
     transform:translate(-50%, -50%) scale(.6);
     opacity:0;
@@ -1043,13 +1058,20 @@
        legible on mobile rather than shrinking further. */
     .mc-time { font-size:11px; margin-left:0; }
     .mc-time-sep, .mc-time-dur { display:none; }
-    .mc-volume { display:none; }
+    /* Volume was previously hidden entirely on mobile (no room for the
+       hover-reveal slider, since touch has no hover) — that left phone
+       viewers with no way to mute/adjust volume at all. Keep the mute
+       button and pin the slider open at a compact fixed width instead of
+       relying on :hover/:focus-within, which touch input can't trigger. */
+    .mc-vol-slider {
+      width:36px; opacity:1; margin-right:4px; overflow:visible;
+    }
     .mc-hero { width:52px; height:52px; }
     .polutek-vidstack-player .vds-captions { bottom:64px; }
   }
 
   @media (prefers-reduced-motion:reduce) {
-    .mc-controls, .mc-btn, .mc-hero,
+    .mc-scrim, .mc-bottom, .mc-btn, .mc-hero,
     .mc-vol-slider, .mc-scrub-track, .mc-scrub-thumb { transition:none; }
     .mc-spinner-ring { animation:none; }
   }

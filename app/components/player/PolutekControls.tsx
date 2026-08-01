@@ -19,18 +19,19 @@ import {
   type PlaybackRateOption,
 } from "@vidstack/react";
 import {
-  MdCheck,
-  MdClosedCaption,
-  MdFullscreen,
-  MdFullscreenExit,
-  MdPause,
-  MdPlayArrow,
-  MdReplay,
-  MdSettings,
-  MdVolumeDown,
-  MdVolumeOff,
-  MdVolumeUp,
-} from "react-icons/md";
+  CheckIcon,
+  ClosedCaptionsIcon,
+  ClosedCaptionsOnIcon,
+  FullscreenExitIcon,
+  FullscreenIcon,
+  MuteIcon,
+  PauseIcon,
+  PlayIcon,
+  ReplayIcon,
+  SettingsIcon,
+  VolumeHighIcon,
+  VolumeLowIcon,
+} from "@vidstack/react/icons";
 import { cn } from "@/lib/utils";
 import { usePlayerCopy } from "./polutek-controls-copy";
 
@@ -57,12 +58,12 @@ function CenterStage() {
           {ended ? (
             <>
               <span className="mc-hero-icon-wrap">
-                <MdReplay className="mc-hero-icon" aria-hidden="true" />
+                <ReplayIcon className="mc-hero-icon" aria-hidden="true" />
               </span>
               <span className="mc-replay-label">{copy.replay}</span>
             </>
           ) : (
-            <MdPlayArrow className="mc-hero-icon" aria-hidden="true" />
+            <PlayIcon className="mc-hero-icon" aria-hidden="true" />
           )}
         </PlayButton>
       ) : null}
@@ -78,8 +79,8 @@ function PlayPauseButton() {
   return (
     <PlayButton className="mc-btn" aria-label={label} title={label}>
       {paused
-        ? <MdPlayArrow className="mc-icon" />
-        : <MdPause className="mc-icon" />}
+        ? <PlayIcon className="mc-icon" />
+        : <PauseIcon className="mc-icon" />}
     </PlayButton>
   );
 }
@@ -96,10 +97,10 @@ function VolumeControl() {
     <div className="mc-volume">
       <MuteButton className="mc-btn" aria-label={label} title={label}>
         {isMuted
-          ? <MdVolumeOff className="mc-icon" />
+          ? <MuteIcon className="mc-icon" />
           : volume < 0.5
-            ? <MdVolumeDown className="mc-icon" />
-            : <MdVolumeUp className="mc-icon" />}
+            ? <VolumeLowIcon className="mc-icon" />
+            : <VolumeHighIcon className="mc-icon" />}
       </MuteButton>
       {canSetVolume && (
         <VolumeSlider.Root className="mc-vol-slider" aria-label={copy.volume}>
@@ -147,7 +148,7 @@ function SpeedMenuSection({ onSelect }: { onSelect: () => void }) {
           onClick={() => { option.select(); onSelect(); }}
         >
           <span>{option.label}</span>
-          {option.selected && <MdCheck className="mc-menu-check" />}
+          {option.selected && <CheckIcon className="mc-menu-check" />}
         </button>
       ))}
     </div>
@@ -172,7 +173,7 @@ function CaptionsMenuSection({ onSelect }: { onSelect: () => void }) {
           onClick={() => { option.select(); onSelect(); }}
         >
           <span>{option.label}</span>
-          {option.selected && <MdCheck className="mc-menu-check" />}
+          {option.selected && <CheckIcon className="mc-menu-check" />}
         </button>
       ))}
     </div>
@@ -209,7 +210,7 @@ function SettingsMenu() {
         aria-haspopup="menu"
         onClick={() => setOpen(v => !v)}
       >
-        <MdSettings className="mc-icon" />
+        <SettingsIcon className="mc-icon" />
       </button>
       {open && (
         <div className="mc-menu" role="menu" aria-label={copy.playerSettings}>
@@ -231,7 +232,9 @@ function CaptionToggle() {
   const label = isOn ? copy.disableCaptions : copy.enableCaptions;
   return (
     <CaptionButton className="mc-btn mc-caption" aria-label={label} title={label}>
-      <MdClosedCaption className="mc-icon" style={isOn ? undefined : { opacity: 0.5 }} />
+      {isOn
+        ? <ClosedCaptionsOnIcon className="mc-icon" />
+        : <ClosedCaptionsIcon className="mc-icon" style={{ opacity: 0.5 }} />}
     </CaptionButton>
   );
 }
@@ -245,7 +248,7 @@ function FullscreenToggleButton() {
   const label = isFullscreen ? copy.exitFullscreen : copy.fullscreen;
   return (
     <FullscreenButton className="mc-btn" aria-label={label} title={label}>
-      {isFullscreen ? <MdFullscreenExit className="mc-icon" /> : <MdFullscreen className="mc-icon" />}
+      {isFullscreen ? <FullscreenExitIcon className="mc-icon" /> : <FullscreenIcon className="mc-icon" />}
     </FullscreenButton>
   );
 }
