@@ -37,8 +37,8 @@
 .actionCluster {
   overflow: hidden;
   border-radius: 12px;
-  /* Same solid ink/black treatment as .subscribeAction and .secondaryAction (Share) —
-     owner request to make like/dislike/Share match Subscribe's look. */
+  /* Solid ink/black — owner's final call: Subscribe is the one blue button, everything else
+     in this row (like/dislike, Share, Wspieraj) is black. */
   border: 1px solid var(--cm-ink-55);
   background: var(--chan-ink) !important;
   color: white !important;
@@ -62,8 +62,7 @@
 
 .secondaryAction {
   min-height: 36px;
-  /* Same solid ink/black treatment as .subscribeAction — owner request to make Share and
-     like/dislike match Subscribe's look. */
+  /* Solid ink/black — see .actionCluster. */
   border: 1px solid var(--cm-ink-55);
   background: var(--chan-ink) !important;
   color: white !important;
@@ -76,28 +75,27 @@
   position: relative;
   min-height: 36px;
   overflow: hidden;
-  /* Solid ink/black — the red tried first (owner decision, 2026-08-01) read as too harsh, so
-     this reuses --chan-ink, the same dark tone as the Navbar's sign-in button, instead of
-     introducing another accent. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
-  color: white !important;
-  box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
-}
-
-.supportAction {
-  position: relative;
-  min-height: 36px;
-  overflow: hidden;
-  /* Solid --chan-blue, the same fill as the active language-switcher segment. */
+  /* Solid --chan-blue — the one blue button in this row (owner's final call, 2026-08-01:
+     Subscribe is blue, Wspieraj/like-dislike/Share are all black). */
   border: 1px solid var(--cm-blue-62-black);
   background: var(--chan-blue) !important;
   color: white !important;
   box-shadow:
     inset 0 1px 0 var(--cm-white-30),
     0 8px 18px -8px var(--cm-blue-60) !important;
+}
+
+.supportAction {
+  position: relative;
+  min-height: 36px;
+  overflow: hidden;
+  /* Solid ink/black — see .actionCluster. */
+  border: 1px solid var(--cm-ink-55);
+  background: var(--chan-ink) !important;
+  color: white !important;
+  box-shadow:
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-ink-55) !important;
 }
 
 .secondaryAction,
@@ -120,7 +118,8 @@
   transform: translateY(-1px);
 }
 
-.secondaryAction:hover {
+.secondaryAction:hover,
+.supportAction:hover {
   border-color: var(--cm-ink-88-black);
   background: var(--cm-ink-88-black) !important;
   box-shadow:
@@ -130,15 +129,6 @@
 }
 
 .subscribeAction:hover {
-  border-color: var(--cm-ink-88-black);
-  background: var(--cm-ink-88-black) !important;
-  box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 12px 24px -8px var(--cm-ink-55) !important;
-  filter: none;
-}
-
-.supportAction:hover {
   border-color: var(--cm-blue-70-black);
   background: var(--cm-blue-90-black) !important;
   box-shadow:
@@ -148,17 +138,13 @@
 }
 
 .actionButton:focus-visible,
-.secondaryAction:focus-visible {
+.secondaryAction:focus-visible,
+.supportAction:focus-visible {
   outline: 3px solid var(--cm-ink-55);
   outline-offset: 2px;
 }
 
 .subscribeAction:focus-visible {
-  outline: 3px solid var(--cm-ink-55);
-  outline-offset: 2px;
-}
-
-.supportAction:focus-visible {
   outline: 3px solid var(--cm-blue-22-2);
   outline-offset: 2px;
 }

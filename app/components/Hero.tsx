@@ -247,7 +247,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                    router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
                  }}
                  className={cn(
-                   "relative flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-blue)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--cm-blue-90-black)] active:scale-95",
+                   "relative flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-ink)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--cm-ink-88-black)] active:scale-95",
                    styles.supportAction,
                  )}
                  aria-label={language === "pl" ? "Wspieraj" : "Support"}
