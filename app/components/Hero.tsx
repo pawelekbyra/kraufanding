@@ -232,12 +232,12 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className={cn("flex w-full flex-wrap items-center gap-2 lg:w-auto lg:flex-nowrap", styles.actionRail)}>
-               <div className={cn("relative flex h-[42px] shrink-0 items-center rounded-[12px] bg-[var(--chan-surface)]", styles.actionCluster)}>
+               <div className={cn("relative flex h-[36px] shrink-0 items-center rounded-[12px] bg-[var(--chan-surface)]", styles.actionCluster)}>
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
-                        "flex h-full items-center justify-center gap-1.5 px-3 font-sans transition-colors active:opacity-70 lg:px-4",
+                        "flex h-full items-center justify-center gap-1.5 px-2.5 font-sans transition-colors active:opacity-70 lg:px-3",
                         styles.actionButton,
                         interactionState.isLiked ? "text-[var(--chan-blue)]" : "text-[var(--chan-ink)]",
                         isPending && "opacity-50"
@@ -245,15 +245,15 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     title="Lubię to"
                     aria-label="Lubię to"
                   >
-                     <ThumbsUp className="h-5 w-5 shrink-0" strokeWidth={1.8} color={interactionState.isLiked ? "var(--chan-blue)" : "var(--chan-ink)"} />
+                     <ThumbsUp className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isLiked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                      <span className="text-[12px] font-bold">{interactionState.likesCount.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US')}</span>
                   </button>
-                  <span className="h-5 w-px bg-[var(--chan-line-soft)]" />
+                  <span className="h-4 w-px bg-[var(--chan-line-soft)]" />
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
-                        "flex h-full items-center justify-center px-4 transition-colors active:opacity-70",
+                        "flex h-full items-center justify-center px-3 transition-colors active:opacity-70",
                         styles.actionButton,
                         interactionState.isDisliked ? "text-[var(--chan-blue)]" : "text-[var(--chan-ink)]",
                         isPending && "opacity-50"
@@ -261,7 +261,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     title="Nie lubię"
                     aria-label="Nie lubię"
                   >
-                     <ThumbsDown className="h-5 w-5 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "var(--chan-ink)"} />
+                     <ThumbsDown className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                   </button>
                </div>
                <ShareButton

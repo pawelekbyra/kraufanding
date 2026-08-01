@@ -53,12 +53,12 @@ export default function InstallAppMenu({ className }: InstallAppMenuProps) {
       <div className={cn("relative", className)}>
         <DropdownMenuTrigger
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[var(--chan-surface)] font-sans text-sm font-bold text-[var(--chan-ink)] transition-transform hover:-translate-y-px hover:brightness-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--chan-surface)] font-sans text-sm font-bold text-[var(--chan-ink)] transition-transform hover:-translate-y-px hover:brightness-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
             !installed && !canOfferInstall && "opacity-50",
           )}
           aria-label={isPl ? "Zainstaluj aplikację" : "Install app"}
         >
-          <Download aria-hidden="true" className="h-5 w-5 shrink-0" strokeWidth={1.8} />
+          <Download aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.8} />
         </DropdownMenuTrigger>
       </div>
 

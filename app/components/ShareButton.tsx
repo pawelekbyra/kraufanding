@@ -91,13 +91,13 @@ export default function ShareButton({
       <div className={cn("relative", fill ? "flex-1 lg:flex-none" : "inline-block")}>
         <DropdownMenuTrigger
           className={cn(
-            "relative flex h-10 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-surface)] px-3 font-sans text-sm font-bold text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
+            "relative flex h-9 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-surface)] px-3 font-sans text-sm font-bold text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
             fill && "w-full",
             className,
           )}
           aria-label={copy.triggerLabel}
         >
-          <Send aria-hidden="true" className="h-5 w-5 shrink-0" strokeWidth={1.8} />
+          <Send aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.8} />
           <span className="leading-none">{t.share}</span>
         </DropdownMenuTrigger>
       </div>

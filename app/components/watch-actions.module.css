@@ -59,7 +59,7 @@
 
 .secondaryAction,
 .installAction button {
-  min-height: 42px;
+  min-height: 36px;
   border: 1px solid var(--watch-control-border);
   background: var(--watch-control-bg) !important;
   box-shadow:
@@ -69,15 +69,15 @@
 }
 
 .installAction button {
-  width: 42px;
-  min-width: 42px;
+  width: 36px;
+  min-width: 36px;
   padding-inline: 0 !important;
   justify-content: center;
 }
 
 .subscribeAction {
   position: relative;
-  min-height: 42px;
+  min-height: 36px;
   overflow: hidden;
   border: 1px solid var(--cm-blue-62-black);
   background: var(--chan-blue) !important;
