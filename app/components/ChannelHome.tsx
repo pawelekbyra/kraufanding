@@ -140,19 +140,40 @@ function ChannelHomeContent({
     const prefersReducedMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches ?? false;
-    // scrollIntoView reads the element's live (transform-affected) position. The
-    // "videos" tab panel plays a ~300ms slide-in-from-top animation on mount, so
-    // scrolling immediately targets its still-mid-slide position rather than
-    // where it actually settles — the scroll appears to silently do nothing.
-    // Wait for the slide to finish before scrolling on mobile; desktop never
-    // switches tabs (no animation), so it can scroll right away.
-    const scrollDelay = isMobile && !prefersReducedMotion ? 350 : 0;
-    window.setTimeout(() => {
+    const scrollToDonations = () => {
       document.getElementById("donations")?.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
         block: "center",
       });
-    }, scrollDelay);
+    };
+
+    if (!isMobile) {
+      // Desktop never switches tabs — the donation box already exists in the
+      // always-rendered aside, so there's nothing to wait out.
+      window.setTimeout(scrollToDonations, 0);
+      return;
+    }
+
+    // On mobile, #donations only exists once BOTH (a) the "videos" tab panel's
+    // ~300ms slide-in animation settles (scrollIntoView reads the target's live,
+    // transform-affected position, so scrolling mid-slide lands in the wrong
+    // spot) AND (b) SidebarPlaylist's own Clerk auth check resolves — it only
+    // renders DonationBox once authLoaded && isSignedIn, which can take longer
+    // than the animation on a cold page load (Wspieraj is above the fold and
+    // often one of the first clicks). A single fixed-delay attempt silently
+    // does nothing if #donations isn't mounted yet, so poll for it instead of
+    // firing once.
+    const deadline = Date.now() + 3000;
+    const poll = () => {
+      if (document.getElementById("donations")) {
+        scrollToDonations();
+        return;
+      }
+      if (Date.now() < deadline) {
+        window.setTimeout(poll, 150);
+      }
+    };
+    window.setTimeout(poll, prefersReducedMotion ? 0 : 350);
   }, []);
 
   useEffect(() => {
