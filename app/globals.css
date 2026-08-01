@@ -712,8 +712,8 @@
   }
 
   .chan-lang-pill-active {
-    background: var(--chan-blue);
-    box-shadow: 0 1px 10px var(--cm-blue-35);
+    background: var(--chan-ink);
+    box-shadow: 0 1px 10px rgba(17, 24, 39, .35);
   }
 
   .polutek-vidstack-player {
