@@ -739,11 +739,9 @@
     font-family: var(--font-geist-sans, ui-sans-serif), sans-serif;
   }
 
-  /* Scrim and bar animate independently instead of the old instant
-     opacity/visibility swap on the whole .mc-controls box: the scrim fades,
-     while the control bar itself slides down out of view and eases back up
-     on return, so idle hide/show reads as a deliberate motion rather than a
-     sudden pop. */
+  /* Scrim fades (it's just a background darkening layer), but the control
+     bar itself is a pure slide — no opacity/fade — so it reads as physically
+     dropping all the way down out of view and rising back, not fading. */
   .mc-scrim {
     position:absolute; inset:0;
     background: linear-gradient(
@@ -761,13 +759,11 @@
     position:absolute; left:0; right:0; bottom:0;
     padding: 0;
     pointer-events:none;
-    opacity:0;
-    transform: translateY(18px);
-    transition: opacity .3s cubic-bezier(.32,.72,0,1), transform .42s cubic-bezier(.32,.72,0,1);
-    will-change: transform, opacity;
+    transform: translateY(100%);
+    transition: transform .38s cubic-bezier(.32,.72,0,1);
+    will-change: transform;
   }
   .mc-controls--visible .mc-bottom {
-    opacity:1;
     transform: translateY(0);
     pointer-events:auto;
   }
