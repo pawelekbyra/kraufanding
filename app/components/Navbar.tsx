@@ -175,10 +175,16 @@ const Navbar = () => {
             {/* Right controls */}
             <div className="flex shrink-0 items-center justify-end gap-1.5">
               {/* Mobile search trigger */}
-              <div className="flex items-center sm:hidden">
+              {/* -mr-[9px]: the icon itself is recessed ~9px inside this button's own 38px
+                  box (no background at rest to mark the box edge), so the plain flex gap-1.5
+                  here reads as a much bigger gap to the language pill than the sign-in circle
+                  gets on the switcher's other side (that button's filled background sits flush
+                  with its own box edge). Pulling the box closer compensates for that recess so
+                  both visual gaps match. */}
+              <div className="flex items-center sm:hidden -mr-[9px]">
                 <button
                   onClick={() => setIsMobileSearchOpen(true)}
-                  className="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[var(--chan-surface)] text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95"
+                  className="flex h-[38px] w-[38px] items-center justify-center rounded-full text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--chan-surface)] hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95"
                 >
                   <Search className="h-5 w-5 shrink-0" strokeWidth={1.8} />
                 </button>
