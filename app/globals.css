@@ -781,27 +781,28 @@
   .mc-bar {
     display:flex;
     flex-direction: column;
-    /* Split evenly with the bottom padding below so the button row sits
-       centered between the progress bar and the panel's bottom edge — a
-       zero gap here with all the slack in bottom padding pushed the row
-       up against the scrubber instead. */
+    /* Tight and flush with the bottom edge, YouTube-style — the row itself keeps
+       its buttons vertically centered via .mc-row's align-items:center regardless
+       of this outer padding. */
     gap: 2px;
     width: 100%;
     background: rgba(0,0,0,.72);
     backdrop-filter: blur(14px) saturate(1.5);
     -webkit-backdrop-filter: blur(14px) saturate(1.5);
     border-radius: 0;
-    padding: 0 8px 2px;
+    padding: 0 8px;
     box-sizing: border-box;
   }
 
   /* rząd przycisków pod scrubberem — height matches .mc-btn exactly so the
-     buttons don't overflow their row and icons stay vertically centered. */
+     buttons don't overflow their row and icons stay vertically centered.
+     Sized down from the original 38px so the whole bar sits lower/thinner
+     against the bottom edge, YouTube-style. */
   .mc-row {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    height: 38px;
+    height: 34px;
     gap: 2px;
   }
 
@@ -810,23 +811,25 @@
 
   .mc-btn {
     display:grid; place-items:center;
-    width:38px; height:38px;
-    border:0; border-radius:8px;
+    width:34px; height:34px;
+    /* Fully round — YouTube's icon buttons show a circular translucent "badge"
+       behind the glyph on hover/press/focus rather than a rounded-square tile. */
+    border:0; border-radius:999px;
     background:transparent;
     color: rgba(255,255,255,.92);
     transition: background .12s ease, color .12s ease, transform .1s ease;
     flex-shrink:0;
     cursor:pointer;
   }
-  .mc-btn:hover { background: rgba(255,255,255,.12); color:#fff; }
-  .mc-btn:active { transform:scale(.9); background: rgba(255,255,255,.18); }
+  .mc-btn:hover { background: rgba(255,255,255,.16); color:#fff; }
+  .mc-btn:active { transform:scale(.9); background: rgba(255,255,255,.24); }
   .mc-btn:focus-visible {
     outline:2px solid rgba(255,255,255,.8);
     outline-offset:1px;
   }
 
   /* Material Symbols (filled) — bold, optically-centered glyphs, YouTube-style. */
-  .mc-icon { width:24px; height:24px; flex-shrink:0; }
+  .mc-icon { width:20px; height:20px; flex-shrink:0; }
 
   .mc-time {
     display:flex; align-items:center; gap:4px;
@@ -1010,7 +1013,7 @@
 
   .mc-menu-root { position:relative; }
   .mc-menu {
-    position:absolute; right:0; bottom:46px;
+    position:absolute; right:0; bottom:42px;
     width:200px;
     max-height:min(320px,60vh);
     overflow:auto;
@@ -1058,9 +1061,9 @@
 
   @media (max-width:640px) {
     .mc-bottom { padding:0; }
-    .mc-bar { border-radius:0; padding:0 6px 2px; }
+    .mc-bar { border-radius:0; padding:0 6px; }
     .mc-row { gap:2px; }
-    /* .mc-btn/.mc-icon keep their base 38px/24px size — icons stay bold and
+    /* .mc-btn/.mc-icon keep their base 34px/20px size — icons stay bold and
        legible on mobile rather than shrinking further. */
     .mc-time { font-size:11px; margin-left:0; }
     .mc-time-sep, .mc-time-dur { display:none; }
