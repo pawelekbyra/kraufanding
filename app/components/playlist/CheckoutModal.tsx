@@ -176,7 +176,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             ) : (
               <div className="flex flex-col pt-10">
                 <div className="mb-6 hidden md:block">
-                  <h2 className="font-brand text-2xl font-bold text-[var(--chan-ink)]">{language === 'pl' ? 'Przekaż jednorazowy napiwek' : 'Send a one-time tip'}</h2>
+                  <h2 className="font-brand text-2xl font-bold text-[var(--chan-ink)]">
+                    {viewerIsPatron
+                      ? (language === 'pl' ? 'Przekaż jednorazowy napiwek' : 'Send a one-time tip')
+                      : (language === 'pl' ? 'Dostęp do Strefy Fenkjuu' : 'Access to the Thank You Zone')}
+                  </h2>
                   <p className="text-sm text-[var(--chan-muted)]">{language === 'pl' ? 'Bezpieczna transakcja obsługiwana przez Stripe.' : 'Secure transaction handled by Stripe.'}</p>
                 </div>
 

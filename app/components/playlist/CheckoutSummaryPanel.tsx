@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { MAIN_CREATOR_NAME } from '@/lib/constants';
-import BrandName from '../BrandName';
 
 const INK = '#211d18';
 const SUPPORT_AMBER = '#f59e0b';
@@ -93,11 +92,6 @@ export default function CheckoutSummaryPanel({
 
   return (
     <div className="relative hidden h-full flex-col justify-between overflow-hidden border-r border-[var(--chan-line)] bg-[var(--chan-surface)] px-10 py-10 text-[var(--chan-ink)] md:flex md:w-[45%] lg:px-14">
-      {/* brand */}
-      <div className="relative z-10">
-        <BrandName className="h-[36px]" />
-      </div>
-
       {/* centre: drawing + message + amount */}
       <div className="relative z-10 my-6 flex flex-col gap-7">
         <SupportHandDrawing />
