@@ -336,10 +336,6 @@
     gap: 8px;
   }
 
-  .actionCluster {
-    min-width: 118px;
-  }
-
   .secondaryAction {
     width: 100%;
     padding-left: 14px !important;
