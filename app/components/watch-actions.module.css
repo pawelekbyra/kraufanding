@@ -36,15 +36,12 @@
 
 .actionCluster {
   overflow: hidden;
+  border: 1px solid var(--watch-control-border);
   border-radius: 12px;
-  /* Solid ink/black — owner's final call: Subscribe is the one blue button, everything else
-     in this row (like/dislike, Share, Wspieraj) is black. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
-  color: white !important;
+  background: var(--watch-control-bg) !important;
   box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
+    0 1px 2px rgba(23, 23, 23, 0.04),
+    0 5px 14px rgba(23, 23, 23, 0.045);
 }
 
 .actionButton {
@@ -57,45 +54,33 @@
 }
 
 .actionButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--watch-control-hover);
 }
 
-.secondaryAction {
+.secondaryAction,
+.supportAction {
   min-height: 36px;
-  /* Solid ink/black — see .actionCluster. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
-  color: white !important;
+  border: 1px solid var(--watch-control-border);
+  background: var(--watch-control-bg) !important;
   box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
+    0 1px 2px rgba(23, 23, 23, 0.04),
+    0 5px 14px rgba(23, 23, 23, 0.045);
+  filter: none;
 }
 
 .subscribeAction {
   position: relative;
   min-height: 36px;
   overflow: hidden;
-  /* Solid --chan-blue — the one blue button in this row (owner's final call, 2026-08-01:
-     Subscribe is blue, Wspieraj/like-dislike/Share are all black). */
+  /* Solid --chan-blue — the one accent-colored button in this row; Wspieraj/like-dislike/Share
+     are back to the plain neutral surface style (owner request, 2026-08-01: revert the black/
+     color experiments on those three). */
   border: 1px solid var(--cm-blue-62-black);
   background: var(--chan-blue) !important;
   color: white !important;
   box-shadow:
     inset 0 1px 0 var(--cm-white-30),
     0 8px 18px -8px var(--cm-blue-60) !important;
-}
-
-.supportAction {
-  position: relative;
-  min-height: 36px;
-  overflow: hidden;
-  /* Solid ink/black — see .actionCluster. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
-  color: white !important;
-  box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
 }
 
 .secondaryAction,
@@ -120,11 +105,11 @@
 
 .secondaryAction:hover,
 .supportAction:hover {
-  border-color: var(--cm-ink-88-black);
-  background: var(--cm-ink-88-black) !important;
+  border-color: var(--cm-blue-28-wc-border);
+  background: var(--watch-control-hover) !important;
   box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 12px 24px -8px var(--cm-ink-55) !important;
+    0 2px 4px rgba(23, 23, 23, 0.05),
+    0 9px 20px rgba(23, 23, 23, 0.07);
   filter: none;
 }
 
@@ -139,11 +124,7 @@
 
 .actionButton:focus-visible,
 .secondaryAction:focus-visible,
-.supportAction:focus-visible {
-  outline: 3px solid var(--cm-ink-55);
-  outline-offset: 2px;
-}
-
+.supportAction:focus-visible,
 .subscribeAction:focus-visible {
   outline: 3px solid var(--cm-blue-22-2);
   outline-offset: 2px;
