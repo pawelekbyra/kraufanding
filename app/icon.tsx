@@ -2,8 +2,8 @@ import { ImageResponse } from 'next/og';
 import {
   APP_ICON_BACKGROUND,
   APP_ICON_INK,
-  APP_ICON_BLUE,
-  enterGlyphFilledPath,
+  GLASSES_MARK_DATA_URI,
+  glassesMarkRect,
   roundedSquarePath,
 } from '@/lib/icons/app-icon';
 
@@ -17,7 +17,7 @@ const size = {
 export default async function Icon() {
   const borderPath = roundedSquarePath(size.width, 30, 7, 6);
   const innerPath = roundedSquarePath(size.width, 31, 57, 8);
-  const enter = enterGlyphFilledPath(size.width);
+  const mark = glassesMarkRect(size.width);
 
   return new ImageResponse(
     (
@@ -38,8 +38,14 @@ export default async function Icon() {
         >
           <path d={borderPath} fill="none" stroke={APP_ICON_INK} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
           <path d={innerPath} fill="none" stroke={APP_ICON_INK} strokeWidth={1.5} opacity={0.3} />
-          <path d={enter.path} fill={APP_ICON_BLUE} stroke={APP_ICON_INK} strokeWidth={enter.strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
         </svg>
+        <img
+          src={GLASSES_MARK_DATA_URI}
+          alt=""
+          width={mark.width}
+          height={mark.height}
+          style={{ position: 'absolute', left: mark.x, top: mark.y }}
+        />
       </div>
     ),
     {
