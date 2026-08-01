@@ -812,17 +812,18 @@
   .mc-btn {
     display:grid; place-items:center;
     width:34px; height:34px;
-    /* Fully round — YouTube's icon buttons show a circular translucent "badge"
-       behind the glyph on hover/press/focus rather than a rounded-square tile. */
+    /* Fully round — YouTube's icon buttons sit inside a circular translucent
+       "badge" at all times (not only revealed on hover), brightening further
+       on hover/press/focus. */
     border:0; border-radius:999px;
-    background:transparent;
+    background: rgba(255,255,255,.1);
     color: rgba(255,255,255,.92);
     transition: background .12s ease, color .12s ease, transform .1s ease;
     flex-shrink:0;
     cursor:pointer;
   }
-  .mc-btn:hover { background: rgba(255,255,255,.16); color:#fff; }
-  .mc-btn:active { transform:scale(.9); background: rgba(255,255,255,.24); }
+  .mc-btn:hover { background: rgba(255,255,255,.18); color:#fff; }
+  .mc-btn:active { transform:scale(.9); background: rgba(255,255,255,.26); }
   .mc-btn:focus-visible {
     outline:2px solid rgba(255,255,255,.8);
     outline-offset:1px;
@@ -910,7 +911,27 @@
     white-space:nowrap;
   }
 
-  .mc-volume { display:flex; align-items:center; }
+  /* One continuous pill/oval — not a button plus a separate slider — matching
+     YouTube's volume control. It's just the mute icon's own circle at rest
+     (the collapsed slider has zero width) and stretches into a longer oval
+     on hover/focus as the slider reveals. The inner .mc-btn is transparent
+     here so only this one background shows through, uniformly. */
+  .mc-volume {
+    display:flex; align-items:center;
+    height:34px;
+    border-radius:999px;
+    background: rgba(255,255,255,.1);
+    transition: background .12s ease;
+  }
+  .mc-volume:hover,
+  .mc-volume:focus-within {
+    background: rgba(255,255,255,.18);
+  }
+  .mc-volume .mc-btn,
+  .mc-volume .mc-btn:hover,
+  .mc-volume .mc-btn:active {
+    background: transparent;
+  }
   .mc-vol-slider {
     position:relative; display:flex;
     width:0; height:28px;
@@ -920,7 +941,7 @@
   }
   .mc-volume:hover .mc-vol-slider,
   .mc-volume:focus-within .mc-vol-slider {
-    width:72px; margin-right:6px; opacity:1;
+    width:72px; margin-right:10px; opacity:1;
     /* Let the thumb render fully even near 0%, where translateX(-50%) pushes
        half of it past the slider's own box — overflow:clip was cutting that
        half away, making the thumb look like it vanished under the mute icon. */
