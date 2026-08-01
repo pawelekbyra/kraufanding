@@ -178,7 +178,7 @@ const Navbar = () => {
               <div className="flex items-center sm:hidden">
                 <button
                   onClick={() => setIsMobileSearchOpen(true)}
-                  className="flex h-[38px] w-[38px] items-center justify-center rounded-full text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--chan-surface)] hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95"
+                  className="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[var(--chan-surface)] text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95"
                 >
                   <Search className="h-5 w-5 shrink-0" strokeWidth={1.8} />
                 </button>
