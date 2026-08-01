@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useAuthModal } from "../auth/AuthModalProvider";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { loadStripe } from "@stripe/stripe-js";
 import { logger } from "@/lib/logger";
@@ -43,6 +43,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   const { open: openAuthModal } = useAuthModal();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -358,6 +359,24 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
       setIsLoading(false);
     }
   }, [userId, openAuthModal, isTermsAccepted, amount, minAmount, toast, isPl, selectedCurrency, checkoutRequestId, videoTitle]);
+
+  // Deep-link support: Navbar's "Wspieraj"/"Support" button links here with ?support=1#donations
+  // instead of duplicating any checkout logic — the browser's native anchor scroll handles
+  // #donations, and this just calls the same onSupport() the box's own button uses. If terms
+  // aren't accepted yet or the viewer isn't signed in, onSupport() surfaces its normal
+  // inline error/auth-modal — this never bypasses those checks. Runs once per param, then
+  // strips it so a refresh/back-nav doesn't retrigger it.
+  const autoOpenTriggeredRef = useRef(false);
+  useEffect(() => {
+    if (autoOpenTriggeredRef.current) return;
+    if (searchParams.get("support") !== "1") return;
+    autoOpenTriggeredRef.current = true;
+    onSupport();
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("support");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [searchParams, onSupport, router, pathname]);
 
   // Existing patrons get a deliberately different surface. They already own everything the
   // non-patron box sells, so this variant stops being a sales/access gate and becomes a plain

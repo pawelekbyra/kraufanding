@@ -26,6 +26,7 @@ vi.mock('@/app/components/auth/AuthModalProvider', () => ({
 vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({ refresh: vi.fn(), replace: vi.fn() }),
+  usePathname: () => '/',
 }));
 
 vi.mock('@/app/hooks/useToast', () => ({
