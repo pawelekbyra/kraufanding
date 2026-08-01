@@ -834,7 +834,13 @@
 
   .mc-time {
     display:flex; align-items:center; gap:4px;
-    margin-left:2px;
+    height:34px;
+    margin-left:4px;
+    padding:0 12px;
+    /* Same translucent pill frame as the buttons/volume oval, so the time
+       readout reads as one more "chip" in the row rather than bare text. */
+    border-radius:999px;
+    background: rgba(255,255,255,.1);
     color: rgba(255,255,255,.9);
     font-size:12px; font-weight:600;
     font-variant-numeric: tabular-nums;
@@ -1086,7 +1092,7 @@
     .mc-row { gap:2px; }
     /* .mc-btn/.mc-icon keep their base 34px/20px size — icons stay bold and
        legible on mobile rather than shrinking further. */
-    .mc-time { font-size:11px; margin-left:0; }
+    .mc-time { font-size:11px; margin-left:0; padding:0 8px; }
     .mc-time-sep, .mc-time-dur { display:none; }
     /* Volume was previously hidden entirely on mobile (no room for the
        hover-reveal slider, since touch has no hover) — that left phone
