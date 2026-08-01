@@ -132,18 +132,26 @@ function ChannelHomeContent({
   // animation (see the "videos" tab render below) is what turns that switch into a
   // slide-down instead of an instant swap.
   const revealDonations = useCallback(() => {
-    if (!window.matchMedia("(min-width: 1024px)").matches) {
+    const isMobile = !window.matchMedia("(min-width: 1024px)").matches;
+    if (isMobile) {
       setActiveTab("videos");
     }
+    const prefersReducedMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    ).matches ?? false;
+    // scrollIntoView reads the element's live (transform-affected) position. The
+    // "videos" tab panel plays a ~300ms slide-in-from-top animation on mount, so
+    // scrolling immediately targets its still-mid-slide position rather than
+    // where it actually settles — the scroll appears to silently do nothing.
+    // Wait for the slide to finish before scrolling on mobile; desktop never
+    // switches tabs (no animation), so it can scroll right away.
+    const scrollDelay = isMobile && !prefersReducedMotion ? 350 : 0;
     window.setTimeout(() => {
-      const prefersReducedMotion = window.matchMedia?.(
-        "(prefers-reduced-motion: reduce)",
-      ).matches ?? false;
       document.getElementById("donations")?.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
         block: "center",
       });
-    }, 0);
+    }, scrollDelay);
   }, []);
 
   useEffect(() => {
