@@ -19,7 +19,7 @@ import SubscribeButton from './SubscribeButton';
 import ShareButton from './ShareButton';
 import { MAIN_CREATOR_NAME } from '@/lib/constants';
 import { ThumbsUp, ThumbsDown, Coins } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import styles from './watch-actions.module.css';
 
 interface HeroProps {
@@ -34,6 +34,8 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   const { userId } = useAuth();
   const { open: openAuthModal } = useAuthModal();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -275,7 +277,14 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                    "support" query-param effect call its existing onSupport() — never a second
                    payment flow. Signed-out click opens sign-in first, since DonationBox only
                    mounts for signed-in viewers. Now the row's last item, so it takes over
-                   Share's old "fill remaining space" role (flex-1 below lg:, fixed above it). */}
+                   Share's old "fill remaining space" role (flex-1 below lg:, fixed above it).
+                   Merges into the CURRENT path/query (keeping ?v= for the video already open)
+                   instead of pushing a bare home URL — Hero only ever renders inside
+                   ChannelHome, so this is always an in-place update, never a real page
+                   change. A bare-URL push used to drop the open video and reset the mobile
+                   tab to "comments" (ChannelHome resets state when its routed video id
+                   changes), which is what produced the jarring instant jump instead of the
+                   mobile tab sliding over to "videos" where the donation box lives. */}
                <button
                  type="button"
                  onClick={() => {
@@ -283,7 +292,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      openAuthModal("sign-in");
                      return;
                    }
-                   router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
+                   const params = new URLSearchParams(searchParams.toString());
+                   params.set("support", "1");
+                   router.replace(`${pathname}?${params.toString()}#donations`, { scroll: false });
                  }}
                  className={cn(
                    "relative flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-surface)] px-3 font-sans text-sm font-bold text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95 lg:flex-none",

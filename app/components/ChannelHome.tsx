@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Hero from "./Hero";
 import { PublicVideoDTO } from "../types/video";
@@ -89,6 +90,7 @@ function ChannelHomeContent({
   userProfile,
 }: ChannelHomeProps) {
   const { t, language } = useLanguage();
+  const searchParams = useSearchParams();
   const [selectionState, setSelectionState] = useState<ChannelViewState>(() => ({
     routeVideoId: currentVideoId,
     selectedVideoId: currentVideoId,
@@ -124,25 +126,35 @@ function ChannelHomeContent({
     }
   }, [selectedVideo?.id]);
 
-  useEffect(() => {
-    const openSupport = () => {
-      if (!window.matchMedia("(min-width: 1024px)").matches) {
-        setActiveTab("videos");
-      }
-      window.setTimeout(() => {
-        const prefersReducedMotion = window.matchMedia?.(
-          "(prefers-reduced-motion: reduce)",
-        ).matches ?? false;
-        document.getElementById("donations")?.scrollIntoView({
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-          block: "center",
-        });
-      }, 0);
-    };
-
-    window.addEventListener("polutek:open-support", openSupport);
-    return () => window.removeEventListener("polutek:open-support", openSupport);
+  // Shared by the AccessLockOverlay CTA (custom event) and the Navbar/Hero "Wspieraj"
+  // deep-link (?support=1, below). On mobile the donation box only exists inside the
+  // "videos" tab, so both paths must switch tabs first — the tab panel's own slide-in
+  // animation (see the "videos" tab render below) is what turns that switch into a
+  // slide-down instead of an instant swap.
+  const revealDonations = useCallback(() => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) {
+      setActiveTab("videos");
+    }
+    window.setTimeout(() => {
+      const prefersReducedMotion = window.matchMedia?.(
+        "(prefers-reduced-motion: reduce)",
+      ).matches ?? false;
+      document.getElementById("donations")?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
+    }, 0);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("polutek:open-support", revealDonations);
+    return () => window.removeEventListener("polutek:open-support", revealDonations);
+  }, [revealDonations]);
+
+  useEffect(() => {
+    if (searchParams.get("support") !== "1") return;
+    revealDonations();
+  }, [searchParams, revealDonations]);
 
   if (!selectedVideo)
     return (
@@ -263,7 +275,7 @@ function ChannelHomeContent({
               {mounted ? comments : <CommentsMountPlaceholder />}
             </div>
             {activeTab === "videos" && (
-              <div className="mt-3 py-3 lg:hidden">
+              <div className="mt-3 py-3 lg:hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-3 motion-safe:duration-300">
                 <SidebarPlaylist {...commonSidebarProps} />
               </div>
             )}
