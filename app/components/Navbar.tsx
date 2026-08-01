@@ -9,7 +9,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "./LanguageContext";
 import BrandName from "./BrandName";
 import { resolveNavbarAdminUiState } from "@/lib/navbar-admin-ui";
-import { Search, X, LogIn, Heart } from "lucide-react";
+import { Search, X, LogIn } from "lucide-react";
 import NotificationsMenu from "./notifications/NotificationsMenu";
 import { NotificationDTO } from "@/app/types/notification";
 import { appendQueryString, getLocalizedHref, switchLocalePath, type Locale } from "@/lib/i18n/routing";
@@ -190,31 +190,6 @@ const Navbar = () => {
                   <Search className="h-5 w-5 shrink-0" strokeWidth={1.8} />
                 </button>
               </div>
-
-              {/* Support CTA — deep-links to the home page's donation box and auto-triggers its
-                  own onSupport() there (DonationBox.tsx), instead of duplicating any payment
-                  logic here. See DonationBox's "support" query-param effect. DonationBox only
-                  mounts for signed-in viewers, so a logged-out click opens sign-in here first
-                  (same as the sign-in button) rather than silently landing on a page with
-                  nothing to trigger. */}
-              <button
-                type="button"
-                onClick={() => {
-                  if (isLoaded && !isSignedIn) {
-                    openAuthModal("sign-in");
-                    return;
-                  }
-                  router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
-                }}
-                className="flex h-[32px] w-[32px] shrink-0 items-center justify-center gap-1.5 rounded-full bg-[var(--chan-blue)] px-0 font-sans text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_6px_16px_-6px_var(--cm-blue-60)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-px hover:bg-[var(--cm-blue-90-black)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_11px_24px_-8px_var(--cm-blue-62)] active:translate-y-0 active:scale-[0.97] sm:h-[38px] sm:w-auto sm:px-4"
-                aria-label={language === "pl" ? "Wspieraj" : "Support"}
-                title={language === "pl" ? "Wspieraj" : "Support"}
-              >
-                <Heart className="h-4 w-4 shrink-0 fill-current" strokeWidth={1.8} />
-                <span className="hidden sm:inline leading-none text-[13px] font-semibold">
-                  {language === "pl" ? "Wspieraj" : "Support"}
-                </span>
-              </button>
 
               {/* Language switcher — compact segmented pill, sized to align with the account actions. */}
               <div

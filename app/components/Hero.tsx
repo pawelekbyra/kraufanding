@@ -17,9 +17,9 @@ import { logger } from '@/lib/logger';
 import { getVideoDisplayTitle } from '@/lib/video-title-overrides';
 import SubscribeButton from './SubscribeButton';
 import ShareButton from './ShareButton';
-import InstallAppMenu from './InstallAppMenu';
 import { MAIN_CREATOR_NAME } from '@/lib/constants';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Coins } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import styles from './watch-actions.module.css';
 
 interface HeroProps {
@@ -33,6 +33,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
   const toast = useToast();
   const { userId } = useAuth();
   const { open: openAuthModal } = useAuthModal();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -264,14 +265,38 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      <ThumbsDown className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                   </button>
                </div>
-               <ShareButton
-                 url={typeof window !== 'undefined' ? `${window.location.origin}/?v=${encodeURIComponent(video.slug)}` : ''}
-                 title={displayTitle}
-                 text={video.description || undefined}
-                 className={styles.secondaryAction}
-                 fill
-               />
-               <InstallAppMenu className={styles.installAction} />
+               <div className={cn("flex min-w-0 flex-1 gap-2 lg:flex-none", styles.shareSupportGroup)}>
+                 <ShareButton
+                   url={typeof window !== 'undefined' ? `${window.location.origin}/?v=${encodeURIComponent(video.slug)}` : ''}
+                   title={displayTitle}
+                   text={video.description || undefined}
+                   className={styles.secondaryAction}
+                   fill
+                 />
+                 {/* Deep-links to the home page's donation box and lets DonationBox.tsx's own
+                     "support" query-param effect call its existing onSupport() — never a second
+                     payment flow. Signed-out click opens sign-in first, since DonationBox only
+                     mounts for signed-in viewers. */}
+                 <button
+                   type="button"
+                   onClick={() => {
+                     if (!userId) {
+                       openAuthModal("sign-in");
+                       return;
+                     }
+                     router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
+                   }}
+                   className={cn(
+                     "relative flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-blue)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--cm-blue-90-black)] active:scale-95",
+                     styles.supportAction,
+                   )}
+                   aria-label={language === "pl" ? "Wspieraj" : "Support"}
+                   title={language === "pl" ? "Wspieraj" : "Support"}
+                 >
+                   <Coins aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                   <span className="leading-none">{language === "pl" ? "Wspieraj" : "Support"}</span>
+                 </button>
+               </div>
             </div>
           </div>
         </div>
