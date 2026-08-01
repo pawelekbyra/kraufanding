@@ -273,18 +273,21 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                  text={video.description || undefined}
                  className={styles.secondaryAction}
                />
-               {/* Deep-links to the home page's donation box and lets DonationBox.tsx's own
-                   "support" query-param effect call its existing onSupport() — never a second
-                   payment flow. Signed-out click opens sign-in first, since DonationBox only
-                   mounts for signed-in viewers. Now the row's last item, so it takes over
-                   Share's old "fill remaining space" role (flex-1 below lg:, fixed above it).
-                   Merges into the CURRENT path/query (keeping ?v= for the video already open)
-                   instead of pushing a bare home URL — Hero only ever renders inside
-                   ChannelHome, so this is always an in-place update, never a real page
-                   change. A bare-URL push used to drop the open video and reset the mobile
-                   tab to "comments" (ChannelHome resets state when its routed video id
-                   changes), which is what produced the jarring instant jump instead of the
-                   mobile tab sliding over to "videos" where the donation box lives. */}
+               {/* Hero only ever renders inside ChannelHome, so the "polutek:open-support"
+                   event dispatched here is always heard by ChannelHome's own listener
+                   (the same one AccessLockOverlay's CTA uses) — it switches the mobile
+                   "videos" tab (where the donation box lives) and scrolls to it,
+                   synchronously and independent of any router/searchParams timing. The
+                   ?support=1 merge into the CURRENT path/query (keeping ?v= for the video
+                   already open) is a separate, secondary signal purely so DonationBox's
+                   own effect can call its existing onSupport() once mounted — never a
+                   second payment flow. A bare-URL push (the original implementation) used
+                   to drop the open video and reset the mobile tab back to "comments"
+                   (ChannelHome resets state when its routed video id changes), which is
+                   what produced the jarring instant jump this event-based approach fixes.
+                   Signed-out click opens sign-in first, since DonationBox only mounts for
+                   signed-in viewers. Now the row's last item, so it takes over Share's old
+                   "fill remaining space" role (flex-1 below lg:, fixed above it). */}
                <button
                  type="button"
                  onClick={() => {
@@ -292,6 +295,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      openAuthModal("sign-in");
                      return;
                    }
+                   window.dispatchEvent(new CustomEvent("polutek:open-support"));
                    const params = new URLSearchParams(searchParams.toString());
                    params.set("support", "1");
                    router.replace(`${pathname}?${params.toString()}#donations`, { scroll: false });

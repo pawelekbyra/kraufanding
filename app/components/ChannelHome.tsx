@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Hero from "./Hero";
 import { PublicVideoDTO } from "../types/video";
@@ -90,7 +89,6 @@ function ChannelHomeContent({
   userProfile,
 }: ChannelHomeProps) {
   const { t, language } = useLanguage();
-  const searchParams = useSearchParams();
   const [selectionState, setSelectionState] = useState<ChannelViewState>(() => ({
     routeVideoId: currentVideoId,
     selectedVideoId: currentVideoId,
@@ -126,11 +124,14 @@ function ChannelHomeContent({
     }
   }, [selectedVideo?.id]);
 
-  // Shared by the AccessLockOverlay CTA (custom event) and the Navbar/Hero "Wspieraj"
-  // deep-link (?support=1, below). On mobile the donation box only exists inside the
-  // "videos" tab, so both paths must switch tabs first — the tab panel's own slide-in
+  // Shared by the "polutek:open-support" event, dispatched by both AccessLockOverlay's
+  // CTA and Hero's "Wspieraj" button. On mobile the donation box only exists inside the
+  // "videos" tab, so both must switch tabs first — the tab panel's own slide-in
   // animation (see the "videos" tab render below) is what turns that switch into a
-  // slide-down instead of an instant swap.
+  // slide-down instead of an instant swap. Dispatching a plain window event (rather
+  // than relying on the ?support=1 query param Hero also sets, purely so DonationBox's
+  // own effect can call its onSupport() once mounted) keeps the tab-switch+scroll
+  // synchronous and independent of router/searchParams propagation timing.
   const revealDonations = useCallback(() => {
     const isMobile = !window.matchMedia("(min-width: 1024px)").matches;
     if (isMobile) {
@@ -158,11 +159,6 @@ function ChannelHomeContent({
     window.addEventListener("polutek:open-support", revealDonations);
     return () => window.removeEventListener("polutek:open-support", revealDonations);
   }, [revealDonations]);
-
-  useEffect(() => {
-    if (searchParams.get("support") !== "1") return;
-    revealDonations();
-  }, [searchParams, revealDonations]);
 
   if (!selectedVideo)
     return (
