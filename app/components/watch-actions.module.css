@@ -75,15 +75,14 @@
   position: relative;
   min-height: 36px;
   overflow: hidden;
-  /* Solid ink/black — see .actionCluster. Every button in this row (Subscribe, Wspieraj,
-     like/dislike, Share) is now black; the language-switcher pill's active segment
-     (.chan-lang-pill-active in globals.css) matches too. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
+  /* Solid --chan-blue — the one blue button in this row (owner's final call, 2026-08-01:
+     Subscribe is blue, Wspieraj/like-dislike/Share are all black). */
+  border: 1px solid var(--cm-blue-62-black);
+  background: var(--chan-blue) !important;
   color: white !important;
   box-shadow:
     inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
+    0 8px 18px -8px var(--cm-blue-60) !important;
 }
 
 .supportAction {
@@ -120,7 +119,6 @@
 }
 
 .secondaryAction:hover,
-.subscribeAction:hover,
 .supportAction:hover {
   border-color: var(--cm-ink-88-black);
   background: var(--cm-ink-88-black) !important;
@@ -130,11 +128,24 @@
   filter: none;
 }
 
+.subscribeAction:hover {
+  border-color: var(--cm-blue-70-black);
+  background: var(--cm-blue-90-black) !important;
+  box-shadow:
+    inset 0 1px 0 var(--cm-white-30),
+    0 12px 24px -8px var(--cm-blue-62) !important;
+  filter: none;
+}
+
 .actionButton:focus-visible,
 .secondaryAction:focus-visible,
-.subscribeAction:focus-visible,
 .supportAction:focus-visible {
   outline: 3px solid var(--cm-ink-55);
+  outline-offset: 2px;
+}
+
+.subscribeAction:focus-visible {
+  outline: 3px solid var(--cm-blue-22-2);
   outline-offset: 2px;
 }
 

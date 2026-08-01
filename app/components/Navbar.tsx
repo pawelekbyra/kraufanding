@@ -126,7 +126,7 @@ const Navbar = () => {
                 />
                 <button
                   type="submit"
-                  className="absolute right-0 top-1/2 flex h-8 -translate-y-1/2 items-center justify-center pl-3 pr-3.5 text-[var(--chan-ink)]"
+                  className="absolute right-0 top-1/2 flex h-8 -translate-y-1/2 items-center justify-center pl-3 pr-3.5 text-[var(--chan-muted)]"
                   aria-label={searchLabel}
                 >
                   <Search className="h-5 w-5 shrink-0" strokeWidth={1.8} />
@@ -163,7 +163,7 @@ const Navbar = () => {
                   />
                   <button
                     type="submit"
-                    className="absolute right-0 top-1/2 flex h-8 -translate-y-1/2 items-center justify-center pl-3 pr-3.5 text-[var(--chan-ink)]"
+                    className="absolute right-0 top-1/2 flex h-8 -translate-y-1/2 items-center justify-center pl-3 pr-3.5 text-[var(--chan-muted)]"
                     aria-label={searchLabel}
                   >
                     <Search className="h-5 w-5 shrink-0" strokeWidth={1.8} />
