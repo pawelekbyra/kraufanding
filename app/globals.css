@@ -796,13 +796,13 @@
 
   /* rząd przycisków pod scrubberem — height matches .mc-btn exactly so the
      buttons don't overflow their row and icons stay vertically centered.
-     Sized down from the original 38px so the whole bar sits lower/thinner
-     against the bottom edge, YouTube-style. */
+     Sized down from the original 38px, then again from 34px, so the frames
+     read as compact chips rather than oversized badges. */
   .mc-row {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    height: 34px;
+    height: 30px;
     gap: 2px;
   }
 
@@ -811,7 +811,7 @@
 
   .mc-btn {
     display:grid; place-items:center;
-    width:34px; height:34px;
+    width:30px; height:30px;
     /* Fully round — YouTube's icon buttons sit inside a circular translucent
        "badge" at all times (not only revealed on hover), brightening further
        on hover/press/focus. */
@@ -830,11 +830,11 @@
   }
 
   /* Material Symbols (filled) — bold, optically-centered glyphs, YouTube-style. */
-  .mc-icon { width:20px; height:20px; flex-shrink:0; }
+  .mc-icon { width:18px; height:18px; flex-shrink:0; }
 
   .mc-time {
     display:flex; align-items:center; gap:4px;
-    height:34px;
+    height:30px;
     margin-left:4px;
     padding:0 12px;
     /* Same translucent pill frame as the buttons/volume oval, so the time
@@ -924,7 +924,7 @@
      here so only this one background shows through, uniformly. */
   .mc-volume {
     display:flex; align-items:center;
-    height:34px;
+    height:30px;
     border-radius:999px;
     background: rgba(255,255,255,.1);
     transition: background .12s ease;
@@ -1040,7 +1040,7 @@
 
   .mc-menu-root { position:relative; }
   .mc-menu {
-    position:absolute; right:0; bottom:42px;
+    position:absolute; right:0; bottom:38px;
     width:200px;
     max-height:min(320px,60vh);
     overflow:auto;
@@ -1090,7 +1090,7 @@
     .mc-bottom { padding:0; }
     .mc-bar { border-radius:0; padding:0 6px; }
     .mc-row { gap:2px; }
-    /* .mc-btn/.mc-icon keep their base 34px/20px size — icons stay bold and
+    /* .mc-btn/.mc-icon keep their base 30px/18px size — icons stay bold and
        legible on mobile rather than shrinking further. */
     .mc-time { font-size:11px; margin-left:0; padding:0 8px; }
     .mc-time-sep, .mc-time-dur { display:none; }
