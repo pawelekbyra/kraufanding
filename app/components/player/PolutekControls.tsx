@@ -28,7 +28,7 @@ import {
   PauseIcon,
   PlayIcon,
   ReplayIcon,
-  SettingsIcon,
+  SubtitlesIcon,
   VolumeHighIcon,
   VolumeLowIcon,
 } from "@vidstack/react/icons";
@@ -210,7 +210,7 @@ function SettingsMenu() {
         aria-haspopup="menu"
         onClick={() => setOpen(v => !v)}
       >
-        <SettingsIcon className="mc-icon" />
+        <SubtitlesIcon className="mc-icon" />
       </button>
       {open && (
         <div className="mc-menu" role="menu" aria-label={copy.playerSettings}>
