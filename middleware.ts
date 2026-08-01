@@ -39,6 +39,13 @@ const isPublicRoute = createRouteMatcher([
   // LOCALE_EXEMPT_STATIC_PATHS), which previously made bots get 404s.
   '/robots.txt',
   '/sitemap.xml',
+  // Google/OAuth redirect lands here mid-handshake, before the session is fully
+  // established — auth.protect() gating this route bounces the visitor back to
+  // sign-in instead of letting AuthenticateWithRedirectCallback finish the flow.
+  // Most visible on mobile browsers with strict cross-site cookie policies
+  // (e.g. iOS Safari ITP), which are less forgiving of an interrupted redirect
+  // chain than desktop browsers with an existing Clerk cookie already in place.
+  '/sso-callback',
   // Email unsubscribe must work without login: List-Unsubscribe headers and
   // email footer links target /unsubscribe?token=..., and the page posts the
   // signed token to the API. Both are token-authorized, not session-authorized.
@@ -90,13 +97,21 @@ function isNakladkiRoute(pathname: string): boolean {
   return /^\/nakladki\/?$/.test(pathname);
 }
 
-// Static root files served from /public that must never get a /pl or /en
-// prefix. The matcher's static-extension exclusion skips most file types but
-// not .json, so /manifest.json falls through to this rewrite check.
-const LOCALE_EXEMPT_STATIC_PATHS = new Set(['/manifest.json', '/robots.txt', '/sitemap.xml']);
+// Exact top-level paths that must never get a /pl or /en prefix.
+// - /manifest.json, /robots.txt, /sitemap.xml: static root files served from
+//   /public. The matcher's static-extension exclusion skips most file types
+//   but not .json, so /manifest.json falls through to this rewrite check.
+// - /sso-callback: the Google/OAuth redirect target (see AuthModal.tsx's
+//   redirectCallbackUrl and app/sso-callback/page.tsx, a top-level route with
+//   no [locale]-scoped counterpart). Without this exemption the rewrite sent
+//   it to /pl/sso-callback, which has no matching page and 404s, breaking
+//   OAuth sign-in entirely — most visible on mobile, where users are less
+//   likely to already have an existing session from a prior desktop visit
+//   masking the failure.
+const LOCALE_EXEMPT_PATHS = new Set(['/manifest.json', '/robots.txt', '/sitemap.xml', '/sso-callback']);
 
 function shouldRewriteForPolish(pathname: string): boolean {
-  if (LOCALE_EXEMPT_STATIC_PATHS.has(pathname)) return false;
+  if (LOCALE_EXEMPT_PATHS.has(pathname)) return false;
 
   // TEMPORARY logo bake-off routes are top-level and must not be prefixed.
   if (isLogoExperimentRoute(pathname)) return false;
