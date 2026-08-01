@@ -233,6 +233,29 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className={cn("flex w-full flex-wrap items-center gap-2 lg:w-auto lg:flex-nowrap", styles.actionRail)}>
+               {/* Deep-links to the home page's donation box and lets DonationBox.tsx's own
+                   "support" query-param effect call its existing onSupport() — never a second
+                   payment flow. Signed-out click opens sign-in first, since DonationBox only
+                   mounts for signed-in viewers. */}
+               <button
+                 type="button"
+                 onClick={() => {
+                   if (!userId) {
+                     openAuthModal("sign-in");
+                     return;
+                   }
+                   router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
+                 }}
+                 className={cn(
+                   "relative flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-blue)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--cm-blue-90-black)] active:scale-95",
+                   styles.supportAction,
+                 )}
+                 aria-label={language === "pl" ? "Wspieraj" : "Support"}
+                 title={language === "pl" ? "Wspieraj" : "Support"}
+               >
+                 <Coins aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                 <span className="leading-none">{language === "pl" ? "Wspieraj" : "Support"}</span>
+               </button>
                <div className={cn("relative flex h-[36px] shrink-0 items-center rounded-[12px] bg-[var(--chan-surface)]", styles.actionCluster)}>
                   <button
                     onClick={handleLike}
@@ -265,38 +288,13 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                      <ThumbsDown className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                   </button>
                </div>
-               <div className={cn("flex min-w-0 flex-1 gap-2 lg:flex-none", styles.shareSupportGroup)}>
-                 <ShareButton
-                   url={typeof window !== 'undefined' ? `${window.location.origin}/?v=${encodeURIComponent(video.slug)}` : ''}
-                   title={displayTitle}
-                   text={video.description || undefined}
-                   className={styles.secondaryAction}
-                   fill
-                 />
-                 {/* Deep-links to the home page's donation box and lets DonationBox.tsx's own
-                     "support" query-param effect call its existing onSupport() — never a second
-                     payment flow. Signed-out click opens sign-in first, since DonationBox only
-                     mounts for signed-in viewers. */}
-                 <button
-                   type="button"
-                   onClick={() => {
-                     if (!userId) {
-                       openAuthModal("sign-in");
-                       return;
-                     }
-                     router.push(`${getLocalizedHref(language, "home")}?support=1#donations`);
-                   }}
-                   className={cn(
-                     "relative flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-blue)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:bg-[var(--cm-blue-90-black)] active:scale-95",
-                     styles.supportAction,
-                   )}
-                   aria-label={language === "pl" ? "Wspieraj" : "Support"}
-                   title={language === "pl" ? "Wspieraj" : "Support"}
-                 >
-                   <Coins aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.8} />
-                   <span className="leading-none">{language === "pl" ? "Wspieraj" : "Support"}</span>
-                 </button>
-               </div>
+               <ShareButton
+                 url={typeof window !== 'undefined' ? `${window.location.origin}/?v=${encodeURIComponent(video.slug)}` : ''}
+                 title={displayTitle}
+                 text={video.description || undefined}
+                 className={styles.secondaryAction}
+                 fill
+               />
             </div>
           </div>
         </div>

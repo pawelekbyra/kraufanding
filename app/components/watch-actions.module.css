@@ -351,14 +351,12 @@
 
   .actionRail {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto auto minmax(0, 1fr);
     gap: 8px;
   }
 
-  /* .secondaryAction and .supportAction now share .shareSupportGroup's width via flex-1 on
-     each (see Hero.tsx) instead of either claiming width:100% for itself. */
-  .secondaryAction,
-  .supportAction {
+  .secondaryAction {
+    width: 100%;
     padding-left: 14px !important;
     padding-right: 14px !important;
   }
