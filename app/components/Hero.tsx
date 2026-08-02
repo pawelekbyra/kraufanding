@@ -222,7 +222,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     creatorSlug={video.creator?.slug}
                     creatorName={video.creator?.name}
                     variant="compact"
-                    className={styles.subscribeAction}
+                    className={cn("rounded-[12px]", styles.subscribeAction)}
                     initialIsSubscribed={localSubState.isSubscribed}
                     onStatusChange={(isSubscribed: boolean, subscribersCount?: number) => {
                         setLocalSubState(prev => ({
