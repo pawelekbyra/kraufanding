@@ -82,6 +82,20 @@ function scrollToMediaOnMobile() {
   window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
 }
 
+// Two elements can share id="donations" at once: the always-mounted mobile "videos" tab
+// panel's own DonationBox (hidden via CSS at lg: and up, but still in the DOM) and the
+// desktop aside's separate SidebarSupportBox/DonationBox. document.getElementById always
+// returns the FIRST one in DOM order — the (CSS-hidden) mobile copy — so on desktop a
+// scroll targeting it silently did nothing. Query all matches and pick the one that's
+// actually laid out (offsetParent is null for display:none elements and their descendants).
+function getVisibleDonationsElement(): HTMLElement | null {
+  const candidates = document.querySelectorAll<HTMLElement>('[id="donations"]');
+  for (const el of candidates) {
+    if (el.offsetParent !== null) return el;
+  }
+  return candidates[0] ?? null;
+}
+
 function ChannelHomeContent({
   mainVideo,
   allVideos = [],
@@ -139,7 +153,7 @@ function ChannelHomeContent({
       "(prefers-reduced-motion: reduce)",
     ).matches ?? false;
     window.setTimeout(() => {
-      document.getElementById("donations")?.scrollIntoView({
+      getVisibleDonationsElement()?.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
         block: "center",
       });
