@@ -36,12 +36,15 @@
 
 .actionCluster {
   overflow: hidden;
-  border: 1px solid var(--watch-control-border);
   border-radius: 12px;
-  background: var(--watch-control-bg) !important;
+  /* Solid ink/black — owner request, 2026-08-02: like/dislike, Share and Wspieraj are all
+     black with white text/icons; Subscribe remains the one blue button in this row. */
+  border: 1px solid var(--cm-ink-55);
+  background: var(--chan-ink) !important;
+  color: white !important;
   box-shadow:
-    0 1px 2px rgba(23, 23, 23, 0.04),
-    0 5px 14px rgba(23, 23, 23, 0.045);
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-ink-55) !important;
 }
 
 .actionButton {
@@ -54,17 +57,19 @@
 }
 
 .actionButton:hover {
-  background: var(--watch-control-hover);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .secondaryAction,
 .supportAction {
   min-height: 36px;
-  border: 1px solid var(--watch-control-border);
-  background: var(--watch-control-bg) !important;
+  /* Solid ink/black — see .actionCluster. */
+  border: 1px solid var(--cm-ink-55);
+  background: var(--chan-ink) !important;
+  color: white !important;
   box-shadow:
-    0 1px 2px rgba(23, 23, 23, 0.04),
-    0 5px 14px rgba(23, 23, 23, 0.045);
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-ink-55) !important;
   filter: none;
 }
 
@@ -72,9 +77,7 @@
   position: relative;
   min-height: 36px;
   overflow: hidden;
-  /* Solid --chan-blue — the one accent-colored button in this row; Wspieraj/like-dislike/Share
-     are back to the plain neutral surface style (owner request, 2026-08-01: revert the black/
-     color experiments on those three). */
+  /* Solid --chan-blue — the one accent-colored button in this row. */
   border: 1px solid var(--cm-blue-62-black);
   background: var(--chan-blue) !important;
   color: white !important;
@@ -105,11 +108,11 @@
 
 .secondaryAction:hover,
 .supportAction:hover {
-  border-color: var(--cm-blue-28-wc-border);
-  background: var(--watch-control-hover) !important;
+  border-color: var(--cm-ink-88-black);
+  background: var(--cm-ink-88-black) !important;
   box-shadow:
-    0 2px 4px rgba(23, 23, 23, 0.05),
-    0 9px 20px rgba(23, 23, 23, 0.07);
+    inset 0 1px 0 var(--cm-white-30),
+    0 12px 24px -8px var(--cm-ink-55) !important;
   filter: none;
 }
 
@@ -124,7 +127,11 @@
 
 .actionButton:focus-visible,
 .secondaryAction:focus-visible,
-.supportAction:focus-visible,
+.supportAction:focus-visible {
+  outline: 3px solid var(--cm-ink-55);
+  outline-offset: 2px;
+}
+
 .subscribeAction:focus-visible {
   outline: 3px solid var(--cm-blue-22-2);
   outline-offset: 2px;
