@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "./LanguageContext";
 import EmailSubscriptionConsentModal from "./subscriptions/EmailSubscriptionConsentModal";
 import { useClientReady } from "@/app/hooks/useClientEnvironment";
-import { Bell } from "lucide-react";
+import { Check } from "lucide-react";
 
 interface SubscribeButtonProps {
   creatorId?: string;
@@ -137,8 +137,8 @@ export default function SubscribeButton({
           className,
         )}
       >
-        <Bell size={16} className="relative shrink-0 z-10" />
-        <span className="relative leading-none z-10">{effectiveIsSubscribed ? (t.subscribed || "Subskrajbujesz") : (t.subscribe || "Subskrajb")}</span>
+        <Check size={16} className="relative shrink-0 z-10" strokeWidth={1.8} />
+        <span className="relative leading-none z-10">{effectiveIsSubscribed ? (t.subscribed || "Subskrajbd") : (t.subscribe || "Subskrajb")}</span>
       </motion.button>
       {errorMessage && (
         <div className="mt-2 max-w-[280px] flex flex-col gap-1">

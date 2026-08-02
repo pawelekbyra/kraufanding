@@ -104,7 +104,7 @@ export const translations = {
     showLess: 'Pokaż mniej',
     subscribe: 'Subskrajb',
     subscribeMobile: 'Subskrajb',
-    subscribed: 'Subskrajbujesz',
+    subscribed: 'Subskrajbd',
     subscribers: 'subskrybentów',
     share: 'Szeruj',
     noDate: 'Świeża sprawa',
