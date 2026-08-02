@@ -36,12 +36,15 @@
 
 .actionCluster {
   overflow: hidden;
-  border: 1px solid var(--watch-control-border);
   border-radius: 12px;
-  background: var(--watch-control-bg) !important;
+  /* Solid --chan-blue — owner request, 2026-08-02: like/dislike, Share and Wspieraj are
+     blue (site's primary accent), Subscribe stays the one black button in this row. */
+  border: 1px solid var(--cm-blue-62-black);
+  background: var(--chan-blue) !important;
+  color: white !important;
   box-shadow:
-    0 1px 2px rgba(23, 23, 23, 0.04),
-    0 5px 14px rgba(23, 23, 23, 0.045);
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-blue-60) !important;
 }
 
 .actionButton {
@@ -54,17 +57,19 @@
 }
 
 .actionButton:hover {
-  background: var(--watch-control-hover);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .secondaryAction,
 .supportAction {
   min-height: 36px;
-  border: 1px solid var(--watch-control-border);
-  background: var(--watch-control-bg) !important;
+  /* Solid --chan-blue — see .actionCluster. */
+  border: 1px solid var(--cm-blue-62-black);
+  background: var(--chan-blue) !important;
+  color: white !important;
   box-shadow:
-    0 1px 2px rgba(23, 23, 23, 0.04),
-    0 5px 14px rgba(23, 23, 23, 0.045);
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-blue-60) !important;
   filter: none;
 }
 
@@ -104,11 +109,11 @@
 
 .secondaryAction:hover,
 .supportAction:hover {
-  border-color: var(--cm-blue-28-wc-border);
-  background: var(--watch-control-hover) !important;
+  border-color: var(--cm-blue-70-black);
+  background: var(--cm-blue-90-black) !important;
   box-shadow:
-    0 2px 4px rgba(23, 23, 23, 0.05),
-    0 9px 20px rgba(23, 23, 23, 0.07);
+    inset 0 1px 0 var(--cm-white-30),
+    0 12px 24px -8px var(--cm-blue-62) !important;
   filter: none;
 }
 
