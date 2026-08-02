@@ -362,21 +362,27 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
 
   // Deep-link support: Navbar's "Wspieraj"/"Support" button links here with ?support=1#donations
   // instead of duplicating any checkout logic — the browser's native anchor scroll handles
-  // #donations, and this just calls the same onSupport() the box's own button uses. If terms
-  // aren't accepted yet or the viewer isn't signed in, onSupport() surfaces its normal
-  // inline error/auth-modal — this never bypasses those checks. Runs once per param, then
-  // strips it so a refresh/back-nav doesn't retrigger it.
+  // #donations, and this just calls the same onSupport() the box's own button uses. Only
+  // auto-calls it when onSupport() would actually proceed to checkout (signed in, terms
+  // already accepted, valid amount) rather than unconditionally — isTermsAccepted always
+  // starts false on a fresh mount, so calling onSupport() unconditionally here surfaced its
+  // "accept the terms" error immediately on essentially every click, before the viewer had
+  // even seen the box. This still fast-paths a repeat tip when everything is already filled
+  // in; otherwise it's a no-op beyond revealing the box. Runs once per param, then strips it
+  // so a refresh/back-nav doesn't retrigger it.
   const autoOpenTriggeredRef = useRef(false);
   useEffect(() => {
     if (autoOpenTriggeredRef.current) return;
     if (searchParams.get("support") !== "1") return;
     autoOpenTriggeredRef.current = true;
-    onSupport();
+    if (userId && isTermsAccepted && amount !== "" && amount >= minAmount) {
+      onSupport();
+    }
     const params = new URLSearchParams(searchParams.toString());
     params.delete("support");
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-  }, [searchParams, onSupport, router, pathname]);
+  }, [searchParams, onSupport, router, pathname, userId, isTermsAccepted, amount, minAmount]);
 
   // Existing patrons get a deliberately different surface. They already own everything the
   // non-patron box sells, so this variant stops being a sales/access gate and becomes a plain
