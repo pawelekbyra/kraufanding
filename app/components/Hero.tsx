@@ -235,36 +235,36 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
             </div>
 
             <div className={cn("flex w-full flex-wrap items-center gap-2 lg:w-auto lg:flex-nowrap", styles.actionRail)}>
-               <div className={cn("relative flex h-[36px] shrink-0 items-center rounded-[12px] bg-[var(--chan-ink)]", styles.actionCluster)}>
+               <div className={cn("relative flex h-[36px] shrink-0 items-center rounded-[12px] bg-[var(--chan-surface)]", styles.actionCluster)}>
                   <button
                     onClick={handleLike}
                     disabled={isPending}
                     className={cn(
                         "flex h-full items-center justify-center gap-1.5 px-2.5 font-sans transition-colors active:opacity-70 lg:px-3",
                         styles.actionButton,
-                        interactionState.isLiked ? "text-[var(--chan-blue)]" : "text-white",
+                        interactionState.isLiked ? "text-[var(--chan-blue)]" : "text-[var(--chan-ink)]",
                         isPending && "opacity-50"
                     )}
                     title="Lubię to"
                     aria-label="Lubię to"
                   >
-                     <ThumbsUp className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isLiked ? "var(--chan-blue)" : "#fff"} />
+                     <ThumbsUp className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isLiked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                      <span className="text-[12px] font-bold">{interactionState.likesCount.toLocaleString(language === 'pl' ? 'pl-PL' : 'en-US')}</span>
                   </button>
-                  <span className="h-4 w-px bg-white/20" />
+                  <span className="h-4 w-px bg-[var(--chan-line-soft)]" />
                   <button
                     onClick={handleDislike}
                     disabled={isPending}
                     className={cn(
                         "flex h-full items-center justify-center px-3 transition-colors active:opacity-70",
                         styles.actionButton,
-                        interactionState.isDisliked ? "text-[var(--chan-blue)]" : "text-white",
+                        interactionState.isDisliked ? "text-[var(--chan-blue)]" : "text-[var(--chan-ink)]",
                         isPending && "opacity-50"
                     )}
                     title="Nie lubię"
                     aria-label="Nie lubię"
                   >
-                     <ThumbsDown className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "#fff"} />
+                     <ThumbsDown className="h-4 w-4 shrink-0" strokeWidth={1.8} color={interactionState.isDisliked ? "var(--chan-blue)" : "var(--chan-ink)"} />
                   </button>
                </div>
                <ShareButton
@@ -301,7 +301,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                    router.replace(`${pathname}?${params.toString()}#donations`, { scroll: false });
                  }}
                  className={cn(
-                   "relative flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-ink)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px active:scale-95 lg:flex-none",
+                   "relative flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-surface)] px-3 font-sans text-sm font-bold text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95 lg:flex-none",
                    styles.supportAction,
                  )}
                  aria-label={language === "pl" ? "Wspieraj" : "Support"}
@@ -316,7 +316,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
 
         {/* DESCRIPTION PANEL */}
         <div
-          className={cn("mt-2 cursor-pointer rounded-[18px] border px-4 pt-[9px] pb-3 transition-[border-color,background-color,box-shadow] duration-200 hover:border-[var(--cm-ink-55)] md:px-5", styles.descPanel)}
+          className={cn("mt-2 cursor-pointer rounded-[18px] border px-4 pt-[9px] pb-3 transition-[border-color,background-color,box-shadow] duration-200 hover:border-[var(--cm-blue-36-line)] md:px-5", styles.descPanel)}
           onClick={() => setIsExpanded(!isExpanded)}
         >
            <div>

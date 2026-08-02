@@ -91,7 +91,7 @@ export default function ShareButton({
       <div className={cn("relative", fill ? "flex-1 lg:flex-none" : "inline-block")}>
         <DropdownMenuTrigger
           className={cn(
-            "relative flex h-9 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-ink)] px-3 font-sans text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
+            "relative flex h-9 items-center justify-center gap-1.5 rounded-[12px] bg-[var(--chan-surface)] px-3 font-sans text-sm font-bold text-[var(--chan-ink)] transition-[transform,background-color,box-shadow] duration-160 hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(23,23,23,0.08)] active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
             fill && "w-full",
             className,
           )}

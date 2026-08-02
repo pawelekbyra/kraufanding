@@ -36,15 +36,12 @@
 
 .actionCluster {
   overflow: hidden;
+  border: 1px solid var(--watch-control-border);
   border-radius: 12px;
-  /* Solid ink/black — owner request, 2026-08-02: like/dislike, Share, Wspieraj and now
-     Subscribe are all black with white text/icons; no blue accent left in this row. */
-  border: 1px solid var(--cm-ink-55);
-  background: var(--chan-ink) !important;
-  color: white !important;
+  background: var(--watch-control-bg) !important;
   box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
+    0 1px 2px rgba(23, 23, 23, 0.04),
+    0 5px 14px rgba(23, 23, 23, 0.045);
 }
 
 .actionButton {
@@ -57,29 +54,33 @@
 }
 
 .actionButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--watch-control-hover);
 }
 
 .secondaryAction,
-.subscribeAction,
 .supportAction {
   min-height: 36px;
-  /* Solid ink/black — see .actionCluster. !important on border-color guards against
-     SubscribeButton's own inline border-color utility (its non-Hero usage on the
-     channel page keeps its default look; this override only applies here via the
-     className prop). */
-  border: 1px solid var(--cm-ink-55) !important;
-  background: var(--chan-ink) !important;
-  color: white !important;
+  border: 1px solid var(--watch-control-border);
+  background: var(--watch-control-bg) !important;
   box-shadow:
-    inset 0 1px 0 var(--cm-white-30),
-    0 8px 18px -8px var(--cm-ink-55) !important;
+    0 1px 2px rgba(23, 23, 23, 0.04),
+    0 5px 14px rgba(23, 23, 23, 0.045);
   filter: none;
 }
 
 .subscribeAction {
   position: relative;
+  min-height: 36px;
   overflow: hidden;
+  /* Solid --chan-blue — the one accent-colored button in this row; Wspieraj/like-dislike/Share
+     are back to the plain neutral surface style (owner request, 2026-08-01: revert the black/
+     color experiments on those three). */
+  border: 1px solid var(--cm-blue-62-black);
+  background: var(--chan-blue) !important;
+  color: white !important;
+  box-shadow:
+    inset 0 1px 0 var(--cm-white-30),
+    0 8px 18px -8px var(--cm-blue-60) !important;
 }
 
 .secondaryAction,
@@ -103,21 +104,29 @@
 }
 
 .secondaryAction:hover,
-.subscribeAction:hover,
 .supportAction:hover {
-  border-color: var(--cm-ink-88-black) !important;
-  background: var(--cm-ink-88-black) !important;
+  border-color: var(--cm-blue-28-wc-border);
+  background: var(--watch-control-hover) !important;
+  box-shadow:
+    0 2px 4px rgba(23, 23, 23, 0.05),
+    0 9px 20px rgba(23, 23, 23, 0.07);
+  filter: none;
+}
+
+.subscribeAction:hover {
+  border-color: var(--cm-blue-70-black);
+  background: var(--cm-blue-90-black) !important;
   box-shadow:
     inset 0 1px 0 var(--cm-white-30),
-    0 12px 24px -8px var(--cm-ink-55) !important;
+    0 12px 24px -8px var(--cm-blue-62) !important;
   filter: none;
 }
 
 .actionButton:focus-visible,
 .secondaryAction:focus-visible,
-.subscribeAction:focus-visible,
-.supportAction:focus-visible {
-  outline: 3px solid var(--cm-ink-55);
+.supportAction:focus-visible,
+.subscribeAction:focus-visible {
+  outline: 3px solid var(--cm-blue-22-2);
   outline-offset: 2px;
 }
 
@@ -154,13 +163,17 @@
 }
 
 /* Description panel: a soft, light warm-gray surface. */
-/* White card + solid black edge, matching the ink-black action-row buttons. */
 .descPanel {
   margin-top: 12px !important;
   padding-top: 12px !important;
   padding-bottom: 14px !important;
-  background: var(--chan-card);
-  border-color: var(--chan-ink);
+  background:
+    linear-gradient(
+      180deg,
+      var(--cm-surface-62-white),
+      var(--cm-surface-80-white)
+    );
+  border-color: var(--cm-line-78-ink-2);
   box-shadow:
     inset 0 1px 0 var(--cm-white-70),
     0 1px 2px rgba(23, 23, 23, 0.03);
