@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import '@testing-library/jest-dom/vitest';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, cleanup, act, waitFor } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import React from 'react';
 import type { AccessTier, VideoStatus } from '@prisma/client';
 import ChannelHome from '@/app/components/ChannelHome';
@@ -24,41 +24,17 @@ vi.mock('@/app/components/comments/EmbeddedComments', () => ({
   default: () => <div>comments-stub</div>,
 }));
 
-// Distinguishes the two SidebarPlaylist call sites in ChannelHome.tsx: the mobile
-// "videos" tab panel (only mounted when activeTab === "videos", showSupportBox
-// defaults true) vs. the always-rendered desktop aside (explicit showSupportBox={false}).
-// Only the mobile instance should ever expose #donations for this test.
-//
-// #donations mount is configurable via setDonationsMountDelay to simulate the real
-// SidebarPlaylist, where DonationBox only renders once Clerk's authLoaded/isSignedIn
-// resolves — which can lag behind the tab's own slide-in animation on a cold load.
-const { setDonationsMountDelay, getDonationsMountDelay } = vi.hoisted(() => {
-  let delay = 0;
-  return {
-    setDonationsMountDelay: (ms: number) => {
-      delay = ms;
-    },
-    getDonationsMountDelay: () => delay,
-  };
-});
-
-vi.mock('@/app/components/channel/SidebarPlaylist', async () => {
-  const ReactActual = await import('react');
-  return {
-    SidebarPlaylist: (props: { showSupportBox?: boolean }) => {
-      const delay = getDonationsMountDelay();
-      const [ready, setReady] = ReactActual.useState(delay === 0);
-      ReactActual.useEffect(() => {
-        if (delay === 0) return;
-        const timer = setTimeout(() => setReady(true), delay);
-        return () => clearTimeout(timer);
-      }, []);
-      if (props.showSupportBox === false) return null;
-      return ready ? ReactActual.createElement('div', { id: 'donations' }, 'donation-box-stub') : null;
-    },
-    SidebarSupportBox: () => null,
-  };
-});
+// The mobile "videos" tab panel is now always mounted (only hidden via a CSS class
+// when inactive — see ChannelHome.tsx), so #donations should always exist once
+// signed in, regardless of which tab is showing. Distinguishes the two
+// SidebarPlaylist call sites in ChannelHome.tsx: the always-mounted mobile "videos"
+// tab panel (showSupportBox defaults true) vs. the always-rendered desktop aside
+// (explicit showSupportBox={false}).
+vi.mock('@/app/components/channel/SidebarPlaylist', () => ({
+  SidebarPlaylist: (props: { showSupportBox?: boolean }) =>
+    props.showSupportBox === false ? null : <div id="donations">donation-box-stub</div>,
+  SidebarSupportBox: () => null,
+}));
 
 vi.mock('@/app/components/Hero', () => ({
   default: () => <div>hero-stub</div>,
@@ -112,52 +88,31 @@ describe('ChannelHome mobile "Wspieraj" tab handoff', () => {
     cleanup();
     vi.clearAllMocks();
     vi.useRealTimers();
-    setDonationsMountDelay(0);
   });
 
-  it('switches to the videos tab and scrolls to #donations after the slide-in animation settles, on mobile', () => {
+  it('reveals the mobile "videos" tab panel and scrolls to #donations, from the comments tab', () => {
     mockMatchMedia({ isMobile: true, reducedMotion: false });
     vi.useFakeTimers();
 
-    const { container } = render(
+    const { getByTestId } = render(
       <ChannelHome mainVideo={mainVideo} allVideos={[mainVideo]} userProfile={null} />,
     );
 
-    // Starting tab is "comments" — the mobile videos-tab panel (and its #donations) must not exist yet.
-    expect(container.querySelector('#donations')).toBeNull();
+    // #donations always exists (the panel is always mounted), but starts hidden
+    // since the initial tab is "comments".
+    const panel = getByTestId('mobile-videos-panel');
+    const classTokens = () => panel.className.split(/\s+/);
+    expect(classTokens()).toContain('hidden');
 
     act(() => {
       window.dispatchEvent(new CustomEvent('polutek:open-support'));
     });
 
-    // The tab switch itself must be synchronous/immediate, not waiting on the scroll delay.
-    expect(container.querySelector('#donations')).not.toBeNull();
+    // The tab switch is a synchronous class toggle — no mount to wait for.
+    // (Checking the exact "hidden" token, not a substring — "lg:hidden" is
+    // always present and would otherwise give a false negative.)
+    expect(classTokens()).not.toContain('hidden');
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
-
-    act(() => {
-      vi.advanceTimersByTime(349);
-    });
-    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
-  });
-
-  it('scrolls immediately (no delay) when prefers-reduced-motion is on', () => {
-    mockMatchMedia({ isMobile: true, reducedMotion: true });
-    vi.useFakeTimers();
-
-    const { container } = render(
-      <ChannelHome mainVideo={mainVideo} allVideos={[mainVideo]} userProfile={null} />,
-    );
-
-    act(() => {
-      window.dispatchEvent(new CustomEvent('polutek:open-support'));
-    });
-
-    expect(container.querySelector('#donations')).not.toBeNull();
 
     act(() => {
       vi.advanceTimersByTime(0);
@@ -165,39 +120,27 @@ describe('ChannelHome mobile "Wspieraj" tab handoff', () => {
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps polling and still scrolls when #donations mounts late (slow Clerk auth resolution)', async () => {
-    // Simulates SidebarPlaylist's real gating: DonationBox only renders once Clerk's
-    // authLoaded/isSignedIn resolves, which can lag well past the ~300ms tab-switch
-    // slide-in animation on a cold page load. Real timers here (not fake) — mixing
-    // fake timers with a mock component's own independently-scheduled setTimeout
-    // makes React's commit timing hard to reason about across act() boundaries;
-    // real timers plus waitFor exercise the exact same retry code path without
-    // that harness-specific noise, just slower (real milliseconds) than fake-timer
-    // tests.
-    setDonationsMountDelay(500);
+  it('scrolls without switching tabs on desktop', () => {
+    mockMatchMedia({ isMobile: false, reducedMotion: false });
+    vi.useFakeTimers();
 
-    mockMatchMedia({ isMobile: true, reducedMotion: false });
-
-    const { container } = render(
+    const { getByTestId } = render(
       <ChannelHome mainVideo={mainVideo} allVideos={[mainVideo]} userProfile={null} />,
     );
+
+    const panel = getByTestId('mobile-videos-panel');
+    const initialClassName = panel.className;
 
     act(() => {
       window.dispatchEvent(new CustomEvent('polutek:open-support'));
     });
 
-    // Tab switches immediately, but the donation box itself isn't mounted yet.
-    expect(container.querySelector('#donations')).toBeNull();
+    // Desktop never touches the mobile tab state.
+    expect(panel.className).toBe(initialClassName);
 
-    // A single fixed-delay attempt (the animation's own ~350ms wait) would have
-    // silently given up before the box mounts at 500ms; the poll must keep
-    // retrying past that and still find it.
-    await waitFor(
-      () => {
-        expect(container.querySelector('#donations')).not.toBeNull();
-        expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
-      },
-      { timeout: 3000 },
-    );
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1);
   });
 });

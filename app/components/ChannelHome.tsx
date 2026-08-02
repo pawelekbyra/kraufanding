@@ -125,55 +125,25 @@ function ChannelHomeContent({
   }, [selectedVideo?.id]);
 
   // Shared by the "polutek:open-support" event, dispatched by both AccessLockOverlay's
-  // CTA and Hero's "Wspieraj" button. On mobile the donation box only exists inside the
-  // "videos" tab, so both must switch tabs first — the tab panel's own slide-in
-  // animation (see the "videos" tab render below) is what turns that switch into a
-  // slide-down instead of an instant swap. Dispatching a plain window event (rather
-  // than relying on the ?support=1 query param Hero also sets, purely so DonationBox's
-  // own effect can call its onSupport() once mounted) keeps the tab-switch+scroll
-  // synchronous and independent of router/searchParams propagation timing.
+  // CTA and Hero's "Wspieraj" button. The mobile "videos" tab panel (see its render
+  // below) is now ALWAYS mounted — only hidden via a CSS class when not active, the
+  // same technique the "comments" panel already used — so #donations always exists in
+  // the DOM once signed in, regardless of which tab is showing. That removes the need
+  // to wait for anything to mount: switching tabs is just a class toggle, so a single
+  // scroll shortly after is enough.
   const revealDonations = useCallback(() => {
-    const isMobile = !window.matchMedia("(min-width: 1024px)").matches;
-    if (isMobile) {
+    if (!window.matchMedia("(min-width: 1024px)").matches) {
       setActiveTab("videos");
     }
     const prefersReducedMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches ?? false;
-    const scrollToDonations = () => {
+    window.setTimeout(() => {
       document.getElementById("donations")?.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
         block: "center",
       });
-    };
-
-    if (!isMobile) {
-      // Desktop never switches tabs — the donation box already exists in the
-      // always-rendered aside, so there's nothing to wait out.
-      window.setTimeout(scrollToDonations, 0);
-      return;
-    }
-
-    // On mobile, #donations only exists once BOTH (a) the "videos" tab panel's
-    // ~300ms slide-in animation settles (scrollIntoView reads the target's live,
-    // transform-affected position, so scrolling mid-slide lands in the wrong
-    // spot) AND (b) SidebarPlaylist's own Clerk auth check resolves — it only
-    // renders DonationBox once authLoaded && isSignedIn, which can take longer
-    // than the animation on a cold page load (Wspieraj is above the fold and
-    // often one of the first clicks). A single fixed-delay attempt silently
-    // does nothing if #donations isn't mounted yet, so poll for it instead of
-    // firing once.
-    const deadline = Date.now() + 3000;
-    const poll = () => {
-      if (document.getElementById("donations")) {
-        scrollToDonations();
-        return;
-      }
-      if (Date.now() < deadline) {
-        window.setTimeout(poll, 150);
-      }
-    };
-    window.setTimeout(poll, prefersReducedMotion ? 0 : 350);
+    }, 0);
   }, []);
 
   useEffect(() => {
@@ -299,11 +269,12 @@ function ChannelHomeContent({
             >
               {mounted ? comments : <CommentsMountPlaceholder />}
             </div>
-            {activeTab === "videos" && (
-              <div className="mt-3 py-3 lg:hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-3 motion-safe:duration-300">
-                <SidebarPlaylist {...commonSidebarProps} />
-              </div>
-            )}
+            <div
+              data-testid="mobile-videos-panel"
+              className={cn("mt-3 py-3 lg:hidden", activeTab !== "videos" && "hidden")}
+            >
+              <SidebarPlaylist {...commonSidebarProps} />
+            </div>
           </div>
           <div className="hidden lg:col-span-4 lg:flex lg:flex-col lg:gap-4">
             <aside className="lg:flex lg:flex-col lg:gap-0 lg:overflow-y-auto rounded-[24px] border border-[var(--cm-line-80)] bg-[var(--cm-card-88-white)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_2px_rgba(23,23,23,0.03),0_24px_50px_-26px_rgba(23,23,23,0.2)]">
