@@ -110,4 +110,25 @@ describe('updateAdminVideo hero/sidebar contract', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe('VIDEO_INVALID_SIDEBAR');
   });
+
+  it('allows resaving an already-Hero video with a legacy missing active playback route (unrelated edit, e.g. title)', async () => {
+    // Regression: a video that became Hero before the active-playback-route invariant
+    // existed (or otherwise has a legacy gap there) still plays fine in production —
+    // but the edit form always resubmits the current isMainFeatured=true on every save.
+    // Re-validating hero eligibility on every save (not just on promotion) made such a
+    // video permanently unsavable, even for a trivial title change.
+    const existing = {
+      id: 'v1', creatorId: 'c1', title: 'Old', slug: 'hero', tier: AccessTier.PUBLIC, status: VideoStatus.PUBLISHED,
+      isMainFeatured: true,
+      asset: { isPrimary: true, provider: 'CLOUDFLARE_STREAM', processingState: 'READY', providerAssetId: 'cf-uid' },
+      activePlaybackRoute: null,
+    };
+    mockPrisma.video.findUnique.mockResolvedValue(existing);
+    mockPrisma.video.updateMany.mockResolvedValue({ count: 1 });
+    mockPrisma.video.findFirst.mockResolvedValue({ ...existing, title: 'New' });
+
+    const result = await updateAdminVideo({ id: 'v1', title: 'New', isMainFeatured: true }, ctx);
+
+    expect(result.ok).toBe(true);
+  });
 });

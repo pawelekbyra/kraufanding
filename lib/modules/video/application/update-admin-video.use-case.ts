@@ -35,7 +35,13 @@ export async function updateAdminVideo(
   const nextStatus = input.status || existing.status;
   const nextTier = input.tier || existing.tier;
 
-  if (input.isMainFeatured) {
+  // Only re-validate hero eligibility when this update actually promotes the video to
+  // Hero (false/unset -> true). The edit form always resubmits the video's current
+  // isMainFeatured value on every save, even when the user only touched an unrelated
+  // field like the title — without this guard, a video that became Hero before the
+  // active-playback-route invariant existed (or otherwise has a legacy gap there) could
+  // never be edited again, since every save would re-fail the same pre-existing blocker.
+  if (input.isMainFeatured && !existing.isMainFeatured) {
       const blockers = VideoPolicy.getHeroBlockers({ ...existing, status: nextStatus, tier: nextTier });
       if (blockers.length > 0) return fail(new VideoInvalidHeroError(`${blockers[0].code}: ${blockers[0].message}`));
   }

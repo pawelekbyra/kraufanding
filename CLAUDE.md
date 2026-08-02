@@ -278,6 +278,8 @@ Default thumbnail fallback priority:
 2. `AppSetting` key `default_video_thumbnail` — Vercel Blob URL set via `/admin/settings` file upload.
 3. `null` — no fallback.
 
+**Update 2026-08-02:** `updateAdminVideo()` (`lib/modules/video/application/update-admin-video.use-case.ts`) only re-validates Hero eligibility (`VideoPolicy.getHeroBlockers`, which includes the "must have an active playback route in READY state" check) when the update actually **promotes** a video to Hero (`input.isMainFeatured` true while `existing.isMainFeatured` was false/unset) — not on every save. The `/admin/videos/[id]/edit` form always resubmits the video's current `isMainFeatured` value regardless of what the admin actually changed, so re-validating on every save meant a video that became Hero before the active-playback-route invariant existed (or otherwise has a legacy gap there, e.g. a working `isPrimary` asset with no backfilled `VideoPlaybackRoute` row) could never be edited again — even a trivial title change would fail with `VIDEO_INVALID_HERO: VIDEO_PUBLICATION_MISSING_ACTIVE_ROUTE`, despite the video playing fine on the live site. Covered by a regression test in `tests/unit/modules/video/update-admin-video.use-case.test.ts`, confirmed to fail against the old unconditional check before the guard landed.
+
 ---
 
 ## 6. Cron Jobs
