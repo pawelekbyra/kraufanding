@@ -712,11 +712,8 @@
   }
 
   .chan-lang-pill-active {
-    /* Neutral mid-gray (--chan-muted, already used for muted text sitewide) instead of
-       solid black — owner feedback: pure ink read as too harsh/attention-grabbing for a
-       small selected-segment indicator. */
-    background: var(--chan-muted);
-    box-shadow: 0 1px 10px rgba(102, 112, 133, .35);
+    background: var(--chan-blue);
+    box-shadow: 0 1px 10px var(--cm-blue-35);
   }
 
   .polutek-vidstack-player {
