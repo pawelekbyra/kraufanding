@@ -104,5 +104,9 @@ describe('DonationBox', () => {
       expect(screen.getByText('Wpisz kwotę napiwku')).toBeInTheDocument();
       expect(screen.getByLabelText('Wpisz kwotę napiwku')).toBeInTheDocument();
     });
+
+    // The amount field must start empty (just the cursor/placeholder) rather than
+    // pre-filled with a suggested amount — a patron picks their own amount freely.
+    expect(screen.getByLabelText('Wpisz kwotę napiwku')).toHaveValue(null);
   });
 });

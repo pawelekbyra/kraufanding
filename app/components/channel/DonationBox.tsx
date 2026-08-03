@@ -49,7 +49,11 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(t.currency);
-  const [amount, setAmount] = useState<number | "">(getSuggestedAmount(t.currency));
+  // Patrons see an empty field (just the cursor/placeholder) rather than a pre-filled
+  // suggested amount — they're free to tip any amount, so nothing should look "chosen for
+  // them". Non-patrons get the fixed gate price here regardless (overridden by the
+  // non-editable-amount effect below anyway).
+  const [amount, setAmount] = useState<number | "">(viewerIsPatron ? "" : getSuggestedAmount(t.currency));
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
   const [isRegulaminOpen, setIsRegulaminOpen] = useState(false);
@@ -270,7 +274,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
   useEffect(() => {
     const nextCurrency = detectDefaultCurrency(language);
     setSelectedCurrency(nextCurrency);
-    if (viewerIsPatron) setAmount(getSuggestedAmount(nextCurrency));
+    if (viewerIsPatron) setAmount("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -282,7 +286,7 @@ export default function DonationBox({ videoTitle, viewerIsPatron = false }: Dona
 
   const handleCurrencyChange = (curr: string) => {
     setSelectedCurrency(curr);
-    if (viewerIsPatron) setAmount(getSuggestedAmount(curr));
+    if (viewerIsPatron) setAmount("");
   };
 
   const onSupport = useCallback(async () => {

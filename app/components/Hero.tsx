@@ -63,6 +63,9 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
       });
   }, [video.id, initialIsSubscribed, video.creator?.subscribersCount]);
 
+  const subscribersCount = mounted ? localSubState.subscribersCount : (video.creator?.subscribersCount || 0);
+  const subscribersLabel = subscribersCount === 1 ? t.subscribersOne : t.subscribers;
+
   const [interactionState, setInteractionState] = useState({
     isLiked: (userId ? initialInteraction?.liked : false) || false,
     isDisliked: (userId ? initialInteraction?.disliked : false) || false,
@@ -213,7 +216,7 @@ const Hero: React.FC<HeroProps> = ({ video, initialInteraction, initialIsSubscri
                     {video.creator?.name || MAIN_CREATOR_NAME}
                   </Link>
                   <span className="text-[12.5px] font-medium text-[var(--chan-muted)] mt-[1px] tabular-nums">
-                     {mounted ? formatCount(localSubState.subscribersCount) : (video.creator?.subscribersCount || 0)} {t.subscribers}
+                     {mounted ? formatCount(subscribersCount) : subscribersCount} {subscribersLabel}
                   </span>
                </div>
                <div className="ml-auto shrink-0 lg:ml-[6px]">
