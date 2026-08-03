@@ -74,7 +74,7 @@ export default function DonationAmountField({
               aria-invalid={amountTooLow}
               aria-describedby={amountTooLow ? errorId : undefined}
               placeholder={String(minAmount)}
-              className="font-sans w-full bg-transparent px-16 text-left text-[18px] font-extrabold tabular-nums text-[var(--chan-ink)] outline-none placeholder:text-[var(--chan-line-soft)]"
+              className="font-sans w-full bg-transparent px-16 text-center text-[18px] font-extrabold tabular-nums text-[var(--chan-ink)] outline-none placeholder:text-[var(--chan-line-soft)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
             <div className="absolute right-0 top-1/2 flex -translate-y-1/2 items-center">
               {currencySelect("cursor-pointer appearance-none bg-transparent pr-5 font-sans text-[14px] font-bold text-[var(--chan-body)] outline-none")}
